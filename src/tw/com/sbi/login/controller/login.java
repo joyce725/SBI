@@ -32,7 +32,7 @@ public class login extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
-		System.out.println("doPost");
+//		System.out.println("doPost");
 		String action = request.getParameter("action");
 		HttpSession session = request.getSession(true);
 		LoginVO message = null;

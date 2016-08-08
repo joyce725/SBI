@@ -173,7 +173,7 @@
 					<p>帳號:</p>
 				</td>
 				<td>
-					<input type="text" id="user_name" name="user_name" value="Kip" placeholder="請輸入帳號" style="width:225px;padding: 4px 5px;">
+					<input type="text" id="user_name" name="user_name" placeholder="請輸入帳號" style="width:225px;padding: 4px 5px;">
 				</td>
 			</tr>
 			<tr>
@@ -181,7 +181,7 @@
 					<p>密碼:</p>
 				</td>
 				<td>
-					<input type="password" id="pswd" name="pswd" value="1234" placeholder="請輸入密碼" style="width:225px;padding: 4px 5px;">
+					<input type="password" id="pswd" name="pswd" placeholder="請輸入密碼" style="width:225px;padding: 4px 5px;">
 				</td>
 			</tr>
 			<tr>
