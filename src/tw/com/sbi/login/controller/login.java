@@ -17,22 +17,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.Gson;
 
 public class login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 //	private static final int WIDTH = 120; // 圖片寬度
 //	private static final int HEIGHT = 30; // 圖片高度
+	
+	private static final Logger logger = LogManager.getLogger(login.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		logger.trace("Trace Entering application.");
+		logger.info("Info Entering application.");
+		
+		
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
-//		System.out.println("doPost");
 		String action = request.getParameter("action");
 		HttpSession session = request.getSession(true);
 		LoginVO message = null;
@@ -92,7 +101,6 @@ public class login extends HttpServlet {
 			}
 		}
 		if ("logout".equals(action)) {
-			System.out.println("Into logout");
 			session.setAttribute("sessionID", null);
 			session.setAttribute("user_id", null);
 			session.setAttribute("group_id", null);
