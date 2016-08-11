@@ -22,12 +22,12 @@ import org.apache.logging.log4j.LogManager;
 
 import com.google.gson.Gson;
 
-public class login extends HttpServlet {
+public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 //	private static final int WIDTH = 120; // 圖片寬度
 //	private static final int HEIGHT = 30; // 圖片高度
 	
-	private static final Logger logger = LogManager.getLogger(login.class);
+	private static final Logger logger = LogManager.getLogger(Login.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
@@ -51,26 +51,32 @@ public class login extends HttpServlet {
 		if ("login".equals(action)) {
 			String username = request.getParameter("user_name");
 			String password = request.getParameter("pswd");
-//			// 获取验证码
-//			String validateCode = request.getParameter("validateCode").trim();
-//			Object checkcode = session.getAttribute("checkcode");
-//			if (!checkcode.equals(convertToCapitalString(validateCode))) {
-//				message = new LoginVO();
-//				message.setMessage("code_failure");
-//				gson = new Gson();
-//				String jsonStrList = gson.toJson(message);
-//				response.getWriter().write(jsonStrList);
-//				return;
-//			}
-//			if (checkcode.equals(convertToCapitalString(validateCode))) {
+			// 获取验证码
+			String validateCode = request.getParameter("validateCode").trim();
+			Object checkcode = session.getAttribute("checkcode");
+			if (!checkcode.equals(convertToCapitalString(validateCode))) {
+				message = new LoginVO();
+				message.setMessage("code_failure");
+				gson = new Gson();
+				String jsonStrList = gson.toJson(message);
+				response.getWriter().write(jsonStrList);
+				return;
+			}
+			if (checkcode.equals(convertToCapitalString(validateCode))) {
 				loginService = new LoginService();
 				List<LoginVO> list = loginService.selectlogin(username, password);
 				if (list.size() != 0) {
-					// HttpSession session = request.getSession();
+//					 HttpSession session = request.getSession();
 					session.setAttribute("sessionID", session.getId());
 					session.setAttribute("user_id", list.get(0).getUser_id());
 					session.setAttribute("group_id", list.get(0).getGroup_id());
 					session.setAttribute("user_name", list.get(0).getUser_name());
+					session.setAttribute("role", list.get(0).getRole());
+//				session.setAttribute("sessionID", session.getId());
+//				session.setAttribute("user_id", "28423832-6c9e-11e5-ab77-000c29c1d067");
+//				session.setAttribute("group_id", "0f74414d-538d-4a49-8d1f-7604153075d0");
+//				session.setAttribute("user_name", "Kip");
+//				session.setAttribute("role", 0);
 					message = new LoginVO();
 					message.setMessage("success");
 				} else {
@@ -80,7 +86,7 @@ public class login extends HttpServlet {
 				gson = new Gson();
 				String jsonStrList = gson.toJson(message);
 				response.getWriter().write(jsonStrList);
-//			}
+			}
 		}
 		if ("check_user_exist".equals(action)) {
 			String username = request.getParameter("user_name");
@@ -133,7 +139,7 @@ public class login extends HttpServlet {
 		private String user_id;
 		private String group_id;
 		private String user_name;
-		private String role;
+		private int role;
 		private String message;// for set check message
 
 		public String getEmail() {
@@ -176,11 +182,11 @@ public class login extends HttpServlet {
 			this.user_name = user_name;
 		}
 
-		public String getRole() {
+		public int getRole() {
 			return role;
 		}
 
-		public void setRole(String role) {
+		public void setRole(int role) {
 			this.role = role;
 		}
 
@@ -225,8 +231,8 @@ public class login extends HttpServlet {
 		// 會使用到的Stored procedure
 		private static final String sp_login = "call sp_login(?,?)";
 		private static final String sp_checkuser = "call sp_checkuser(?,?)";
-		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL")
-				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL");
+//				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 
@@ -251,6 +257,10 @@ public class login extends HttpServlet {
 					LoginVO.setUser_id(rs.getString("uid"));
 					LoginVO.setGroup_id(rs.getString("gid"));
 					LoginVO.setUser_name(rs.getString("user"));
+					LoginVO.setRole(Integer.parseInt(rs.getString("role")));
+//					logger.info("setUser_id: " + rs.getString("uid"));
+//					logger.info("setGroup_id: " + rs.getString("gid"));
+//					logger.info("setUser_name: " + rs.getString("user"));
 					list.add(LoginVO);
 				}
 			} catch (SQLException se) {

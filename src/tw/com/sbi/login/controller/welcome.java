@@ -29,7 +29,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 @SuppressWarnings("serial")
 
-public class welcome extends HttpServlet {
+public class Welcome extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
