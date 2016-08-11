@@ -87,14 +87,14 @@
   </context-param>
   <context-param>
     <param-name>pythonwebservice</param-name>
-    <param-value>http://192.168.112.164:8090</param-value>
+	    <param-value>http://192.168.112.171:8099</param-value>
   </context-param>
 
  <!--########################以上164+175#####################################-->
 
   <servlet>
     <servlet-name>login</servlet-name>
-    <servlet-class>tw.com.sbi.login.controller.login</servlet-class>
+    <servlet-class>tw.com.sbi.login.controller.Login</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>login</servlet-name>
@@ -102,7 +102,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>welcome</servlet-name>
-    <servlet-class>tw.com.sbi.login.controller.welcome</servlet-class>
+    <servlet-class>tw.com.sbi.login.controller.Welcome</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>welcome</servlet-name>
@@ -118,12 +118,12 @@
   </servlet-mapping>
   <!--   
   <servlet>
-    <servlet-name>productunit</servlet-name>
-    <servlet-class>tw.com.sbi.productunit.controller.productunit</servlet-class>
+    <servlet-name>finModel</servlet-name>
+    <servlet-class>tw.com.sbi.finModel.controller.FinModel</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>productunit</servlet-name>
-    <url-pattern>/productunit.do</url-pattern>
+    <servlet-name>finModel</servlet-name>
+    <url-pattern>/finModel.do</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>producttype</servlet-name>

@@ -55,12 +55,6 @@ h6 {
 }
 /* Login Styles
 ---------------------------------- */
-.login-body {
-    background: #fff;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
 .bkg-upper {
     position: absolute;
     top: 0;
@@ -82,7 +76,7 @@ h6 {
     position: absolute;
     width: 100%;
     top: 50%;
-    margin-top: -320px;
+    margin-top: -260px;
 }
 .login-wrapper h1 {
     color: #62E0E9;
@@ -94,7 +88,7 @@ h6 {
 }
 .login-panel-wrap {
     background: #62E0E9;
-    padding: 10px 0 30px;
+    padding: 10px 0 40px;
     margin-bottom: 15px;
     position: relative;
     zoom: 1;
@@ -106,7 +100,7 @@ h6 {
 .login-panel-wrap:after {
     clear: both;
 }
-.login-panel-wrap:after {
+.login-panel-wrap:before {
     content: '';
     background: #fff;
     opacity: 0.5;
@@ -142,7 +136,7 @@ h6 {
     color: #194A6B;
     display: block;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
     margin-right: 0;
 }
 .login-panel input[type=text], .login-panel input[type=password] {
@@ -150,15 +144,6 @@ h6 {
     font-size: 24px;
     padding: 5px 15px;
     width: 100%;
-}
-.login-panel .error-msg {
-    /*background: #e92500;*/
-    border-top: 2px solid #e92500;
-    display: block;
-    color: #e92500;
-    font-size: 14px;
-    text-align: right;
-    padding: 6px 5px 0;
 }
 .verify-wrap {
     zoom: 1;
@@ -180,17 +165,9 @@ h6 {
 .verify-wrap:after {
     clear: both;
 }
-.login-btn-wrap {
-    zoom: 1;
-}
-.login-btn-wrap:before, .login-btn-wrap:after {
-    content: '';
-    display: table;
-}
-.login-btn-wrap:after {
-    clear: both;
-}
-.login-button, .login-reset-button {
+.login-button {
+    background: #3F7FAA;
+    border: 1px solid #3F7FAA;
     box-sizing: border-box;
     color: #fff;
     display: block;
@@ -198,12 +175,6 @@ h6 {
     text-align: center;
     text-decoration: none;
     padding: 15px 0;
-    width: 49%;
-}
-.login-button {
-    background: #3F7FAA;
-    border: 1px solid rgb(55, 111, 149);
-    float: left;
 }
 .login-button:hover {
     background: rgb(55, 111, 149);
@@ -211,17 +182,6 @@ h6 {
 .login-button:focus {
     background: rgb(28, 56, 74);
     border: 1px solid #194A6B;
-}
-.login-reset-button {
-    background: #666;
-    border: 1px solid #555;
-    float: right;
-}
-.login-reset-button:hover {
-    background: #555;
-}
-.login-reset-button:focus {
-    background: #333;
 }
 .login-footer {
     color: #555;
@@ -292,8 +252,10 @@ h6 {
 .header .btn-logout:hover {
     background: #FC3E3E;
 }
-/* sidenav
----------------------------------- */
+/* 
+sidenav ----------------------------------
+*/
+
 .sidenav {
     position: fixed;
     top: 56px;
@@ -379,12 +341,13 @@ h2.page-title {
 .content-wrap {
     background: #fff;
     float: left;
-    margin-left: 120px;
+/*     margin-left: 120px; */
     margin-top: 56px;
     padding-bottom: 60px;
-    height: calc(100vh - 144px);//Ben偷改的
+    height: calc(100vh - 142px);
     overflow: scroll;
-    width: calc(100% - 120px);
+/*     width: calc(100% - 120px); */
+	width: 800px;
 }
 .input-field-wrap {
     background: #62E0E9;
@@ -495,7 +458,7 @@ h2.page-title {
     margin-bottom: 3px;
     text-align: left;
 }
-.block-label ~ input[type="text"], .block-label ~ input[type="password"] {
+.block-label ~ input[type="text"] {
     margin-bottom: 0;
 }
 label {
@@ -749,13 +712,13 @@ input[type=radio]:checked + label:before {
 .ui-datepicker-calendar tr th:last-child a, .ui-datepicker-calendar tr th:last-child span, .ui-datepicker-calendar tr td:last-child a, .ui-datepicker-calendar tr td:last-child span {
     color: #417505 !important;
 }
-.ui-datepicker-calendar .ui-state-default {
+.ui-state-default {
     background: none !important;
     border: none !important;
     padding: 6px 0 !important;
     text-align: center !important;
 }
-.ui-datepicker-calendar .ui-state-active {}
+.ui-state-active {}
 .ui-datepicker-current-day, .ui-datepicker-today {}
 .ui-datepicker-current-day {
     background: #62E0E9 !important;
@@ -792,21 +755,15 @@ table.result-table td {
 .btn-row {
     padding: 10px 0;
 }
-a.btn, button.btn {
+.btn {
     display: inline-block;
     color: #fff;
-    font-size: 14px;
     text-decoration: none;
+    padding: 7px 20px;
     box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
 }
-a.btn:hover, button.btn:hover {
+.btn:hover {
     box-shadow: none;
-}
-a.btn {
-    padding: 7px 20px;
-}
-button.btn {
-    padding: 4px 20px;
 }
 /*- by Color -*/
 .btn-primary {

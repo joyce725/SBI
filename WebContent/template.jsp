@@ -3,106 +3,40 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Insert title here</title>
-	<link rel="stylesheet" href="vendor/css/jquery-ui.min.css">
-	<link rel="stylesheet" href="vendor/css/font-awesome.min.css">
+	<title>template</title>
+	<link rel="stylesheet" href="css/jquery-ui.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/styles.css">
 	<link rel="stylesheet" href="css/1.11.4/jquery-ui.css">
 	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
 <script>
 function who(){
 	switch(location.pathname.split("/")[2]){
-//####交易處理############################
-	case "upload.jsp":
-		return "訂單拋轉作業";
+//#######  動態磚  ########
+	case "brick.jsp":
+		return "動態磚";
 		break;
-//####後臺支援系統############################
-	case "purchase.jsp":
-		return "進貨管理";
+	case "finModel.jsp":
+		return "新創公司財務損益平衡評估工具";
 		break;
-	case "purchreturn.jsp":
-		return "進貨退回管理";
+	case "population.jsp":
+		return "台灣人口社經資料";
 		break;
-	case "sale.jsp":
-		return "銷貨管理";
+//#######  服務業雲端智慧商情支援系統   #######
+	case "cloudISS.jsp":
+		return "服務業雲端智慧商情支援系統";
 		break;
-	case "salereturn.jsp":
-		return "銷貨退回管理";
+//#######  城市商圈    #######
+	case "marketPlace.jsp":
+		return "城市商圈";
 		break;
-	case "stock.jsp":
-		return "庫存管理";
-		break;
-	case "producttype.jsp":
-		return "商品類型管理";
-		break;
-	case "productunit.jsp":
-		return "商品單位管理";
-		break;
-	case "product.jsp":
-		return "商品管理";
-		break;
-	case "supply.jsp":
-		return "供應商管理";
-		break;
-	case "user.jsp":
-		return "用戶管理";
-		break;
-	case "group.jsp":
-		return "公司管理";
-		break;
-	case "customer.jsp":
-		return "客戶管理";
-		break;
-	case "accreceive.jsp":
-		return "應收帳款管理";
-		break;
-	case "accpay.jsp":
-		return "應付帳款管理";
-		break;
-	case "changepassword.jsp":
-		return "密碼修改";
-		break;
-	case "tagprint.jsp":
-		return "標籤列印";
-		break;
-//####報表管理############################
-	case "salereport.jsp":
-		return "訂單報表";
-		break;
-	case "distributereport.jsp":
-		return "配送報表";
-		break;
-	case "salereturnreport.jsp":
-		return "退貨報表";
-		break;
-	case "shipreport.jsp":
-		return "出貨報表";
-		break;
-	case "purchreport.jsp":
-		return "進貨報表";
-		break;
-	case "purchreturnreport.jsp":
-		return "進貨退回報表";
-		break;
-//######分析圖表##########################
-	case "salechart.jsp":
-		return "出貨量統計圖";
-		break;
-	case "saleamountchart.jsp":
-		return "銷售金額統計圖";
-		break;
-	case "saleamountstaticchart.jsp":
-		return "銷售金額比例統計圖";
+//#######  東南亞商機定位工具    #######
+	case "persona.jsp":
+		return "東南亞商機定位工具";
 		break;
 //######線上學院##########################
 	case "onlinecourse.jsp":
 		return "線上學院";
-		break;
-	case "template.jsp":
-		return "暫時的";
-		break;
-	case "welcome.jsp":
-		return "請安心使用";
 		break;
 	default:
 		alert("default_page;");
@@ -115,7 +49,7 @@ function who(){
 <body>
 <script>
 $(function() {
-// 	$("#title").html(who());
+	$("#title").html(who());
 	$("#my").click(function(e) {
 		alert("hello");
 	});
@@ -154,58 +88,42 @@ $(function() {
 <!-- 		</div> -->
 	</div><!-- /.header -->
 
-<!-- 	<div class="sidenav" style="z-index:2;"> -->
-<!-- 		<ul> -->
-<!-- 			<li><img src="images/sidenav-transaction.svg" alt="">交易處理 -->
-<!-- 				<ul> -->
-<!-- 					<li><a href="upload.jsp">訂單拋轉作業</a></li> -->
-<!-- 					<li><a href="ui-elements.html">UI 元件列表</a></li> -->
-<!-- 				</ul> -->
-<!-- 			</li> -->
-<!-- 			<li class="active"><img src="images/sidenav-support.svg" alt="">後臺支援系統 -->
-<!-- 				<ul > -->
-<!-- 					<li><a href="purchase.jsp">進貨管理</a></li> -->
-<!-- 					<li><a href="purchreturn.jsp">進貨退回管理</a></li> -->
-<!-- 					<li><a href="sale.jsp">銷貨管理</a></li> -->
-<!-- 					<li><a href="salereturn.jsp">銷貨退回管理</a></li> -->
-<!-- 					<li><a href="stock.jsp">庫存管理</a></li> -->
-<!-- 					<li><a href="producttype.jsp">商品類型管理</a></li> -->
-<!-- 					<li><a href="productunit.jsp">商品單位管理</a></li> -->
-<!-- 					<li><a href="product.jsp">商品管理</a></li> -->
-<!-- 					<li><a href="supply.jsp">供應商管理</a></li> -->
-<!-- 					<li><a href="user.jsp">用戶管理</a></li> -->
-<!-- 					<li><a href="group.jsp">公司管理</a></li> -->
-<!-- 					<li><a href="customer.jsp">客戶管理</a></li> -->
-<!-- 					<li><a href="accreceive.jsp">應收帳款管理</a></li> -->
-<!-- 					<li><a href="accpay.jsp">應付帳款管理</a></li> -->
-<!-- 					<li><a href="changepassword.jsp">用戶帳密管理</a></li> -->
-<!-- 					<li><a href="tagprint.jsp">標籤列印</a></li> -->
-<!-- 				</ul> -->
-<!-- 			</li> -->
-<!-- 			<li><img src="images/sidenav-report.svg" alt="">報表管理 -->
-<!-- 				<ul> -->
-<!-- 					<li><a href="salereport.jsp">訂單報表</a></li> -->
-<!-- 					<li><a href="shipreport.jsp">出貨報表</a></li> -->
-<!-- 					<li><a href="distributereport.jsp">配送報表</a></li> -->
-<!-- 					<li><a href="salereturnreport.jsp">退貨報表</a></li> -->
-<!-- 					<li><a href="purchreport.jsp">進貨報表</a></li> -->
-<!-- 					<li><a href="purchreturnreport.jsp">進貨退回報表</a></li> -->
-<!-- 				</ul> -->
-<!-- 			</li> -->
-<!-- 			<li><img src="images/sidenav-chart.svg" alt="">分析圖表 -->
-<!-- 				<ul> -->
-<!-- 					<li><a href="salechart.jsp">出貨量統計圖</a></li> -->
-<!-- 					<li><a href="saleamountchart.jsp">銷售金額統計圖</a></li> -->
-<!-- 					<li><a href="saleamountstaticchart.jsp">銷售金額比例統計圖</a></li> -->
-<!-- 				</ul> -->
-<!-- 			</li> -->
-<!-- 			<li><img src="images/sidenav-school.svg" alt="">線上學院 -->
-<!-- 				<ul> -->
-<!-- 					<li><a href="onlinecourse.jsp">線上學院</a></li> -->
-<!-- 				</ul> -->
-<!-- 			</li> -->
-<!-- 		</ul> -->
-<!-- 	</div>/.sidenav --> 
+	<div class="sidenav" style="z-index:2;">
+		<ul>
+			<li><img src="images/sidenav-transaction.svg" alt="">動態磚
+				<ul>
+					<li><a href="brick.jsp">國家/城巿商圈</a></li>
+					<li><a href="brick.jsp">目標客群定位</a></li>
+					<li><a href="brick.jsp">目標商圈定位</a></li>
+					<li><a href="brick.jsp">競爭者定位</a></li>
+					<li><a href="brick.jsp">商品通路</a></li>
+					<li><a href="finModel.jsp">新創公司財務損益平衡評估工具</a></li>
+					<li><a href="population.jsp">台灣人口社經資料</a></li>
+				</ul>
+			</li>
+			<li class="active"><img src="images/sidenav-support.svg" alt="">服務業雲端智慧商情支援系統
+				<ul >
+					<li><a href="cloudISS.jsp">服務業雲端智慧商情支援系統</a></li>
+				</ul>
+			</li>
+			<li><img src="images/sidenav-report.svg" alt="">城市商圈
+				<ul>
+					<li><a href="marketPlace.jsp">城市商圈</a></li>
+				</ul>
+			</li>
+			<li><img src="images/sidenav-chart.svg" alt="">東南亞商機定位工具
+				<ul>
+					<li><a href="persona.jsp">東南亞商機定位工具</a></li>
+				</ul>
+			</li>
+			<li><img src="images/sidenav-school.svg" alt="">線上學院
+				<ul>
+					<li><a href="onlinecourse.jsp">線上學院</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div><!--  /.sidenav  -->
+ 	<h2 id="title" class="page-title" style="z-index:2">title</h2> 
 	<div class="content-wrap" style="display:none">
 	
 
@@ -215,8 +133,8 @@ $(function() {
 		財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
 	</footer><!-- / .footer -->
 </div><!-- /.page-wrapper -->
-<script src="vendor/js/jquery-1.12.4.min.js"></script>
-<script src="vendor/js/jquery-ui.min.js"></script>
+<script src="js/jquery-3.1.0.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
 <script src="js/scripts.js"></script>
 
 </body>

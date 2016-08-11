@@ -20,7 +20,7 @@
 </head>
 <body>
 	<jsp:include page="template.jsp" flush="true"/>
-	<div class="content-wrap" style="margin:56px 0px 0px 0px;">
+	<div class="content-wrap" style="margin:56px 0px 0px 120px;">
 		<!-- begin -->
 		<div class="examples_body">
 		  	<ul class="bannerHolder">
@@ -70,7 +70,7 @@
 			      	</div>
 			    </li>
 				<li>
-			      	<div class="banner"> <a href="#"> 新創公司財務損益平衡評估工具 <img height="125" width="125" src="images/3.jpg" /> </a>
+			      	<div class="banner"> <a href="finModel.jsp"> 新創公司財務損益平衡評估工具 <img height="125" width="125" src="images/3.jpg" /> </a>
 				        <p class="companyInfo">財務健康狀況評估模擬器</p>
 				        <div class="cornerTL"></div>
 				        <div class="cornerTR"></div>
@@ -104,10 +104,9 @@ $(function(){
 		el.find('p').stop(true,true).hide();
 		el.find('div').stop().animate({width:60,height:60},'fast');
 	}).click(function(){
-		window.open($(this).find('a').attr('href'));
+		window.open($(this).find('a').attr('href'), "_parent");
 	});
 })
 </script>
-<!-- 代码部分end -->
 </body>
 </html>
