@@ -81,7 +81,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>productForecastPoint</servlet-name>
-    <servlet-class>tw.com.sbi.productforecastpoint.controller.productforecastpoint</servlet-class>
+    <servlet-class>tw.com.sbi.productforecastpoint.controller.ProductForecastPoint</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>productForecastPoint</servlet-name>

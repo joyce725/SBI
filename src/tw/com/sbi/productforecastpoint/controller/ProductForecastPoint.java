@@ -57,13 +57,13 @@ public class ProductForecastPoint extends HttpServlet {
 				String score_seq = request.getParameter("score_seq");
 				
 				logger.debug("action: Insert");
-				logger.debug(forecast_id);
-				logger.debug(user_id);
-				logger.debug(weight);
-				logger.debug(function_point);
-				logger.debug(nfunction_point);
-				logger.debug(service_point);
-				logger.debug(score_seq);
+				logger.debug("forecast_id:" + forecast_id);
+				logger.debug("user_id:" + user_id);
+				logger.debug("weight:" + weight);
+				logger.debug("function_point:" + function_point);
+				logger.debug("nfunction_point:" + nfunction_point);
+				logger.debug("service_point:" + service_point);
+				logger.debug("score_seq:" + score_seq);
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				productForecastPointService = new ProductForecastPointService();

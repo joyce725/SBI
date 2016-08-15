@@ -64,6 +64,27 @@ public class user extends HttpServlet {
 				e.printStackTrace();
 				return;
 			}
+		} else if ("selectAll".equals(action)) {
+			try {
+				/*************************** 1.接收請求參數 ****************************************/
+				
+				/*************************** 2.開始查詢資料 ****************************************/
+				userService = new UserService();
+				List<UserBean> list = userService.getSearchAllDB(group_id);
+				request.setAttribute("action", "searchResults");
+				request.setAttribute("list", list);
+				
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+				return; 
+
+				/*************************** 其他可能的錯誤處理 **********************************/
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
 		}
 	}
 	
@@ -72,6 +93,7 @@ public class user extends HttpServlet {
 		private String user_id;
 		private String group_id;
 		private String user_name;
+		private String email;
 		private String password;
 		private String administrator;
 		
@@ -93,6 +115,12 @@ public class user extends HttpServlet {
 		public void setUser_name(String user_name) {
 			this.user_name = user_name;
 		}
+		public String getEmail() {
+			return email;
+		}
+		public void setEmail(String email) {
+			this.email = email;
+		}
 		public String getPassword() {
 			return password;
 		}
@@ -105,8 +133,6 @@ public class user extends HttpServlet {
 		public void setAdministrator(String administrator) {
 			this.administrator = administrator;
 		}
-		
-		
 	}
 
 	/*************************** 制定規章方法 ****************************************/
@@ -129,11 +155,12 @@ public class user extends HttpServlet {
 			dao = new UserDAO();
 		}
 
-		public UserBean addUser(String group_id, String user_name, String password, String administrator) {
+		public UserBean addUser(String group_id, String user_name, String email, String password, String administrator) {
 			UserBean userBean = new UserBean();
 			
 			userBean.setGroup_id(group_id);
 			userBean.setUser_name(user_name);
+			userBean.setEmail(email);
 			userBean.setPassword(password);
 			userBean.setAdministrator(administrator);
 			
@@ -141,12 +168,13 @@ public class user extends HttpServlet {
 			return userBean;
 		}
 
-		public UserBean updateUser(String user_id, String group_id, String user_name, String administrator) {
+		public UserBean updateUser(String user_id, String group_id, String user_name, String email, String administrator) {
 			UserBean userBean = new UserBean();
 			
 			userBean.setUser_id(user_id);
 			userBean.setGroup_id(group_id);
 			userBean.setUser_name(user_name);
+			userBean.setEmail(email);
 			userBean.setAdministrator(administrator);
 			
 			dao.updateDB(userBean);
@@ -165,8 +193,8 @@ public class user extends HttpServlet {
 	/*************************** 操作資料庫 ****************************************/
 	class UserDAO implements User_interface {
 		// 會使用到的Stored procedure	
-		private static final String sp_insert_user = "call sp_insert_user(?, ?, ?, ?)";
-		private static final String sp_update_user = "call sp_update_user(?, ?, ?, ?)";
+		private static final String sp_insert_user = "call sp_insert_user(?, ?, ?, ?, ?)";
+		private static final String sp_update_user = "call sp_update_user(?, ?, ?, ?, ?)";
 		private static final String sp_del_user = "call sp_del_user(?, ?)";
 		private static final String sp_selectall_user = "call sp_selectall_user(?)";
 
@@ -184,16 +212,17 @@ public class user extends HttpServlet {
 
 				pstmt.setString(1, userBean.getGroup_id());
 				pstmt.setString(2, userBean.getUser_name());
-				pstmt.setString(3, userBean.getPassword());
-				pstmt.setString(4, userBean.getAdministrator());
+				pstmt.setString(3, userBean.getEmail());
+				pstmt.setString(4, userBean.getPassword());
+				pstmt.setString(5, userBean.getAdministrator());
 				
 				pstmt.executeUpdate();
 
-				// Handle any SQL errors
 			} catch (SQLException se) {
+				// Handle any SQL errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
-				// Clean up JDBC resources
 			} finally {
+				// Clean up JDBC resources
 				if (pstmt != null) {
 					try {
 						pstmt.close();
@@ -213,7 +242,6 @@ public class user extends HttpServlet {
 
 		@Override
 		public void updateDB(UserBean userBean) {
-			// TODO Auto-generated method stub
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			try {
@@ -224,20 +252,22 @@ public class user extends HttpServlet {
 				logger.trace("1:" + userBean.getUser_id());
 				logger.trace("2:" + userBean.getGroup_id());
 				logger.trace("3:" + userBean.getUser_name());
-				logger.trace("4:" + userBean.getAdministrator());
+				logger.trace("4:" + userBean.getEmail());
+				logger.trace("5:" + userBean.getAdministrator());
 				
 				pstmt.setString(1, userBean.getUser_id());
 				pstmt.setString(2, userBean.getGroup_id());
 				pstmt.setString(3, userBean.getUser_name());
-				pstmt.setString(4, userBean.getAdministrator());
+				pstmt.setString(4, userBean.getEmail());
+				pstmt.setString(5, userBean.getAdministrator());
 				
 				pstmt.executeUpdate();
-
-				// Handle any SQL errors
+				
 			} catch (SQLException se) {
+				// Handle any SQL errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
-				// Clean up JDBC resources
 			} finally {
+				// Clean up JDBC resources
 				if (pstmt != null) {
 					try {
 						pstmt.close();
@@ -257,7 +287,6 @@ public class user extends HttpServlet {
 
 		@Override
 		public void deleteDB(String user_id,String operation) {
-			// TODO Auto-generated method stub
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			try {
@@ -267,12 +296,12 @@ public class user extends HttpServlet {
 				pstmt.setString(2, operation);
 
 				pstmt.executeUpdate();
-
-				// Handle any SQL errors
+				
 			} catch (SQLException se) {
+				// Handle any SQL errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
-				// Clean up JDBC resources
 			} finally {
+				// Clean up JDBC resources
 				if (pstmt != null) {
 					try {
 						pstmt.close();
@@ -291,7 +320,6 @@ public class user extends HttpServlet {
 		}
 		@Override
 		public List<UserBean> searchAllDB(String group_id) {
-			// TODO Auto-generated method stub
 			List<UserBean> list = new ArrayList<UserBean>();
 			UserBean userBean = null;
 
@@ -310,20 +338,21 @@ public class user extends HttpServlet {
 					userBean.setUser_id(rs.getString("user_id"));
 					userBean.setGroup_id(rs.getString("group_id"));
 					userBean.setUser_name(rs.getString("user_name"));
-//					userBean.setRole(rs.getString("role"));
-//					userBean.setEmail(rs.getString("email"));
+					userBean.setEmail(rs.getString("email"));
 					userBean.setPassword(rs.getString("password"));
+					userBean.setAdministrator(rs.getString("administrator"));
 					list.add(userBean);
 				}
 
-				// Handle any driver errors
+				
 			} catch (SQLException se) {
+				// Handle any SQL errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
-				// Clean up JDBC resources
 			} catch (ClassNotFoundException cnfe) {
-				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
-				// Clean up JDBC resources
+				// Handle ClassNotFoundException errors
+				throw new RuntimeException("A ClassNotFoundException error occured. " + cnfe.getMessage());
 			} finally {
+				// Clean up JDBC resources
 				if (rs != null) {
 					try {
 						rs.close();

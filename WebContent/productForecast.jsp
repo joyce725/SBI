@@ -6,269 +6,543 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF8">
 
 <link rel="Shortcut Icon" type="image/x-icon" href="./images/Rockettheme-Ecommerce-Shop.ico" />
-<link rel="stylesheet" href="css/styles.css" />
-<link href="<c:url value="css/css.css" />" rel="stylesheet">
-<link href="<c:url value="css/jquery.dataTables.min.css" />" rel="stylesheet">
-<link href="<c:url value="css/1.11.4/jquery-ui.css" />" rel="stylesheet">
-<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
-<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
+<link rel="stylesheet" href="css/styles-cdri.css" />
+<link href="css/jquery-ui-1.12.0/jquery-ui.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="css/jquery-ui-1.12.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 
 <%
 	String group_id = (String) session.getAttribute("group_id");
-	String user_id = (String) session.getAttribute("user_id"); 
+	String user_id = (String) session.getAttribute("user_id");
 %>
 <title>新產品風向預測</title>
 
 <script>
 	$(function() {
+		var user_count = 0;
 		
-				
+		$( document ).ready(function() {
+			mainLoad();
+		});
+		
+		$("#create").click(function() {
+
+		    $("#divMain").hide();
+		    $("#div1").show();
+			$("#div2").hide();
+			$("#div3").hide();
+		});
+		
 		$("#next1").click(function() {
+
+			if ( !$(".customDiv1").valid() ) {
+				return;
+			}
+			
 			var func_no = $("#function_no").val(),
 				nfunc_no = $("#nfunction_no").val(),
 				serv_no = $("#service_no").val();
 			
 			for (var i = 1; i <= func_no; i++) {
 				$("#function").append('<tr><td><input type="text" id="function_name-' + i + '" name="function_name-' + i + '"></td>' + 
-						'<td><input type="text" id="function_score-' + i + '" name="function_score-' + i + '"></td></tr>');
+						'<td><input type="text" id="function_score-' + i + '" name="function_score-' + i + '" value="0"></td></tr>');
 			}
 			
 			for (var j = 1; j <= nfunc_no; j++) {
 				$("#nfunction").append('<tr><td><input type="text" id="nfunction_name-' + j + '" name="nfunction_name-' + j + '"></td>' + 
-						'<td><input type="text" id="nfunction_score-' + j + '" name="nfunction_score-' + j + '"></td></tr>');
+						'<td><input type="text" id="nfunction_score-' + j + '" name="nfunction_score-' + j + '" value="0"></td></tr>');
 			}
 			
 			for (var k = 1; k <= serv_no; k++) {
 				$("#service").append('<tr><td><input type="text" id="service_name-' + k + '" name="service_name-' + k + '"></td>' + 
-						'<td><input type="text" id="service_score-' + k + '" name="service_score-' + k + '"></td></tr>');
+						'<td><input type="text" id="service_score-' + k + '" name="service_score-' + k + '" value="0"></td></tr>');
 			}
 			
+			//register event
+			$( "[name^=function_score-]" ).blur(function() {
+				checkDiv2("gt");
+			});
+			
+			$( "[name^=nfunction_score-]" ).blur(function() {
+				checkDiv2("gt");
+			});
+			
+			$( "[name^=service_score-]" ).blur(function() {
+				checkDiv2("gt");
+			});
+			
+			//========== validate rules (dynamic) ==========
+			$( ".customDiv2" ).validate();
+			
+			$("[name^=function_name-]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});
+			$("[name^=function_score-]").each(function(){
+				$(this).rules("add", {
+				  	required: true,
+					digits: true
+				});
+		   	});
+			
+			$("[name^=nfunction_name-]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});   
+		   	});
+			$("[name^=nfunction_score-]").each(function(){
+				$(this).rules("add", {
+				  	required: true,
+					digits: true
+				});
+		   	});
+			
+			$("[name^=service_name-]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});   
+		   	});
+			$("[name^=service_score-]").each(function(){
+				$(this).rules("add", {
+				  	required: true,
+					digits: true
+				});
+		   	});
+			
+			$("#divMain").hide();
 			$("#div1").hide();
 			$("#div2").show();
 			$("#div3").hide();
 		});
 		
 		$("#next2").click(function() {
-			$.ajax({
-				type : "POST",
-				url : "user.do",
-				data : {
-					action : "search",
-					user_name : ''
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					var str="";
-
-					$.each(json_obj,function(i, item) {
 						
-						$("#point").append('<tr><td><label>' + json_obj[i].user_name + '</label></td>' + 
-								'<td><input type="text" id="weight-' + i + '" name="weight-' + i + '"></td>' + 
-								'<td><input type="text" id="user-' + i + '" name="user-' + i + '" value="' + json_obj[i].user_id + '"></td></tr>');
-							
-					});
-
-					$("#div1").hide();
-					$("#div2").hide();
-					$("#div3").show();
-				}
-			});
+			if ( !$(".customDiv2").valid() ) {
+				return;
+			}
 			
-			$("#confirm").click(function() {
-				
-				var func_no = $("#function_no").val(),
-				nfunc_no = $("#nfunction_no").val(),
-				serv_no = $("#service_no").val(),
-				func_name_list = "", nfunc_name_list = "", service_name_list = "",
-				func_score_list = "", nfunc_score_list = "", service_score_list = "";
-			
-				for (var i = 1; i <= func_no; i++) {
-					func_name_list = func_name_list + $("#function_name-" + i).val() + ',';
-					func_score_list = func_score_list + $("#function_score-" + i).val() + ',';
-				}
-
-				func_name_list = func_name_list.substr(0, func_name_list.length - 1);
-				func_score_list = func_score_list.substr(0, func_score_list.length - 1);
-				
-				for (var j = 1; j <= nfunc_no; j++) {
-					nfunc_name_list = nfunc_name_list + $("#nfunction_name-" + j).val() + ',';
-					nfunc_score_list = nfunc_score_list + $("#nfunction_score-" + j).val() + ',';
-				}
-
-				nfunc_name_list = nfunc_name_list.substr(0, nfunc_name_list.length - 1);
-				nfunc_score_list = nfunc_score_list.substr(0, nfunc_score_list.length - 1);
-				
-				for (var k = 1; k <= serv_no; k++) {
-					service_name_list = service_name_list + $("#service_name-" + k).val() + ',';
-					service_score_list = service_score_list + $("#service_score-" + k).val() + ',';
-				}
-				
-				service_name_list = service_name_list.substr(0, service_name_list.length - 1);
-				service_score_list = service_score_list.substr(0, service_score_list.length - 1);
-				
+			if ( checkDiv2("eq") ) {
 				$.ajax({
 					type : "POST",
-					url : "productForecast.do",
+					url : "user.do",
 					data : {
-						action : "insert",
-						group_id : '<%=group_id%>',
-						product_name : $("#product_name").val(),
-						cost : $("#cost").val(),
-						function_no : $("#function_no").val(),
-						function_name : func_name_list,
-						function_score : func_score_list,
-						nfunction_no : $("#nfunction_no").val(),
-						nfunction_name : nfunc_name_list,
-						nfunction_score : nfunc_score_list,
-						service_no : $("#service_no").val(),
-						service_name : service_name_list,
-						service_score : service_score_list,
-						score_time : $("#score_time").val(),
-						result : $("#result").val(),
-						isfinish : 0
+						action : "selectAll"
 					},
 					success : function(result) {
 						var json_obj = $.parseJSON(result);
-						var len=json_obj.length;
-						console.log(json_obj);
-						point(json_obj);
+						var result_table = "";
+						var str = "";
+						
+						user_count = json_obj.length;
+						
+						$.each(json_obj, function(i, item) {
+							
+							$("#point").append('<tr><td><label>' + json_obj[i].user_name + '</label></td>' + 
+									'<td><input type="text" id="weight-' + i + '" name="weight-' + i + '"></td>' + 
+									'<td><input type="hidden" id="user-' + i + '" name="user-' + i + '" value="' + json_obj[i].user_id + '"></td></tr>');
+								
+						});
+						
+						//========== validate rules (dynamic) ==========
+						$( ".customDiv3" ).validate();
+						
+						$("[name^=weight-]").each(function(){
+							$(this).rules("add", {
+							  	required: true,
+								digits: true,
+								max: 5,
+								min: 1
+							});
+					   	});
+
+						$("#divMain").hide();
+						$("#div1").hide();
+						$("#div2").hide();
+						$("#div3").show();
 					}
 				});
+			}
+		});
+		
+		$("#confirm").click(function() {
+			
+			if ( !$(".customDiv3").valid() ) {
+				return;
+			}
+			
+			var 
+			cost = $("#cost").val(),
+			temp = '',
+			func_no = $("#function_no").val(),
+			nfunc_no = $("#nfunction_no").val(),
+			serv_no = $("#service_no").val(),
+			func_name_list = "", nfunc_name_list = "", service_name_list = "",
+			func_score_list = "", nfunc_score_list = "", service_score_list = "";
+		
+			for (var i = 1; i <= func_no; i++) {
+				func_name_list = func_name_list + $("#function_name-" + i).val() + ',';
 				
-				$("#div1").show();
-				$("#div2").show();
-				$("#div3").show();
+				temp = $("#function_score-" + i).val() / cost * 100;
+				
+				func_score_list = func_score_list + roundDecimal(temp, 2) + ',';
+			}
+
+			func_name_list = func_name_list.substr(0, func_name_list.length - 1);
+			func_score_list = func_score_list.substr(0, func_score_list.length - 1);
+			
+			for (var j = 1; j <= nfunc_no; j++) {
+				nfunc_name_list = nfunc_name_list + $("#nfunction_name-" + j).val() + ',';
+				
+				temp = $("#nfunction_score-" + j).val() / cost * 100;
+				
+				nfunc_score_list = nfunc_score_list + + roundDecimal(temp, 2) + ',';
+			}
+
+			nfunc_name_list = nfunc_name_list.substr(0, nfunc_name_list.length - 1);
+			nfunc_score_list = nfunc_score_list.substr(0, nfunc_score_list.length - 1);
+			
+			for (var k = 1; k <= serv_no; k++) {
+				service_name_list = service_name_list + $("#service_name-" + k).val() + ',';
+				
+				temp = $("#service_score-" + k).val() / cost * 100;
+				
+				service_score_list = service_score_list + + roundDecimal(temp, 2) + ',';
+			}
+			
+			service_name_list = service_name_list.substr(0, service_name_list.length - 1);
+			service_score_list = service_score_list.substr(0, service_score_list.length - 1);
+			
+			$.ajax({
+				type : "POST",
+				url : "productForecast.do",
+				data : {
+					action : "insert",
+					group_id : '<%=group_id%>',
+					product_name : $("#product_name").val(),
+					cost : $("#cost").val(),
+					function_no : $("#function_no").val(),
+					function_name : func_name_list,
+					function_score : func_score_list,
+					nfunction_no : $("#nfunction_no").val(),
+					nfunction_name : nfunc_name_list,
+					nfunction_score : nfunc_score_list,
+					service_no : $("#service_no").val(),
+					service_name : service_name_list,
+					service_score : service_score_list,
+					score_time : $("#score_time").val(),
+					result : $("#result").val(),
+					isfinish : 0
+				},
+				success : function(result) {
+					var json_obj = $.parseJSON(result);
+					var len=json_obj.length;
+
+					point(json_obj);
+				}
 			});
 			
 		});
 		
 		function point(productForecast) {
+			var user = "", weight = "";
+			
+			for (var i = 0; i < user_count; i++) {
+				user = $("#user-" + i).val();
+				weight = $("#weight-" + i).val();
+				
+				$.ajax({
+					type : "POST",
+					url : "productForecastPoint.do",
+					data : {
+						action : "insert",
+						forecast_id : productForecast[0].forecast_id,
+						user_id : user,
+						weight : weight,
+						function_point : '',
+						nfunction_point : '',
+						service_point : '',
+						score_seq : ''
+					},
+					success : function(result) {
+						var json_obj = $.parseJSON(result);
+						var len=json_obj.length;
+						
+						$( ":input" ).val('');
+						$("#function").html('');
+						$("#nfunction").html('');
+						$("#service").html('');
+						$("#point").html('');
+					}
+				});
+			}
+			
+			mainLoad();
+			
+			$("#divMain").show();
+			$("#div1").hide();
+			$("#div2").hide();
+			$("#div3").hide();
+		}
+		
+		function validateDecimal(value)    {
+		    var RE = /^\d(\.\d{1})?\d{0}$/;
+		    if(RE.test(value)){
+		       return true;
+		    }else{
+		       return false;
+		    }
+		}
+		
+		function roundDecimal(val, precision) {
+  			return Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) / Math.pow(10, (precision || 0));
+		}
+		
+		function mainLoad() {
+			
+			$("#main").html('');
+			
 			$.ajax({
 				type : "POST",
-				url : "productForecastPoint.do",
+				url : "productForecast.do",
 				data : {
-					action : "insert",
-					forecast_id : productForecast.forecast_id,
-					user_id : '<%=user_id%>',
-					weight : $("#weight").val(),
-					function_point : $("#function_point").val(),
-					nfunction_point : $("#nfunction_point").val(),
-					service_point : $("#service_point").val(),
-					score_seq : $("#score_seq").val()
+					action : "selectByGroupId",
+					group_id : '<%=group_id%>'
 				},
 				success : function(result) {
 					var json_obj = $.parseJSON(result);
-					var len=json_obj.length;
+					
+					$.each(json_obj, function(i, item) {
+						$("#main").append('<tr><td><label>' + json_obj[i].product_name + '</label></td>' +
+							'<td><label>' + json_obj[i].cost + '</label></td>' + 
+							'<td><label>' + json_obj[i].function_no + '</label></td>' +
+							'<td><label>' + json_obj[i].function_name + '</label></td>' +
+							'<td><label>' + json_obj[i].function_score + '</label></td>' +
+							'<td><label>' + json_obj[i].nfunction_no + '</label></td>' +
+							'<td><label>' + json_obj[i].nfunction_name + '</label></td>' +
+							'<td><label>' + json_obj[i].nfunction_score + '</label></td>' +
+							'<td><label>' + json_obj[i].service_no + '</label></td>' +
+							'<td><label>' + json_obj[i].service_name + '</label></td>' +
+							'<td><label>' + json_obj[i].service_score + '</label></td>' +
+							'</tr>');
+					});
 				}
 			});
 		}
 		
+		function checkDiv2(type) {
+			var sum = 0,
+			cost = $("#cost").val(),
+			func_no = $("#function_no").val(),
+			nfunc_no = $("#nfunction_no").val(),
+			serv_no = $("#service_no").val();
+				
+			for (var i = 1; i <= func_no; i++) {
+				sum = sum + parseInt( $("#function_score-" + i).val() );
+			}
+
+			for (var j = 1; j <= nfunc_no; j++) {
+				sum = sum + parseInt( $("#nfunction_score-" + j).val() );
+			}
+
+			for (var k = 1; k <= serv_no; k++) {
+				sum = sum + parseInt( $("#service_score-" + k).val() );
+			}
+			
+			if ((type == "eq" && cost != sum) || (type == "gt" && sum > cost)) {
+				
+				$("#productAlert").html("您輸入的成本總和與總成本不符，請重新輸入。" + "總成本為 " + cost + " ，成本總和為 " + sum + " 。");
+				
+				$("#productAlert").dialog({
+					title: "警告",
+					draggable : true,
+					resizable : false, //防止縮放
+					autoOpen : false,
+					height : "auto",
+					modal : true,
+					buttons : {
+						"確認" : function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+					
+				$("#productAlert").dialog("open");
+					
+				return false;
+			}
+			
+			return true;
+		}
+		
+		//========== validate rules ==========
+		$( ".customDiv1" ).validate({
+			rules: {
+				product_name: {
+					required: true
+				},
+				cost: {
+					required: true,
+					digits: true
+				},
+				function_no: {
+					required: true,
+					digits: true
+				},
+				nfunction_no: {
+					required: true,
+					digits: true
+				},
+				service_no: {
+					required: true,
+					digits: true
+				}
+			}
+		});
 	});
 </script>
 </head>
 <body>
-	<div id="div1">
-		<h2>新產品風向預測</h2>
-		
-		<table>
-			<tr>
-				<td>
-					<label>產品名稱</label>
-					<input type="text" id="product_name" name="product_name" placeholder="輸入產品名稱">
-				</td>
-				<td>
-					<label>總成本</label>
-					<input type="text" id="cost" name="cost" placeholder="輸入總成本">
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					<label>功能性項目</label>
-				</td>
-				<td>
-					共<input type="text" id="function_no" name="function_no">項 
-				</td>
-				
-			</tr>
-			
-			<tr>
-				<td>
-					<label>非功能性項目</label>
-				</td>
-				<td>
-					共<input type="text" id="nfunction_no" name="nfunction_no">項
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					<label>服務性項目</label>
-				</td>
-				<td>
-					共<input type="text" id="service_no" name="service_no">項
-				</td>
-			</tr>
-		</table>
-		
-		<button id="next1">下一步</button>	
+	<div id="productAlert"></div>
+
+	<div id="divMain" class="panelWrap expand">
+		<div class="panel-title">
+			<h2>新產品風向預測</h2>
+		</div>
+
+		<form class="customDiv1">
+			<table id="main" class="formTable">
+				<tr>
+					<td><label>產品名稱</label></td>
+					<td><label>總成本</label></td>
+					<td><label>功能性項目</label></td>
+					<td><label>名稱</label></td>
+					<td><label>比重</label></td>
+					<td><label>非功能性項目</label></td>
+					<td><label>名稱</label></td>
+					<td><label>比重</label></td>
+					<td><label>服務性項目</label></td>
+					<td><label>名稱</label></td>
+					<td><label>比重</label></td>
+				</tr>
+			</table>
+		</form>
+
+		<div class="btn-control aCenter">
+			<button id="create" class="btn btn-primary btn-lg">建立量表</button>
+		</div>
 	</div>
-	
-	<div id="div2" hidden="true">
-		<h2>新產品風向預測</h2>
-		
-		<table id="function">
-			<tr>
-				<th colspan="2">功能性項目</th>
-		 	</tr>
-			<tr>
-				<th>名稱</th>
-				<th>比重(成本)</th>
-		 	</tr>	
-		</table>
-		
-		<table id="nfunction">
-			<tr>
-				<th colspan="2">非功能性項目</th>
-		 	</tr>
-			<tr>
-				<th>名稱</th>
-				<th>比重(成本)</th>
-		 	</tr>	
-		</table>
-		
-		<table id="service">
-			<tr>
-				<th colspan="2">服務性項目</th>
-		 	</tr>
-			<tr>
-				<th>名稱</th>
-				<th>比重(成本)</th>
-		 	</tr>	
-		</table>
-		
-		<button id="next2">下一步</button>
+
+	<div id="div1" class="panelWrap expand" hidden="true">
+		<div class="panel-title">
+			<h2>新產品風向預測</h2>
+		</div>
+
+		<form class="customDiv1">
+			<table class="formTable">
+				<tr>
+					<td><label>產品名稱</label></td>
+					<td><input type="text" id="product_name" name="product_name"
+						placeholder="輸入產品名稱"></td>
+					<td><label>總成本</label></td>
+					<td><input type="text" id="cost" name="cost"
+						placeholder="輸入總成本"></td>
+				</tr>
+
+				<tr>
+					<td><label>功能性項目</label></td>
+					<td align="right">共計</td>
+					<td><input type="text" id="function_no" name="function_no">
+					</td>
+					<td align="left">項</td>
+				</tr>
+
+				<tr>
+					<td><label>非功能性項目</label></td>
+					<td align="right">共計</td>
+					<td><input type="text" id="nfunction_no" name="nfunction_no">
+					</td>
+					<td align="left">項</td>
+				</tr>
+
+				<tr>
+					<td><label>服務性項目</label></td>
+					<td align="right">共計</td>
+					<td><input type="text" id="service_no" name="service_no">
+					</td>
+					<td align="left">項</td>
+				</tr>
+			</table>
+		</form>
+
+		<div class="btn-control aCenter">
+			<button id="next1" class="btn btn-primary btn-lg">下一步</button>
+		</div>
 	</div>
-	
-	<div id="div3" hidden="true">
-		<table id="point">
-			<tr>
-				<th colspan="3">受測者權重設定</th>
-		 	</tr>
-		 	<tr>
-				<th>使用者名稱</th>
-				<th>權重</th>
-				<th>userid</th>
-		 	</tr>
-		</table>
-		
-		<button id="confirm">建立量表</button>
+
+	<div id="div2" class="panelWrap expand" hidden="true">
+		<form class="customDiv2">
+			<table id="function" class="formTable">
+				<div class="panel-title">
+					<h2>功能性項目</h2>
+				</div>
+				<tr>
+					<th>名稱</th>
+					<th>比重(成本)</th>
+				</tr>
+			</table>
+
+			<div class="panel-title">
+				<h2>非功能性項目</h2>
+			</div>
+
+			<table id="nfunction" class="formTable">
+				<tr>
+					<th>名稱</th>
+					<th>比重(成本)</th>
+				</tr>
+			</table>
+
+			<div class="panel-title">
+				<h2>服務性項目</h2>
+			</div>
+
+			<table id="service" class="formTable">
+				<tr>
+					<th>名稱</th>
+					<th>比重(成本)</th>
+				</tr>
+			</table>
+		</form>
+
+		<div class="btn-control aCenter">
+			<button id="next2" class="btn btn-primary btn-lg">下一步</button>
+		</div>
 	</div>
+
+	<div id="div3" class="panelWrap expand" hidden="true">
+		<div class="panel-title">
+			<h2>受測者權重設定</h2>
+		</div>
+
+		<form class="customDiv3">
+			<table id="point" class="formTable">
+				<tr>
+					<th>使用者名稱</th>
+					<th>權重</th>
+					<th hidden="true">userid</th>
+				</tr>
+			</table>
+		</form>
+
+		<div class="btn-control aCenter">
+			<button id="confirm" class="btn btn-primary btn-lg">建立量表</button>
+		</div>
+	</div>
+
+
 </body>
 </html>

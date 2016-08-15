@@ -35,9 +35,7 @@ public class login extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		logger.trace("Trace Entering application.");
-		logger.info("Info Entering application.");
-		
+		logger.debug("user login");
 		
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
@@ -45,12 +43,15 @@ public class login extends HttpServlet {
 		String action = request.getParameter("action");
 		HttpSession session = request.getSession(true);
 		LoginVO message = null;
-		LoginService loginService = null;
+		ProductForecastService ProductForecastService = null;
 		Gson gson = null;
 
 		if ("login".equals(action)) {
 			String username = request.getParameter("user_name");
 			String password = request.getParameter("pswd");
+			
+			logger.debug("user name:" + username);
+			
 //			// 获取验证码
 //			String validateCode = request.getParameter("validateCode").trim();
 //			Object checkcode = session.getAttribute("checkcode");
@@ -63,14 +64,21 @@ public class login extends HttpServlet {
 //				return;
 //			}
 //			if (checkcode.equals(convertToCapitalString(validateCode))) {
-				loginService = new LoginService();
-				List<LoginVO> list = loginService.selectlogin(username, password);
+				ProductForecastService = new ProductForecastService();
+				List<LoginVO> list = ProductForecastService.selectlogin(username, password);
 				if (list.size() != 0) {
 					// HttpSession session = request.getSession();
 					session.setAttribute("sessionID", session.getId());
 					session.setAttribute("user_id", list.get(0).getUser_id());
 					session.setAttribute("group_id", list.get(0).getGroup_id());
 					session.setAttribute("user_name", list.get(0).getUser_name());
+					
+					logger.debug("login parameter");
+					logger.debug("sessionID:" + session.getId());
+					logger.debug("user_id:" + list.get(0).getUser_id());
+					logger.debug("group_id:" + list.get(0).getGroup_id());
+					logger.debug("user_name:" + list.get(0).getUser_name());
+					
 					message = new LoginVO();
 					message.setMessage("success");
 				} else {
@@ -84,15 +92,15 @@ public class login extends HttpServlet {
 		}
 		if ("check_user_exist".equals(action)) {
 			String username = request.getParameter("user_name");
-			loginService = new LoginService();
-			if(!loginService.checkuser(username)){
+			ProductForecastService = new ProductForecastService();
+			if(!ProductForecastService.checkuser(username)){
 				message = new LoginVO();
 				message.setMessage("user_failure");
 				gson = new Gson();
 				String jsonStrList = gson.toJson(message);
 				response.getWriter().write(jsonStrList);
 			}
-			if(loginService.checkuser(username)){
+			if(ProductForecastService.checkuser(username)){
 				message = new LoginVO();
 				message.setMessage("success");
 				gson = new Gson();
@@ -204,10 +212,10 @@ public class login extends HttpServlet {
 	}
 
 	/*************************** 處理業務邏輯 ****************************************/
-	public class LoginService {
+	public class ProductForecastService {
 		private login_interface dao;
 
-		public LoginService() {
+		public ProductForecastService() {
 			dao = new loginDAO();
 		}
 
@@ -225,8 +233,8 @@ public class login extends HttpServlet {
 		// 會使用到的Stored procedure
 		private static final String sp_login = "call sp_login(?,?)";
 		private static final String sp_checkuser = "call sp_checkuser(?,?)";
-		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL")
-				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL");
+//				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 
@@ -284,6 +292,10 @@ public class login extends HttpServlet {
 			CallableStatement cs = null;
 			Boolean rs = null;
 			try {
+				logger.debug("dbURL:" + dbURL);
+				logger.debug("dbUserName:" + dbUserName);
+				logger.debug("dbPassword:" + dbPassword);
+				
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				cs = con.prepareCall(sp_checkuser);

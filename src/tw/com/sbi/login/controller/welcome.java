@@ -1,44 +1,39 @@
 
 package tw.com.sbi.login.controller;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
-import com.google.gson.Gson;
-import java.util.Date; 
-import java.text.SimpleDateFormat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 @SuppressWarnings("serial")
 
 public class welcome extends HttpServlet {
-
+	
+	private static final Logger logger = LogManager.getLogger(welcome.class);
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doPost(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		if(request.getSession().getAttribute("group_id")==null){System.out.println("no_session");return;}
+		
+		if(request.getSession().getAttribute("group_id")==null){
+			logger.trace("no_session");
+			return;
+		}
+		
 		int sale_data=0,ship_data=0;
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
@@ -51,7 +46,7 @@ public class welcome extends HttpServlet {
 	//		time1=(time1.length()<3)?"1999/12/31":time1;
 	//		String time2 = request.getParameter("time2");
 	//		time2=(time2.length()<3)?"2300/12/31":time2;
-	//		//System.out.println("from "+time1+" to "+time2);
+
 			//###########################################
 			String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL");
 			String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
@@ -87,7 +82,9 @@ public class welcome extends HttpServlet {
 				String tmp= "{\"ship_data\": [" + ship_data + "] , \"sale_data\": ["+sale_data+"] }";
 				response.getWriter().write(tmp);
 				
-			} catch (Exception se) {System.out.println("ERROR WITH: "+se);}
+			} catch (Exception se) {
+				logger.error("ERROR WITH: " + se);
+			}
 		}
 		return ;
 		
@@ -100,10 +97,12 @@ public class welcome extends HttpServlet {
 //
 //			Gson gson = new Gson();
 //			String jsonStrList = gson.toJson(list);
-//			//System.out.println("json: "+jsonStrList);
+//			//logger.trace("json: "+jsonStrList);
 //			response.getWriter().write(jsonStrList);
 //			return;
-//		} catch (Exception e) {System.out.println("Error with time parse. :"+e);}
+//		} catch (Exception e) {
+//			logger.error("Error with time parse. :"+e);
+//		}
 //		
 		
 		//###########################################
@@ -114,9 +113,7 @@ public class welcome extends HttpServlet {
 //				/*************************** 1.接收請求參數 ****************************************/
 //				String unit_name = request.getParameter("unit_name");
 //				String time1 = request.getParameter("time1");
-//				System.out.println("time1: "+time1);
 //				time1=(time1.length()<3)?"12/31/1999":time1;
-//				System.out.println("time1: "+time1);
 //				Date date1 = new SimpleDateFormat("MM/dd/yyyy").parse(time1);
 //				//java.sql.Date d= new java.sql.Date(2016,6,27);
 //				String time2 = request.getParameter("time2");
@@ -135,9 +132,7 @@ public class welcome extends HttpServlet {
 //					return;// 程式中斷
 //				}
 //				productunitService = new SalereportService();
-//				System.out.println("0000");
 //				productunitService.aaa("18f66d31-472e-11e6-806e-000c29c1d067", date1, date2);
-//				System.out.println("4444");
 //				List<SalereportVO> list = productunitService.getSearhDB(group_id, unit_name);
 //				/*************************** 3.查詢完成,準備轉交(Send the Success view) ***********/
 //				Gson gson = new Gson();
@@ -437,13 +432,15 @@ public class welcome extends HttpServlet {
 //					salereportVO.setReturn_date(rs.getDate("return_date"));
 //					list.add(salereportVO);
 //				}
-//				//System.out.println("total Data: "+k);
-//			} catch (SQLException se) {System.out.println("ERROR WITH: "+se);}
+//				//logger.trace("total Data: "+k);
+//			} catch (SQLException se) {
+//				logger.trace("ERROR WITH: "+se);
+//			}
 //			return list;
 //		}
 //		
 //		/*	public String select_date(String group_id,Date time1,Date time2) {
-//			//System.out.println("2222");
+//			//logger.trace("2222");
 //			Connection con = null;
 //			PreparedStatement pstmt = null;
 //			ResultSet rs = null;
@@ -451,8 +448,8 @@ public class welcome extends HttpServlet {
 //				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 //				pstmt = con.prepareStatement(sp_select_sale_bytranslistdate);
 //				
-//				//System.out.println(new java.sql.Date(time1.getTime()));
-//				//System.out.println(new java.sql.Date(time2.getTime()));
+//				//logger.trace(new java.sql.Date(time1.getTime()));
+//				//logger.trace(new java.sql.Date(time2.getTime()));
 //				pstmt.setString(1, group_id);
 //				pstmt.setDate(2, new java.sql.Date(time1.getTime()));
 //				pstmt.setDate(3, new java.sql.Date(time2.getTime()));
@@ -460,31 +457,33 @@ public class welcome extends HttpServlet {
 //				int k=0;
 //				while (rs.next()) {
 //					k++;
-//					System.out.println("k=="+k);
+//					logger.trace("k=="+k);
 //;sale_id"));
-//System.out.println(rs.getString("seq_no"));
-//System.out.println(rs.getString("group_id"));
-//System.out.println(rs.getString("order_no"));
-//System.out.println(rs.getString("user_id"));
-//System.out.println(rs.getString("product_id"));
-//System.out.println(rs.getString("product_name"));
-//System.out.println(rs.getString("c_product_id"));
-//System.out.println(rs.getString("customer_id"));
-//System.out.println(rs.getString("name"));
-//System.out.println(rs.getString("quantity"));
-//System.out.println(rs.getString("price"));
-//System.out.println(rs.getString("invoice"));
-//System.out.println(rs.getString("invoice_date"));
-//System.out.println(rs.getString("trans_list_date"));
-//System.out.println(rs.getString("dis_date"));
-//System.out.println(rs.getString("memo"));
-//System.out.println(rs.getString("sale_date"));
-//System.out.println(rs.getString("order_source"));
-//System.out.println("##########"+k+"###########");
+//logger.trace(rs.getString("seq_no"));
+//logger.trace(rs.getString("group_id"));
+//logger.trace(rs.getString("order_no"));
+//logger.trace(rs.getString("user_id"));
+//logger.trace(rs.getString("product_id"));
+//logger.trace(rs.getString("product_name"));
+//logger.trace(rs.getString("c_product_id"));
+//logger.trace(rs.getString("customer_id"));
+//logger.trace(rs.getString("name"));
+//logger.trace(rs.getString("quantity"));
+//logger.trace(rs.getString("price"));
+//logger.trace(rs.getString("invoice"));
+//logger.trace(rs.getString("invoice_date"));
+//logger.trace(rs.getString("trans_list_date"));
+//logger.trace(rs.getString("dis_date"));
+//logger.trace(rs.getString("memo"));
+//logger.trace(rs.getString("sale_date"));
+//logger.trace(rs.getString("order_source"));
+//logger.trace("##########"+k+"###########");
 //				}
-//				System.out.println("k=="+k);
+//				logger.trace("k=="+k);
 //				// Handle any driver errors
-//			} catch (SQLException se) {System.out.println("ERROR WITH: "+se);}
+//			} catch (SQLException se) {
+//				logger.trace("ERROR WITH: "+se);
+//			}
 //			return "";
 //		}*/
 //		/*

@@ -67,21 +67,21 @@ public class productForecast extends HttpServlet {
 				BigDecimal isfinish = new BigDecimal( request.getParameter("isfinish") );
 				
 				logger.debug("action: Insert");
-				logger.debug(group_id);
-				logger.debug(product_name);
-				logger.debug(cost);
-				logger.debug(function_no);
-				logger.debug(function_name);
-				logger.debug(function_score);
-				logger.debug(nfunction_no);
-				logger.debug(nfunction_name);
-				logger.debug(nfunction_score);
-				logger.debug(service_no);
-				logger.debug(service_name);
-				logger.debug(service_score);
-				logger.debug(score_time);
-				logger.debug(result);
-				logger.debug(isfinish);
+				logger.debug("group_id:" + group_id);
+				logger.debug("product_name:" + product_name);
+				logger.debug("cost:" + cost);
+				logger.debug("function_no:" + function_no);
+				logger.debug("function_name:" + function_name);
+				logger.debug("function_score:" + function_score);
+				logger.debug("nfunction_no:" + nfunction_no);
+				logger.debug("nfunction_name:" + nfunction_name);
+				logger.debug("nfunction_score:" + nfunction_score);
+				logger.debug("service_no:" + service_no);
+				logger.debug("service_no:" + service_name);
+				logger.debug("service_score:" + service_score);
+				logger.debug("score_time:" + score_time);
+				logger.debug("result:" + result);
+				logger.debug("isfinish:" + isfinish);
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				productForecastService = new ProductForecastService();
@@ -98,6 +98,35 @@ public class productForecast extends HttpServlet {
 				list.add(productForecastBean);
 				String jsonStrList = gson.toJson(list);
 				response.getWriter().write(jsonStrList);
+				
+				/*************************** 其他可能的錯誤處理 **********************************/
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("selectByGroupId".equals(action)) {
+			try {
+				
+				/*************************** 1.接收請求參數 **************************************/
+				String group_id = request.getParameter("group_id");
+				
+				Date score_time = null;
+				String result = null;
+				
+				logger.debug("action: selectByGroupId");
+				logger.debug("group_id:" + group_id);
+				
+				/*************************** 2.開始新增資料 ***************************************/
+				productForecastService = new ProductForecastService();
+				
+				List<ProductForecastBean> productForecastBeanList = new ArrayList<ProductForecastBean>();
+				
+				productForecastBeanList = productForecastService.selectByGroupId(group_id);
+
+				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(productForecastBeanList);
+				response.getWriter().write(jsonStrList);
+				logger.debug("productForecastBeanList:" + jsonStrList);
 				
 				/*************************** 其他可能的錯誤處理 **********************************/
 			} catch (Exception e) {
