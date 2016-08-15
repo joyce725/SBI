@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import tw.com.sbi.login.controller.login.LoginService;
+import tw.com.sbi.login.controller.login.ProductForecastService;
 import tw.com.sbi.login.controller.login.LoginVO;
 
 import com.google.gson.Gson;

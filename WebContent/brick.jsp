@@ -87,6 +87,15 @@
 				        <div class="cornerBR"></div>
 			      	</div>
 			    </li>
+			    <li>
+			      	<div class="banner"> <a href="/sbi/productForecast.jsp"> 新品預測 <img height="125" width="125" src="images/7.jpg" /> </a>
+				        <p class="companyInfo">新品預測唷</p>
+				        <div class="cornerTL"></div>
+				        <div class="cornerTR"></div>
+				        <div class="cornerBL"></div>
+				        <div class="cornerBR"></div>
+			      	</div>
+			    </li>
 		  	</ul>
 		</div>
 	</div>
