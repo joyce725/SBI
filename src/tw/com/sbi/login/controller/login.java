@@ -22,12 +22,12 @@ import org.apache.logging.log4j.LogManager;
 
 import com.google.gson.Gson;
 
-public class login extends HttpServlet {
+public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 //	private static final int WIDTH = 120; // 圖片寬度
 //	private static final int HEIGHT = 30; // 圖片高度
 	
-	private static final Logger logger = LogManager.getLogger(login.class);
+	private static final Logger logger = LogManager.getLogger(Login.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
