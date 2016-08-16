@@ -30,7 +30,7 @@ b, strong {
     font-weight: bold;
 }
 html, body {
-    font-family: Helvetica, Arial, '微軟正黑體', '新細明體', sans-serif;
+    font-family: Helvetica, Arial, '敺株�迤暺��', '�蝝唳���', sans-serif;
     font-size: 16px;
     text-rendering: optimizeLegibility;
     width: 100%;
@@ -523,7 +523,7 @@ select {
     border: 1px solid #999;
     border-radius: 0;
     font-size: 16px;
-    font-family: '微軟正黑體';
+    font-family: '敺株�迤暺��';
     padding: 2px 50px 2px 5px;
     height: 30px;
     -webkit-appearance: none;
@@ -735,9 +735,9 @@ input[type=radio]:checked + label:before {
 .ui-datepicker-prev-hover, .ui-datepicker-next-hover {
     top: 2px !important;
 }
-/*周六周日變色*/
+/*����霈*/
 .ui-datepicker-calendar thead th {
-    font-family: "微軟正黑體", sans-serif;
+    font-family: "敺株�迤暺��", sans-serif;
 }
 .ui-datepicker-calendar tr th a, .ui-datepicker-calendar tr th span, .ui-datepicker-calendar tr td a, .ui-datepicker-calendar tr td span {
     color: #555 !important;
