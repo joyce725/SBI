@@ -83,6 +83,41 @@ public class ProductForecastPoint extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("update".equals(action)) {
+			try {
+				
+				/*************************** 1.接收請求參數 **************************************/
+				String forecast_id = request.getParameter("forecast_id");
+				String user_id = request.getParameter("user_id");
+				String function_point = request.getParameter("function_point");
+				String nfunction_point = request.getParameter("nfunction_point");
+				String service_point = request.getParameter("service_point");
+				
+				logger.debug("action: Update");
+				logger.debug("forecast_id:" + forecast_id);
+				logger.debug("user_id:" + user_id);
+				logger.debug("function_point:" + function_point);
+				logger.debug("nfunction_point:" + nfunction_point);
+				logger.debug("service_point:" + service_point);
+				
+				/*************************** 2.開始新增資料 ***************************************/
+				productForecastPointService = new ProductForecastPointService();
+				productForecastPointService.updateProductForecastPoint(forecast_id, user_id, function_point, nfunction_point, service_point);
+	
+				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
+				ProductForecastPointBean productForecastPointBean = new ProductForecastPointBean();
+				productForecastPointBean.setMessage("更新成功");
+				
+				List<ProductForecastPointBean> list = new ArrayList<ProductForecastPointBean>();
+				Gson gson = new Gson();
+				list.add(productForecastPointBean);
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+				/*************************** 其他可能的錯誤處理 **********************************/
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -161,6 +196,7 @@ public class ProductForecastPoint extends HttpServlet {
 	interface productForecastPoint_interface {
 		
 		public void insertDB(ProductForecastPointBean productForecastBean);
+		public void updateDB(ProductForecastPointBean productForecastBean);
 
 	}
 	
@@ -189,6 +225,20 @@ public class ProductForecastPoint extends HttpServlet {
 		
 			return productForecastPointBean;
 		}
+
+		public ProductForecastPointBean updateProductForecastPoint(String forecast_id, String user_id, String function_point, String nfunction_point, String service_point) {
+			ProductForecastPointBean productForecastPointBean = new ProductForecastPointBean();
+			
+			productForecastPointBean.setForecast_id(forecast_id);
+			productForecastPointBean.setUser_id(user_id);
+			productForecastPointBean.setFunction_point(function_point);
+			productForecastPointBean.setNfunction_point(nfunction_point);
+			productForecastPointBean.setService_point(service_point);
+			
+			dao.updateDB(productForecastPointBean);
+		
+			return productForecastPointBean;
+		}
 	}
 
 	/*************************** 操作資料庫 ****************************************/
@@ -200,6 +250,7 @@ public class ProductForecastPoint extends HttpServlet {
 
 		// 會使用到的Stored procedure
 		private static final String sp_insert_product_forecast_point = "call sp_insert_product_forecast_point(?,?,?,?,?,?,?)";
+		private static final String sp_update_product_forecast_point = "call sp_update_product_forecast_point(?,?,?,?,?)";
 		
 		@Override
 		public void insertDB(ProductForecastPointBean productForecastPointBean) {
@@ -218,6 +269,46 @@ public class ProductForecastPoint extends HttpServlet {
 				cs.setString(5, productForecastPointBean.getNfunction_point());
 				cs.setString(6, productForecastPointBean.getService_point());
 				cs.setString(7, productForecastPointBean.getScore_seq());
+				
+				cs.execute();
+				
+			} catch (SQLException se) {
+				// Handle any SQL errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+		}
+		
+		@Override
+		public void updateDB(ProductForecastPointBean productForecastPointBean) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			try {
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				
+				CallableStatement cs = null;
+				cs = con.prepareCall(sp_update_product_forecast_point);
+
+				cs.setString(1, productForecastPointBean.getForecast_id());
+				cs.setString(2, productForecastPointBean.getUser_id());
+				cs.setString(3, productForecastPointBean.getFunction_point());
+				cs.setString(4, productForecastPointBean.getNfunction_point());
+				cs.setString(5, productForecastPointBean.getService_point());
 				
 				cs.execute();
 				

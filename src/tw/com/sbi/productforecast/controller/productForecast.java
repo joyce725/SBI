@@ -109,9 +109,6 @@ public class productForecast extends HttpServlet {
 				/*************************** 1.接收請求參數 **************************************/
 				String group_id = request.getParameter("group_id");
 				
-				Date score_time = null;
-				String result = null;
-				
 				logger.debug("action: selectByGroupId");
 				logger.debug("group_id:" + group_id);
 				
@@ -121,6 +118,32 @@ public class productForecast extends HttpServlet {
 				List<ProductForecastBean> productForecastBeanList = new ArrayList<ProductForecastBean>();
 				
 				productForecastBeanList = productForecastService.selectByGroupId(group_id);
+
+				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(productForecastBeanList);
+				response.getWriter().write(jsonStrList);
+				logger.debug("productForecastBeanList:" + jsonStrList);
+				
+				/*************************** 其他可能的錯誤處理 **********************************/
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("selectByForecastId".equals(action)) {
+			try {
+				
+				/*************************** 1.接收請求參數 **************************************/
+				String forecast_id = request.getParameter("forecast_id");
+				
+				logger.debug("action: selectByForecastId");
+				logger.debug("forecast_id:" + forecast_id);
+				
+				/*************************** 2.開始新增資料 ***************************************/
+				productForecastService = new ProductForecastService();
+				
+				List<ProductForecastBean> productForecastBeanList = new ArrayList<ProductForecastBean>();
+				
+				productForecastBeanList = productForecastService.selectByForecastId(forecast_id);
 
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				Gson gson = new Gson();
@@ -271,6 +294,8 @@ public class productForecast extends HttpServlet {
 		
 		public List<ProductForecastBean> selectByGroupId(String group_id);
 		
+		public List<ProductForecastBean> selectByForecastId(String forecast_id);
+		
 	}
 
 	/*************************** 處理業務邏輯 ****************************************/
@@ -316,7 +341,11 @@ public class productForecast extends HttpServlet {
 		public List<ProductForecastBean> selectByGroupId(String group_id) {
 			return dao.selectByGroupId(group_id);
 		}
-		
+
+		public List<ProductForecastBean> selectByForecastId(String forecast_id) {
+			return dao.selectByForecastId(forecast_id);
+		}
+				
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -329,6 +358,7 @@ public class productForecast extends HttpServlet {
 		// 會使用到的Stored procedure
 		private static final String sp_insert_product_forecast = "call sp_insert_product_forecast(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		private static final String sp_select_product_forecast_by_group_id = "call sp_select_product_forecast_by_group_id(?)";
+		private static final String sp_select_product_forecast_by_forecast_id = "call sp_select_product_forecast_by_forecast_id(?)";
 		
 		@Override
 		public String insertDB(ProductForecastBean productForecastBean) {
@@ -412,6 +442,76 @@ public class productForecast extends HttpServlet {
 				while (rs.next()) {
 					productForecastBean = new ProductForecastBean();
 					
+					productForecastBean.setForecast_id(rs.getString("forecast_id"));
+					productForecastBean.setGroup_id(rs.getString("group_id"));
+					productForecastBean.setProduct_name(rs.getString("product_name"));
+					productForecastBean.setCost( rs.getFloat("cost") );
+					productForecastBean.setFunction_no( rs.getBigDecimal("function_no") );
+					productForecastBean.setFunction_name(rs.getString("function_name"));
+					productForecastBean.setFunction_score(rs.getString("function_score"));
+					productForecastBean.setNfunction_no( rs.getBigDecimal("nfunction_no") );
+					productForecastBean.setNfunction_name(rs.getString("nfunction_name"));
+					productForecastBean.setNfunction_score(rs.getString("nfunction_score"));
+					productForecastBean.setService_no( rs.getBigDecimal("service_no") );
+					productForecastBean.setService_name(rs.getString("service_name"));
+					productForecastBean.setService_score(rs.getString("service_score"));
+					productForecastBean.setScore_time( rs.getDate("score_time") );
+					productForecastBean.setResult(rs.getString("result"));
+					productForecastBean.setIsfinish( rs.getBigDecimal("isfinish") );
+					
+					list.add(productForecastBean); // Store the row in the list
+				}
+				
+				
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+				
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}
+
+		@Override
+		public List<ProductForecastBean> selectByForecastId(String forecast_id) {
+			List<ProductForecastBean> list = new ArrayList<ProductForecastBean>();
+			ProductForecastBean productForecastBean = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(sp_select_product_forecast_by_forecast_id);
+				pstmt.setString(1, forecast_id);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					productForecastBean = new ProductForecastBean();
+					
+					productForecastBean.setForecast_id(rs.getString("forecast_id"));
 					productForecastBean.setGroup_id(rs.getString("group_id"));
 					productForecastBean.setProduct_name(rs.getString("product_name"));
 					productForecastBean.setCost( rs.getFloat("cost") );

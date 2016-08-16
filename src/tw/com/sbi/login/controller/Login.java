@@ -71,12 +71,7 @@ public class Login extends HttpServlet {
 					session.setAttribute("user_id", list.get(0).getUser_id());
 					session.setAttribute("group_id", list.get(0).getGroup_id());
 					session.setAttribute("user_name", list.get(0).getUser_name());
-					session.setAttribute("role", list.get(0).getRole());
-//				session.setAttribute("sessionID", session.getId());
-//				session.setAttribute("user_id", "28423832-6c9e-11e5-ab77-000c29c1d067");
-//				session.setAttribute("group_id", "0f74414d-538d-4a49-8d1f-7604153075d0");
-//				session.setAttribute("user_name", "Kip");
-//				session.setAttribute("role", 0);
+
 					message = new LoginVO();
 					message.setMessage("success");
 				} else {
@@ -139,7 +134,6 @@ public class Login extends HttpServlet {
 		private String user_id;
 		private String group_id;
 		private String user_name;
-		private int role;
 		private String message;// for set check message
 
 		public String getEmail() {
@@ -180,14 +174,6 @@ public class Login extends HttpServlet {
 
 		public void setUser_name(String user_name) {
 			this.user_name = user_name;
-		}
-
-		public int getRole() {
-			return role;
-		}
-
-		public void setRole(int role) {
-			this.role = role;
 		}
 
 		public String getMessage() {
@@ -257,7 +243,7 @@ public class Login extends HttpServlet {
 					LoginVO.setUser_id(rs.getString("uid"));
 					LoginVO.setGroup_id(rs.getString("gid"));
 					LoginVO.setUser_name(rs.getString("user"));
-					LoginVO.setRole(Integer.parseInt(rs.getString("role")));
+					
 //					logger.info("setUser_id: " + rs.getString("uid"));
 //					logger.info("setGroup_id: " + rs.getString("gid"));
 //					logger.info("setUser_name: " + rs.getString("user"));

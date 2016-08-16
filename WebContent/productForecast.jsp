@@ -13,6 +13,7 @@
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+<script type="text/javascript" src="js/productForecast.js"></script>
 
 <%
 	String group_id = (String) session.getAttribute("group_id");
@@ -34,6 +35,7 @@
 		    $("#div1").show();
 			$("#div2").hide();
 			$("#div3").hide();
+			$("#divTest").hide();
 		});
 		
 		$("#next1").click(function() {
@@ -117,6 +119,7 @@
 			$("#div1").hide();
 			$("#div2").show();
 			$("#div3").hide();
+			$("#divTest").hide();
 		});
 		
 		$("#next2").click(function() {
@@ -163,6 +166,7 @@
 						$("#div1").hide();
 						$("#div2").hide();
 						$("#div3").show();
+						$("#divTest").hide();
 					}
 				});
 			}
@@ -199,7 +203,7 @@
 				
 				temp = $("#nfunction_score-" + j).val() / cost * 100;
 				
-				nfunc_score_list = nfunc_score_list + + roundDecimal(temp, 2) + ',';
+				nfunc_score_list = nfunc_score_list + roundDecimal(temp, 2) + ',';
 			}
 
 			nfunc_name_list = nfunc_name_list.substr(0, nfunc_name_list.length - 1);
@@ -210,7 +214,7 @@
 				
 				temp = $("#service_score-" + k).val() / cost * 100;
 				
-				service_score_list = service_score_list + + roundDecimal(temp, 2) + ',';
+				service_score_list = service_score_list + roundDecimal(temp, 2) + ',';
 			}
 			
 			service_name_list = service_name_list.substr(0, service_name_list.length - 1);
@@ -244,7 +248,185 @@
 					point(json_obj);
 				}
 			});
+		});
+		
+		$("#create2").click(function() {
+			var isChecked = $('.maincheck').attr('checked')?true:false;
 			
+			$('#main').find('tr').each(function () {
+				var row = $(this);
+				
+				if ( row.find('input[type="checkbox"]').is(':checked') ) {
+					var forecast_id = row.find('.forecast_id_main').html();
+					
+		        	$.ajax({
+						type : "POST",
+						url : "productForecast.do",
+						data : {
+							action : "selectByForecastId",
+							forecast_id : forecast_id
+						},
+						success : function(result) {
+							var json_obj = $.parseJSON(result);
+							
+							$.each(json_obj, function(i, item) {
+								
+								$('#forecast_id_test').val(json_obj[i].forecast_id);
+								$('#user_id_test').val('<%=user_id%>');
+								
+								$("#product_name_test").html(json_obj[i].product_name);
+								
+								var function_name = json_obj[i].function_name.split(',');
+								
+								$.each( function_name, function( index, value ){
+									$("#function-test").append('<tr><td>' + value + '</td><td>' + '<input type="text" id="function-test-' + index + '" name="function-test-' + index + '">' + '</td></tr>');
+								});
+								
+								var nfunction_name = json_obj[i].nfunction_name.split(',');
+								
+								$.each( nfunction_name, function( index, value ){
+									$("#nfunction-test").append('<tr><td>' + value + '</td><td>' + '<input type="text" id="nfunction-test-' + index + '" name="nfunction-test-' + index + '">' + '</td></tr>');
+								});
+								
+								var service_name = json_obj[i].service_name.split(',');
+								
+								$.each( service_name, function( index, value ){
+									$("#service-test").append('<tr><td>' + value + '</td><td>' + '<input type="text" id="service-test-' + index + '" name="service-test-' + index + '">' + '</td></tr>');
+								});
+								
+								//========== validate rules (dynamic) ==========
+								$( ".customDivTest" ).validate();
+								
+								$("[name^=function-test-]").each(function(){
+									$(this).rules("add", {
+									  	required: true,
+		                                number: true,
+		                                max: 5,
+		                                min: 1,
+		                                customWeight: true
+									});
+							   	});
+								
+								$("[name^=nfunction-test-]").each(function(){
+									$(this).rules("add", {
+									  	required: true,
+		                                number: true,
+		                                max: 5,
+		                                min: 1,
+		                                customWeight: true
+									});
+							   	});
+
+								$("[name^=service-test-]").each(function(){
+									$(this).rules("add", {
+									  	required: true,
+		                                number: true,
+		                                max: 5,
+		                                min: 1,
+		                                customWeight: true
+									});
+							   	});
+								
+								$.validator.addMethod('customWeight',function(value, element, param) {
+	                             	var regEx = /^\d(\.\d{1})?\d{0}$/;
+	                             	
+									if(regEx.test(value)){
+										return true ;
+									} else {
+										return false ;
+									}
+
+		                           	return isValid; // return bool here if valid or not.
+		                       	}, '請輸入數值介於1~5，小數點後1位!' );
+
+								$("#divMain").hide();
+								$("#div1").hide();
+								$("#div2").hide();
+								$("#div3").hide();
+								$("#divTest").show();
+							});
+							
+							$('input.maincheck').on('change', function() {
+							    $('input.maincheck').not(this).prop('checked', false);  
+							});
+						}
+					});
+		            
+		        }
+		    });
+		});
+		
+		$("#confirmTest").click(function() {
+
+			if ( !$(".customDivTest").valid() ) {
+				return;
+			}
+			
+			var 
+			forecast_id = "", user_id = "";
+			func_point_list = "", nfunc_point_list = "", service_point_list = "";
+			
+			forecast_id = $("#forecast_id_test").val();
+			user_id	= '<%=user_id%>';
+			
+			console.log(forecast_id);
+			console.log(user_id);
+			
+			$('#function-test').find('tr').each(function () {
+				var row = $(this);
+				if ( row.find('input[type="text"]').val()  ) {
+					func_point_list = func_point_list + row.find('[name^=function-test-]').val() + ',';
+				}
+				
+			});
+			
+			func_point_list = func_point_list.substr(0, func_point_list.length - 1);
+			
+			$('#nfunction-test').find('tr').each(function () {
+				var row = $(this);
+				if ( row.find('input[type="text"]').val() ) {
+					nfunc_point_list = nfunc_point_list + row.find('[name^=nfunction-test-]').val() + ',';
+				}
+			});
+			
+			nfunc_point_list = nfunc_point_list.substr(0, nfunc_point_list.length - 1);
+			
+			$('#service-test').find('tr').each(function () {
+				var row = $(this);
+				if (  row.find('input[type="text"]').val() ) {
+					service_point_list = service_point_list + row.find('[name^=service-test-]').val() + ',';
+				}
+			});
+			
+			service_point_list = service_point_list.substr(0, service_point_list.length - 1);
+			
+			$.ajax({
+				type : "POST",
+				url : "productForecastPoint.do",
+				data : {
+					action : "update",
+					forecast_id : forecast_id,
+					user_id : user_id,
+					function_point : func_point_list,
+					nfunction_point : nfunc_point_list,
+					service_point : service_point_list
+				},
+				success : function(result) {
+					var json_obj = $.parseJSON(result);
+					var len=json_obj.length;
+					
+				}
+			});
+			
+			$("#function-test").html('');
+			$("#nfunction-test").html('');
+			$("#service-test").html('');
+			
+			$("#divMain").show();
+		    $("#div1").hide();
+			$("#div2").hide();
+			$("#div3").hide();
+			$("#divTest").hide();
 		});
 		
 		function point(productForecast) {
@@ -286,6 +468,7 @@
 			$("#div1").hide();
 			$("#div2").hide();
 			$("#div3").hide();
+			$("#divTest").hide();
 		}
 		
 		function validateDecimal(value)    {
@@ -303,7 +486,22 @@
 		
 		function mainLoad() {
 			
-			$("#main").html('');
+			$("#main").html(
+				'<tr>' + 
+					'<td><label>選擇</label></td>' +
+					'<td><label>產品名稱</label></td>' +
+					'<td><label>總成本</label></td>' + 
+					'<td><label>功能性項目</label></td>' + 
+					'<td><label>名稱</label></td>' + 
+					'<td><label>比重</label></td>' + 
+					'<td><label>非功能性項目</label></td>' + 
+					'<td><label>名稱</label></td>' + 
+					'<td><label>比重</label></td>' + 
+					'<td><label>服務性項目</label></td>' + 
+					'<td><label>名稱</label></td>' + 
+					'<td><label>比重</label></td>' + 
+				'</tr>'
+			);
 			
 			$.ajax({
 				type : "POST",
@@ -316,18 +514,24 @@
 					var json_obj = $.parseJSON(result);
 					
 					$.each(json_obj, function(i, item) {
-						$("#main").append('<tr><td><label>' + json_obj[i].product_name + '</label></td>' +
-							'<td><label>' + json_obj[i].cost + '</label></td>' + 
-							'<td><label>' + json_obj[i].function_no + '</label></td>' +
-							'<td><label>' + json_obj[i].function_name + '</label></td>' +
-							'<td><label>' + json_obj[i].function_score + '</label></td>' +
-							'<td><label>' + json_obj[i].nfunction_no + '</label></td>' +
-							'<td><label>' + json_obj[i].nfunction_name + '</label></td>' +
-							'<td><label>' + json_obj[i].nfunction_score + '</label></td>' +
-							'<td><label>' + json_obj[i].service_no + '</label></td>' +
-							'<td><label>' + json_obj[i].service_name + '</label></td>' +
-							'<td><label>' + json_obj[i].service_score + '</label></td>' +
+						$("#main").append('<tr><td><input type="checkbox" class="maincheck" /></td>' +
+							'<td class="product_name_main">' + json_obj[i].product_name + '</td>' +
+							'<td>' + json_obj[i].cost + '</td>' + 
+							'<td>' + json_obj[i].function_no + '</td>' +
+							'<td>' + json_obj[i].function_name + '</td>' +
+							'<td>' + json_obj[i].function_score + '</td>' +
+							'<td>' + json_obj[i].nfunction_no + '</td>' +
+							'<td>' + json_obj[i].nfunction_name + '</td>' +
+							'<td>' + json_obj[i].nfunction_score + '</td>' +
+							'<td>' + json_obj[i].service_no + '</td>' +
+							'<td>' + json_obj[i].service_name + '</td>' +
+							'<td>' + json_obj[i].service_score + '</td>' +
+							'<td class="forecast_id_main" hidden="true">' + json_obj[i].forecast_id + '</td>' +
 							'</tr>');
+					});
+					
+					$('input.maincheck').on('change', function() {
+					    $('input.maincheck').not(this).prop('checked', false);  
 					});
 				}
 			});
@@ -433,6 +637,7 @@
 
 		<div class="btn-control aCenter">
 			<button id="create" class="btn btn-primary btn-lg">建立量表</button>
+			<button id="create2" class="btn btn-primary btn-lg">開始評分</button>
 		</div>
 	</div>
 
@@ -542,7 +747,51 @@
 			<button id="confirm" class="btn btn-primary btn-lg">建立量表</button>
 		</div>
 	</div>
+	
+	<div id="divTest" class="panelWrap expand" hidden="true">
+		<div class="panel-title">
+			<h2 id="product_name_test"></h2>
+			<input type="hidden" id="forecast_id_test"></input>
+			<input type="hidden" id="user_id_test"></input>
+		</div>
 
+		<form class="customDivTest">
+			<table id="function-test" class="formTable">
+				<div class="panel-title">
+					<h2>功能性項目</h2>
+				</div>
+				<tr>
+					<th>名稱</th>
+					<th>分數</th>
+				</tr>
+			</table>
 
+			<div class="panel-title">
+				<h2>非功能性項目</h2>
+			</div>
+
+			<table id="nfunction-test" class="formTable">
+				<tr>
+					<th>名稱</th>
+					<th>分數</th>
+				</tr>
+			</table>
+
+			<div class="panel-title">
+				<h2>服務性項目</h2>
+			</div>
+
+			<table id="service-test" class="formTable">
+				<tr>
+					<th>名稱</th>
+					<th>分數</th>
+				</tr>
+			</table>
+		</form>
+
+		<div class="btn-control aCenter">
+			<button id="confirmTest" class="btn btn-primary btn-lg">完成</button>
+		</div>
+	</div>
 </body>
 </html>
