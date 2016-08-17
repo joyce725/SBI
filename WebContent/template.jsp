@@ -33,6 +33,9 @@ function who(){
 	case "persona.jsp":
 		return "東南亞商機定位工具";
 		break;
+	case "productForecast.jsp":
+		return "新產品風向預測";
+		break;
 	default:
 		alert("default_page;");
 		return "something_wrong?";

@@ -22,7 +22,6 @@
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 </head>
 <body>
-	<jsp:include page="template.jsp" flush="true"/>
 	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
 	<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
@@ -30,11 +29,11 @@
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
-	<div class="content-wrap" style="margin:56px 0px 28px 120px;">
 	
-    <br/>
+	<jsp:include page="template.jsp" flush="true"/>
+	<div class="content-wrap"><br/>    
 	<div>       
-		類別：&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;類別：&nbsp;&nbsp;&nbsp;
 	    <input type="radio" name="data_kind" value="sex_age" onclick="showSexAge();">性別人口統計&nbsp;&nbsp;&nbsp; 
 	    <input type="radio" name="data_kind" value="sex_age_edu" onclick="showSexAgeEdu();">年齡組與性別與教育程度人口統計&nbsp;&nbsp;&nbsp;      
 	    <input type="radio" name="data_kind" value="sex_marriage" onclick="showSexMarriage();">性別與婚姻狀況統計<br>

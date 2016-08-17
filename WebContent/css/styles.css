@@ -897,3 +897,7 @@ input[type="text"]:focus, textarea:focus { background: #d8f5fa; border: 1px soli
 .btn-red { background: #b44f00; color: #fff; font-weight: bold; }
 
 .btn-red:hover, .btn-red:focus, .btn-red:active, .btn-red.active, .btn-red.disabled { color: #ffffff; background: #e76500; }
+
+.error {
+ color: red;
+}

@@ -25,7 +25,7 @@
 		<div class="examples_body">
 		  	<ul class="bannerHolder">
 				<li>
-					<div class="banner"> <a href="marketPlace.jsp">國家/城巿商圈 <img height="125" width="125" src="images/6.jpg" /> </a>
+					<div class="banner"> <a href="marketPlace.jsp">國家/城巿商圈<img height="125" width="125" src="images/6.jpg" /> </a>
 						<p class="companyInfo">視覺化展示國家及城巿經濟人口等展店參考數據資訊</p>
 						<div class="cornerTL"></div>
 						<div class="cornerTR"></div>
@@ -34,7 +34,7 @@
 					</div>
 				</li>
 			    <li>
-			      	<div class="banner"> <a href="#"> 目標客群定位 <img height="125" width="125" src="images/2.jpg" /> </a>
+			      	<div class="banner"> <a href="#">目標客群定位<img height="125" width="125" src="images/2.jpg" /> </a>
 				        <p class="companyInfo">提供產品主要客群輪廓</p>
 				        <div class="cornerTL"></div>
 				        <div class="cornerTR"></div>
@@ -43,7 +43,7 @@
 			      	</div>
 			    </li>
 			    <li>
-			      	<div class="banner"> <a href="#"> 目標商圈定位<img height="125" width="125" src="images/5.jpg" /> </a>
+			      	<div class="banner"> <a href="#">目標商圈定位<img height="125" width="125" src="images/5.jpg" /> </a>
 			        	<p class="companyInfo">提供店址選擇建議</p>
 				        <div class="cornerTL"></div>
 				        <div class="cornerTR"></div>
@@ -61,7 +61,7 @@
 			      	</div>
 			    </li>
 			    <li>
-			      	<div class="banner"> <a href="#"> 商品通路 <img height="125" width="125" src="images/1.jpg" /> </a>
+			      	<div class="banner"> <a href="#">商品通路<img height="125" width="125" src="images/1.jpg" /> </a>
 				        <p class="companyInfo">通路選擇建議</p>
 				        <div class="cornerTL"></div>
 				        <div class="cornerTR"></div>
@@ -70,7 +70,7 @@
 			      	</div>
 			    </li>
 				<li>
-			      	<div class="banner"> <a href="finModel.jsp"> 新創公司財務損益平衡評估工具 <img height="125" width="125" src="images/3.jpg" /> </a>
+			      	<div class="banner"> <a href="finModel.jsp">新創公司財務損益平衡評估工具<img height="125" width="125" src="images/3.jpg" /> </a>
 				        <p class="companyInfo">財務健康狀況評估模擬器</p>
 				        <div class="cornerTL"></div>
 				        <div class="cornerTR"></div>
@@ -79,8 +79,17 @@
 			      	</div>
 			    </li>
 				<li>
-			      	<div class="banner"> <a href="#"> 台灣人口社經資料庫api <img height="125" width="125" src="images/7.jpg" /> </a>
+			      	<div class="banner"> <a href="population.jsp">台灣人口社經資料庫api<img height="125" width="125" src="images/7.jpg" /> </a>
 				        <p class="companyInfo">提供台灣人口社經資料及分析</p>
+				        <div class="cornerTL"></div>
+				        <div class="cornerTR"></div>
+				        <div class="cornerBL"></div>
+				        <div class="cornerBR"></div>
+			      	</div>
+			    </li>
+				<li>
+			      	<div class="banner"> <a href="productForecast.jsp">新產品風向預測<img height="125" width="125" src="images/7.jpg" /> </a>
+				        <p class="companyInfo">新產品風向預測</p>
 				        <div class="cornerTL"></div>
 				        <div class="cornerTR"></div>
 				        <div class="cornerBL"></div>

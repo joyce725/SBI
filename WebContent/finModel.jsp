@@ -110,7 +110,6 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 	
-
 <!-- /**************************************  以下共用JS區塊    *********************************************/ 	-->
 	<script>
 		$(function(){
@@ -245,7 +244,7 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 						action : "onload"
 					},
 					success : function(result) {
-//							alert("success");
+// 							alert("success");
 						var json_obj = $.parseJSON(result);
 						var result_table = "";
 						$.each(json_obj,function(i, item) {
@@ -787,9 +786,7 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 	</c:if>
 <!-- /**************************************  以上使用者JS區塊    *********************************************/	-->
 		
-
-	
-	<div class="content-wrap" style="margin:56px 0px 28px 120px;">
+	<div class="content-wrap">
 		<ul class="tab">
 			<li><a href="#" class="tablinks" onclick="openTab(event, 'finTool')">財務評估工具</a></li>
 			<li><a href="#" class="tablinks" onclick="openTab(event, 'simuGraph')">模擬圖</a></li>
@@ -930,7 +927,7 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 		
 		<c:if test="${sessionScope.role==1}">
 			<!--對話窗樣式- 建立模型 -->
-			<div id="dialog-form-create" title="建立模型">
+			<div id="dialog-form-create" title="建立模型" style="display:none">
 				<form name="create-dialog-form-post" id="create-dialog-form-post">
 					<fieldset>
 						<table style="border-collapse: separate;border-spacing: 10px 20px;">
@@ -953,7 +950,7 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 		</c:if>
 		<c:if test="${sessionScope.role==0}">
 			<!--對話窗樣式-新增 -->
-			<div id="dialog-form-insert" title="新增資料">
+			<div id="dialog-form-insert" title="新增資料" style="display:none">
 				<form name="insert-dialog-form-post" id="insert-dialog-form-post" style="display:inline">
 					<fieldset>
 						<table style="border-collapse: separate;border-spacing: 10px 20px;">
@@ -989,7 +986,7 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 			</div>	
 				
 			<!--對話窗樣式-修改 -->
-			<div id="dialog-form-update" title="修改資料" >
+			<div id="dialog-form-update" title="修改資料" style="display:none">
 				<form name="update-dialog-form-post" id="update-dialog-form-post">
 					<fieldset>
 						<table style="border-collapse: separate;border-spacing: 10px 20px;">
@@ -1025,7 +1022,7 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 			</div>	
 			
 			<!--對話窗樣式-確認 -->
-			<div id="dialog-confirm" title="確認刪除資料嗎?">
+			<div id="dialog-confirm" title="確認刪除資料嗎?" style="display:none">
 				<p>是否確認刪除該筆資料</p>
 				<input id="delete_simu_id" type="hidden">
 				<input id="delete_case_id" type="hidden">
@@ -1392,7 +1389,7 @@ function genSimuGraph(income, outlay, detailData, fincase, totalIncome, totalOut
 	            .attr("width",12)
 	            .attr("height",12)
 	            .attr("fill",function(d,i){ return lineColor[i];});
-	        legend.attr("transform","translate("+((width-lineNames.length*100)/2)+","+(height+40)+")");	
+	        legend.attr("transform","translate("+((width-lineNames.length*100)/2)+","+(height+50)+")");	
 	    }
 	}
 	openTab(event, 'simuGraph');
