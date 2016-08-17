@@ -20,9 +20,9 @@
 </head>
 <body>
 	<jsp:include page="template.jsp" flush="true"/>
-	<div class="content-wrap" style="margin:56px 0px 0px 120px;">
+	<div class="content-wrap">
 		<div>
-			<object type="text/html" data="http://61.218.8.51/SBI/user/login.aspx" width="80%" height="540px" style="overflow:auto;border:5px ridge blue">
+			<object type="text/html" data="http://61.218.8.51/SBI/user/login.aspx" style="overflow:auto;border:5px ridge blue">
 			</object>
 		</div>
 	</div>

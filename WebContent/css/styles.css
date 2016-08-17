@@ -292,77 +292,6 @@ h6 {
 .header .btn-logout:hover {
     background: #FC3E3E;
 }
-/* sidenav
----------------------------------- */
-.sidenav {
-    position: fixed;
-    top: 56px;
-    z-index: 9999;
-}
-.sidenav ul {
-    width: 120px;
-}
-.sidenav ul li {
-    display: block;
-}
-.sidenav ul li ul {
-    background: #194A6B;
-    box-shadow: 2px 1px 3px #777;
-    min-width: 200px;
-    position: absolute;
-    left: 120px;
-    top: 0;
-    min-height: 100px;
-    /*--toggle--*/
-    opacity: 0;
-    visibility: hidden;
-    transition: all .3s linear;
-}
-.sidenav ul li ul li a {
-    box-sizing: border-box;
-    color: #fff;
-    display: block;
-    font-size: 16px;
-    font-weight: 100;
-    text-align: left;
-    text-decoration: none;
-    padding: 10px 20px;
-    width: 200px;
-}
-.sidenav ul li ul li a:hover {
-    background: #3F7FAA;
-}
-.sidenav > ul {}
-.sidenav > ul > li {
-    background: #f6f6f6;
-    color: #777;
-    font-size: 14px;
-    width: 120px;
-    height: 100px;
-    text-align: center;
-    position: relative;
-}
-.sidenav > ul > li img {
-    height: 48px;
-    display: block;
-    margin: 0 auto;
-    padding: 12px 0 12px;
-}
-.sidenav > ul > li.active {
-    background-image: linear-gradient(#ddd,#eee,#d6fafb);
-    color: #333;
-}
-.sidenav > ul > li:hover {
-    background: #194A6B;
-    color: #fff;
-    transition: all .3s linear;
-}
-.sidenav > ul > li:hover ul {
-    opacity: 1;
-    visibility: visible;
-}
-/* content-wrap
----------------------------------- */
 h2.page-title {
     /*background: var(--lightBlue);*/
     background-image: linear-gradient(#eee,#62E0E9);
@@ -380,13 +309,8 @@ h2.page-title {
     background: #fff;
     float: left;
     margin:56px 0px 0px 0px;
-/*     margin-left: 120px; */
-/*     margin-top: 56px; */
-/*     padding-bottom: 60px; */
-/*     height: calc(100vh - 144px);//Ben偷改的 */
-/*     width: calc(100% - 120px); */
-    height: 90%;//Ben偷改的
-    width: 90%;
+    height: calc(100vh - 84px);
+    width: 100%;
 }
 .input-field-wrap {
     background: #62E0E9;
