@@ -14,8 +14,8 @@
 <link href="<c:url value="css/css.css" />" rel="stylesheet">
 <link href="<c:url value="css/jquery.dataTables.min.css" />" rel="stylesheet">
 <link href="<c:url value="css/1.11.4/jquery-ui.css" />" rel="stylesheet">
-<link rel="stylesheet" href="css/1.11.4/jquery-ui.css">
-<link rel="stylesheet" href="css/styles.css">
+<link href="css/1.11.4/jquery-ui.css" rel="stylesheet" >
+<link href="css/styles.css" rel="stylesheet" >
 <link rel="stylesheet" type="text/css" href="css/dynamicbrick.css" />
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <!-- css for tab -->
@@ -48,7 +48,7 @@ ul.tab li a {
 ul.tab li a:hover {background-color: #ddd;}
 
 /* Create an active/current tablink class */
-ul.tab li a:focus, .active {background-color: #ccc;}
+ul.tab li a:focus, .active {background-color: #BFE9EC;}
 
 /* Style the tab content */
 .tabcontent {
@@ -104,11 +104,13 @@ ul.tab li a:focus, .active {background-color: #ccc;}
 	<jsp:include page="template.jsp" flush="true"/>
 	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
 	<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+<!-- 	<script type="text/javascript" src="js/jquery-ui.min.js"></script> -->
 	<script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+<!--   <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 	
 <!-- /**************************************  以下共用JS區塊    *********************************************/ 	-->
 	<script>

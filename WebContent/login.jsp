@@ -186,7 +186,7 @@
 			</tr>
 			<tr>
 				<td style="font-size:20px;float:left;"align="right">
-					<p>驗證碼 :</p>
+					<p>驗證碼:</p>
                 </td>
                 <td>
 	                <input type="text" id ="validateCode"name="validateCode" placeholder="不區分大小寫)" style="width:100px;padding: 4px 5px;float:left;">

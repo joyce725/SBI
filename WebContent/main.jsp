@@ -88,7 +88,43 @@
 			      	</div>
 			    </li>
 				<li>
-			      	<div class="banner"> <a href="productForecast.jsp">新產品風向預測<img height="125" width="125" src="images/7.jpg" /> </a>
+			      	<div class="banner"> <a href="upload.jsp">產業分析基礎資料庫<img height="125" width="125" src="images/8.jpg" /> </a>
+				        <p class="companyInfo">產業分析基礎資料庫</p>
+				        <div class="cornerTL"></div>
+				        <div class="cornerTR"></div>
+				        <div class="cornerBL"></div>
+				        <div class="cornerBR"></div>
+			      	</div>
+			    </li>
+				<li>
+			      	<div class="banner"> <a href="cloudISS.jsp">服務業雲端智慧商情支援系統<img height="125" width="125" src="images/9.jpg" /> </a>
+				        <p class="companyInfo">服務業雲端智慧商情支援系統</p>
+				        <div class="cornerTL"></div>
+				        <div class="cornerTR"></div>
+				        <div class="cornerBL"></div>
+				        <div class="cornerBR"></div>
+			      	</div>
+			    </li>
+				<li>
+			      	<div class="banner"> <a href="persona.jsp">東南亞商機定位工具<img height="125" width="125" src="images/10.jpg" /> </a>
+				        <p class="companyInfo">東南亞商機定位工具</p>
+				        <div class="cornerTL"></div>
+				        <div class="cornerTR"></div>
+				        <div class="cornerBL"></div>
+				        <div class="cornerBR"></div>
+			      	</div>
+			    </li>
+				<li>
+			      	<div class="banner"> <a href="marketPlace.jsp">城市商圈<img height="125" width="125" src="images/11.jpg" /> </a>
+				        <p class="companyInfo">城市商圈</p>
+				        <div class="cornerTL"></div>
+				        <div class="cornerTR"></div>
+				        <div class="cornerBL"></div>
+				        <div class="cornerBR"></div>
+			      	</div>
+			    </li>
+				<li>
+			      	<div class="banner"> <a href="productForecast.jsp">新產品風向預測<img height="125" width="125" src="images/12.jpg" /> </a>
 				        <p class="companyInfo">新產品風向預測</p>
 				        <div class="cornerTL"></div>
 				        <div class="cornerTR"></div>

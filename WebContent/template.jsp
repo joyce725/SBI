@@ -22,7 +22,7 @@ function who(){
 		return "台灣人口社經資料庫api";
 		break;
 	case "upload.jsp":
-		return "檔案匯入";
+		return "產業分析基礎資料庫";
 		break;
 	case "cloudISS.jsp":
 		return "服務業雲端智慧商情支援系統";
@@ -37,8 +37,8 @@ function who(){
 		return "新產品風向預測";
 		break;
 	default:
-		alert("default_page;");
-		return "something_wrong?";
+		alert("default page;");
+		return "Wrong Path";
 		break;
 	}
 };
@@ -63,6 +63,9 @@ $(function() {
 			}
 		});
 	});
+	$("#back").click(function(e) {
+		top.location.href = "main.jsp";
+	});
 });
 </script>
 <div class="page-wrapper" >
@@ -70,6 +73,7 @@ $(function() {
 		<h1>SBI</h1>
 		<div class="userinfo" style="z-index:1;">
 			<p>使用者<span><%= (request.getSession().getAttribute("user_name")==null)?"@_@?":request.getSession().getAttribute("user_name").toString() %></span></p>
+			<a id="back" class="btn-back" >回首頁</a>
 			<a id="logout" class="btn-logout" >登出</a>
 		</div>
 <!-- 	<h1 class="logo">sbi Portal</h1>  -->
