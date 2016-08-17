@@ -1,3 +1,8 @@
 eclipse.preferences.version=1
+<<<<<<< HEAD
 encoding//WebContent/main.jsp=UTF-8
+=======
+encoding//WebContent/brick.jsp=UTF-8
+encoding//WebContent/css/styles.css=UTF-8
+>>>>>>> origin/master
 encoding/<project>=UTF-8

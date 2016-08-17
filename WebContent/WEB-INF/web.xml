@@ -45,6 +45,7 @@
 <!--########################以上平常#####################################-->
  
 <!--########################以下164+175#####################################-->
+<<<<<<< HEAD
   <context-param>
 	  <param-name>dbURL</param-name>
 	  <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value>
@@ -61,6 +62,24 @@
 	    <param-name>uploadpath</param-name>
 	    <param-value>/data/sbiupload</param-value>
   </context-param>
+=======
+<!--   <context-param> -->
+<!-- 	  <param-name>dbURL</param-name> -->
+<!-- 	  <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value> -->
+<!--   </context-param> -->
+<!--   <context-param> -->
+<!-- 	    <param-name>dbUserName</param-name> -->
+<!-- 	    <param-value>root</param-value> -->
+<!--   </context-param> -->
+<!--   <context-param> -->
+<!-- 	    <param-name>dbPassword</param-name> -->
+<!-- 	    <param-value>admin123</param-value> -->
+<!--   </context-param> -->
+<!--   <context-param> -->
+<!-- 	    <param-name>uploadpath</param-name> -->
+<!-- 	    <param-value>/data/sbiupload</param-value> -->
+<!--   </context-param> -->
+>>>>>>> origin/master
 <!--########################以上164+175#####################################-->
  
 <!--########################以下server##################################-->
@@ -138,7 +157,36 @@
   <servlet-mapping>
     <servlet-name>population</servlet-name>
     <url-pattern>/population.do</url-pattern>
+<<<<<<< HEAD
   </servlet-mapping>
+=======
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>user</servlet-name>
+    <servlet-class>tw.com.sbi.user.controller.user</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>user</servlet-name>
+    <url-pattern>/user.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>productForecast</servlet-name>
+    <servlet-class>tw.com.sbi.productforecast.controller.productForecast</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>productForecast</servlet-name>
+    <url-pattern>/productForecast.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>productForecastPoint</servlet-name>
+    <servlet-class>tw.com.sbi.productforecastpoint.controller.ProductForecastPoint</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>productForecastPoint</servlet-name>
+    <url-pattern>/productForecastPoint.do</url-pattern>
+  </servlet-mapping>
+
+>>>>>>> origin/master
  
 <!--   <servlet> -->
 <!--     <servlet-name>user</servlet-name> -->
