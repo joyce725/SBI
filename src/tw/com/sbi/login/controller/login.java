@@ -68,35 +68,7 @@ public class Login extends HttpServlet {
 				session.setAttribute("role", list.get(0).getRole());
 			} else {
 				message = new LoginVO();
-<<<<<<< HEAD
 				message.setMessage("failure");
-=======
-				message.setMessage("code_failure");
-				gson = new Gson();
-				String jsonStrList = gson.toJson(message);
-				response.getWriter().write(jsonStrList);
-				return;
-			}
-			if (checkcode.equals(convertToCapitalString(validateCode))) {
-				loginService = new LoginService();
-				List<LoginVO> list = loginService.selectlogin(username, password);
-				if (list.size() != 0) {
-//					 HttpSession session = request.getSession();
-					session.setAttribute("sessionID", session.getId());
-					session.setAttribute("user_id", list.get(0).getUser_id());
-					session.setAttribute("group_id", list.get(0).getGroup_id());
-					session.setAttribute("user_name", list.get(0).getUser_name());
-
-					message = new LoginVO();
-					message.setMessage("success");
-				} else {
-					message = new LoginVO();
-					message.setMessage("failure");
-				}
-				gson = new Gson();
-				String jsonStrList = gson.toJson(message);
-				response.getWriter().write(jsonStrList);
->>>>>>> origin/master
 			}
 			/*************************   分割線    ************************************/
 //			session.setAttribute("sessionID", session.getId());
@@ -189,6 +161,7 @@ public class Login extends HttpServlet {
 		private String user_id;
 		private String group_id;
 		private String user_name;
+		private int role;
 		private String message;// for set check message
 
 		public String getEmail() {
@@ -229,6 +202,14 @@ public class Login extends HttpServlet {
 
 		public void setUser_name(String user_name) {
 			this.user_name = user_name;
+		}
+
+		public int getRole() {
+			return role;
+		}
+
+		public void setRole(int role) {
+			this.role = role;
 		}
 
 		public String getMessage() {
@@ -298,7 +279,7 @@ public class Login extends HttpServlet {
 					LoginVO.setUser_id(rs.getString("uid"));
 					LoginVO.setGroup_id(rs.getString("gid"));
 					LoginVO.setUser_name(rs.getString("user"));
-					
+					LoginVO.setRole(Integer.parseInt(rs.getString("role")));
 //					logger.info("setUser_id: " + rs.getString("uid"));
 //					logger.info("setGroup_id: " + rs.getString("gid"));
 //					logger.info("setUser_name: " + rs.getString("user"));
