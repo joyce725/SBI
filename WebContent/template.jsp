@@ -12,31 +12,26 @@
 <script>
 function who(){
 	switch(location.pathname.split("/")[2]){
-//#######  動態磚  ########
-	case "brick.jsp":
-		return "動態磚";
+	case "main.jsp":
+		return "首頁";
 		break;
 	case "finModel.jsp":
 		return "新創公司財務損益平衡評估工具";
 		break;
 	case "population.jsp":
-		return "台灣人口社經資料";
+		return "台灣人口社經資料庫api";
 		break;
-//#######  服務業雲端智慧商情支援系統   #######
+	case "upload.jsp":
+		return "檔案匯入";
+		break;
 	case "cloudISS.jsp":
 		return "服務業雲端智慧商情支援系統";
 		break;
-//#######  城市商圈    #######
 	case "marketPlace.jsp":
 		return "城市商圈";
 		break;
-//#######  東南亞商機定位工具    #######
 	case "persona.jsp":
 		return "東南亞商機定位工具";
-		break;
-//######線上學院##########################
-	case "onlinecourse.jsp":
-		return "線上學院";
 		break;
 	default:
 		alert("default_page;");
@@ -89,39 +84,40 @@ $(function() {
 	</div><!-- /.header -->
 
 	<div class="sidenav" style="z-index:2;">
-		<ul>
-			<li><img src="images/sidenav-transaction.svg" alt="">動態磚
-				<ul>
-					<li><a href="brick.jsp">國家/城巿商圈</a></li>
-					<li><a href="brick.jsp">目標客群定位</a></li>
-					<li><a href="brick.jsp">目標商圈定位</a></li>
-					<li><a href="brick.jsp">競爭者定位</a></li>
-					<li><a href="brick.jsp">商品通路</a></li>
-					<li><a href="finModel.jsp">新創公司財務損益平衡評估工具</a></li>
-					<li><a href="population.jsp">台灣人口社經資料</a></li>
-				</ul>
-			</li>
-			<li class="active"><img src="images/sidenav-support.svg" alt="">服務業雲端智慧商情支援系統
-				<ul >
-					<li><a href="cloudISS.jsp">服務業雲端智慧商情支援系統</a></li>
-				</ul>
-			</li>
-			<li><img src="images/sidenav-report.svg" alt="">城市商圈
-				<ul>
-					<li><a href="marketPlace.jsp">城市商圈</a></li>
-				</ul>
-			</li>
-			<li><img src="images/sidenav-chart.svg" alt="">東南亞商機定位工具
-				<ul>
-					<li><a href="persona.jsp">東南亞商機定位工具</a></li>
-				</ul>
-			</li>
-			<li><img src="images/sidenav-school.svg" alt="">線上學院
-				<ul>
-					<li><a href="onlinecourse.jsp">線上學院</a></li>
-				</ul>
-			</li>
-		</ul>
+<!-- 		<ul> -->
+<!-- 			<li><img src="images/sidenav-transaction.svg" alt="">動態磚 -->
+<!-- 				<ul> -->
+<!-- 					<li><a href="brick.jsp">國家/城巿商圈</a></li> -->
+<!-- 					<li><a href="brick.jsp">目標客群定位</a></li> -->
+<!-- 					<li><a href="brick.jsp">目標商圈定位</a></li> -->
+<!-- 					<li><a href="brick.jsp">競爭者定位</a></li> -->
+<!-- 					<li><a href="brick.jsp">商品通路</a></li> -->
+<!-- 					<li><a href="finModel.jsp">新創公司財務損益平衡評估工具</a></li> -->
+<!-- 					<li><a href="population.jsp">台灣人口社經資料</a></li> -->
+<!-- 					<li><a href="upload.jsp">檔案匯入</a></li> -->
+<!-- 				</ul> -->
+<!-- 			</li> -->
+<!-- 			<li class="active"><img src="images/sidenav-support.svg" alt="">服務業雲端智慧商情支援系統 -->
+<!-- 				<ul > -->
+<!-- 					<li><a href="cloudISS.jsp">服務業雲端智慧商情支援系統</a></li> -->
+<!-- 				</ul> -->
+<!-- 			</li> -->
+<!-- 			<li><img src="images/sidenav-report.svg" alt="">城市商圈 -->
+<!-- 				<ul> -->
+<!-- 					<li><a href="marketPlace.jsp">城市商圈</a></li> -->
+<!-- 				</ul> -->
+<!-- 			</li> -->
+<!-- 			<li><img src="images/sidenav-chart.svg" alt="">東南亞商機定位工具 -->
+<!-- 				<ul> -->
+<!-- 					<li><a href="persona.jsp">東南亞商機定位工具</a></li> -->
+<!-- 				</ul> -->
+<!-- 			</li> -->
+<!-- 			<li><img src="images/sidenav-school.svg" alt="">線上學院 -->
+<!-- 				<ul> -->
+<!-- 					<li><a href="onlinecourse.jsp">線上學院</a></li> -->
+<!-- 				</ul> -->
+<!-- 			</li> -->
+<!-- 		</ul> -->
 	</div><!--  /.sidenav  -->
  	<h2 id="title" class="page-title" style="z-index:2">title</h2> 
 	<div class="content-wrap" style="display:none">

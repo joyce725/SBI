@@ -109,26 +109,27 @@
 					validateCode : $("input[name='validateCode'").val()
 				},
 				success : function(result) {
-					if ($('#login-form-post').valid()) {
-						var json_obj = $.parseJSON(result);
-						if (json_obj.message=="success") {
+// 					if ($('#login-form-post').valid()) {
+// 						var json_obj = $.parseJSON(result);
+// 						if (json_obj.message=="success") {
+// 							alert("success");
 							//var url="";
 							//url+=window.location.protocol+"//"+window.location.host+"/VirtualBusiness/main.jsp"
 							//window.location.href = url;
-							window.location.href = "brick.jsp";
-						} 
-						if (json_obj.message=="failure") {
-							failure_dialog.dialog("open");
-						}
-						if (json_obj.message=="code_failure") {
-							$("input").attr("value","");
-							if(!$("#code_err_mes").length){
-                				$("<p id='code_err_mes'>驗證碼錯誤</p>").appendTo($("#validateCode").parent());
-                			}else{
-                				$("#code_err_mes").html("驗證碼錯誤");
-                			}
-						}
-					}
+							window.location.href = "main.jsp";
+// 						} 
+// 						if (json_obj.message=="failure") {
+// 							failure_dialog.dialog("open");
+// 						}
+// 						if (json_obj.message=="code_failure") {
+// 							$("input").attr("value","");
+// 							if(!$("#code_err_mes").length){
+//                 				$("<p id='code_err_mes'>驗證碼錯誤</p>").appendTo($("#validateCode").parent());
+//                 			}else{
+//                 				$("#code_err_mes").html("驗證碼錯誤");
+//                 			}
+// 						}
+// 					}
 				}
 			});
 		});
@@ -172,7 +173,7 @@
 					<p>帳號:</p>
 				</td>
 				<td>
-					<input type="text" id="user_name" name="user_name" placeholder="請輸入帳號" style="width:225px;padding: 4px 5px;">
+					<input type="text" id="user_name" name="user_name" value="Kip" placeholder="請輸入帳號" style="width:225px;padding: 4px 5px;">
 				</td>
 			</tr>
 			<tr>
@@ -180,7 +181,7 @@
 					<p>密碼:</p>
 				</td>
 				<td>
-					<input type="password" id="pswd" name="pswd" placeholder="請輸入密碼" style="width:225px;padding: 4px 5px;">
+					<input type="password" id="pswd" name="pswd" value="1234" placeholder="請輸入密碼" style="width:225px;padding: 4px 5px;">
 				</td>
 			</tr>
 			<tr>

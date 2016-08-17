@@ -379,12 +379,14 @@ h2.page-title {
 .content-wrap {
     background: #fff;
     float: left;
-    margin-left: 120px;
-    margin-top: 56px;
-    padding-bottom: 60px;
-    height: calc(100vh - 144px);//Ben偷改的
-    overflow: scroll;
-    width: calc(100% - 120px);
+    margin:56px 0px 0px 0px;
+/*     margin-left: 120px; */
+/*     margin-top: 56px; */
+/*     padding-bottom: 60px; */
+/*     height: calc(100vh - 144px);//Ben偷改的 */
+/*     width: calc(100% - 120px); */
+    height: 90%;//Ben偷改的
+    width: 90%;
 }
 .input-field-wrap {
     background: #62E0E9;
@@ -454,7 +456,7 @@ h2.page-title {
 .footer {
     background: #3F7FAA;
     height: 28px;
-    text-align: right;
+    text-align: center;
     color: #fff;
     font-size: 12px;
     font-weight: bold;
