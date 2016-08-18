@@ -25,7 +25,7 @@
 		<div class="examples_body">
 		  	<ul class="bannerHolder">
 				<li>
-					<div class="banner"> <a href="marketPlace.jsp">國家/城巿商圈<img height="125" width="125" src="images/6.jpg" /> </a>
+					<div class="banner"> <a href="#">國家/城巿商圈<img height="125" width="125" src="images/6.jpg" /> </a>
 						<p class="companyInfo">視覺化展示國家及城巿經濟人口等展店參考數據資訊</p>
 						<div class="cornerTL"></div>
 						<div class="cornerTR"></div>

@@ -6,18 +6,18 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF8">
 
 <link rel="Shortcut Icon" type="image/x-icon" href="./images/Rockettheme-Ecommerce-Shop.ico" />
-<link rel="stylesheet" href="css/styles-cdri.css" />
+<link rel="stylesheet" href="css/styles.css" />
 <link href="css/jquery-ui-1.12.0/jquery-ui.css" rel="stylesheet">
 <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="css/jquery-ui-1.12.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
-<script type="text/javascript" src="js/productForecast.js"></script>
 
 <%
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
+	Integer role = (Integer) session.getAttribute("role");
 %>
 <title>新產品風向預測</title>
 
@@ -274,7 +274,7 @@
 								$('#forecast_id_test').val(json_obj[i].forecast_id);
 								$('#user_id_test').val('<%=user_id%>');
 								
-								$("#product_name_test").html(json_obj[i].product_name);
+								$("#product_name_test").html("產品名稱：" + json_obj[i].product_name);
 								
 								var function_name = json_obj[i].function_name.split(',');
 								
@@ -485,10 +485,25 @@
 		}
 		
 		function mainLoad() {
+			var h_str_checkbox = "", str_checkbox = "";
+			if ('<%=role%>' == '0') {
+				$('#create').hide();
+				$('#create2').show();
+				str_checkbox = '<td><input type="checkbox" class="maincheck" /></td>';
+				h_str_checkbox = '<td><label>選擇</label></td>';
+				
+			} else if ('<%=role%>' == '1') {
+				$('#create').show();
+				$('#create2').hide();
+				str_checkbox = '';
+				h_str_checkbox = '<label></label>';
+			}
+			
+			
 			
 			$("#main").html(
 				'<tr>' + 
-					'<td><label>選擇</label></td>' +
+					h_str_checkbox +
 					'<td><label>產品名稱</label></td>' +
 					'<td><label>總成本</label></td>' + 
 					'<td><label>功能性項目</label></td>' + 
@@ -514,7 +529,8 @@
 					var json_obj = $.parseJSON(result);
 					
 					$.each(json_obj, function(i, item) {
-						$("#main").append('<tr><td><input type="checkbox" class="maincheck" /></td>' +
+						$("#main").append('<tr>' + 
+							str_checkbox +
 							'<td class="product_name_main">' + json_obj[i].product_name + '</td>' +
 							'<td>' + json_obj[i].cost + '</td>' + 
 							'<td>' + json_obj[i].function_no + '</td>' +
@@ -533,6 +549,12 @@
 					$('input.maincheck').on('change', function() {
 					    $('input.maincheck').not(this).prop('checked', false);  
 					});
+					
+					$("#divMain").show();
+					$("#div1").hide();
+					$("#div2").hide();
+					$("#div3").hide();
+					$("#divTest").hide();
 				}
 			});
 		}
@@ -610,187 +632,192 @@
 </script>
 </head>
 <body>
-	<div id="productAlert"></div>
 
-	<div id="divMain" class="panelWrap expand">
-		<div class="panel-title">
-			<h2>新產品風向預測</h2>
-		</div>
-
-		<form class="customDiv1">
-			<table id="main" class="formTable">
-				<tr>
-					<td><label>產品名稱</label></td>
-					<td><label>總成本</label></td>
-					<td><label>功能性項目</label></td>
-					<td><label>名稱</label></td>
-					<td><label>比重</label></td>
-					<td><label>非功能性項目</label></td>
-					<td><label>名稱</label></td>
-					<td><label>比重</label></td>
-					<td><label>服務性項目</label></td>
-					<td><label>名稱</label></td>
-					<td><label>比重</label></td>
-				</tr>
-			</table>
-		</form>
-
-		<div class="btn-control aCenter">
-			<button id="create" class="btn btn-primary btn-lg">建立量表</button>
-			<button id="create2" class="btn btn-primary btn-lg">開始評分</button>
-		</div>
-	</div>
-
-	<div id="div1" class="panelWrap expand" hidden="true">
-		<div class="panel-title">
-			<h2>新產品風向預測</h2>
-		</div>
-
-		<form class="customDiv1">
-			<table class="formTable">
-				<tr>
-					<td><label>產品名稱</label></td>
-					<td><input type="text" id="product_name" name="product_name"
-						placeholder="輸入產品名稱"></td>
-					<td><label>總成本</label></td>
-					<td><input type="text" id="cost" name="cost"
-						placeholder="輸入總成本"></td>
-				</tr>
-
-				<tr>
-					<td><label>功能性項目</label></td>
-					<td align="right">共計</td>
-					<td><input type="text" id="function_no" name="function_no">
-					</td>
-					<td align="left">項</td>
-				</tr>
-
-				<tr>
-					<td><label>非功能性項目</label></td>
-					<td align="right">共計</td>
-					<td><input type="text" id="nfunction_no" name="nfunction_no">
-					</td>
-					<td align="left">項</td>
-				</tr>
-
-				<tr>
-					<td><label>服務性項目</label></td>
-					<td align="right">共計</td>
-					<td><input type="text" id="service_no" name="service_no">
-					</td>
-					<td align="left">項</td>
-				</tr>
-			</table>
-		</form>
-
-		<div class="btn-control aCenter">
-			<button id="next1" class="btn btn-primary btn-lg">下一步</button>
-		</div>
-	</div>
-
-	<div id="div2" class="panelWrap expand" hidden="true">
-		<form class="customDiv2">
-			<table id="function" class="formTable">
-				<div class="panel-title">
-					<h2>功能性項目</h2>
-				</div>
-				<tr>
-					<th>名稱</th>
-					<th>比重(成本)</th>
-				</tr>
-			</table>
-
-			<div class="panel-title">
-				<h2>非功能性項目</h2>
-			</div>
-
-			<table id="nfunction" class="formTable">
-				<tr>
-					<th>名稱</th>
-					<th>比重(成本)</th>
-				</tr>
-			</table>
-
-			<div class="panel-title">
-				<h2>服務性項目</h2>
-			</div>
-
-			<table id="service" class="formTable">
-				<tr>
-					<th>名稱</th>
-					<th>比重(成本)</th>
-				</tr>
-			</table>
-		</form>
-
-		<div class="btn-control aCenter">
-			<button id="next2" class="btn btn-primary btn-lg">下一步</button>
-		</div>
-	</div>
-
-	<div id="div3" class="panelWrap expand" hidden="true">
-		<div class="panel-title">
-			<h2>受測者權重設定</h2>
-		</div>
-
-		<form class="customDiv3">
-			<table id="point" class="formTable">
-				<tr>
-					<th>使用者名稱</th>
-					<th>權重</th>
-					<th hidden="true">userid</th>
-				</tr>
-			</table>
-		</form>
-
-		<div class="btn-control aCenter">
-			<button id="confirm" class="btn btn-primary btn-lg">建立量表</button>
-		</div>
-	</div>
+	<jsp:include page="template-old.jsp" flush="true"/>
+	<div class="content-wrap"><br/>    
+		
+		<div id="productAlert"></div>
 	
-	<div id="divTest" class="panelWrap expand" hidden="true">
-		<div class="panel-title">
-			<h2 id="product_name_test"></h2>
-			<input type="hidden" id="forecast_id_test"></input>
-			<input type="hidden" id="user_id_test"></input>
+		<div id="divMain" class="panelWrap expand" hidden="true">
+			<div class="panel-title">
+				<h2>新產品風向預測</h2>
+			</div>
+	
+			<form class="customDivMain">
+				<table id="main" class="formTable">
+					<tr>
+						<td><label>產品名稱</label></td>
+						<td><label>總成本</label></td>
+						<td><label>功能性項目</label></td>
+						<td><label>名稱</label></td>
+						<td><label>比重</label></td>
+						<td><label>非功能性項目</label></td>
+						<td><label>名稱</label></td>
+						<td><label>比重</label></td>
+						<td><label>服務性項目</label></td>
+						<td><label>名稱</label></td>
+						<td><label>比重</label></td>
+					</tr>
+				</table>
+			</form>
+	
+			<div class="btn-control aCenter">
+				<button id="create" class="btn btn-primary btn-lg" hidden="true">建立量表</button>
+				<button id="create2" class="btn btn-primary btn-lg" hidden="true">開始評分</button>
+			</div>
 		</div>
-
-		<form class="customDivTest">
-			<table id="function-test" class="formTable">
+	
+		<div id="div1" class="panelWrap expand" hidden="true">
+			<div class="panel-title">
+				<h2>新產品風向預測</h2>
+			</div>
+	
+			<form class="customDiv1">
+				<table class="formTable">
+					<tr>
+						<td><label>產品名稱</label></td>
+						<td><input type="text" id="product_name" name="product_name"
+							placeholder="輸入產品名稱"></td>
+						<td><label>總成本</label></td>
+						<td><input type="text" id="cost" name="cost"
+							placeholder="輸入總成本"></td>
+					</tr>
+	
+					<tr>
+						<td><label>功能性項目</label></td>
+						<td align="right">共計</td>
+						<td><input type="text" id="function_no" name="function_no">
+						</td>
+						<td align="left">項</td>
+					</tr>
+	
+					<tr>
+						<td><label>非功能性項目</label></td>
+						<td align="right">共計</td>
+						<td><input type="text" id="nfunction_no" name="nfunction_no">
+						</td>
+						<td align="left">項</td>
+					</tr>
+	
+					<tr>
+						<td><label>服務性項目</label></td>
+						<td align="right">共計</td>
+						<td><input type="text" id="service_no" name="service_no">
+						</td>
+						<td align="left">項</td>
+					</tr>
+				</table>
+			</form>
+	
+			<div class="btn-control aCenter">
+				<button id="next1" class="btn btn-primary btn-lg">下一步</button>
+			</div>
+		</div>
+	
+		<div id="div2" class="panelWrap expand" hidden="true">
+			<form class="customDiv2">
+				<table id="function" class="formTable">
+					<div class="panel-title">
+						<h2>功能性項目</h2>
+					</div>
+					<tr>
+						<th>名稱</th>
+						<th>比重(成本)</th>
+					</tr>
+				</table>
+	
 				<div class="panel-title">
-					<h2>功能性項目</h2>
+					<h2>非功能性項目</h2>
 				</div>
-				<tr>
-					<th>名稱</th>
-					<th>分數</th>
-				</tr>
-			</table>
-
-			<div class="panel-title">
-				<h2>非功能性項目</h2>
+	
+				<table id="nfunction" class="formTable">
+					<tr>
+						<th>名稱</th>
+						<th>比重(成本)</th>
+					</tr>
+				</table>
+	
+				<div class="panel-title">
+					<h2>服務性項目</h2>
+				</div>
+	
+				<table id="service" class="formTable">
+					<tr>
+						<th>名稱</th>
+						<th>比重(成本)</th>
+					</tr>
+				</table>
+			</form>
+	
+			<div class="btn-control aCenter">
+				<button id="next2" class="btn btn-primary btn-lg">下一步</button>
 			</div>
-
-			<table id="nfunction-test" class="formTable">
-				<tr>
-					<th>名稱</th>
-					<th>分數</th>
-				</tr>
-			</table>
-
+		</div>
+	
+		<div id="div3" class="panelWrap expand" hidden="true">
 			<div class="panel-title">
-				<h2>服務性項目</h2>
+				<h2>受測者權重設定</h2>
 			</div>
-
-			<table id="service-test" class="formTable">
-				<tr>
-					<th>名稱</th>
-					<th>分數</th>
-				</tr>
-			</table>
-		</form>
-
-		<div class="btn-control aCenter">
-			<button id="confirmTest" class="btn btn-primary btn-lg">完成</button>
+	
+			<form class="customDiv3">
+				<table id="point" class="formTable">
+					<tr>
+						<th>使用者名稱</th>
+						<th>權重</th>
+						<th hidden="true">userid</th>
+					</tr>
+				</table>
+			</form>
+	
+			<div class="btn-control aCenter">
+				<button id="confirm" class="btn btn-primary btn-lg">建立量表</button>
+			</div>
+		</div>
+		
+		<div id="divTest" class="panelWrap expand" hidden="true">
+			<div class="panel-title">
+				<h2 id="product_name_test"></h2>
+				<input type="hidden" id="forecast_id_test"></input>
+				<input type="hidden" id="user_id_test"></input>
+			</div>
+	
+			<form class="customDivTest">
+				<table id="function-test" class="formTable">
+					<div class="panel-title">
+						<h2>功能性項目</h2>
+					</div>
+					<tr>
+						<th>名稱</th>
+						<th>分數</th>
+					</tr>
+				</table>
+	
+				<div class="panel-title">
+					<h2>非功能性項目</h2>
+				</div>
+	
+				<table id="nfunction-test" class="formTable">
+					<tr>
+						<th>名稱</th>
+						<th>分數</th>
+					</tr>
+				</table>
+	
+				<div class="panel-title">
+					<h2>服務性項目</h2>
+				</div>
+	
+				<table id="service-test" class="formTable">
+					<tr>
+						<th>名稱</th>
+						<th>分數</th>
+					</tr>
+				</table>
+			</form>
+	
+			<div class="btn-control aCenter">
+				<button id="confirmTest" class="btn btn-primary btn-lg">完成</button>
+			</div>
 		</div>
 	</div>
 </body>
