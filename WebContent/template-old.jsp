@@ -70,6 +70,10 @@
 				}
 			});
 		});
+		
+		$("#back").click(function(e) {
+			top.location.href = "main.jsp";
+		});
 	});
 	</script>
 	
@@ -79,6 +83,7 @@
 			<h1>SBI</h1>
 			<div class="userinfo" style="z-index:1;">
 				<p>使用者<span><%= (request.getSession().getAttribute("user_name")==null)?"@_@?":request.getSession().getAttribute("user_name").toString() %></span></p>
+				<a id="back" class="btn-back" >回首頁</a>
 				<a id="logout" class="btn-logout" >登出</a>
 			</div>
 		</div><!-- /.header -->

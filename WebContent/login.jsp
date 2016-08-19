@@ -11,25 +11,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF8">
-<title>Login</title>
+<title>使用者登入</title>
 <link rel="Shortcut Icon" type="image/x-icon" href="./images/Rockettheme-Ecommerce-Shop.ico" />
 <link rel="stylesheet" href="css/styles.css" />
 <link href="<c:url value="css/css.css" />" rel="stylesheet">
 <link href="<c:url value="css/jquery.dataTables.min.css" />" rel="stylesheet">
-<link href="<c:url value="css/1.11.4/jquery-ui.css" />" rel="stylesheet">
 <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
-<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
-<script type="text/javascript" src="js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="js/additional-methods.min.js"></script>
-<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
 <script type="text/javascript">
+
+<%if(request.getSession().getAttribute("user_name")!=null){%>
+	top.location.href="main.jsp";
+<%}%>
+
     function changeImg(){
         document.getElementById("validateCodeImg").src="HandleDrawValidateCode.do?t=" + Math.random();
     }
-</script>
-<script type="text/javascript">
+
 	$(function() {
 		$("#validateCodeImg").tooltip();
 // 		validator_login = $("#login-form-post").validate({
@@ -159,47 +157,49 @@
 </script>
 
 </head>
-<body style="background-image: url('./images/background.png');background-size: cover;">
-<div align="center" style="margin:50px auto;">
-	<!--對話窗樣式-登入失敗 -->
-	<div id="dialog-failure" title="登入失敗">
-		<br><p>請重新輸入帳密</p>
-	</div>
-	<h1 style="font-size:25px;">使用者登入</h1>
-	<form name="login-form-post" id="login-form-post">
-		<table id="login" style="border-collapse: separate;border-spacing: 10px 20px;">
-			<tr>
-				<td style="font-size:20px;" align="right">
-					<p>帳號:</p>
-				</td>
-				<td>
-					<input type="text" id="user_name" name="user_name" value="Kip" placeholder="請輸入帳號" style="width:225px;padding: 4px 5px;">
-				</td>
-			</tr>
-			<tr>
-				<td style="font-size:20px;"align="right">
-					<p>密碼:</p>
-				</td>
-				<td>
-					<input type="password" id="pswd" name="pswd" value="1234" placeholder="請輸入密碼" style="width:225px;padding: 4px 5px;">
-				</td>
-			</tr>
-			<tr>
-				<td style="font-size:20px;float:left;"align="right">
-					<p>驗證碼:</p>
-                </td>
-                <td>
-	                <input type="text" id ="validateCode"name="validateCode" placeholder="不區分大小寫)" style="width:100px;padding: 4px 5px;float:left;">
-                	&nbsp;&nbsp;<img title="看不清楚? 點擊圖片可換一張" src="HandleDrawValidateCode.do" id="validateCodeImg" onclick="changeImg()">
-                </td>
-			</tr>
-			<tr>
-				<td align="center" colspan="3">
-					<button id="login_btn">登入</button> &nbsp; <button id="reset_btn">重新輸入</button>
-				</td>
-			</tr>
-		</table>
-	</form>
-</div>
+
+<body class="login-body">
+	<div class="bkg-upper"></div>
+	<div class="bkg-lower"></div>
+	<div class="login-wrapper">
+		<!-- 對話窗樣式-登入失敗 -->
+		<div id="dialog-failure" title="登入失敗" style="display:none">
+			<br><p>請重新輸入帳密</p>
+		</div>
+		<h1>服務雲端智慧商情系統</h1>
+		<div class="login-panel-wrap">
+			<div class="login-panel">
+				<h2>使用者登入</h2>
+				<form>
+					<label for="username">
+						<span class="block-label">帳號：</span>
+						<input type="text" id="user_name" name="user_name" value="Kip">
+					</label>
+					<label for="password">
+						<span class="block-label">密碼：</span>
+						<input type="password" id="pswd" name="pswd" value="1234" >
+					</label>
+					<div class="verify-wrap">
+						<label for="verify">
+							<span class="block-label">認證碼：</span>
+							<input type="text" id ="validateCode"name="validateCode" >
+						</label>
+						<div class="captcha-wrap">
+							<img title="看不清楚? 點擊圖片可換一張" src="HandleDrawValidateCode.do" id="validateCodeImg">
+						</div>
+					</div><!-- /.verify-wrap -->
+					<div class="login-btn-wrap">
+						<a class="login-button" id="login_btn">登入</a>
+						<a class="login-reset-button" id="reset_btn">清除重填</a>					
+					</div><!-- /.login-btn-wrap -->
+				</form>
+			</div><!-- /.login-panel -->
+		</div><!-- /.login-panel-wrap -->
+
+		<div class="login-footer">
+			財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
+		</div><!-- /.login-footer -->
+
+	</div><!-- /.login-wrapper -->
 </body>
 </html>
