@@ -21,10 +21,7 @@
 <body>
 	<jsp:include page="template.jsp" flush="true"/>
 	<div class="content-wrap">
-		<div>
-			<object type="text/html" data="http://61.218.8.55/marketplace/">
-			</object>
-		</div>
+		<object type="text/html" width="100%" height="100%" data="http://61.218.8.55/marketplace/"></object>
 	</div>
 <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
 </body>

@@ -633,7 +633,7 @@
 </head>
 <body>
 
-	<jsp:include page="template.jsp" flush="true"/>
+	<jsp:include page="template-old.jsp" flush="true"/>
 	<div class="content-wrap"><br/>    
 		
 		<div id="productAlert"></div>

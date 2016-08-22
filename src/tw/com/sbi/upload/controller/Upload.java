@@ -19,7 +19,6 @@ import java.util.List;
 //import org.apache.http.impl.client.BasicResponseHandler;
 //import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -81,10 +80,11 @@ public class Upload extends HttpServlet {
 	    response.setCharacterEncoding("UTF-8");
 	    String group_id = request.getSession().getAttribute("group_id").toString();
 	    String user_id = request.getSession().getAttribute("user_id").toString();
-	    logger.info("user_id:" + user_id); 
+		String dbName = request.getParameter("db_name");
+	    logger.info("dbName:" + dbName); 
 	    user_id =(user_id==null||user_id.length()<3)?"UNKNOWN":user_id;
 	    group_id=(group_id==null)?"UNKNOWN":group_id;
-		String no_way = getServletConfig().getServletContext().getInitParameter("uploadpath")+"/"+group_id;
+		String no_way = getServletConfig().getServletContext().getInitParameter("uploadpath")+"/"+group_id+"/"+dbName+"_";
 		new File(getServletConfig().getServletContext().getInitParameter("uploadpath")+"/").mkdir();
 		new File(getServletConfig().getServletContext().getInitParameter("uploadpath")+"/"+group_id).mkdir();
 		new File(getServletConfig().getServletContext().getInitParameter("uploadpath")+"/fail").mkdir();
@@ -112,7 +112,7 @@ public class Upload extends HttpServlet {
 		                logger.info("no_way: " + no_way);
 //		                while(j<tmp.length){j++;}
 //		                j=j>0?j-1:j;
-		                String fullname= no_way+"/"+fileName;
+		                String fullname = no_way + fileName;
 		                logger.info("fullname: "+fullname);
 						conString=getServletConfig().getServletContext().getInitParameter("pythonwebservice90")
 								+"/sbiupload/urls="
@@ -132,10 +132,13 @@ public class Upload extends HttpServlet {
 			   ret="E_No one found.";
 			   return ret;
 		   }
-		if(ret.length()>3){return ret;}
+		if(ret.length()>3){
+			return ret;
+		}
 		return conString;
 	}
 	protected String webService(HttpServletRequest request,HttpServletResponse response,String conString) throws ServletException, IOException {
+		logger.info("into webService");
 		String ret="";
 		HttpClient client = new HttpClient();
 		HttpMethod method= new GetMethod(conString); 

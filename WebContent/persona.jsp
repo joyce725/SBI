@@ -20,11 +20,8 @@
 </head>
 <body>
 	<jsp:include page="template.jsp" flush="true"/>
-	<div class="content-wrap" style="margin:56px 0px 0px 120px;">
-		<div>
-			<object type="text/html" data="http://61.218.8.51/SBI/user/login.aspx" width="80%" height="540px" style="overflow:auto;border:5px ridge blue">
-			</object>
-		</div>
+	<div class="content-wrap">
+		<object type="text/html" width="100%" height="100%" data="http://61.218.8.55/persona/"></object>
 	</div>
 <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
 </body>
