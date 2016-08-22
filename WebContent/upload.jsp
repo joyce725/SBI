@@ -1,35 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="tw.com.sbi.*"%>
-<%@ page import="java.util.*"%>
-<%@ page import="java.sql.DriverManager"%>
-<%@ page import="java.sql.Connection"%>
-<%@ page import="java.sql.Statement"%>
-<%@ page import="java.sql.ResultSet"%>
-
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>檔案匯入</title>
+<title>產業分析基礎資料庫</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="<c:url value="css/css.css" />" rel="stylesheet">
-<link href="<c:url value="css/jquery.dataTables.min.css" />" rel="stylesheet">
-<link href="<c:url value="css/1.11.4/jquery-ui.css" />" rel="stylesheet">
-<link rel="stylesheet" href="css/1.11.4/jquery-ui.css">
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" type="text/css" href="css/dynamicbrick.css" />
-<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 </head>
 <body>
 	<jsp:include page="template.jsp" flush="true"/>
-	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
-	<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
-	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
-	<script type="text/javascript" src="js/additional-methods.min.js"></script>
-	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 	<script>
 		function setV(){
 			if($("#file").val()<1){

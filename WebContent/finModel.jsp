@@ -1,22 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="java.util.*"%>
-<%@ page import="java.sql.DriverManager"%>
-<%@ page import="java.sql.Connection"%>
-<%@ page import="java.sql.Statement"%>
-<%@ page import="java.sql.ResultSet"%>
-<jsp:directive.page import="java.sql.SQLException" />
 <!DOCTYPE html>
 <html>
 <head>
 <title>動態磚</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="<c:url value="css/css.css" />" rel="stylesheet">
-<link href="<c:url value="css/jquery.dataTables.min.css" />" rel="stylesheet">
-<link href="<c:url value="css/1.11.4/jquery-ui.css" />" rel="stylesheet">
-<link href="css/1.11.4/jquery-ui.css" rel="stylesheet" >
-<link href="css/styles.css" rel="stylesheet" >
-<link rel="stylesheet" type="text/css" href="css/dynamicbrick.css" />
+<link rel="stylesheet" href="css/jquery.dataTables.min.css">
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <!-- css for tab -->
 <style>
@@ -102,15 +91,11 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 </head>
 <body onload="openTab(event, 'finTool')">
 	<jsp:include page="template.jsp" flush="true"/>
-	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
 	<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-<!-- 	<script type="text/javascript" src="js/jquery-ui.min.js"></script> -->
 	<script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
-<!--   <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
-  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 	
 <!-- /**************************************  以下共用JS區塊    *********************************************/ 	-->
 	<script>

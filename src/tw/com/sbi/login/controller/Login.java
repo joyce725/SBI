@@ -54,62 +54,37 @@ public class Login extends HttpServlet {
 		if ("login".equals(action)) {
 			String username = request.getParameter("user_name");
 			String password = request.getParameter("pswd");
-			loginService = new LoginService();
-			List<LoginVO> list = loginService.selectlogin(username, password);
-			logger.info(list.get(0).getUser_id());
-			logger.info(list.get(0).getUser_name());
-			logger.info(list.get(0).getGroup_id());
-			logger.info(list.get(0).getRole());
-			if (list.size() != 0) {
-				session.setAttribute("sessionID", session.getId());
-				session.setAttribute("user_id", list.get(0).getUser_id());
-				session.setAttribute("group_id", list.get(0).getGroup_id());
-				session.setAttribute("user_name", list.get(0).getUser_name());
-				session.setAttribute("role", list.get(0).getRole());
-			} else {
+			String validateCode = request.getParameter("validateCode").trim();
+			Object checkcode = session.getAttribute("checkcode");
+			if (!checkcode.equals(convertToCapitalString(validateCode))) {
 				message = new LoginVO();
-				message.setMessage("failure");
+				message.setMessage("code_failure");
+				gson = new Gson();
+				String jsonStrList = gson.toJson(message);
+				response.getWriter().write(jsonStrList);
+				return;
 			}
-			/*************************   分割線    ************************************/
-//			session.setAttribute("sessionID", session.getId());
-//			session.setAttribute("user_id", "28423832-6c9e-11e5-ab77-000c29c1d067");
-//			session.setAttribute("group_id", "0f74414d-538d-4a49-8d1f-7604153075d0");
-//			session.setAttribute("user_name", "Kip");
-//			session.setAttribute("role", 0);
-//			message = new LoginVO();
-//			message.setMessage("success");
-			/*************************   分割線    ************************************/
-//			logger.info("login function");
-//			String username = request.getParameter("user_name");
-//			String password = request.getParameter("pswd");
-//			String validateCode = request.getParameter("validateCode").trim();
-//			Object checkcode = session.getAttribute("checkcode");
-//			if (!checkcode.equals(convertToCapitalString(validateCode))) {
-//				message = new LoginVO();
-//				message.setMessage("code_failure");
-//				gson = new Gson();
-//				String jsonStrList = gson.toJson(message);
-//				response.getWriter().write(jsonStrList);
-//				return;
-//			}
-//			if (checkcode.equals(convertToCapitalString(validateCode))) {
-//				loginService = new LoginService();
-//				List<LoginVO> list = loginService.selectlogin(username, password);
-//				if (list.size() != 0) {
-//					session.setAttribute("sessionID", session.getId());
-//					session.setAttribute("user_id", list.get(0).getUser_id());
-//					session.setAttribute("group_id", list.get(0).getGroup_id());
-//					session.setAttribute("user_name", list.get(0).getUser_name());
-//					session.setAttribute("role", list.get(0).getRole());
-//				} else {
-//					message = new LoginVO();
-//					message.setMessage("failure");
-//				}
-//				gson = new Gson();
-//				String jsonStrList = gson.toJson(message);
-//				response.getWriter().write(jsonStrList);
-//			}
+			if (checkcode.equals(convertToCapitalString(validateCode))) {
+				loginService = new LoginService();
+				List<LoginVO> list = loginService.selectlogin(username, password);
+				if (list.size() != 0) {
+					session.setAttribute("sessionID", session.getId());
+					session.setAttribute("user_id", list.get(0).getUser_id());
+					session.setAttribute("group_id", list.get(0).getGroup_id());
+					session.setAttribute("user_name", list.get(0).getUser_name());
+					session.setAttribute("role", list.get(0).getRole());
+					message = new LoginVO();
+					message.setMessage("success");
+				} else {
+					message = new LoginVO();
+					message.setMessage("failure");
+				}
+				gson = new Gson();
+				String jsonStrList = gson.toJson(message);
+				response.getWriter().write(jsonStrList);
+			}
 		}
+		
 		if ("check_user_exist".equals(action)) {
 			String username = request.getParameter("user_name");
 			loginService = new LoginService();

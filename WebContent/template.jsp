@@ -4,11 +4,13 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>template</title>
-	<link rel="stylesheet" href="css/jquery-ui.min.css">
+	<link rel="stylesheet" href="css/css.css" />
+	<link rel="stylesheet" href="css/styles.css" />
 	<link rel="stylesheet" href="css/font-awesome.min.css">
-	<link rel="stylesheet" href="css/styles.css">
-	<link rel="stylesheet" href="css/1.11.4/jquery-ui.css">
-	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+	<link rel="stylesheet" href="css/jquery-ui-1.12.0/jquery-ui.min.css">
+	<script src="js/jquery-1.12.4.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/scripts.js"></script>
 <script>
 function who(){
 	switch(location.pathname.split("/")[2]){
@@ -91,9 +93,5 @@ $(function() {
 		財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
 	</footer><!-- / .footer -->
 </div><!-- /.page-wrapper -->
-<script src="js/jquery-3.1.0.min.js"></script>
-<script src="js/jquery-ui.min.js"></script>
-<script src="js/scripts.js"></script>
-
 </body>
 </html>
