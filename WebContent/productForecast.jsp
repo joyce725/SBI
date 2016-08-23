@@ -369,9 +369,6 @@
 			forecast_id = $("#forecast_id_test").val();
 			user_id	= '<%=user_id%>';
 			
-			console.log(forecast_id);
-			console.log(user_id);
-			
 			$('#function-test').find('tr').each(function () {
 				var row = $(this);
 				if ( row.find('input[type="text"]').val()  ) {
@@ -485,36 +482,25 @@
 		}
 		
 		function mainLoad() {
-			var h_str_checkbox = "", str_checkbox = "";
+			
+			var h_str_checkbox = "", str_checkbox = "", str_button = "";
+			
 			if ('<%=role%>' == '0') {
 				$('#create').hide();
 				$('#create2').show();
-				str_checkbox = '<td><input type="checkbox" class="maincheck" /></td>';
 				h_str_checkbox = '<td><label>選擇</label></td>';
-				
 			} else if ('<%=role%>' == '1') {
 				$('#create').show();
 				$('#create2').hide();
-				str_checkbox = '';
 				h_str_checkbox = '<label></label>';
 			}
-			
-			
 			
 			$("#main").html(
 				'<tr>' + 
 					h_str_checkbox +
 					'<td><label>產品名稱</label></td>' +
 					'<td><label>總成本</label></td>' + 
-					'<td><label>功能性項目</label></td>' + 
-					'<td><label>名稱</label></td>' + 
-					'<td><label>比重</label></td>' + 
-					'<td><label>非功能性項目</label></td>' + 
-					'<td><label>名稱</label></td>' + 
-					'<td><label>比重</label></td>' + 
-					'<td><label>服務性項目</label></td>' + 
-					'<td><label>名稱</label></td>' + 
-					'<td><label>比重</label></td>' + 
+					'<td>結果</td>' + 
 				'</tr>'
 			);
 			
@@ -529,21 +515,28 @@
 					var json_obj = $.parseJSON(result);
 					
 					$.each(json_obj, function(i, item) {
+						
+						if ('<%=role%>' == '0') {
+							str_checkbox = '<td><input type="checkbox" class="maincheck" /></td>';
+						} else if ('<%=role%>' == '1') {
+							str_checkbox = '';
+						}
+						
+						if (json_obj[i].isfinish === 1) {
+// 							str_button = '<button id="btn-result-' + i + '" class="btn btn-primary btn-lg">顯示</button>';
+							str_button = "<label>顯示結果請點擊兩次本列資料</label>";
+						} else {
+							str_button = '';
+						}
+						
 						$("#main").append('<tr>' + 
 							str_checkbox +
 							'<td class="product_name_main">' + json_obj[i].product_name + '</td>' +
 							'<td>' + json_obj[i].cost + '</td>' + 
-							'<td>' + json_obj[i].function_no + '</td>' +
-							'<td>' + json_obj[i].function_name + '</td>' +
-							'<td>' + json_obj[i].function_score + '</td>' +
-							'<td>' + json_obj[i].nfunction_no + '</td>' +
-							'<td>' + json_obj[i].nfunction_name + '</td>' +
-							'<td>' + json_obj[i].nfunction_score + '</td>' +
-							'<td>' + json_obj[i].service_no + '</td>' +
-							'<td>' + json_obj[i].service_name + '</td>' +
-							'<td>' + json_obj[i].service_score + '</td>' +
+							'<td>' + str_button + '</td>' +
 							'<td class="forecast_id_main" hidden="true">' + json_obj[i].forecast_id + '</td>' +
-							'</tr>');
+							'</tr>'
+						);
 					});
 					
 					$('input.maincheck').on('change', function() {
@@ -555,6 +548,64 @@
 					$("#div2").hide();
 					$("#div3").hide();
 					$("#divTest").hide();
+					
+					$('#main td').dblclick(function () {
+						
+						var $this = $(this);
+						var row = $this.closest("tr");
+						
+						if ( row.find('label').val() == '' ) {
+							var forecast_id = row.find('.forecast_id_main').html();
+							
+				        	$.ajax({
+								type : "POST",
+								url : "productForecast.do",
+								data : {
+									action : "selectByForecastId",
+									forecast_id : forecast_id
+								},
+								success : function(result) {
+									var json_obj = $.parseJSON(result);
+									
+									$.each(json_obj, function(i, item) {
+										var result_list = json_obj[i].result.split(',');
+										
+										$("#resultModal").append('<table id="tblResult" class="formTable"></table>');
+										
+										$("#tblResult").append('<tr>' + 
+													'<th>優先次序</th>' + 
+													'<th>名稱</th>' +
+												'</tr>');
+										
+										$.each( result_list, function(index, value){
+											$("#tblResult").append('<tr><td>' + index + '</td><td><label>' + value + '</label></td></tr>');
+										});
+
+				 						$("#resultModal").dialog({
+				 							title: "結果",
+				 							draggable : true,
+				 							resizable : false, //防止縮放
+				 							autoOpen : false,
+				 							height : "auto",
+				 							modal : true,
+				 							buttons : {
+				 								"確認" : function() {
+				 									$("#tblResult").html('');
+				 									
+				 									$(this).dialog("close");
+				 								}
+				 							}
+				 						});
+											
+				 						$("#resultModal").dialog("open");
+									});
+									
+								}
+							});
+				            
+				        }
+					});
+					
 				}
 			});
 		}
@@ -637,6 +688,7 @@
 	<div class="content-wrap"><br/>    
 		
 		<div id="productAlert"></div>
+		<div id="resultModal"></div>
 	
 		<div id="divMain" class="panelWrap expand" hidden="true">
 			<div class="panel-title">

@@ -1,15 +1,13 @@
 package tw.com.sbi.productforecastpoint.controller;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -17,13 +15,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
 import tw.com.sbi.productforecast.controller.productForecast;
-import tw.com.sbi.productforecast.controller.productForecast.ProductForecastBean;
 
 public class ProductForecastPoint extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -114,6 +115,9 @@ public class ProductForecastPoint extends HttpServlet {
 				String jsonStrList = gson.toJson(list);
 				response.getWriter().write(jsonStrList);
 				
+				//檢查是否全部填寫完畢
+				productForecastPointService.countProductForecastPoint(forecast_id);
+				
 				/*************************** 其他可能的錯誤處理 **********************************/
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -197,6 +201,7 @@ public class ProductForecastPoint extends HttpServlet {
 		
 		public void insertDB(ProductForecastPointBean productForecastBean);
 		public void updateDB(ProductForecastPointBean productForecastBean);
+		public void countByForecastIdDB(String forecast_id);
 
 	}
 	
@@ -239,8 +244,13 @@ public class ProductForecastPoint extends HttpServlet {
 		
 			return productForecastPointBean;
 		}
+
+		public void countProductForecastPoint(String forecast_id) {
+			dao.countByForecastIdDB(forecast_id);
+		}
 	}
 
+	
 	/*************************** 操作資料庫 ****************************************/
 	class ProductForecastPointDAO implements productForecastPoint_interface {
 		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL")
@@ -251,6 +261,7 @@ public class ProductForecastPoint extends HttpServlet {
 		// 會使用到的Stored procedure
 		private static final String sp_insert_product_forecast_point = "call sp_insert_product_forecast_point(?,?,?,?,?,?,?)";
 		private static final String sp_update_product_forecast_point = "call sp_update_product_forecast_point(?,?,?,?,?)";
+		private static final String sp_count_product_forecast_point = "call sp_count_product_forecast_point(?)";
 		
 		@Override
 		public void insertDB(ProductForecastPointBean productForecastPointBean) {
@@ -311,6 +322,72 @@ public class ProductForecastPoint extends HttpServlet {
 				cs.setString(5, productForecastPointBean.getService_point());
 				
 				cs.execute();
+				
+			} catch (SQLException se) {
+				// Handle any SQL errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void countByForecastIdDB(String forecast_id) {
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			try {
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				
+				CallableStatement cs = null;
+				cs = con.prepareCall(sp_count_product_forecast_point);
+
+				cs.setString(1, forecast_id);
+				
+				ResultSet rs = null;
+				
+				Integer cnt = 0;
+				rs = cs.executeQuery();
+				while (rs.next()) {
+					cnt = rs.getInt("cnt");
+					
+					logger.debug("countByForecastIdDB:getCnt" + cnt);
+				}
+				
+				if (cnt == 0) {
+					String serviceStr = getServletConfig().getServletContext().getInitParameter("pythonwebservice")
+							+ "/forecast/forid="
+							+ new String(Base64.encodeBase64String(forecast_id.getBytes()));
+					
+					logger.debug(serviceStr);
+					
+					HttpClient client = new HttpClient();
+					HttpMethod method = null;
+					
+					try {
+						method = new GetMethod(serviceStr);
+						client.executeMethod(method);
+					} catch(Exception e) {
+						logger.error("WebService Error for:"+e);
+					} finally {
+						method.releaseConnection();
+					}
+					
+					
+				}
 				
 			} catch (SQLException se) {
 				// Handle any SQL errors
