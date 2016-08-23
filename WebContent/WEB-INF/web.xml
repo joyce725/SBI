@@ -81,6 +81,11 @@
 <!--     <param-value>/data/sbiupload</param-value> -->
 <!--   </context-param> -->
 <!--########################以上server#####################################-->
+  <context-param>
+	    <param-name>pythonwebservice</param-name>
+	    <param-value>http://192.168.112.164:8070</param-value>
+<!-- 		<param-value>http://61.218.8.55:8099</param-value> -->
+  </context-param>
 
   <context-param>
 	    <param-name>pythonwebservice90</param-name>

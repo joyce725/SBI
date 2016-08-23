@@ -10,7 +10,7 @@
 	}
 </style>
 <title>使用者登入</title>
-<link rel="Shortcut Icon" type="image/x-icon" href="./images/Rockettheme-Ecommerce-Shop.ico" />
+<link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
 <link rel="stylesheet" href="css/css.css" />
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/jquery-ui-1.12.0/jquery-ui.css">

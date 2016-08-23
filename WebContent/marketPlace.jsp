@@ -2,8 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>服務業雲端智慧商情支援系統</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>城市商圈</title>
+<link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
 </head>
 <body>
 	<jsp:include page="template.jsp" flush="true"/>

@@ -3,8 +3,9 @@ html, body, p {  border: 0 none;  margin: 0;padding:0;  outline-style: none; out
 .examples_body h3 {  color: #f9f66d;  font-size: 130%;padding-bottom: 15px;}
 .bannerHolder { width: 726px;margin:0 auto; overflow: hidden;}
 .bannerHolder li {list-style: none; display: inline;}
-.banner { width: 125px; height: 125px; position: relative;overflow: hidden; float: left;display: inline;margin: 0 10px}
-.banner img { display: block; border: none;}
+.banner { width: 125px; height: 140px; position: relative;overflow: hidden; float: left;display: inline;margin: 0 10px 10px 10px; text-align: center;}
+.banner a { Font-family: Meiryo; }
+.banner img { display: block; border: none; margin: auto;}
 .banner div { position: absolute; z-index: 100; background-color: #FFFFFE; width: 60px; height: 60px; cursor: pointer; -moz-border-radius:100px; -webkit-border-radius:100px; border-radius:100px;}
 .banner .cornerTL { left:-63px; top:-63px; }
 .banner .cornerTR { right:-63px; top:-63px; }

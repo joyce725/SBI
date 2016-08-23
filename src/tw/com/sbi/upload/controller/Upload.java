@@ -99,8 +99,8 @@ public class Upload extends HttpServlet {
 		      ServletFileUpload upload = new ServletFileUpload(factory);
 		      upload.setSizeMax( maxFileSize );
 		      try{ 
-		         List fileItems = upload.parseRequest(request);
-		         Iterator i = fileItems.iterator();
+		         List<FileItem> fileItems = upload.parseRequest(request);
+		         Iterator<FileItem> i = fileItems.iterator();
 		         while ( i.hasNext () ) 
 		         {
 		            FileItem fi = (FileItem)i.next();
@@ -114,7 +114,7 @@ public class Upload extends HttpServlet {
 //		                j=j>0?j-1:j;
 		                String fullname = no_way + fileName;
 		                logger.info("fullname: "+fullname);
-						conString=getServletConfig().getServletContext().getInitParameter("pythonwebservice90")
+						conString=getServletConfig().getServletContext().getInitParameter("pythonwebservice")
 								+"/sbiupload/urls="
 								+new String(Base64.encodeBase64String((fullname).getBytes()));
 						logger.info("conString: " + conString);

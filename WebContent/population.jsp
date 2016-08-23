@@ -2,8 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>台灣人口社會經濟資料api</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>台灣人口社會經濟資料api</title>
+<link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
 </head>
 <body>	
 	<jsp:include page="template.jsp" flush="true"/>

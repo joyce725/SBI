@@ -299,7 +299,7 @@ public class FinModel extends HttpServlet {
 				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
-		private final String wsPath = getServletConfig().getServletContext().getInitParameter("pythonwebservice99");
+		private final String wsPath = getServletConfig().getServletContext().getInitParameter("pythonwebservice");
 
 		@Override
 		public List<FincaseVO> selectTBFincase(String groupId) {

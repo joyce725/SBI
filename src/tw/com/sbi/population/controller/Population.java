@@ -31,7 +31,7 @@ public class Population extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
-		final String wsPath = getServletConfig().getServletContext().getInitParameter("pythonwebservice99");
+		final String wsPath = getServletConfig().getServletContext().getInitParameter("pythonwebservice");
 		String kind = request.getParameter("kind");
     	String type = request.getParameter("type");
     	String urls = request.getParameter("url");  

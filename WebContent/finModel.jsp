@@ -3,8 +3,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>動態磚</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>新創公司財務損益平衡評估工具</title>
+<link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
 <link rel="stylesheet" href="css/jquery.dataTables.min.css">
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <!-- css for tab -->
