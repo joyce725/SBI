@@ -10,7 +10,7 @@ var opt = {
    nextText:"次月",
    weekHeader:"週",
    showMonthAfterYear:true,
-   dateFormat:"yy/mm/dd",
+   dateFormat:"yy-mm-dd",
    changeYear: true,
    changeMonth: true
    };

@@ -146,7 +146,20 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 // 			alert("admin");
 			$(function(){
 				var uuid = "";
-					
+				
+				var validator_create = $("#create-dialog-form-post").validate({
+					rules : {
+						case_name : {
+							required : true
+						},
+						amount : {
+							number : true
+						},
+						safety_money : {
+							number : true
+						}
+					}
+				});
 				// 建立模型 事件聆聽
 				$("#create-model-button").click( function(e) {
 					e.preventDefault();		
@@ -171,7 +184,7 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 								id : "create",
 								text : "建立",
 								click : function() {
-// 									if ($('#insert-dialog-form-post').valid()) {
+									if ($('#create-dialog-form-post').valid()) {
 										$.ajax({
 											type : "POST",
 											url : "finModel.do",
@@ -182,7 +195,6 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 												safety_money : $("#dialog-form-create input[name='safety_money']").val()
 											},
 											success : function(result) {
-// 												alert("success");
 												var json_obj = $.parseJSON(result);
 												var result_table = "";
 												$.each(json_obj,function(i, item) {
@@ -207,19 +219,19 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 											}
 										});
 										create_dialog.dialog("close");
-// 									}
+									}
 								}
 							}, {
 								text : "取消",
 								click : function() {
-	// 								validator_insert.resetForm();
-	// 								$("#insert-dialog-form-post").trigger("reset");
+									validator_create.resetForm();
+									$("#create-dialog-form-post").trigger("reset");
 									create_dialog.dialog("close");
 								}
 							} ],
 					close : function() {
-	// 					validator_insert.resetForm();
-	// 					$("#insert-dialog-form-post").trigger("reset");
+						validator_create.resetForm();
+						$("#create-dialog-form-post").trigger("reset");
 						create_dialog.dialog("close");
 					}
 				}); 
@@ -293,7 +305,32 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 // 			alert("user");
 			$(function(){
 				var uuid = "";
+				var p_simulation_id = "";
+				var p_case_id = "";
 					
+				var validator_insert = $("#insert-dialog-form-post").validate({
+					rules : {
+						f_date : {
+							required : true,
+							dateISO : true
+						},
+						amount : {
+							number : true
+						}
+					}
+				});
+				var validator_update = $("#update-dialog-form-post").validate({
+					rules : {
+						f_date : {
+							required : true,
+							dateISO : true
+						},
+						amount : {
+							number : true
+						}
+					}
+				});
+				
 				// 建立模型Dialog相關設定
 				create_dialog = $("#dialog-form-create").dialog({
 					draggable : false,//防止拖曳
@@ -313,7 +350,7 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 								id : "create",
 								text : "建立",
 								click : function() {
-		// 							if ($('#insert-dialog-form-post').valid()) {
+									if ($('#insert-dialog-form-post').valid()) {
 										$.ajax({
 											type : "POST",
 											url : "finModel.do",
@@ -331,7 +368,7 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 													result_table += 
 															"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
 														+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
-														+ "' class='btn_update btn btn-wide btn-primary btn_delete'>刪除</button></td></tr>";
+														+ "' class='btn btn-wide btn-primary btn_delete'>刪除</button></td></tr>";
 												});
 												//判斷查詢結果
 												var resultRunTime = 0;
@@ -349,19 +386,20 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 											}
 										});
 										create_dialog.dialog("close");
-		// 							}
+									}
 								}
 							}, {
 								text : "取消",
 								click : function() {
-	// 								validator_insert.resetForm();
-	// 								$("#insert-dialog-form-post").trigger("reset");
+									validator_insert.resetForm();
+									$("#insert-dialog-form-post").trigger("reset");
 									create_dialog.dialog("close");
 								}
 							} ],
 					close : function() {
-	// 					validator_insert.resetForm();
-	// 					$("#insert-dialog-form-post").trigger("reset");
+						validator_insert.resetForm();
+						$("#insert-dialog-form-post").trigger("reset");
+						create_dialog.dialog("close");
 					}
 				}); 
 				
@@ -379,7 +417,7 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 							result_table += 
 									"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
 								+ "<button value='"+ json_obj[i].case_id+"' name='user_query'"
-								+ "' class='btn_query btn_update btn btn-wide btn-primary'>查看</button></td><td>"
+								+ "' class='btn_query btn btn-wide btn-primary'>查看</button></td><td>"
 								+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
 								+ "' class='btn-simu btn btn-wide btn-primary'>產生</button></td></tr>";
 						});					
@@ -420,15 +458,94 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 							$("#hidden_case_id").val(uuid);
 // 							alert("hidden_case_id value: " + $("#hidden_case_id").val());
 							var json_obj = $.parseJSON(result);
+							var len=json_obj.length;
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
+								if(i<len){
+									var str_f_type = "";
+									var str_action = "";
+									var str_f_kind = "";
+									if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+								        json_obj[i].f_date ="";
+								    }
+									if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+								        json_obj[i].f_type ="";
+								    }
+									if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+								        json_obj[i].action ="";
+								    }
+									if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+								        json_obj[i].amount ="";
+								    }
+									if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+								        json_obj[i].f_kind ="";
+								    }
+									if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+								        json_obj[i].description ="";
+								    }
+									if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+								        json_obj[i].strategy ="";
+								    }
+									
+									if(json_obj[i].action){
+										str_action = "實際";
+									}
+									else{
+										str_action = "虛擬";
+									} 
+									
+									switch(json_obj[i].f_type){
+							        	case 1 :
+							        		str_f_type = "已發生";
+							        		break;
+							        	case 2 :
+							        		str_f_type = "應收/應付";
+							        		break;
+							        	default: 
+							        		str_f_type = "default";
+						        			break;
+							      	}
+
+									switch(json_obj[i].f_kind){
+							        	case 1 :
+							        		str_f_kind = "營業收入";
+							        		break;
+							        	case 2 :
+							        		str_f_kind = "業務支出";
+							        		break;
+							        	case 3 :
+							        		str_f_kind = "固定資產支出";
+							        		break;
+							        	case 4 :
+							        		str_f_kind = "管銷費用";
+							        		break;
+							        	case 5 :
+							        		str_f_kind = "薪資";
+							        		break;
+							        	case 6 :
+							        		str_f_kind = "研發費用";
+							        		break;
+							        	case 7 :
+							        		str_f_kind = "行銷費用";
+							        		break;
+							        	case 8 :
+							        		str_f_kind = "投資收入/支出";
+							        		break;
+							        	case 9 :
+							        		str_f_kind = "其他收入/支出";
+							        		break;
+							        	default: 
+							        		str_f_kind = "default";
+						        			break;
+							      	}
+								}
 								result_table 
 									+= "<tr>"
 									+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-									+ "<td id='f_type_"+i+"'>"+ json_obj[i].f_type+ "</td>"
-									+ "<td id='action_"+i+"'>"+ json_obj[i].action+ "</td>"
+									+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+									+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
 									+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-									+ "<td id='f_kind_"+i+"'>"+ json_obj[i].f_kind+ "</td>"
+									+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
 									+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
 									+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
 									+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
@@ -480,32 +597,111 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 						id : "insert",
 						text : "新增",
 						click : function() {
-// 							if ($('#insert-dialog-form-post').valid()) {
+							if ($('#insert-dialog-form-post').valid()) {
 								$.ajax({
 									type : "POST",
 									url : "finModel.do",
 									data : {
 										action : "insert",
 			 							case_id: uuid,
-			 							f_date : $("#dialog-form-insert input[name='f_date']").val(),
-			 							f_type : $("#dialog-form-insert input[name='f_type']").val(),
-			 							p_action : $("#dialog-form-insert input[name='action']").val(),
-			 							amount : $("#dialog-form-insert input[name='amount']").val(),
-			 							f_kind : $("#dialog-form-insert input[name='f_kind']").val(),
-										description : $("#dialog-form-insert input[name='description']").val(),
-										strategy : $("#dialog-form-insert input[name='strategy']").val()
+			 							f_date : $("#insert_f_date").val(),
+			 							f_type : $("#insert_f_type").val(),
+			 							p_action : $("#insert_action").val(),
+			 							amount : $("#insert_amount").val(),
+			 							f_kind : $("#insert_f_kind").val(),
+										description : $("#insert_description").val(),
+										strategy : $("#insert_strategy").val()
 									},
 									success : function(result) {
 										var json_obj = $.parseJSON(result);
+										var len=json_obj.length;
 										var result_table = "";
 										$.each(json_obj,function(i, item) {
+											if(i<len){
+												var str_f_type = "";
+												var str_action = "";
+												var str_f_kind = "";
+												if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+											        json_obj[i].f_date ="";
+											    }
+												if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+											        json_obj[i].f_type ="";
+											    }
+												if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+											        json_obj[i].action ="";
+											    }
+												if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+											        json_obj[i].amount ="";
+											    }
+												if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+											        json_obj[i].f_kind ="";
+											    }
+												if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+											        json_obj[i].description ="";
+											    }
+												if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+											        json_obj[i].strategy ="";
+											    }
+												
+												if(json_obj[i].action){
+													str_action = "實際";
+												}
+												else{
+													str_action = "虛擬";
+												} 
+												
+												switch(json_obj[i].f_type){
+										        	case 1 :
+										        		str_f_type = "已發生";
+										        		break;
+										        	case 2 :
+										        		str_f_type = "應收/應付";
+										        		break;
+										        	default: 
+										        		str_f_type = "default";
+									        			break;
+										      	}
+
+												switch(json_obj[i].f_kind){
+										        	case 1 :
+										        		str_f_kind = "營業收入";
+										        		break;
+										        	case 2 :
+										        		str_f_kind = "業務支出";
+										        		break;
+										        	case 3 :
+										        		str_f_kind = "固定資產支出";
+										        		break;
+										        	case 4 :
+										        		str_f_kind = "管銷費用";
+										        		break;
+										        	case 5 :
+										        		str_f_kind = "薪資";
+										        		break;
+										        	case 6 :
+										        		str_f_kind = "研發費用";
+										        		break;
+										        	case 7 :
+										        		str_f_kind = "行銷費用";
+										        		break;
+										        	case 8 :
+										        		str_f_kind = "投資收入/支出";
+										        		break;
+										        	case 9 :
+										        		str_f_kind = "其他收入/支出";
+										        		break;
+										        	default: 
+										        		str_f_kind = "default";
+									        			break;
+										      	}
+											}
 											result_table 
 												+= "<tr>"
 												+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-												+ "<td id='f_type_"+i+"'>"+ json_obj[i].f_type+ "</td>"
-												+ "<td id='action_"+i+"'>"+ json_obj[i].action+ "</td>"
+												+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+												+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
 												+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-												+ "<td id='f_kind_"+i+"'>"+ json_obj[i].f_kind+ "</td>"
+												+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
 												+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
 												+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
 												+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
@@ -529,19 +725,19 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 									}
 								});
 								insert_dialog.dialog("close");
-// 							}
+							}
 						}
 					}, {
 						text : "取消",
 						click : function() {
-// 							validator_insert.resetForm();
-// 							$("#insert-dialog-form-post").trigger("reset");
+							validator_insert.resetForm();
+							$("#insert-dialog-form-post").trigger("reset");
 							insert_dialog.dialog("close");
 						}
 					} ],
 					close : function() {
-// 						validator_insert.resetForm();
-// 						$("#insert-dialog-form-post").trigger("reset");
+						validator_insert.resetForm();
+						$("#insert-dialog-form-post").trigger("reset");
 						insert_dialog.dialog("close");
 					}
 				});
@@ -549,15 +745,16 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 				// 修改 事件聆聽
 				$("#finsimu-table-user").delegate(".btn_update", "click", function(e) {
 					e.preventDefault();
-					var p_simulation_id = $(this).val();
-					var p_case_id = $(this).attr('name');
+					p_simulation_id = $(this).val();
+					p_case_id = $(this).attr('name');
+					alert("p_simulation_id: " + p_simulation_id);
+					alert("p_case_id: " + p_case_id);
 					row = $(this).attr("id");
-// 					$("#dialog-form-update input[name='customer_id']").val(customer_id);
 					$("#dialog-form-update input[name='f_date']").val($('#f_date_'+row).html());
-					$("#dialog-form-update input[name='f_type']").val($('#f_type_'+row).html());
-					$("#dialog-form-update input[name='action']").val($('#action_'+row).html());
+					$("#dialog-form-update select#edit_f_type option[value="+$('#hidden_f_type_'+row).val()+"]").prop("selected", true);
+					$("#dialog-form-update select#edit_action option[value="+$('#hidden_action_'+row).val()+"]").prop("selected", true);
 					$("#dialog-form-update input[name='amount']").val($('#amount_'+row).html());
-					$("#dialog-form-update input[name='f_kind']").val($('#f_kind_'+row).html());
+					$("#dialog-form-update select#edit_f_kind option[value="+$('#hidden_f_kind_'+row).val()+"]").prop("selected", true);
 					$("#dialog-form-update input[name='description']").val($('#description_'+row).html());
 					$("#dialog-form-update input[name='strategy']").val($('#strategy_'+row).html());
 					$("#dialog-form-update input[name='simulation_id']").val(p_simulation_id);
@@ -570,21 +767,163 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 					draggable : false,//防止拖曳
 					resizable : false,//防止縮放
 					autoOpen : false,
+					show : {
+						effect : "blind",
+						duration : 1000
+					},
+					hide : {
+						effect : "explode",
+						duration : 1000
+					},
 					width : 'auto',
 					modal : true,
 					buttons : [{
+						id : "update",
 						text : "修改",
 						click : function() {
-							update_dialog.dialog("close");						
+							if ($('#update-dialog-form-post').valid()) {
+								$.ajax({
+									type : "POST",
+									url : "finModel.do",
+									data : {
+			 							action : "update",
+			 							case_id: p_case_id,
+			 							simulation_id: p_simulation_id, 
+			 							f_date : $("#edit_f_date").val(),
+			 							f_type : $("#edit_f_type").val(),
+			 							p_action : $("#edit_action").val(),
+			 							amount : $("#edit_amount").val(),
+			 							f_kind : $("#edit_f_kind").val(),
+										description : $("#edit_description").val(),
+										strategy : $("#edit_strategy").val()
+									},
+									success : function(result) {
+										var json_obj = $.parseJSON(result);
+										var len=json_obj.length;
+										var result_table = "";
+										$.each(json_obj,function(i, item) {
+											if(i<len){
+												var str_f_type = "";
+												var str_action = "";
+												var str_f_kind = "";
+												if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+											        json_obj[i].f_date ="";
+											    }
+												if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+											        json_obj[i].f_type ="";
+											    }
+												if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+											        json_obj[i].action ="";
+											    }
+												if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+											        json_obj[i].amount ="";
+											    }
+												if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+											        json_obj[i].f_kind ="";
+											    }
+												if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+											        json_obj[i].description ="";
+											    }
+												if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+											        json_obj[i].strategy ="";
+											    }
+												
+												if(json_obj[i].action){
+													str_action = "實際";
+												}
+												else{
+													str_action = "虛擬";
+												} 
+												
+												switch(json_obj[i].f_type){
+										        	case 1 :
+										        		str_f_type = "已發生";
+										        		break;
+										        	case 2 :
+										        		str_f_type = "應收/應付";
+										        		break;
+										        	default: 
+										        		str_f_type = "default";
+									        			break;
+										      	}
+	
+												switch(json_obj[i].f_kind){
+										        	case 1 :
+										        		str_f_kind = "營業收入";
+										        		break;
+										        	case 2 :
+										        		str_f_kind = "業務支出";
+										        		break;
+										        	case 3 :
+										        		str_f_kind = "固定資產支出";
+										        		break;
+										        	case 4 :
+										        		str_f_kind = "管銷費用";
+										        		break;
+										        	case 5 :
+										        		str_f_kind = "薪資";
+										        		break;
+										        	case 6 :
+										        		str_f_kind = "研發費用";
+										        		break;
+										        	case 7 :
+										        		str_f_kind = "行銷費用";
+										        		break;
+										        	case 8 :
+										        		str_f_kind = "投資收入/支出";
+										        		break;
+										        	case 9 :
+										        		str_f_kind = "其他收入/支出";
+										        		break;
+										        	default: 
+										        		str_f_kind = "default";
+									        			break;
+										      	}
+											}
+											result_table 
+												+= "<tr>"
+												+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
+												+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+												+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
+												+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
+												+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
+												+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
+												+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
+												+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+												+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+												+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+												+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
+										});		
+										//判斷查詢結果
+										var resultRunTime = 0;
+										$.each (json_obj, function (i) {
+											resultRunTime+=1;
+										});
+										$("#finsimu-table-user").dataTable().fnDestroy();
+										if(resultRunTime!=0){
+											$("#finsimu-table-user tbody").html(result_table);
+											//$("#products").dataTable({"bFilter": false, "bInfo": false, "paging": false, "language": {"url": "js/dataTables_zh-tw.txt","zeroRecords": "沒有符合的結果"}});
+											$(".validateTips").text("");
+										}else{
+											$(".validateTips").text("查無此結果");
+										}
+									}
+								});
+								update_dialog.dialog("close");
+							}
 						}
 					}, {
 						text : "取消",
 						click : function() {
+							validator_update.resetForm();
+							$("#update-dialog-form-post").trigger("reset");
 							update_dialog.dialog("close");
 						}
 					} ],
 					close : function() {
+						$("#update-dialog-form-post").trigger("reset");
 						validator_update.resetForm();
+						update_dialog.dialog("close");
 					}
 				});
 				
@@ -615,22 +954,101 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 								},
 								success : function(result) {
 									var json_obj = $.parseJSON(result);
+									var len=json_obj.length;
 									var result_table = "";
 									$.each(json_obj,function(i, item) {
+										if(i<len){
+											var str_f_type = "";
+											var str_action = "";
+											var str_f_kind = "";
+											if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+										        json_obj[i].f_date ="";
+										    }
+											if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+										        json_obj[i].f_type ="";
+										    }
+											if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+										        json_obj[i].action ="";
+										    }
+											if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+										        json_obj[i].amount ="";
+										    }
+											if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+										        json_obj[i].f_kind ="";
+										    }
+											if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+										        json_obj[i].description ="";
+										    }
+											if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+										        json_obj[i].strategy ="";
+										    }
+											
+											if(json_obj[i].action){
+												str_action = "實際";
+											}
+											else{
+												str_action = "虛擬";
+											} 
+											
+											switch(json_obj[i].f_type){
+									        	case 1 :
+									        		str_f_type = "已發生";
+									        		break;
+									        	case 2 :
+									        		str_f_type = "應收/應付";
+									        		break;
+									        	default: 
+									        		str_f_type = "default";
+								        			break;
+									      	}
+
+											switch(json_obj[i].f_kind){
+									        	case 1 :
+									        		str_f_kind = "營業收入";
+									        		break;
+									        	case 2 :
+									        		str_f_kind = "業務支出";
+									        		break;
+									        	case 3 :
+									        		str_f_kind = "固定資產支出";
+									        		break;
+									        	case 4 :
+									        		str_f_kind = "管銷費用";
+									        		break;
+									        	case 5 :
+									        		str_f_kind = "薪資";
+									        		break;
+									        	case 6 :
+									        		str_f_kind = "研發費用";
+									        		break;
+									        	case 7 :
+									        		str_f_kind = "行銷費用";
+									        		break;
+									        	case 8 :
+									        		str_f_kind = "投資收入/支出";
+									        		break;
+									        	case 9 :
+									        		str_f_kind = "其他收入/支出";
+									        		break;
+									        	default: 
+									        		str_f_kind = "default";
+								        			break;
+									      	}
+										}
 										result_table 
 											+= "<tr>"
 											+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-											+ "<td id='f_type_"+i+"'>"+ json_obj[i].f_type+ "</td>"
-											+ "<td id='action_"+i+"'>"+ json_obj[i].action+ "</td>"
+											+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+											+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
 											+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-											+ "<td id='f_kind_"+i+"'>"+ json_obj[i].f_kind+ "</td>"
+											+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
 											+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
 											+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
 											+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
 											+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
 											+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
 											+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-									});					
+									});		
 									//判斷查詢結果
 									var resultRunTime = 0;
 									$.each (json_obj, function (i) {
@@ -770,6 +1188,13 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 				});
 			})
 // 			alert("user");
+			//日期設定
+			$(".date").datepicker({
+				dayNamesMin:["日","一","二","三","四","五","六"],
+				monthNames:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"],
+				dateFormat:"yy-mm-dd",
+				changeYear:true
+			});
 		</script>
 	</c:if>
 <!-- /**************************************  以上使用者JS區塊    *********************************************/	-->
@@ -945,19 +1370,44 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 							<tbody>
 								<tr>
 									<td><p>資金動態日期：</p></td>
-									<td><input type="text" id="insert_f_date" name="f_date"></td>
+									<td>
+							    		<input type="text" id="insert_f_date" name="f_date" class="input-date" ></td>
 									<td><p>動態類別：</p></td>
-									<td><input type="text" id="insert_f_type" name="f_type"></td>
+									<td>
+			                			<select id="insert_f_type" name="f_type">
+							    			<option value="0">請選擇...</option>
+							    			<option value="1">已發生</option>
+											<option value="2">應收/應付</option>
+							    		</select>
+							    	</td>
 								</tr>
 								<tr>
 									<td><p>實際/模擬：</p></td>
-									<td><input type="text" id="insert_action" name="action"></td>
+									<td>
+			                			<select id="insert_action" name="action">
+							    			<option value=true>實際</option>
+											<option value=false>模擬</option>
+							    		</select>
+							    	</td>
 									<td><p>資金金額：</p></td>
 									<td><input type="text" id="insert_amount" name="amount"></td>
 								</tr>
 								<tr>
 									<td><p>資金動態類別：</p></td>
-									<td><input type="text" id="insert_f_kind" name="f_kind"></td>
+									<td>
+			                			<select id="insert_f_kind" name="f_kind">
+							    			<option value="0">請選擇...</option>
+							    			<option value="1">營業收入</option>
+											<option value="2">業務支出</option>
+							    			<option value="3">固定資產支出</option>
+											<option value="4">管銷費用</option>
+							    			<option value="5">薪資</option>
+											<option value="6">研發費用</option>
+							    			<option value="7">行銷費用</option>
+											<option value="8">投資收入/支出</option>
+							    			<option value="9">其他收入/支出</option>
+							    		</select>
+							    	</td>
 									<td><p>資金動態說明：</p></td>
 									<td><input type="text" id="insert_description" name="description"></td>
 								</tr>
@@ -981,19 +1431,43 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 							<tbody>
 								<tr>
 									<td><p>資金動態日期：</p></td>
-									<td><input type="text" id="edit_f_date" name="f_date"></td>
+									<td><input type="text" id="edit_f_date" name="f_date" class="input-date"></td>
 									<td><p>動態類別：</p></td>
-									<td><input type="text" id="edit_f_type" name="f_type"></td>
+									<td>
+			                			<select id="edit_f_type" name="f_type">
+							    			<option value="0">請選擇...</option>
+							    			<option value="1">已發生</option>
+											<option value="2">應收/應付</option>
+							    		</select>
+							    	</td>
 								</tr>
 								<tr>
 									<td><p>實際/模擬：</p></td>
-									<td><input type="text" id="edit_action" name="action"></td>
+									<td>
+			                			<select id="edit_action" name="action">
+							    			<option value=true>實際</option>
+											<option value=false>模擬</option>
+							    		</select>
+									</td>
 									<td><p>資金金額：</p></td>
 									<td><input type="text" id="edit_amount" name="amount"></td>
 								</tr>
 								<tr>
 									<td><p>資金動態類別：</p></td>
-									<td><input type="text" id="edit_f_kind" name="f_kind"></td>
+									<td>
+			                			<select id="edit_f_kind" name="f_kind">
+							    			<option value="0">請選擇...</option>
+							    			<option value="1">營業收入</option>
+											<option value="2">業務支出</option>
+							    			<option value="3">固定資產支出</option>
+											<option value="4">管銷費用</option>
+							    			<option value="5">薪資</option>
+											<option value="6">研發費用</option>
+							    			<option value="7">行銷費用</option>
+											<option value="8">投資收入/支出</option>
+							    			<option value="9">其他收入/支出</option>
+							    		</select>
+							    	</td>
 									<td><p>資金動態說明：</p></td>
 									<td><input type="text" id="edit_description" name="description"></td>
 								</tr>

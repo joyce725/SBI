@@ -38,8 +38,6 @@ import tw.com.sbi.vo.FinsimuVO;
 
 public class FinModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-//	private static final int WIDTH = 120; // 圖片寬度
-//	private static final int HEIGHT = 30; // 圖片高度
 	
 //	private static final Logger logger = LogManager.getLogger(FinModel.class);
 
@@ -423,7 +421,7 @@ public class FinModel extends HttpServlet {
 //					finsimuVO.setUser_id(rs.getString("user_id"));
 					finsimuVO.setF_date(sdf.parse(rs.getString("f_date")));
 					finsimuVO.setF_type(Integer.valueOf(rs.getString("f_type")));
-					finsimuVO.setAction(Boolean.valueOf(rs.getString("action")));
+					finsimuVO.setAction("1".equals(rs.getString("action").toString())?true:false);
 					finsimuVO.setAmount(Float.valueOf(rs.getString("amount")));
 					finsimuVO.setF_kind(Integer.valueOf(rs.getString("f_kind")));
 					finsimuVO.setDescription(rs.getString("description"));
