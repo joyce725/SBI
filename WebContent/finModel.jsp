@@ -1223,7 +1223,7 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 											<th>案件產生日期</th>
 											<th>產生模擬圖</th>
 										</tr>
-									<thead>
+									</thead>
 									<tbody>
 									</tbody>
 								</table><br/>
@@ -1254,7 +1254,7 @@ ul.tab li a:focus, .active {background-color: #BFE9EC;}
 											<th>財務計畫</th>
 											<th>產生模擬圖</th>
 										</tr>
-									<thead>
+									</thead>
 									<tbody>
 									</tbody>
 								</table>
