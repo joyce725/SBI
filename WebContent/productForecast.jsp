@@ -49,17 +49,23 @@
 				serv_no = $("#service_no").val();
 			
 			for (var i = 1; i <= func_no; i++) {
-				$("#function").append('<tr><td><input type="text" id="function_name-' + i + '" name="function_name-' + i + '"></td>' + 
+// 				$("#function").append('<tr><td><input type="text" id="function_name-' + i + '" name="function_name-' + i + '"></td>' + 
+// 						'<td><input type="text" id="function_score-' + i + '" name="function_score-' + i + '" value="0"></td></tr>');
+				$("#function").append('<tr><td><select id="cmb-function_name-' + i + '" name="cmb-function_name-' + i + '"></select></td>' + 
 						'<td><input type="text" id="function_score-' + i + '" name="function_score-' + i + '" value="0"></td></tr>');
 			}
 			
 			for (var j = 1; j <= nfunc_no; j++) {
-				$("#nfunction").append('<tr><td><input type="text" id="nfunction_name-' + j + '" name="nfunction_name-' + j + '"></td>' + 
+// 				$("#nfunction").append('<tr><td><input type="text" id="nfunction_name-' + j + '" name="nfunction_name-' + j + '"></td>' + 
+// 						'<td><input type="text" id="nfunction_score-' + j + '" name="nfunction_score-' + j + '" value="0"></td></tr>');
+				$("#nfunction").append('<tr><td><select id="cmb-nfunction_name-' + j + '" name="cmb-nfunction_name-' + j + '"></select></td>' + 
 						'<td><input type="text" id="nfunction_score-' + j + '" name="nfunction_score-' + j + '" value="0"></td></tr>');
 			}
 			
 			for (var k = 1; k <= serv_no; k++) {
-				$("#service").append('<tr><td><input type="text" id="service_name-' + k + '" name="service_name-' + k + '"></td>' + 
+// 				$("#service").append('<tr><td><input type="text" id="service_name-' + k + '" name="service_name-' + k + '"></td>' + 
+// 						'<td><input type="text" id="service_score-' + k + '" name="service_score-' + k + '" value="0"></td></tr>');
+				$("#service").append('<tr><td><select id="cmb-service_name-' + k + '" name="cmb-service_name-' + k + '"></select></td>' + 
 						'<td><input type="text" id="service_score-' + k + '" name="service_score-' + k + '" value="0"></td></tr>');
 			}
 			
@@ -79,7 +85,7 @@
 			//========== validate rules (dynamic) ==========
 			$( ".customDiv2" ).validate();
 			
-			$("[name^=function_name-]").each(function(){
+			$("[name^=cmb-function_name-]").each(function(){
 				$(this).rules("add", {
 				  	required: true
 				});
@@ -91,7 +97,7 @@
 				});
 		   	});
 			
-			$("[name^=nfunction_name-]").each(function(){
+			$("[name^=cmb-nfunction_name-]").each(function(){
 				$(this).rules("add", {
 				  	required: true
 				});   
@@ -103,7 +109,7 @@
 				});
 		   	});
 			
-			$("[name^=service_name-]").each(function(){
+			$("[name^=cmb-service_name-]").each(function(){
 				$(this).rules("add", {
 				  	required: true
 				});   
@@ -114,6 +120,84 @@
 					digits: true
 				});
 		   	});
+			
+			$.ajax({
+				type : "POST",
+				url : "ProductForecastItem.do",
+				data : {
+					action : "getGroupAndKind",
+					group_id : "6ec1fbf4-6c9c-11e5-ab77-000c29c1d067",
+					item_kind : "func"
+				},
+				success : function(result) {
+					console.log('ProductForecastItem.do success');
+					console.log(result);
+					var json_obj = $.parseJSON(result);
+									
+					$.each(json_obj, function(i, item) {
+						console.log("i:" + i);
+						console.log("item:" + item);
+						console.log(json_obj[i].item_name);
+// 						$("#combo").get(0).add(json_obj[i].item_name);
+						$("[name^=cmb-function_name-]").append($('<option></option>').val(json_obj[i].item_name).html(json_obj[i].item_name));	
+					});
+				},
+				error:function(e){
+					console.log('btn1 click error');
+				}
+			});
+
+			$.ajax({
+				type : "POST",
+				url : "ProductForecastItem.do",
+				data : {
+					action : "getGroupAndKind",
+					group_id : "6ec1fbf4-6c9c-11e5-ab77-000c29c1d067",
+					item_kind : "nfunc"
+				},
+				success : function(result) {
+					console.log('ProductForecastItem.do success');
+					console.log(result);
+					var json_obj = $.parseJSON(result);
+									
+					$.each(json_obj, function(i, item) {
+						console.log("i:" + i);
+						console.log("item:" + item);
+						console.log(json_obj[i].item_name);
+// 						$("#combo").get(0).add(json_obj[i].item_name);
+						$("[name^=cmb-nfunction_name-]").append($('<option></option>').val(json_obj[i].item_name).html(json_obj[i].item_name));	
+					});
+				},
+				error:function(e){
+					console.log('btn1 click error');
+				}
+			});
+
+			$.ajax({
+				type : "POST",
+				url : "ProductForecastItem.do",
+				data : {
+					action : "getGroupAndKind",
+					group_id : "6ec1fbf4-6c9c-11e5-ab77-000c29c1d067",
+					item_kind : "service"
+				},
+				success : function(result) {
+					console.log('ProductForecastItem.do success');
+					console.log(result);
+					var json_obj = $.parseJSON(result);
+									
+					$.each(json_obj, function(i, item) {
+						console.log("i:" + i);
+						console.log("item:" + item);
+						console.log(json_obj[i].item_name);
+// 						$("#combo").get(0).add(json_obj[i].item_name);
+						$("[name^=cmb-service_name-]").append($('<option></option>').val(json_obj[i].item_name).html(json_obj[i].item_name));	
+					});
+				},
+				error:function(e){
+					console.log('btn1 click error');
+				}
+			});
 			
 			$("#divMain").hide();
 			$("#div1").hide();
@@ -188,7 +272,7 @@
 			func_score_list = "", nfunc_score_list = "", service_score_list = "";
 		
 			for (var i = 1; i <= func_no; i++) {
-				func_name_list = func_name_list + $("#function_name-" + i).val() + ',';
+				func_name_list = func_name_list + $("#cmb-function_name-" + i).val() + ',';
 				
 				temp = $("#function_score-" + i).val() / cost * 100;
 				
@@ -199,7 +283,7 @@
 			func_score_list = func_score_list.substr(0, func_score_list.length - 1);
 			
 			for (var j = 1; j <= nfunc_no; j++) {
-				nfunc_name_list = nfunc_name_list + $("#nfunction_name-" + j).val() + ',';
+				nfunc_name_list = nfunc_name_list + $("#cmb-nfunction_name-" + j).val() + ',';
 				
 				temp = $("#nfunction_score-" + j).val() / cost * 100;
 				
@@ -210,7 +294,7 @@
 			nfunc_score_list = nfunc_score_list.substr(0, nfunc_score_list.length - 1);
 			
 			for (var k = 1; k <= serv_no; k++) {
-				service_name_list = service_name_list + $("#service_name-" + k).val() + ',';
+				service_name_list = service_name_list + $("#cmb-service_name-" + k).val() + ',';
 				
 				temp = $("#service_score-" + k).val() / cost * 100;
 				

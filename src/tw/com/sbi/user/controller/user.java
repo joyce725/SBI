@@ -85,6 +85,26 @@ public class user extends HttpServlet {
 				e.printStackTrace();
 				return;
 			}
+		} else if ("getUserByGroup".equals(action)) {
+			try {
+				/*************************** 1.接收請求參數 ****************************************/
+				group_id = request.getParameter("group_id");
+				
+				/*************************** 2.開始查詢資料 ****************************************/
+				userService = new UserService();
+				List<UserBean> list = userService.getSearchAllDB(group_id);
+				
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+				return;				
+				
+				/*************************** 其他可能的錯誤處理 **********************************/
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
 		}
 	}
 	

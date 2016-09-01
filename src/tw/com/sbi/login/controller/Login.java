@@ -35,12 +35,7 @@ public class Login extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		logger.debug("logger debug");
-//		logger.error("logger.error");
-//		logger.fatal("logger fatal");
-//		logger.info("logger info");
-//		logger.trace("logger trace");
-//		logger.warn("logger warn");
+		logger.debug("Login doPost");
 		
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
@@ -52,6 +47,7 @@ public class Login extends HttpServlet {
 		Gson gson = null;
 
 		if ("login".equals(action)) {
+			String groupId = request.getParameter("group_id");
 			String username = request.getParameter("user_name");
 			String password = request.getParameter("pswd");
 			String validateCode = request.getParameter("validateCode").trim();
@@ -63,10 +59,9 @@ public class Login extends HttpServlet {
 				String jsonStrList = gson.toJson(message);
 				response.getWriter().write(jsonStrList);
 				return;
-			}
-			if (checkcode.equals(convertToCapitalString(validateCode))) {
+			} else {
 				loginService = new LoginService();
-				List<LoginVO> list = loginService.selectlogin(username, password);
+				List<LoginVO> list = loginService.selectlogin(groupId, username, password);
 				if (list.size() != 0) {
 					session.setAttribute("sessionID", session.getId());
 					session.setAttribute("user_id", list.get(0).getUser_id());
@@ -86,16 +81,16 @@ public class Login extends HttpServlet {
 		}
 		
 		if ("check_user_exist".equals(action)) {
+			String groupId = request.getParameter("group_id");
 			String username = request.getParameter("user_name");
 			loginService = new LoginService();
-			if(!loginService.checkuser(username)){
+			if(!loginService.checkuser(groupId, username)){
 				message = new LoginVO();
 				message.setMessage("user_failure");
 				gson = new Gson();
 				String jsonStrList = gson.toJson(message);
 				response.getWriter().write(jsonStrList);
-			}
-			if(loginService.checkuser(username)){
+			} else {
 				message = new LoginVO();
 				message.setMessage("success");
 				gson = new Gson();
@@ -201,9 +196,9 @@ public class Login extends HttpServlet {
 
 	interface login_interface {
 
-		public List<LoginVO> loginDB(String p_user_name, String p_password);
+		public List<LoginVO> loginDB(String p_group_id, String p_user_name, String p_password);
 
-		public Boolean checkuser(String p_user_name);
+		public Boolean checkuser(String p_group_id, String p_user_name);
 	}
 
 	/*************************** 處理業務邏輯 ****************************************/
@@ -214,27 +209,27 @@ public class Login extends HttpServlet {
 			dao = new loginDAO();
 		}
 
-		public List<LoginVO> selectlogin(String p_user_name, String p_password) {
-			return dao.loginDB(p_user_name, p_password);
+		public List<LoginVO> selectlogin(String p_group_id, String p_user_name, String p_password) {
+			return dao.loginDB(p_group_id, p_user_name, p_password);
 		}
 
-		public Boolean checkuser(String p_user_name) {
-			return dao.checkuser(p_user_name);
+		public Boolean checkuser(String p_group_id, String p_user_name) {
+			return dao.checkuser(p_group_id, p_user_name);
 		}
 	}
 
 	/*************************** 操作資料庫 ****************************************/
 	class loginDAO implements login_interface {
 		// 會使用到的Stored procedure
-		private static final String sp_login = "call sp_login(?,?)";
-		private static final String sp_checkuser = "call sp_checkuser(?,?)";
+		private static final String sp_login = "call sp_login(?,?,?)";
+		private static final String sp_checkuser = "call sp_checkuser(?,?,?)";
 		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL");
 //				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 
 		@Override
-		public List<LoginVO> loginDB(String p_user_name, String p_password) {
+		public List<LoginVO> loginDB(String p_group_id, String p_user_name, String p_password) {
 			List<LoginVO> list = new ArrayList<LoginVO>();
 			LoginVO LoginVO = null;
 
@@ -246,8 +241,9 @@ public class Login extends HttpServlet {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				pstmt = con.prepareStatement(sp_login);
-				pstmt.setString(1, p_user_name);
-				pstmt.setString(2, p_password);
+				pstmt.setString(1, p_group_id);
+				pstmt.setString(2, p_user_name);
+				pstmt.setString(3, p_password);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					LoginVO = new LoginVO();
@@ -286,7 +282,7 @@ public class Login extends HttpServlet {
 		}
 
 		@Override
-		public Boolean checkuser(String p_user_name) {
+		public Boolean checkuser(String p_group_id, String p_user_name) {
 			Connection con = null;
 			CallableStatement cs = null;
 			Boolean rs = null;
@@ -294,8 +290,10 @@ public class Login extends HttpServlet {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				cs = con.prepareCall(sp_checkuser);
-				cs.registerOutParameter(2, Types.BOOLEAN);
-				cs.setString(1, p_user_name);
+				cs.setString(1, p_group_id);
+				cs.setString(2, p_user_name);
+				cs.registerOutParameter(3, Types.BOOLEAN);
+				
 				cs.execute();
 				rs = cs.getBoolean(2);
 			} catch (SQLException se) {

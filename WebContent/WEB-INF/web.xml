@@ -9,11 +9,6 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
-<!-- 
-  <session-config>
-    <session-timeout>60</session-timeout>
-  </session-config>
--->
   <resource-ref>
     <description>DB Connection</description>
     <res-ref-name>jdbc/MySQL</res-ref-name>
@@ -24,76 +19,33 @@
     <param-name>jdbcDriver</param-name>
     <param-value>com.mysql.jdbc.Driver</param-value>
   </context-param>
-  
-<!--########################以下平常#####################################-->
-<!--   <context-param> -->
-<!--   <param-name>dbURL</param-name> -->
-<!--   <param-value>jdbc:mysql://192.168.71.169:3306/cdri</param-value> -->
-<!--   </context-param> -->
-<!--   <context-param> -->
-<!--     <param-name>dbUserName</param-name> -->
-<!--     <param-value>root</param-value> -->
-<!--   </context-param> -->
-<!--   <context-param> -->
-<!--     <param-name>dbPassword</param-name> -->
-<!--     <param-value>admin123</param-value> -->
-<!--   </context-param> -->
-<!--   <context-param> -->
-<!--     <param-name>uploadpath</param-name> -->
-<!--     <param-value>D:/log/sbiupload</param-value> -->
-<!--   </context-param> -->
-<!--########################以上平常#####################################-->
- 
-<!--########################以下164+175#####################################-->
   <context-param>
-	  <param-name>dbURL</param-name>
-	  <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value>
+    <param-name>dbURL</param-name>
+    <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value>
   </context-param>
   <context-param>
-	    <param-name>dbUserName</param-name>
-	    <param-value>root</param-value>
+    <param-name>dbUserName</param-name>
+    <param-value>root</param-value>
   </context-param>
   <context-param>
-	    <param-name>dbPassword</param-name>
-	    <param-value>admin123</param-value>
+    <param-name>dbPassword</param-name>
+    <param-value>admin123</param-value>
   </context-param>
   <context-param>
-	    <param-name>uploadpath</param-name>
-	    <param-value>/data/sbiupload</param-value>
-  </context-param>
-<!--########################以上164+175#####################################-->
- 
-<!--########################以下server##################################-->
-<!--   <context-param> -->
-<!--   <param-name>dbURL</param-name> -->
-<!--   <param-value>jdbc:mysql://localhost:3306/cdri</param-value> -->
-<!--   </context-param> -->
-<!--   <context-param> -->
-<!--     <param-name>dbUserName</param-name> -->
-<!--     <param-value>root</param-value> -->
-<!--   </context-param> -->
-<!--   <context-param> -->
-<!--     <param-name>dbPassword</param-name> -->
-<!--     <param-value>Admin@csi1008!</param-value> -->
-<!--   </context-param> -->
-<!--   <context-param> -->
-<!--     <param-name>uploadpath</param-name> -->
-<!--     <param-value>/data/sbiupload</param-value> -->
-<!--   </context-param> -->
-<!--########################以上server#####################################-->
-  <context-param>
-	    <param-name>pythonwebservice</param-name>
-	    <param-value>http://192.168.112.164:8070</param-value>
-<!-- 		<param-value>http://61.218.8.55:8099</param-value> -->
-  </context-param>
-
-  <context-param>
-	    <param-name>pythonwebservice90</param-name>
-	    <param-value>http://192.168.112.164:8090</param-value>
+    <param-name>uploadpath</param-name>
+    <param-value>/data/sbiupload</param-value>
   </context-param>
   <context-param>
-	    <param-name>pythonwebservice99</param-name>
-	    <param-value>http://192.168.112.164:8099</param-value>
+    <param-name>pythonwebservice</param-name>
+    <param-value>http://61.218.8.55:8099</param-value>
+  </context-param>
+  <context-param>
+    <param-name>pythonwebservice90</param-name>
+    <param-value>http://192.168.112.164:8090</param-value>
+  </context-param>
+  <context-param>
+    <param-name>pythonwebservice99</param-name>
+    <param-value>http://192.168.112.164:8099</param-value>
   </context-param>
   <servlet>
     <servlet-name>login</servlet-name>
@@ -112,13 +64,13 @@
     <url-pattern>/welcome.do</url-pattern>
   </servlet-mapping>
   <servlet>
-	<servlet-name>HandleDrawValidateCode</servlet-name>
-	<servlet-class>tw.com.sbi.validation.HandleDrawValidateCode</servlet-class>
+    <servlet-name>HandleDrawValidateCode</servlet-name>
+    <servlet-class>tw.com.sbi.validation.HandleDrawValidateCode</servlet-class>
   </servlet>
   <servlet-mapping>
-	<servlet-name>HandleDrawValidateCode</servlet-name>
-	<url-pattern>/HandleDrawValidateCode.do</url-pattern>
-  </servlet-mapping> 
+    <servlet-name>HandleDrawValidateCode</servlet-name>
+    <url-pattern>/HandleDrawValidateCode.do</url-pattern>
+  </servlet-mapping>
   <servlet>
     <servlet-name>finModel</servlet-name>
     <servlet-class>tw.com.sbi.finModel.controller.FinModel</servlet-class>
@@ -167,15 +119,22 @@
     <servlet-name>productForecastPoint</servlet-name>
     <url-pattern>/productForecastPoint.do</url-pattern>
   </servlet-mapping>
- 
-<!--   <servlet> -->
-<!--     <servlet-name>user</servlet-name> -->
-<!--     <servlet-class>tw.com.sbi.user.controller.user</servlet-class> -->
-<!--   </servlet> -->
-<!--   <servlet-mapping> -->
-<!--     <servlet-name>user</servlet-name> -->
-<!--     <url-pattern>/user.do</url-pattern> -->
-<!--   </servlet-mapping> -->
+  <servlet>
+    <servlet-name>ProductForecastItem</servlet-name>
+    <servlet-class>tw.com.sbi.productforecastitem.controller.ProductForecastItem</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProductForecastItem</servlet-name>
+    <url-pattern>/ProductForecastItem.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Group</servlet-name>
+    <servlet-class>tw.com.sbi.group.controller.Group</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Group</servlet-name>
+    <url-pattern>/Group.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
@@ -184,7 +143,4 @@
     <filter-name>loginFilter</filter-name>
     <url-pattern>*.jsp</url-pattern>
   </filter-mapping>
-  
-<!--####################new↓#####################-->
-<!--####################new↑#####################-->  
 </web-app>
