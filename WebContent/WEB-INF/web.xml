@@ -48,6 +48,14 @@
     <param-name>pythonwebservice99</param-name>
     <param-value>http://192.168.112.164:8099</param-value>
   </context-param>
+  <context-param>
+	<param-name>mongodbpath</param-name>
+	<param-value>192.168.112.164</param-value>
+  </context-param>
+  <context-param>
+	<param-name>mongodbport</param-name>
+	<param-value>27017</param-value>
+  </context-param>
   <servlet>
     <servlet-name>login</servlet-name>
     <servlet-class>tw.com.sbi.login.controller.Login</servlet-class>
@@ -135,6 +143,14 @@
   <servlet-mapping>
     <servlet-name>Group</servlet-name>
     <url-pattern>/Group.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>news</servlet-name>
+    <servlet-class>tw.com.sbi.news.controller.News</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>news</servlet-name>
+    <url-pattern>/news.do</url-pattern>
   </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>

@@ -1,62 +1,43 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>標頭</title>
-<style>
-	body{
-		background-image: url('images/cloud.png'); 
-		background-size: cover;
-	}  div {
-		font-family:"Microsoft JhengHei";
-		font-size: 18px;
-		
-		width:100%;
-		//background-color:#445454;
-	} div{
-		font-weight: bold;
-		font-family:"Yu Gothic", SimHei;
-		padding: 5px 5px;
-		font-size:60px;
-		color: #880000 ; 
-		vertical-align:middle
-	} span{
-	font-size:30px;
-	}
-</style>
-<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
-<script>
-	function clear_session(){
-		$.ajax({
-			type : "POST",
-			url : "login.do",
-			data : {
-				action : "logout"
-			},
-			success : function(result) {
-				top.location.href = "login.jsp";
-			}
-		});
-	}
-</script>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 </head>
-<body style="overflow:hidden;">
-
-
-<% // if(request.getSession().getAttribute("user_name")==null){ %>
-<!-- <script>alert("請重新登入!");top.location.href="login.jsp";</script> -->
-<% // }%>
-<div style="width:auto;height:59px;">
-	<div align="center">
-		<img src="./images/title.png" alt="Title" style="height:60px;">
-		<span style="float:right;"><span>操作者:<%= (request.getSession().getAttribute("user_name")==null)?"@_@?":request.getSession().getAttribute("user_name").toString() %></span>
-		<a href="#" title="logout" target="_top" onclick="clear_session();"><img src="./images/logout.png" alt="logout" height="40" width="40" align="right" ></a>
-		</span>
-		<!-- <marquee behavior=alternate width="40%">智慧電商平台</marquee> -->
-	</div>
-</div>
-</body>
-</html>
+<body>
+<div class="page-wrapper">
+	<div class="header">
+		<div class="userinfo">
+			<p>使用者<span><%= (request.getSession().getAttribute("user_name")==null)?"Guest?":request.getSession().getAttribute("user_name").toString() %></span></p>
+			<a href="#" id="logout" class="btn-logout">登出</a>
+		</div>
+	</div><!-- /.header -->
+	
+	<div class="sidenav">
+		<h1 class="sys-title"><a href="login.jsp">SBI</a></h1>
+		<ul>
+			<li><a href="#"><img src="images/sidenav-country.svg" alt="">國家/城巿商圈</a></li>
+			<li class="active"><img src="images/sidenav-strategy.svg" alt="">決策工具
+				<ul>
+					<li><a href="#">目標市場定位</a></li>
+					<li><a href="#">目標客群定位</a></li>
+					<li><a href="">競爭者定位</a></li>
+					<li><a href="#">商品通路</a></li>
+					<li><a href="#">授權商品檢索機制</a></li>
+					<li><a href="productForecast.jsp">新產品風向預測</a></li>
+					<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
+					<li><a href="#">海外布局選擇</a></li>
+				</ul>
+			</li>
+			<li><img src="images/sidenav-stastic.svg" alt="">統計資料
+				<ul>
+					<li><a href="population.jsp">台灣人口社經</a></li>
+					<li><a href="upload.jsp">產業分析基礎資料庫</a></li>
+				</ul>
+			</li>
+			<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
+				<ul>
+					<li><a href="#">生活費用</a></li>
+					<li><a href="#">區位選擇</a></li>
+					<li><a href="#">環域分析</a></li>
+					<li><a href="#">動態統計</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div><!-- /.sidenav -->

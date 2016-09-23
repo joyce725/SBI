@@ -295,7 +295,7 @@ public class Login extends HttpServlet {
 				cs.registerOutParameter(3, Types.BOOLEAN);
 				
 				cs.execute();
-				rs = cs.getBoolean(2);
+				rs = cs.getBoolean(3);
 			} catch (SQLException se) {
 				throw new RuntimeException("A database error occured. " + se.getMessage());
 			} catch (ClassNotFoundException cnfe) {

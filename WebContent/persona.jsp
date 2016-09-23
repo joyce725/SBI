@@ -4,6 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>東南亞商機定位工具</title>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
 <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
 </head>

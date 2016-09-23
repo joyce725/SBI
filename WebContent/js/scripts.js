@@ -10,11 +10,19 @@ var opt = {
    nextText:"次月",
    weekHeader:"週",
    showMonthAfterYear:true,
-   dateFormat:"yy-mm-dd",
+   dateFormat:"yy/mm/dd",
    changeYear: true,
    changeMonth: true
    };
 
 $(function(){
   $( ".input-date" ).datepicker(opt);
+
+  // 表格內的操作按鈕動作
+  // $('.table-row-func').hover(function(){
+  //   var tfl = $(this).find('.table-function-list');
+  //   var tfl_w = $(this).find('a').length * 36; // 算出寬度
+  //   tfl.toggleClass('hover').css('width',tfl_w);
+  // });
+
 });
