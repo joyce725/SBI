@@ -152,6 +152,14 @@
     <servlet-name>news</servlet-name>
     <url-pattern>/news.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>product</servlet-name>
+    <servlet-class>tw.com.sbi.product.controller.Product</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>product</servlet-name>
+    <url-pattern>/product.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>

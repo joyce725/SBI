@@ -15,9 +15,6 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.google.gson.Gson;
-import com.mongodb.Block;
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;

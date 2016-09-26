@@ -45,15 +45,18 @@ section {
 // 						alert(jsonItem[j].title);
 // 					}
 // 				}
+
+				news_list += "<section><ul>";
+
 				$.each(jsonObejct,function(index, value) {
 					var source = value.source;
-					news_list += "<section><h3 class='ui-list-title'>" + source + "</h3><ul>"
+// 					news_list += "<section><h3 class='ui-list-title'>" + source + "</h3><ul>"
 					$.each(value.data,function(i, item) {
 						var jsonItem = $.parseJSON(item);
-						news_list += "<li><a href='#'>" + jsonItem.title + "</a></li>";
+						news_list += "<li><a href='#'>" + jsonItem.title + "   (" + source + ")</a></li>";
 					});
-					news_list += "</ul></section>";
 				});
+				news_list += "</ul></section>";
 // 				$.each(json_obj,function(i, item) {
 // 					result_table += "<tr>"
 // 							+ "<td>" + json_obj[i].source + "</td>"
@@ -80,6 +83,9 @@ section {
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
 	<h2 class="page-title">新聞專區</h2>
-	<div id="news-area" class="search-result-wrap"></div>
+	<div class="search-result-wrap">
+		<h3 class="ui-list-title">每日產業重點訊息</h3>
+		<div id="news-area"></div>
+	</div>
 </div>
 <jsp:include page="footer.jsp" flush="true"/>

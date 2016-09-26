@@ -18,7 +18,7 @@
 					<li><a href="#">目標市場定位</a></li>
 					<li><a href="#">目標客群定位</a></li>
 					<li><a href="">競爭者定位</a></li>
-					<li><a href="#">商品通路</a></li>
+					<li><a href="product.jsp">商品通路</a></li>
 					<li><a href="#">授權商品檢索機制</a></li>
 					<li><a href="productForecast.jsp">新產品風向預測</a></li>
 					<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
@@ -37,6 +37,11 @@
 					<li><a href="#">區位選擇</a></li>
 					<li><a href="#">環域分析</a></li>
 					<li><a href="#">動態統計</a></li>
+				</ul>
+			</li>
+			<li><img src="images/location-icon.svg" alt="">POI
+				<ul>
+					<li><a href="#">生活費用</a></li>
 				</ul>
 			</li>
 		</ul>

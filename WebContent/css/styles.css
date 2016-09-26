@@ -402,7 +402,8 @@ h2.page-title {
     top: 0;
 }
 .content-wrap {
-    background: #D6F6FF;
+    /*background: #D6F6FF;*/
+    background-image: linear-gradient(#fff,#ccc);
     box-sizing: border-box;
     float: left;
     margin-top: 56px;
@@ -412,12 +413,16 @@ h2.page-title {
     overflow: scroll;
 }
 .input-field-wrap {
-    background: #A2E9FC;
+    /*background: #456488;*/
+    background-image: linear-gradient(#2d445d,#456488);
     padding: 20px 30px 20px 160px;
 }
 .input-field-wrap .form-wrap {
     text-align: center;
     margin: 0 auto;
+}
+.input-field-wrap label {
+    color: #fff;
 }
 .input-field-wrap .form-row .btn {
     vertical-align: bottom;
@@ -548,9 +553,7 @@ input[type="text"]:focus, input[type="text"].focus, input[type="password"]:focus
     border: 1px solid #3F7FAA;
 }
 input[type="text"]:disabled, input[type="text"].readonly, input[type="password"]:disabled, input[type="password"].readonly, select:disabled, select.readonly, textarea:disabled, textarea.readonly {}
-input[type="text"].error, input[type="password"].error, select.error, textarea.error {
-	color: red;
-}
+input[type="text"].error, input[type="password"].error, select.error, textarea.error {}
 select {
     background: #eee url('../images/dropdown.svg') no-repeat 96% 2px;
     border: 1px solid #999;
@@ -864,11 +867,11 @@ button.btn {
     background: rgb(252, 79, 79);
 }
 .btn-darkblue {
-    background: #194A6B;
-    border: 1px solid rgb(26, 102, 153);
+    background: rgb(26, 117, 179);
+    border: 1px solid rgb(26, 148, 230);
 }
 .btn-darkblue:hover {
-    background: rgb(39, 115, 165);
+    background: rgb(69, 154, 211);
 }
 .btn-green {
     background: #00ba95;
