@@ -88,7 +88,7 @@ public class News extends HttpServlet  {
 				while (cursor.hasNext()) {
 					String source = cursor.next();
 					MongoCursor<Document> result = collection.aggregate(asList(
-							new Document("$project", new Document("source", 1).append("title", 1)),
+							new Document("$project", new Document("source", 1).append("title", 1).append("link", 1)),
 //						new Document("$project", new Document("title", 1)),
 						new Document("$match", new Document("source", source)),
 						new Document("$limit", 5))).iterator();
