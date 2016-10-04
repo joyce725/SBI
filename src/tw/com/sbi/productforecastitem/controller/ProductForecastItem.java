@@ -19,8 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
-import tw.com.sbi.productforecast.controller.productForecast.ProductForecastBean;
-import tw.com.sbi.productforecast.controller.productForecast.ProductForecastService;
+import tw.com.sbi.productforecast.controller.ProductForecast.ProductForecastBean;
+import tw.com.sbi.productforecast.controller.ProductForecast.ProductForecastService;
 
 public class ProductForecastItem extends HttpServlet {
 	private static final long serialVersionUID = 1L;

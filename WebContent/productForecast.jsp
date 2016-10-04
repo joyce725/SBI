@@ -12,7 +12,6 @@
 
 	<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="css/jquery-ui-1.12.0/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
