@@ -21,8 +21,8 @@
   </context-param>
   <context-param>
     <param-name>dbURL</param-name>
-    <param-value>jdbc:mysql://localhost:3306/sbi</param-value>
-<!--     <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value> -->
+<!--     <param-value>jdbc:mysql://localhost:3306/sbi</param-value> -->
+    <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value>
   </context-param>
   <context-param>
     <param-name>dbUserName</param-name>
@@ -38,8 +38,8 @@
   </context-param>
   <context-param>
     <param-name>pythonwebservice</param-name>
-    <param-value>http://61.218.8.55:8099</param-value>
-<!--     <param-value>http://192.168.112.164:8070</param-value> -->
+<!--     <param-value>http://61.218.8.55:8099</param-value> -->
+    <param-value>http://192.168.112.164:8070</param-value>
   </context-param>
   <context-param>
     <param-name>pythonwebservice90</param-name>
@@ -51,8 +51,8 @@
   </context-param>
   <context-param>
     <param-name>mongodbpath</param-name>
-	<param-value>localhost</param-value>
-<!-- 	<param-value>192.168.112.164</param-value> -->
+<!-- 	<param-value>localhost</param-value> -->
+	<param-value>192.168.112.164</param-value>
   </context-param>
   <context-param>
     <param-name>mongodbport</param-name>
@@ -60,13 +60,13 @@
   </context-param>
   <context-param>
     <param-name>mongodb</param-name>
-	<param-value>db_news</param-value>
-<!-- 	<param-value>db_product4</param-value> -->
+<!-- 	<param-value>db_news</param-value> -->
+	<param-value>db_product4</param-value>
   </context-param>
   <context-param>
     <param-name>mongocollection</param-name>
-	<param-value>co_news</param-value>
-<!-- 	<param-value>co_eatapple</param-value> -->
+<!-- 	<param-value>co_news</param-value> -->
+	<param-value>co_eatapple</param-value>
   </context-param>
   <servlet>
     <servlet-name>login</servlet-name>
