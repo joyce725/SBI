@@ -1,6 +1,8 @@
 package tw.com.sbi.productforecast.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -9,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,6 +66,7 @@ public class productForecast extends HttpServlet {
 				BigDecimal service_no = new BigDecimal( request.getParameter("service_no") );
 				String service_name = request.getParameter("service_name");
 				String service_score = request.getParameter("service_score");
+				String ref_prod = request.getParameter("ref_prod");
 				
 //				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date score_time = null;
@@ -82,13 +89,14 @@ public class productForecast extends HttpServlet {
 				logger.debug("score_time:" + score_time);
 				logger.debug("result:" + result);
 				logger.debug("isfinish:" + isfinish);
+				logger.debug("ref_prod:" + ref_prod);
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				productForecastService = new ProductForecastService();
 				
 				ProductForecastBean productForecastBean = new ProductForecastBean();
 				
-				productForecastBean = productForecastService.addProductForecast(group_id, product_name, cost, function_no, function_name, function_score, nfunction_no, nfunction_name, nfunction_score, service_no, service_name, service_score, score_time, result, isfinish);
+				productForecastBean = productForecastService.addProductForecast(group_id, product_name, cost, function_no, function_name, function_score, nfunction_no, nfunction_name, nfunction_score, service_no, service_name, service_score, score_time, result, isfinish, ref_prod);
 
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				productForecastBean.setMessage("新增成功");
@@ -155,6 +163,44 @@ public class productForecast extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("getNews".equals(action)) {
+			String serviceStr = getServletConfig().getServletContext().getInitParameter("pythonwebservice")
+					+ "/news/";
+			
+			logger.debug(serviceStr);
+			
+			HttpGet httpRequest = new HttpGet(serviceStr);
+        	HttpClient client = HttpClientBuilder.create().build();
+        	HttpResponse httpResponse;
+        	try {
+        		StringBuffer result = new StringBuffer();
+        		httpResponse = client.execute(httpRequest);
+    			int responseCode = httpResponse.getStatusLine().getStatusCode();
+    
+    	    	if(responseCode==200){
+    	    		BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+        			
+        	    	String line = "";
+        	    	while ((line = rd.readLine()) != null) {
+        	    		result.append(line);
+        	    	}
+        	    	
+        	    	response.getWriter().write(result.toString());
+        	    	
+    	    	} else {
+    	    		response.getWriter().write("{url:'', title: ''}");
+    	    	}
+  	    	
+    		} catch (ClientProtocolException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (UnsupportedOperationException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
 		}
 	}
 	
@@ -178,6 +224,7 @@ public class productForecast extends HttpServlet {
 		private Date score_time;
 		private String result;
 		private BigDecimal isfinish;
+		private String ref_prod;
 		private String message;// for set check message
 		
 		public String getForecast_id() {
@@ -276,12 +323,19 @@ public class productForecast extends HttpServlet {
 		public void setIsfinish(BigDecimal isfinish) {
 			this.isfinish = isfinish;
 		}
+		public String getRef_prod() {
+			return ref_prod;
+		}
+		public void setRef_prod(String ref_prod) {
+			this.ref_prod = ref_prod;
+		}
 		public String getMessage() {
 			return message;
 		}
 		public void setMessage(String message) {
 			this.message = message;
 		}
+		
 	}
 
 	/*************************** 制定規章方法 ****************************************/
@@ -308,7 +362,7 @@ public class productForecast extends HttpServlet {
 		
 		public ProductForecastBean addProductForecast(String group_id, String product_name, Float cost, BigDecimal function_no, String function_name,
 				String function_score, BigDecimal nfunction_no, String nfunction_name, String nfunction_score, BigDecimal service_no,
-				String service_name, String service_score, Date score_time, String result, BigDecimal isfinish) {
+				String service_name, String service_score, Date score_time, String result, BigDecimal isfinish, String ref_prod) {
 			ProductForecastBean productForecastBean = new ProductForecastBean();
 			
 			productForecastBean.setGroup_id(group_id);
@@ -329,7 +383,7 @@ public class productForecast extends HttpServlet {
 			productForecastBean.setResult(result);
 			productForecastBean.setIsfinish(isfinish);
 			
-			productForecastBean.setGroup_id(group_id);
+			productForecastBean.setRef_prod(ref_prod);
 			
 			String forecast_id = dao.insertDB(productForecastBean);
 			
@@ -356,7 +410,7 @@ public class productForecast extends HttpServlet {
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 
 		// 會使用到的Stored procedure
-		private static final String sp_insert_product_forecast = "call sp_insert_product_forecast(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		private static final String sp_insert_product_forecast = "call sp_insert_product_forecast(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		private static final String sp_select_product_forecast_by_group_id = "call sp_select_product_forecast_by_group_id(?)";
 		private static final String sp_select_product_forecast_by_forecast_id = "call sp_select_product_forecast_by_forecast_id(?)";
 		
@@ -385,12 +439,13 @@ public class productForecast extends HttpServlet {
 				cs.setDate(13, (java.sql.Date) productForecastBean.getScore_time());
 				cs.setString(14, productForecastBean.getResult());
 				cs.setBigDecimal(15, productForecastBean.getIsfinish());
+				cs.setString(16, productForecastBean.getRef_prod());
 				
-				cs.registerOutParameter(16, Types.VARCHAR);
+				cs.registerOutParameter(17, Types.VARCHAR);
 
 				cs.execute();
 								
-				return cs.getString(16);
+				return cs.getString(17);
 			
 			} catch (SQLException se) {
 				// Handle any SQL errors
@@ -458,6 +513,7 @@ public class productForecast extends HttpServlet {
 					productForecastBean.setScore_time( rs.getDate("score_time") );
 					productForecastBean.setResult(rs.getString("result"));
 					productForecastBean.setIsfinish( rs.getBigDecimal("isfinish") );
+					productForecastBean.setRef_prod( rs.getString("ref_prod") );
 					
 					list.add(productForecastBean); // Store the row in the list
 				}
@@ -527,6 +583,7 @@ public class productForecast extends HttpServlet {
 					productForecastBean.setScore_time( rs.getDate("score_time") );
 					productForecastBean.setResult(rs.getString("result"));
 					productForecastBean.setIsfinish( rs.getBigDecimal("isfinish") );
+					productForecastBean.setRef_prod(rs.getString("ref_prod"));
 					
 					list.add(productForecastBean); // Store the row in the list
 				}

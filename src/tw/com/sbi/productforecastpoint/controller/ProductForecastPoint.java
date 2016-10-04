@@ -1,6 +1,7 @@
 package tw.com.sbi.productforecastpoint.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -262,6 +263,7 @@ public class ProductForecastPoint extends HttpServlet {
 		private static final String sp_insert_product_forecast_point = "call sp_insert_product_forecast_point(?,?,?,?,?,?,?)";
 		private static final String sp_update_product_forecast_point = "call sp_update_product_forecast_point(?,?,?,?,?)";
 		private static final String sp_count_product_forecast_point = "call sp_count_product_forecast_point(?)";
+		private static final String sp_select_product_forecast_by_forecast_id = "call sp_select_product_forecast_by_forecast_id(?)";
 		
 		@Override
 		public void insertDB(ProductForecastPointBean productForecastPointBean) {
@@ -368,9 +370,27 @@ public class ProductForecastPoint extends HttpServlet {
 				}
 				
 				if (cnt == 0) {
+					CallableStatement cs2 = null;
+					cs2 = con.prepareCall(sp_select_product_forecast_by_forecast_id);
+
+					cs2.setString(1, forecast_id);
+					
+					ResultSet rs2 = null;
+					
+					String ref_prod = "";
+					rs2 = cs2.executeQuery();
+					while (rs2.next()) {
+						ref_prod = rs2.getString("ref_prod");
+						
+						logger.debug("ref_prod:" + ref_prod);
+						logger.debug("ref_prod(base64):" + Base64.encodeBase64String( ref_prod.getBytes("UTF-8")) );
+					}
+					
 					String serviceStr = getServletConfig().getServletContext().getInitParameter("pythonwebservice")
 							+ "/forecast/forid="
-							+ new String(Base64.encodeBase64String(forecast_id.getBytes()));
+							+ new String(Base64.encodeBase64String( forecast_id.getBytes()) )
+							+ "&findc="
+							+ new String(Base64.encodeBase64String( ref_prod.getBytes("UTF-8")) );
 					
 					logger.debug(serviceStr);
 					
@@ -392,6 +412,8 @@ public class ProductForecastPoint extends HttpServlet {
 			} catch (SQLException se) {
 				// Handle any SQL errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (UnsupportedEncodingException e1) {
+				throw new RuntimeException("A database error occured. " + e1.getMessage());
 			} finally {
 				// Clean up JDBC resources
 				if (pstmt != null) {

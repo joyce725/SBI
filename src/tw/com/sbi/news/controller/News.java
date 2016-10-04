@@ -69,6 +69,8 @@ public class News extends HttpServlet  {
 
 		private final String mongoPath = getServletConfig().getServletContext().getInitParameter("mongodbpath");
 		private final int mongoPort = Integer.parseInt(getServletConfig().getServletContext().getInitParameter("mongodbport"));
+		private final String mongoDatabase = getServletConfig().getServletContext().getInitParameter("mongodb");
+		private final String mongoCollection = getServletConfig().getServletContext().getInitParameter("mongocollection");
 		
 		@Override
 		public JSONArray getNews(){
@@ -80,8 +82,8 @@ public class News extends HttpServlet  {
 			// To directly connect to a single MongoDB server
 			// (this will not auto-discover the primary even if it's a member of a replica set)
 			mongoClient = new MongoClient(mongoPath, mongoPort);
-			MongoDatabase database = mongoClient.getDatabase("db_product4");
-			MongoCollection<Document> collection = database.getCollection("co_eatapple");
+			MongoDatabase database = mongoClient.getDatabase(mongoDatabase);
+			MongoCollection<Document> collection = database.getCollection(mongoCollection);
 			
 			MongoCursor<String> cursor = collection.distinct("source", String.class).iterator();
 			try {

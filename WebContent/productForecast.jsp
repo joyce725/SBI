@@ -1,19 +1,21 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF8">
 
-<link rel="Shortcut Icon" type="image/x-icon" href="./images/Rockettheme-Ecommerce-Shop.ico" />
-<link rel="stylesheet" href="css/styles.css" />
-<link href="css/jquery-ui-1.12.0/jquery-ui.css" rel="stylesheet">
-<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
-<script type="text/javascript" src="css/jquery-ui-1.12.0/jquery-ui.min.js"></script>
-<script type="text/javascript" src="js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="js/additional-methods.min.js"></script>
-<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+	<link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
 
+	<link rel="stylesheet" href="css/jquery-ui.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/styles.css">
+
+	<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="css/jquery-ui-1.12.0/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="js/additional-methods.min.js"></script>
+	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <%
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
@@ -22,197 +24,53 @@
 <title>新產品風向預測</title>
 
 <script>
+	
 	$(function() {
+
 		var user_count = 0;
 		
 		$( document ).ready(function() {
 			mainLoad();
 		});
 		
-		$("#create").click(function() {
-
+		$("#create").click(function(event) {
+			event.preventDefault();
+			$("#tbl1").html('');
+			
 		    $("#divMain").hide();
 		    $("#div1").show();
-			$("#div2").hide();
 			$("#div3").hide();
 			$("#divTest").hide();
 		});
 		
-		$("#next1").click(function() {
+		$("[id^=back2List-a]").click(function() {
+			event.preventDefault();
+			$( ":input" ).val('');
+			$("#point").html('');
 
+		    $("#divMain").show();
+		    $("#div1").hide();
+			$("#div3").hide();
+			$("#divTest").hide();
+		});
+		
+		$("#backPage-a3").click(function() {
+			event.preventDefault();
+			$("#divMain").hide();
+		    $("#div1").show();
+			$("#div3").hide();
+			$("#divTest").hide();
+		});
+		
+		
+		$("#next1").click(function(event) {
+			event.preventDefault();
+			
 			if ( !$(".customDiv1").valid() ) {
 				return;
 			}
 			
-			var func_no = $("#function_no").val(),
-				nfunc_no = $("#nfunction_no").val(),
-				serv_no = $("#service_no").val();
-			
-			for (var i = 1; i <= func_no; i++) {
-// 				$("#function").append('<tr><td><input type="text" id="function_name-' + i + '" name="function_name-' + i + '"></td>' + 
-// 						'<td><input type="text" id="function_score-' + i + '" name="function_score-' + i + '" value="0"></td></tr>');
-				$("#function").append('<tr><td><select id="cmb-function_name-' + i + '" name="cmb-function_name-' + i + '"></select></td>' + 
-						'<td><input type="text" id="function_score-' + i + '" name="function_score-' + i + '" value="0"></td></tr>');
-			}
-			
-			for (var j = 1; j <= nfunc_no; j++) {
-// 				$("#nfunction").append('<tr><td><input type="text" id="nfunction_name-' + j + '" name="nfunction_name-' + j + '"></td>' + 
-// 						'<td><input type="text" id="nfunction_score-' + j + '" name="nfunction_score-' + j + '" value="0"></td></tr>');
-				$("#nfunction").append('<tr><td><select id="cmb-nfunction_name-' + j + '" name="cmb-nfunction_name-' + j + '"></select></td>' + 
-						'<td><input type="text" id="nfunction_score-' + j + '" name="nfunction_score-' + j + '" value="0"></td></tr>');
-			}
-			
-			for (var k = 1; k <= serv_no; k++) {
-// 				$("#service").append('<tr><td><input type="text" id="service_name-' + k + '" name="service_name-' + k + '"></td>' + 
-// 						'<td><input type="text" id="service_score-' + k + '" name="service_score-' + k + '" value="0"></td></tr>');
-				$("#service").append('<tr><td><select id="cmb-service_name-' + k + '" name="cmb-service_name-' + k + '"></select></td>' + 
-						'<td><input type="text" id="service_score-' + k + '" name="service_score-' + k + '" value="0"></td></tr>');
-			}
-			
-			//register event
-			$( "[name^=function_score-]" ).blur(function() {
-				checkDiv2("gt");
-			});
-			
-			$( "[name^=nfunction_score-]" ).blur(function() {
-				checkDiv2("gt");
-			});
-			
-			$( "[name^=service_score-]" ).blur(function() {
-				checkDiv2("gt");
-			});
-			
-			//========== validate rules (dynamic) ==========
-			$( ".customDiv2" ).validate();
-			
-			$("[name^=cmb-function_name-]").each(function(){
-				$(this).rules("add", {
-				  	required: true
-				});
-		   	});
-			$("[name^=function_score-]").each(function(){
-				$(this).rules("add", {
-				  	required: true,
-					digits: true
-				});
-		   	});
-			
-			$("[name^=cmb-nfunction_name-]").each(function(){
-				$(this).rules("add", {
-				  	required: true
-				});   
-		   	});
-			$("[name^=nfunction_score-]").each(function(){
-				$(this).rules("add", {
-				  	required: true,
-					digits: true
-				});
-		   	});
-			
-			$("[name^=cmb-service_name-]").each(function(){
-				$(this).rules("add", {
-				  	required: true
-				});   
-		   	});
-			$("[name^=service_score-]").each(function(){
-				$(this).rules("add", {
-				  	required: true,
-					digits: true
-				});
-		   	});
-			
-			$.ajax({
-				type : "POST",
-				url : "ProductForecastItem.do",
-				data : {
-					action : "getGroupAndKind",
-					group_id : "6ec1fbf4-6c9c-11e5-ab77-000c29c1d067",
-					item_kind : "func"
-				},
-				success : function(result) {
-					console.log('ProductForecastItem.do success');
-					console.log(result);
-					var json_obj = $.parseJSON(result);
-									
-					$.each(json_obj, function(i, item) {
-						console.log("i:" + i);
-						console.log("item:" + item);
-						console.log(json_obj[i].item_name);
-// 						$("#combo").get(0).add(json_obj[i].item_name);
-						$("[name^=cmb-function_name-]").append($('<option></option>').val(json_obj[i].item_name).html(json_obj[i].item_name));	
-					});
-				},
-				error:function(e){
-					console.log('btn1 click error');
-				}
-			});
-
-			$.ajax({
-				type : "POST",
-				url : "ProductForecastItem.do",
-				data : {
-					action : "getGroupAndKind",
-					group_id : "6ec1fbf4-6c9c-11e5-ab77-000c29c1d067",
-					item_kind : "nfunc"
-				},
-				success : function(result) {
-					console.log('ProductForecastItem.do success');
-					console.log(result);
-					var json_obj = $.parseJSON(result);
-									
-					$.each(json_obj, function(i, item) {
-						console.log("i:" + i);
-						console.log("item:" + item);
-						console.log(json_obj[i].item_name);
-// 						$("#combo").get(0).add(json_obj[i].item_name);
-						$("[name^=cmb-nfunction_name-]").append($('<option></option>').val(json_obj[i].item_name).html(json_obj[i].item_name));	
-					});
-				},
-				error:function(e){
-					console.log('btn1 click error');
-				}
-			});
-
-			$.ajax({
-				type : "POST",
-				url : "ProductForecastItem.do",
-				data : {
-					action : "getGroupAndKind",
-					group_id : "6ec1fbf4-6c9c-11e5-ab77-000c29c1d067",
-					item_kind : "service"
-				},
-				success : function(result) {
-					console.log('ProductForecastItem.do success');
-					console.log(result);
-					var json_obj = $.parseJSON(result);
-									
-					$.each(json_obj, function(i, item) {
-						console.log("i:" + i);
-						console.log("item:" + item);
-						console.log(json_obj[i].item_name);
-// 						$("#combo").get(0).add(json_obj[i].item_name);
-						$("[name^=cmb-service_name-]").append($('<option></option>').val(json_obj[i].item_name).html(json_obj[i].item_name));	
-					});
-				},
-				error:function(e){
-					console.log('btn1 click error');
-				}
-			});
-			
-			$("#divMain").hide();
-			$("#div1").hide();
-			$("#div2").show();
-			$("#div3").hide();
-			$("#divTest").hide();
-		});
-		
-		$("#next2").click(function() {
-						
-			if ( !$(".customDiv2").valid() ) {
-				return;
-			}
-			
-			if ( checkDiv2("eq") ) {
+			if ( checkDiv1("eq") ) {
 				$.ajax({
 					type : "POST",
 					url : "user.do",
@@ -225,30 +83,23 @@
 						var str = "";
 						
 						user_count = json_obj.length;
-						
+						$("#point").html('<tr>' + 
+								'<th><label>使用者名稱</label></th>' +
+								'<th><label>權重</label></th>' + 
+								'<th hidden="true">userid</th>' + 
+							'</tr>');
 						$.each(json_obj, function(i, item) {
-							
 							$("#point").append('<tr><td><label>' + json_obj[i].user_name + '</label></td>' + 
-									'<td><input type="text" id="weight-' + i + '" name="weight-' + i + '"></td>' + 
+									'<td><input id="rdo-1-' + i + '" type="radio" name="rdoweight-' + i + '" value="1" checked><label for="rdo-1-' + i + '"><span class="form-label">1</span></label>' +
+									'<input id="rdo-2-' + i + '" type="radio" name="rdoweight-' + i + '" value="2"><label for="rdo-2-' + i + '"><span class="form-label">2</span></label>' + 
+									'<input id="rdo-3-' + i + '" type="radio" name="rdoweight-' + i + '" value="3"><label for="rdo-3-' + i + '"><span class="form-label">3</span></label>' + 
+									'<input id="rdo-4-' + i + '" type="radio" name="rdoweight-' + i + '" value="4"><label for="rdo-4-' + i + '"><span class="form-label">4</span></label>' +
+									'<input id="rdo-5-' + i + '" type="radio" name="rdoweight-' + i + '" value="5"><label for="rdo-5-' + i + '"><span class="form-label">5</span></label></td>' + 
 									'<td><input type="hidden" id="user-' + i + '" name="user-' + i + '" value="' + json_obj[i].user_id + '"></td></tr>');
-								
 						});
-						
-						//========== validate rules (dynamic) ==========
-						$( ".customDiv3" ).validate();
-						
-						$("[name^=weight-]").each(function(){
-							$(this).rules("add", {
-							  	required: true,
-								digits: true,
-								max: 5,
-								min: 1
-							});
-					   	});
 
 						$("#divMain").hide();
 						$("#div1").hide();
-						$("#div2").hide();
 						$("#div3").show();
 						$("#divTest").hide();
 					}
@@ -257,7 +108,7 @@
 		});
 		
 		$("#confirm").click(function() {
-			
+			event.preventDefault();
 			if ( !$(".customDiv3").valid() ) {
 				return;
 			}
@@ -265,41 +116,48 @@
 			var 
 			cost = $("#cost").val(),
 			temp = '',
-			func_no = $("#function_no").val(),
-			nfunc_no = $("#nfunction_no").val(),
-			serv_no = $("#service_no").val(),
+			func_no = 0,
+			nfunc_no = 0,
+			serv_no = 0,
 			func_name_list = "", nfunc_name_list = "", service_name_list = "",
 			func_score_list = "", nfunc_score_list = "", service_score_list = "";
 		
-			for (var i = 1; i <= func_no; i++) {
-				func_name_list = func_name_list + $("#cmb-function_name-" + i).val() + ',';
+			var count = 1;
+			$('#tbl1').find('tr').each(function () {
+				var row = $(this);
 				
-				temp = $("#function_score-" + i).val() / cost * 100;
+				var data1 = row.find('[id^=cmb-1-r]').val();
+				var data2 = row.find('[id^=cmb-2-r]').val();
+				var data3 = row.find('[id^=text3-r]').val();
+				var data4 = row.find('[id^=text4-r]').val();
 				
-				func_score_list = func_score_list + roundDecimal(temp, 2) + ',';
-			}
+				switch (data1) {
+					case "func":
+						func_no++;
+						func_name_list += data3 + ',';
+						func_score_list += data4 + ',';
+						break;
+					case "nfunc":
+						nfunc_no++;
+						nfunc_name_list += data3 + ',';
+						nfunc_score_list += data4 + ',';
+						break;
+					case "service":
+						serv_no++;
+						service_name_list += data3 + ',';
+						service_score_list += data4 + ',';
+						break;
+					default:
+		       	 		
+				}
 
+				count++;
+			});
 			func_name_list = func_name_list.substr(0, func_name_list.length - 1);
 			func_score_list = func_score_list.substr(0, func_score_list.length - 1);
 			
-			for (var j = 1; j <= nfunc_no; j++) {
-				nfunc_name_list = nfunc_name_list + $("#cmb-nfunction_name-" + j).val() + ',';
-				
-				temp = $("#nfunction_score-" + j).val() / cost * 100;
-				
-				nfunc_score_list = nfunc_score_list + roundDecimal(temp, 2) + ',';
-			}
-
 			nfunc_name_list = nfunc_name_list.substr(0, nfunc_name_list.length - 1);
 			nfunc_score_list = nfunc_score_list.substr(0, nfunc_score_list.length - 1);
-			
-			for (var k = 1; k <= serv_no; k++) {
-				service_name_list = service_name_list + $("#cmb-service_name-" + k).val() + ',';
-				
-				temp = $("#service_score-" + k).val() / cost * 100;
-				
-				service_score_list = service_score_list + roundDecimal(temp, 2) + ',';
-			}
 			
 			service_name_list = service_name_list.substr(0, service_name_list.length - 1);
 			service_score_list = service_score_list.substr(0, service_score_list.length - 1);
@@ -312,18 +170,19 @@
 					group_id : '<%=group_id%>',
 					product_name : $("#product_name").val(),
 					cost : $("#cost").val(),
-					function_no : $("#function_no").val(),
+					function_no : func_no,
 					function_name : func_name_list,
 					function_score : func_score_list,
-					nfunction_no : $("#nfunction_no").val(),
+					nfunction_no : nfunc_no,
 					nfunction_name : nfunc_name_list,
 					nfunction_score : nfunc_score_list,
-					service_no : $("#service_no").val(),
+					service_no : serv_no,
 					service_name : service_name_list,
 					service_score : service_score_list,
-					score_time : $("#score_time").val(),
-					result : $("#result").val(),
-					isfinish : 0
+					score_time : '',
+					result : '',
+					isfinish : 0,
+					ref_prod : $("#ref_prod").val()
 				},
 				success : function(result) {
 					var json_obj = $.parseJSON(result);
@@ -334,7 +193,8 @@
 			});
 		});
 		
-		$("#create2").click(function() {
+		$("#create2").click(function(event) {
+			event.preventDefault();
 			var isChecked = $('.maincheck').attr('checked')?true:false;
 			
 			$('#main').find('tr').each(function () {
@@ -425,7 +285,6 @@
 
 								$("#divMain").hide();
 								$("#div1").hide();
-								$("#div2").hide();
 								$("#div3").hide();
 								$("#divTest").show();
 							});
@@ -441,7 +300,7 @@
 		});
 		
 		$("#confirmTest").click(function() {
-
+			event.preventDefault();
 			if ( !$(".customDivTest").valid() ) {
 				return;
 			}
@@ -505,9 +364,115 @@
 			
 			$("#divMain").show();
 		    $("#div1").hide();
-			$("#div2").hide();
 			$("#div3").hide();
 			$("#divTest").hide();
+		});
+		
+		$("#addRow").click(function() {
+			event.preventDefault();
+			var rowCount = $('#tbl1 tr').length;
+			
+			$("#tbl1").append('<tr><td><select id="cmb-1-r' + rowCount + '" name="cmb-1-r' + rowCount + '"></select></td>' + 
+					'<td><select id="cmb-2-r' + rowCount + '" name="cmb-2-r' + rowCount + '"></select></td>' +
+					'<td><input id="text3-r' + rowCount + '" name="text3-r' + rowCount +'">' +
+					'</td><td>成本比例(%)</td><td><input id="text4-r' + rowCount + '" name="text4-r' + rowCount + '"></td></tr>');
+						
+			$("[id^=cmb-1-r" + rowCount + "]")
+				.append($('<option></option>').val("func").html("功能性項目"))
+				.append($('<option></option>').val("nfunc").html("非功能性項目"))
+				.append($('<option></option>').val("service").html("服務性項目"));
+			
+			$( "[id^=text4-r" + rowCount + "]" ).blur(function() {
+				checkDiv1("gt");
+			});
+			
+			$.ajax({
+				type : "POST",
+				url : "ProductForecastItem.do",
+				data : {
+					action : "getGroupAndKind",
+					group_id : "<%=group_id%>",
+					item_kind : "func"
+				},
+				success : function(result) {
+					var json_obj = $.parseJSON(result);
+					$("[id^=cmb-2-r" + rowCount + "]").append($('<option></option>').val("").html("請選擇"));				
+					$.each(json_obj, function(i, item) {
+						$("[id^=cmb-2-r" + rowCount + "]").append($('<option></option>').val(json_obj[i].item_name).html(json_obj[i].item_name));	
+					});
+				},
+				error:function(e){
+					
+				}
+			});
+			
+			$("[id^=cmb-1-r]").change(function() {
+				var $this = $(this);
+				var row = $this.closest("tr");
+				
+				
+				$.ajax({
+					type : "POST",
+					url : "ProductForecastItem.do",
+					data : {
+						action : "getGroupAndKind",
+						group_id : "<%=group_id%>",
+						item_kind : $(this).val()
+					},
+					success : function(result) {
+						var json_obj = $.parseJSON(result);
+						row.find('[id^=cmb-2-r]').html('');
+						row.find('[id^=cmb-2-r]').append($('<option></option>').val("").html("請選擇"));
+						row.find('[id^=text3-r]').val('');
+						$.each(json_obj, function(i, item) {
+							row.find('[id^=cmb-2-r]').append($('<option></option>').val(json_obj[i].item_name).html(json_obj[i].item_name));	
+						});
+					},
+					error:function(e){
+						
+					}
+				});				
+			});
+			
+			$("[id^=cmb-2-r]").change(function() {
+				var $this = $(this);
+				var row = $this.closest("tr");
+				
+				row.find('[id^=text3-r]').val( $(this).val() );
+			});
+
+			
+			//========== validate rules (dynamic) ==========
+			$( ".customDiv1" ).validate();
+			
+// 			$("[name^=text3-r" + rowCount + "]").rules("add", {
+// 			  	required: true,
+// 			    messages: {
+// 			        required: "必填"
+// 		      	}
+// 			});
+			
+// 			$("[name^=text4-r" + rowCount + "]").rules("add", {
+// 			  	required: true,
+// 			    messages: {
+// 			        required: "必填"
+// 		      	}
+// 			});
+			
+			$("[id^=text4-r" + rowCount + "]").rules("add", {
+			  	required: true,
+			    messages: {
+			        required: "必填"
+		      	}
+			});
+			
+			$("[id^=text3-r" + rowCount + "]").rules("add", {
+			  	required: true,
+			    messages: {
+			        required: "必填"
+		      	}
+			});
+
 		});
 		
 		function point(productForecast) {
@@ -515,7 +480,7 @@
 			
 			for (var i = 0; i < user_count; i++) {
 				user = $("#user-" + i).val();
-				weight = $("#weight-" + i).val();
+				weight = $("input[name^=rdoweight-" + i + "]:checked").val();
 				
 				$.ajax({
 					type : "POST",
@@ -535,9 +500,6 @@
 						var len=json_obj.length;
 						
 						$( ":input" ).val('');
-						$("#function").html('');
-						$("#nfunction").html('');
-						$("#service").html('');
 						$("#point").html('');
 					}
 				});
@@ -547,7 +509,6 @@
 			
 			$("#divMain").show();
 			$("#div1").hide();
-			$("#div2").hide();
 			$("#div3").hide();
 			$("#divTest").hide();
 		}
@@ -572,7 +533,7 @@
 			if ('<%=role%>' == '0') {
 				$('#create').hide();
 				$('#create2').show();
-				h_str_checkbox = '<td><label>選擇</label></td>';
+				h_str_checkbox = '<th><label>選擇</label></th>';
 			} else if ('<%=role%>' == '1') {
 				$('#create').show();
 				$('#create2').hide();
@@ -582,9 +543,9 @@
 			$("#main").html(
 				'<tr>' + 
 					h_str_checkbox +
-					'<td><label>產品名稱</label></td>' +
-					'<td><label>總成本</label></td>' + 
-					'<td>結果</td>' + 
+					'<th><label>產品名稱</label></th>' +
+					'<th><label>總成本</label></th>' + 
+					'<th>結果</th>' + 
 				'</tr>'
 			);
 			
@@ -601,14 +562,13 @@
 					$.each(json_obj, function(i, item) {
 						
 						if ('<%=role%>' == '0') {
-							str_checkbox = '<td><input type="checkbox" class="maincheck" /></td>';
+							str_checkbox = '<td><input type="checkbox" class="maincheck" id="checkbox-r' + i + '"/><label for="checkbox-r' + i + '"><span class="form-label">選取</span></label></td>';
 						} else if ('<%=role%>' == '1') {
 							str_checkbox = '';
 						}
 						
 						if (json_obj[i].isfinish === 1) {
-// 							str_button = '<button id="btn-result-' + i + '" class="btn btn-primary btn-lg">顯示</button>';
-							str_button = "<label>顯示結果請點擊兩次本列資料</label>";
+							str_button = "<u>評估結果</u>";
 						} else {
 							str_button = '';
 						}
@@ -629,17 +589,18 @@
 					
 					$("#divMain").show();
 					$("#div1").hide();
-					$("#div2").hide();
 					$("#div3").hide();
 					$("#divTest").hide();
 					
-					$('#main td').dblclick(function () {
+					$('#main td').click(function () {
 						
 						var $this = $(this);
 						var row = $this.closest("tr");
+						var column_num = parseInt( $(this).index() ) + 1;
 						
-						if ( row.find('label').val() == '' ) {
+						if ( column_num == 3 && row.find('u').val() == '' ) {
 							var forecast_id = row.find('.forecast_id_main').html();
+							$("#resultModal").html('');
 							
 				        	$.ajax({
 								type : "POST",
@@ -654,7 +615,7 @@
 									$.each(json_obj, function(i, item) {
 										var result_list = json_obj[i].result.split(',');
 										
-										$("#resultModal").append('<table id="tblResult" class="formTable"></table>');
+										$("#resultModal").append('<table id="tblResult" class="result-table"></table>');
 										
 										$("#tblResult").append('<tr>' + 
 													'<th>優先次序</th>' + 
@@ -694,28 +655,19 @@
 			});
 		}
 		
-		function checkDiv2(type) {
-			var sum = 0,
-			cost = $("#cost").val(),
-			func_no = $("#function_no").val(),
-			nfunc_no = $("#nfunction_no").val(),
-			serv_no = $("#service_no").val();
-				
-			for (var i = 1; i <= func_no; i++) {
-				sum = sum + parseInt( $("#function_score-" + i).val() );
-			}
-
-			for (var j = 1; j <= nfunc_no; j++) {
-				sum = sum + parseInt( $("#nfunction_score-" + j).val() );
-			}
-
-			for (var k = 1; k <= serv_no; k++) {
-				sum = sum + parseInt( $("#service_score-" + k).val() );
-			}
+		function checkDiv1(type) {
+			var sum = 0, cost = 100;
+			
+			$('#tbl1').find('tr').each(function () {
+				var row = $(this);
+				var data4 = row.find('[id^=text4-r]').val();
+				if(data4){
+					sum += parseInt( data4 );
+				}
+			});
 			
 			if ((type == "eq" && cost != sum) || (type == "gt" && sum > cost)) {
-				
-				$("#productAlert").html("您輸入的成本總和與總成本不符，請重新輸入。" + "總成本為 " + cost + " ，成本總和為 " + sum + " 。");
+				$("#productAlert").html("您輸入成本比例不符合100%，請重新輸入。成本總和為 " + sum + "% 。");
 				
 				$("#productAlert").dialog({
 					title: "警告",
@@ -749,212 +701,239 @@
 					required: true,
 					digits: true
 				},
-				function_no: {
-					required: true,
-					digits: true
+				ref_prod: {
+					required: true
+				}
+			},
+			messages: {
+				product_name: {
+					required : "必填"
 				},
-				nfunction_no: {
-					required: true,
-					digits: true
+				cost: {
+					required : "必填",
+					digits : "請輸入整數"
 				},
-				service_no: {
-					required: true,
-					digits: true
+				ref_prod: {
+					required : "必填"
 				}
 			}
 		});
+		
+		
+		////////////////////////////
+		$("#my").click(function(e) {
+			alert("hello");
+		});
+		
+		$("#logout").click(function(e) {
+			$.ajax({
+				type : "POST",
+				url : "login.do",
+				data : {
+					action : "logout"
+				},
+				success : function(result) {
+					top.location.href = "login.jsp";
+				}
+			});
+		});
+		
+		$("#back").click(function(e) {
+			top.location.href = "main.jsp";
+		});
+		
 	});
 </script>
 </head>
 <body>
 
-<%-- 	<jsp:include page="template-old.jsp" flush="true"/> --%>
-	<div class="content-wrap"><br/>    
-		
-		<div id="productAlert"></div>
-		<div id="resultModal"></div>
+	<div class="page-wrapper" >
 	
-		<div id="divMain" class="panelWrap expand" hidden="true">
-			<div class="panel-title">
-				<h2>新產品風向預測</h2>
-			</div>
-	
-			<form class="customDivMain">
-				<table id="main" class="formTable">
-					<tr>
-						<td><label>產品名稱</label></td>
-						<td><label>總成本</label></td>
-						<td><label>功能性項目</label></td>
-						<td><label>名稱</label></td>
-						<td><label>比重</label></td>
-						<td><label>非功能性項目</label></td>
-						<td><label>名稱</label></td>
-						<td><label>比重</label></td>
-						<td><label>服務性項目</label></td>
-						<td><label>名稱</label></td>
-						<td><label>比重</label></td>
-					</tr>
-				</table>
-			</form>
-	
-			<div class="btn-control aCenter">
-				<button id="create" class="btn btn-primary btn-lg" hidden="true">建立量表</button>
-				<button id="create2" class="btn btn-primary btn-lg" hidden="true">開始評分</button>
+		<div class="header">
+			<div class="userinfo">
+				<p>使用者<span><%= (request.getSession().getAttribute("user_name")==null)?"":request.getSession().getAttribute("user_name").toString() %></span></p>
+				<a id="logout" class="btn-logout" >登出</a>
 			</div>
 		</div>
 	
-		<div id="div1" class="panelWrap expand" hidden="true">
-			<div class="panel-title">
-				<h2>新產品風向預測</h2>
-			</div>
-	
-			<form class="customDiv1">
-				<table class="formTable">
-					<tr>
-						<td><label>產品名稱</label></td>
-						<td><input type="text" id="product_name" name="product_name"
-							placeholder="輸入產品名稱"></td>
-						<td><label>總成本</label></td>
-						<td><input type="text" id="cost" name="cost"
-							placeholder="輸入總成本"></td>
-					</tr>
-	
-					<tr>
-						<td><label>功能性項目</label></td>
-						<td align="right">共計</td>
-						<td><input type="text" id="function_no" name="function_no">
-						</td>
-						<td align="left">項</td>
-					</tr>
-	
-					<tr>
-						<td><label>非功能性項目</label></td>
-						<td align="right">共計</td>
-						<td><input type="text" id="nfunction_no" name="nfunction_no">
-						</td>
-						<td align="left">項</td>
-					</tr>
-	
-					<tr>
-						<td><label>服務性項目</label></td>
-						<td align="right">共計</td>
-						<td><input type="text" id="service_no" name="service_no">
-						</td>
-						<td align="left">項</td>
-					</tr>
-				</table>
-			</form>
-	
-			<div class="btn-control aCenter">
-				<button id="next1" class="btn btn-primary btn-lg">下一步</button>
-			</div>
-		</div>
-	
-		<div id="div2" class="panelWrap expand" hidden="true">
-			<form class="customDiv2">
-				<table id="function" class="formTable">
-					<div class="panel-title">
-						<h2>功能性項目</h2>
-					</div>
-					<tr>
-						<th>名稱</th>
-						<th>比重(成本)</th>
-					</tr>
-				</table>
-	
-				<div class="panel-title">
-					<h2>非功能性項目</h2>
-				</div>
-	
-				<table id="nfunction" class="formTable">
-					<tr>
-						<th>名稱</th>
-						<th>比重(成本)</th>
-					</tr>
-				</table>
-	
-				<div class="panel-title">
-					<h2>服務性項目</h2>
-				</div>
-	
-				<table id="service" class="formTable">
-					<tr>
-						<th>名稱</th>
-						<th>比重(成本)</th>
-					</tr>
-				</table>
-			</form>
-	
-			<div class="btn-control aCenter">
-				<button id="next2" class="btn btn-primary btn-lg">下一步</button>
-			</div>
-		</div>
-	
-		<div id="div3" class="panelWrap expand" hidden="true">
-			<div class="panel-title">
-				<h2>受測者權重設定</h2>
-			</div>
-	
-			<form class="customDiv3">
-				<table id="point" class="formTable">
-					<tr>
-						<th>使用者名稱</th>
-						<th>權重</th>
-						<th hidden="true">userid</th>
-					</tr>
-				</table>
-			</form>
-	
-			<div class="btn-control aCenter">
-				<button id="confirm" class="btn btn-primary btn-lg">建立量表</button>
-			</div>
+		<div class="sidenav">
+			<h1 class="sys-title"><a href="login.jsp">SBI</a></h1>
+			<ul>
+				<li><a href="marketPlace.jsp"><img src="images/sidenav-country.svg" alt="">國家/城巿商圈</a></li>
+				<li class="active"><img src="images/sidenav-strategy.svg" alt="">決策工具
+					<ul>
+						<li><a href="cloudISS.jsp">目標市場定位</a></li>
+						<li><a href="cloudISS.jsp">目標客群定位</a></li>
+						<li><a href="cloudISS.jsp">競爭者定位</a></li>
+						<li><a href="cloudISS.jsp">商品通路</a></li>
+						<li><a href="persona.jsp">城市定位</a></li>
+						<li><a href="product.jsp">授權商品檢索機制</a></li>
+						<li><a href="productForecast.jsp">新產品風向預測</a></li>
+						<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
+<!-- 						<li><a href="">海外布局選擇</a></li> -->
+					</ul>
+				</li>
+				<li><img src="images/sidenav-stastic.svg" alt="">統計資料
+					<ul>
+						<li><a href="population.jsp">台灣人口社經</a></li>
+						<li><a href="upload.jsp">產業分析基礎資料庫</a></li>
+					</ul>
+				</li>
+				<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
+					<ul>
+						<li><a href="cloudISS.jsp">生活費用</a></li>
+						<li><a href="cloudISS.jsp">區位選擇</a></li>
+						<li><a href="cloudISS.jsp">環域分析</a></li>
+						<li><a href="cloudISS.jsp">動態統計</a></li>
+					</ul>
+				</li>
+				<li><img src="images/sidenav-store.svg" alt="">POI
+				</li>
+			</ul>
 		</div>
 		
-		<div id="divTest" class="panelWrap expand" hidden="true">
-			<div class="panel-title">
-				<h2 id="product_name_test"></h2>
-				<input type="hidden" id="forecast_id_test"></input>
-				<input type="hidden" id="user_id_test"></input>
+	 	<h2 id="title" class="page-title">新產品風向預測</h2>
+		
+		<!-- content-wrap -->
+		<div class="content-wrap">
+			<div id="productAlert"></div>
+			<div id="resultModal" class="result-table-wrap"></div>
+		
+			<div id="divMain" class="form-row" hidden="true">
+				<form class="form-row customDivMain">
+					<div class="search-result-wrap">
+						<div class="form-row">
+							<h2>新產品風向預測</h2>
+						</div>
+						
+						<div class="result-table-wrap">
+							<table id="main" class="result-table">
+							</table>
+						</div>
+						
+						<div class="btn-row">
+							<button id="create" class="btn btn-exec btn-wide" hidden="true">建立量表</button>
+							<button id="create2" class="btn btn-exec btn-wide" hidden="true">開始評分</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		
+			<div id="div1" class="form-row" hidden="true">
+				<form class="form-row customDiv1">
+					<div class="search-result-wrap">
+						<div class="form-row">
+							<h2>新產品風向預測</h2>
+						</div>
+						
+						<div class="result-table-wrap">
+							<table class="result-table">
+								<tr>
+									<th><label>產品名稱</label></th>
+									<th><input type="text" id="product_name" name="product_name"
+										placeholder="輸入產品名稱"></th>
+									<th><label>總成本</label></th>
+									<th><input type="text" id="cost" name="cost"
+										placeholder="輸入總成本"></th>
+									<th><label>參考產品</label></th>
+									<th><input type="text" id="ref_prod" name="ref_prod"
+										placeholder="輸入參考產品"></th>
+								</tr>
+							</table>
+							
+							<table id="tbl1" class="result-table">
+							</table>
+						</div>
+						
+						<div class="btn-row">
+							<button id="back2List-a1" class="btn btn-exec btn-wide">回列表頁</button>
+							<button id="addRow" class="btn btn-exec btn-wide">新增一列</button>
+							<button id="next1" class="btn btn-exec btn-wide">下一步</button>
+						</div>						
+					</div>
+				</form>
 			</div>
 	
-			<form class="customDivTest">
-				<table id="function-test" class="formTable">
-					<div class="panel-title">
-						<h2>功能性項目</h2>
+			<div id="div3" class="form-row" hidden="true">
+				<form class="form-row customDiv3">
+					<div class="search-result-wrap">
+						<div class="form-row">
+							<h2>受測者權重設定</h2>
+						</div>
+						<div class="result-table-wrap">
+							<table id="point" class="result-table">
+								<tr>
+									<th>使用者名稱</th>
+									<th>權重</th>
+									<th hidden="true">userid</th>
+								</tr>
+							</table>
+						</div>
+						<div class="btn-row">
+							<button id="back2List-a3" class="btn btn-exec btn-wide">回列表頁</button>
+							<button id="backPage-a3" class="btn btn-exec btn-wide">回上一頁</button>
+							<button id="confirm" class="btn btn-exec btn-wide">建立量表</button>
+						</div>
 					</div>
-					<tr>
-						<th>名稱</th>
-						<th>分數</th>
-					</tr>
-				</table>
-	
-				<div class="panel-title">
-					<h2>非功能性項目</h2>
-				</div>
-	
-				<table id="nfunction-test" class="formTable">
-					<tr>
-						<th>名稱</th>
-						<th>分數</th>
-					</tr>
-				</table>
-	
-				<div class="panel-title">
-					<h2>服務性項目</h2>
-				</div>
-	
-				<table id="service-test" class="formTable">
-					<tr>
-						<th>名稱</th>
-						<th>分數</th>
-					</tr>
-				</table>
-			</form>
-	
-			<div class="btn-control aCenter">
-				<button id="confirmTest" class="btn btn-primary btn-lg">完成</button>
+				</form>
+			</div>
+			
+			<div id="divTest" class="form-row" hidden="true">
+				<form class="form-row customDivTest">
+					<div class="search-result-wrap">
+						<div class="form-row">
+							<h2 id="product_name_test"></h2>
+							<input type="hidden" id="forecast_id_test"></input>
+							<input type="hidden" id="user_id_test"></input>
+						</div>
+						
+						<table id="function-test" class="result-table">
+							<div class="form-row">
+								<h2>功能性項目</h2>
+							</div>
+							<tr>
+								<th>名稱</th>
+								<th>分數</th>
+							</tr>
+						</table>
+			
+						<div class="form-row">
+							<h2>非功能性項目</h2>
+						</div>
+			
+						<table id="nfunction-test" class="result-table">
+							<tr>
+								<th>名稱</th>
+								<th>分數</th>
+							</tr>
+						</table>
+			
+						<div class="form-row">
+							<h2>服務性項目</h2>
+						</div>
+			
+						<table id="service-test" class="result-table">
+							<tr>
+								<th>名稱</th>
+								<th>分數</th>
+							</tr>
+						</table>
+						
+						<div class="btn-row">
+							<button id="confirmTest" class="btn btn-exec btn-wide">完成</button>
+						</div>
+					</div>
+					
+					
+				</form>
 			</div>
 		</div>
+		<!-- content-wrap -->
+		
+		<footer class="footer">
+			財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
+		</footer>
 	</div>
+	
 </body>
 </html>

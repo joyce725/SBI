@@ -189,7 +189,7 @@
 </script>
 <jsp:include page="header.jsp" flush="true"/>
 	<div class="content-wrap">
-		<h2 class="page-title">產業分析基礎資料庫</h2>
+		<h2 class="page-title">台灣人口社經</h2>
 		<div class="search-result-wrap">
 <!-- 			<div id="dialog" title="提示訊息" style="display:none"> -->
 <!-- 				<label>資料更新完成</label> -->

@@ -3,16 +3,19 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>服務業雲端智慧商情支援系統</title>
+<title>城市商圈</title>
 <link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
+<link rel="stylesheet" href="css/styles.css" />
+<link href="css/jquery-ui-1.12.0/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="css/font-awesome.min.css">
+
 <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="css/jquery-ui-1.12.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/additional-methods.min.js"></script>
+<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 </head>
 <body>
-<%-- 	<jsp:include page="template-old.jsp" flush="true"/> --%>
-	<div class="content-wrap">
-		<iframe id="ifm1" src="\/marketplace\/MarketPlaceX_MiscCtrl"></iframe>
-<!-- 		<object type="text/html" width="100%" height="100%" id="page1" data="\/marketplace\/MarketPlaceX_MiscCtrl" ></object> -->
-	</div>
 <script>
 	$(function() {
 
@@ -55,6 +58,68 @@
 			});
 		});
 	});
+	
 </script>
+
+	<div class="page-wrapper" >
+	
+		<div class="header">
+			<div class="userinfo">
+				<p>使用者<span><%= (request.getSession().getAttribute("user_name")==null)?"":request.getSession().getAttribute("user_name").toString() %></span></p>
+				<a id="logout" class="btn-logout" >登出</a>
+			</div>
+		</div>
+	
+		<div class="sidenav">
+			<h1 class="sys-title"><a href="login.jsp">SBI</a></h1>
+			<ul>
+				<li><a href="marketPlace.jsp"><img src="images/sidenav-country.svg" alt="">國家/城巿商圈</a></li>
+				<li class="active"><img src="images/sidenav-strategy.svg" alt="">決策工具
+					<ul>
+						<li><a href="cloudISS.jsp">目標市場定位</a></li>
+						<li><a href="cloudISS.jsp">目標客群定位</a></li>
+						<li><a href="cloudISS.jsp">競爭者定位</a></li>
+						<li><a href="cloudISS.jsp">商品通路</a></li>
+						<li><a href="persona.jsp">城市定位</a></li>
+<!-- 						<li><a href="">授權商品檢索機制</a></li> -->
+						<li><a href="productForecast.jsp">新產品風向預測</a></li>
+						<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
+<!-- 						<li><a href="">海外布局選擇</a></li> -->
+					</ul>
+				</li>
+				<li><img src="images/sidenav-stastic.svg" alt="">統計資料
+					<ul>
+						<li><a href="population.jsp">台灣人口社經</a></li>
+						<li><a href="upload.jsp">產業分析基礎資料庫</a></li>
+					</ul>
+				</li>
+				<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
+					<ul>
+						<li><a href="cloudISS.jsp">生活費用</a></li>
+						<li><a href="cloudISS.jsp">區位選擇</a></li>
+						<li><a href="cloudISS.jsp">環域分析</a></li>
+						<li><a href="cloudISS.jsp">動態統計</a></li>
+					</ul>
+				</li>
+				<li><img src="images/sidenav-store.svg" alt="">POI
+				</li>
+			</ul>		
+		</div>
+		
+	 	<h2 id="title" class="page-title">城市商圈</h2>
+	 	
+		<div class="content-wrap" style="display:none">
+		</div>
+		
+		<footer class="footer">
+			財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
+		</footer>
+	</div>
+	
+	<div class="content-wrap">
+		<iframe id="ifm1" width="100%" height="100%" src="\/marketplace\/MarketPlaceX_MiscCtrl"></iframe>
+<!-- 		<object type="text/html" width="100%" height="100%" id="page1" data="\/marketplace\/MarketPlaceX_MiscCtrl" ></object> -->
+	</div>
+	
 </body>
 </html>

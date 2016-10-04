@@ -1,8 +1,129 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<jsp:include page="import.jsp" flush="true"/>
-<jsp:include page="header.jsp" flush="true"/>
-<div class="content-wrap">
-<!-- 	<object type="text/html" data="http://61.218.8.51/SBI/user/login.aspx"></object> -->
-	<div>test1234</div>
-</div>
-<jsp:include page="footer.jsp" flush="true"/>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>東南亞商機定位工具</title>
+<link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
+<link rel="stylesheet" href="css/styles.css" />
+<link href="css/jquery-ui-1.12.0/jquery-ui.css" rel="stylesheet">
+<link rel="stylesheet" href="css/font-awesome.min.css">
+
+<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="css/jquery-ui-1.12.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/additional-methods.min.js"></script>
+<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+</head>
+<body>
+<script>
+	$(function() {
+
+		$( document ).ready(function() {
+
+			$("#ifm1").load(function() {
+				$(this).height( $(this).contents().find("body").height() );
+				$(this).width( $(this).contents().find("body").width() );
+			}); 
+			
+			$.ajax({
+				type : "POST",
+				url : "\/persona\/AdminLoginCtrl",
+				data : {
+					Action : "Api_Login",
+					Key : "A7BBMK3",
+					
+<%-- 					UserId : "<%=user_name%>", --%>
+<%-- 					Password : "<%=pwd%>" --%>
+					
+					UserId : "admin1",
+					GroupId  : "group1",
+					Password : "caf1a3dfb505ffed0d024130f58c5cfa"
+				},
+				success : function(result) {
+// 					console.log("persona success");
+// 					console.log(result);
+					//document.getElementById("page1").setAttribute('data', "\/persona\/Persona_ProductAdminCtrl?Action=Page1BL");
+// 					document.getElementById("page1").setAttribute('data', "\/marketplace\/MarketPlaceX_MiscCtrl?Action=Home&F=1&PageType=1B");
+// 					var page1 = document.getElementById("page1");
+// 					page1.data = "\/marketplace\/MarketPlaceX_MiscCtrl?Action=Home&F=1&PageType=1B";
+
+					var $iframe = $('#ifm1');
+// 					console.log("$iframe.length:" + $iframe.length);
+				    if ( $iframe.length > 0 ) {
+				        $iframe.attr('src', "\/persona\/Persona_OpportunityUser1Ctrl?Action=Page1BF");   
+				    }
+				    
+// 					var page1 = document.querySelector("page1"); 
+// 					page1.setAttribute("data", "\/persona\/Persona_OpportunityUser1Ctrl?Action=Page1BF");
+				},
+				error : function(result) {
+					console.log('error');
+				}
+			});
+			
+		});
+	});
+</script>
+
+	<div class="page-wrapper" >
+	
+		<div class="header">
+			<div class="userinfo">
+				<p>使用者<span><%= (request.getSession().getAttribute("user_name")==null)?"":request.getSession().getAttribute("user_name").toString() %></span></p>
+				<a id="logout" class="btn-logout" >登出</a>
+			</div>
+		</div>
+	
+		<div class="sidenav">
+			<h1 class="sys-title"><a href="login.jsp">SBI</a></h1>
+			<ul>
+				<li><a href="marketPlace.jsp"><img src="images/sidenav-country.svg" alt="">國家/城巿商圈</a></li>
+				<li class="active"><img src="images/sidenav-strategy.svg" alt="">決策工具
+					<ul>
+						<li><a href="cloudISS.jsp">目標市場定位</a></li>
+						<li><a href="cloudISS.jsp">目標客群定位</a></li>
+						<li><a href="cloudISS.jsp">競爭者定位</a></li>
+						<li><a href="cloudISS.jsp">商品通路</a></li>
+						<li><a href="persona.jsp">城市定位</a></li>
+<!-- 						<li><a href="">授權商品檢索機制</a></li> -->
+						<li><a href="productForecast.jsp">新產品風向預測</a></li>
+						<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
+<!-- 						<li><a href="">海外布局選擇</a></li> -->
+					</ul>
+				</li>
+				<li><img src="images/sidenav-stastic.svg" alt="">統計資料
+					<ul>
+						<li><a href="population.jsp">台灣人口社經</a></li>
+						<li><a href="upload.jsp">產業分析基礎資料庫</a></li>
+					</ul>
+				</li>
+				<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
+					<ul>
+						<li><a href="cloudISS.jsp">生活費用</a></li>
+						<li><a href="cloudISS.jsp">區位選擇</a></li>
+						<li><a href="cloudISS.jsp">環域分析</a></li>
+						<li><a href="cloudISS.jsp">動態統計</a></li>
+					</ul>
+				</li>
+				<li><img src="images/sidenav-store.svg" alt="">POI
+				</li>
+			</ul>		
+		</div>
+		
+	 	<h2 id="title" class="page-title">服務業雲端智慧商情支援系統</h2>
+	 	
+		<div class="content-wrap" style="display:none">
+		</div>
+		
+		<footer class="footer">
+			財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
+		</footer>
+	</div>
+
+	<div class="content-wrap">
+		<object type="text/html" width="100%" height="100%" data="http://61.218.8.51/SBI/user/sso.aspx"></object>
+	</div>
+
+</body>
+</html>
