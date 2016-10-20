@@ -7,11 +7,7 @@
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <script>
 $(function(){
-	
-	var p_agent_id = ""; 
-	var p_product_id = ""; 
-	var p_row = "";
-	
+		
 	var validator_insert = $("#insert-dialog-form-post").validate({
 		rules : {
 // 			f_date : {
@@ -67,8 +63,8 @@ $(function(){
 				$.each(json_obj,function(i, item) {
 					result_table 
 						+= "<tr>"
-						+ "<td id='product_id_"+i+"'>" + item.product_id + "</td>"
-						+ "<td id='agent_id_"+i+"'>"+ item.agent_id + "</td>"
+						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+						+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
 						+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
 						+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
 						+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
@@ -76,7 +72,7 @@ $(function(){
 						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 						+ "<div class='table-function-list'>"
-						+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+						+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 						+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 						+ "</div></div></td></tr>";							
 				});		
@@ -175,8 +171,8 @@ $(function(){
 							$.each(json_obj,function(i, item) {
 								result_table 
 									+= "<tr>"
-									+ "<td id='product_id_"+i+"'>" + item.product_id + "</td>"
-									+ "<td id='agent_id_"+i+"'>"+ item.agent_id + "</td>"
+									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+									+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
 									+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
 									+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
 									+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
@@ -184,7 +180,7 @@ $(function(){
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+									+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 									+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 									+ "</div></div></td></tr>";							
 							});		
@@ -200,7 +196,8 @@ $(function(){
 							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) { 
-					        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+					        alert("Status: " + textStatus); 
+					        alert("Error: " + errorThrown); 
 					    }
 					});
 					insert_dialog.dialog("close");
@@ -224,15 +221,18 @@ $(function(){
 	// 修改 事件聆聽
 	$("#table_agent_auth").delegate(".btn-update", "click", function(e) {
 		e.preventDefault();
-		p_agent_id = $(this).val();
-		p_row = $(this).attr('name');
-		$("#dialog-form-update input[name='agent_id']").val($('#agent_id_' + p_row).html());
-		$("#dialog-form-update input[name='product_id']").val($('#product_id_' + p_row).html());
-		$("#dialog-form-update input[name='region_code']").val($('#region_code_' + p_row).html());
-		$("#dialog-form-update input[name='auth_quantity']").val($('#auth_quantity_' + p_row).html());
-		$("#dialog-form-update input[name='sale_quantity']").val($('#sale_quantity_' + p_row).html());
-		$("#dialog-form-update input[name='register_quantity']").val($('#register_quantity_' + p_row).html());
-		$("#dialog-form-update input[name='seed']").val($('#seed_' + p_row).html());
+		var p_agent_id = $(this).val();
+		var p_product_id = $(this).attr('name');
+		var row = $(this).attr('id');
+		$("#dialog-form-update input[name='agent_id']").val(p_agent_id);
+		$("#dialog-form-update input[name='product_id']").val(p_product_id);
+		$("#dialog-form-update input[name='agent_name']").val($('#agent_name_' + row).html());
+		$("#dialog-form-update input[name='product_spec']").val($('#product_spec_' + row).html());
+		$("#dialog-form-update input[name='region_code']").val($('#region_code_' + row).html());
+		$("#dialog-form-update input[name='auth_quantity']").val($('#auth_quantity_' + row).html());
+		$("#dialog-form-update input[name='sale_quantity']").val($('#sale_quantity_' + row).html());
+		$("#dialog-form-update input[name='register_quantity']").val($('#register_quantity_' + row).html());
+		$("#dialog-form-update input[name='seed']").val($('#seed_' + row).html());
 		update_dialog.dialog("open");
 	});
 	
@@ -275,8 +275,8 @@ $(function(){
 							$.each(json_obj,function(i, item) {
 								result_table 
 									+= "<tr>"
-									+ "<td id='product_id_"+i+"'>" + item.product_id + "</td>"
-									+ "<td id='agent_id_"+i+"'>"+ item.agent_id + "</td>"
+									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+									+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
 									+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
 									+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
 									+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
@@ -284,9 +284,9 @@ $(function(){
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+									+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 									+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td></tr>";							
+									+ "</div></div></td></tr>";						
 							});			
 							//判斷查詢結果
 							var resultRunTime = 0;
@@ -481,11 +481,11 @@ $(function(){
 						<tr>
 							<td><p>通路商名稱：</p></td>
 							<td>
-								<input type="text" id="update_agent_id" name="agent_id" disabled="disabled"></input>
+								<input type=text id="update_agent_name" name="agent_name" disabled>
 							</td>
 							<td><p>商品名稱：</p></td>
 							<td>
-								<input type="text" id="update_product_id" name="product_id" disabled="disabled"></input>
+								<input type=text id="update_product_spec" name="product_spec" disabled>
 							</td>
 						</tr>
 						<tr>
@@ -508,6 +508,8 @@ $(function(){
 						</tr>
 					</tbody>
 				</table>	
+				<input type="hidden" id="update_agent_id" name="agent_id" >
+				<input type="hidden" id="update_product_id" name="product_id" >
 			</form>
 		</div>	
 		

@@ -228,7 +228,8 @@ public class AgentAuth extends HttpServlet {
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 
 		// 會使用到的Stored procedure
-		private static final String sp_get_agent_auth_by_group = "call sp_get_agent_auth_by_group(?,?,?)";
+		private static final String sp_get_agent_auth_1_by_group = "call sp_get_agent_auth_1_by_group(?)";
+//		private static final String sp_get_agent_auth_2_by_group = "call sp_get_agent_auth_2_by_group(?,?,?)";
 		private static final String sp_get_product_by_group = "call sp_get_product_by_group(?)";
 		private static final String sp_get_agent_by_group = "call sp_get_agent_by_group(?)";
 		private static final String sp_insert_agent_auth = "call sp_insert_agent_auth(?,?,?,?,?,?,?,?)";
@@ -367,10 +368,8 @@ public class AgentAuth extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(sp_get_agent_auth_by_group);
+				pstmt = con.prepareStatement(sp_get_agent_auth_1_by_group);
 				pstmt.setString(1, groupId);
-				pstmt.setString(2, "");
-				pstmt.setString(3, "");
 				
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
@@ -378,7 +377,9 @@ public class AgentAuth extends HttpServlet {
 					
 					agentAuthVO.setGroup_id(groupId);
 					agentAuthVO.setAgent_id(rs.getString("agent_id"));
+					agentAuthVO.setAgent_name(rs.getString("agent_name"));
 					agentAuthVO.setProduct_id(rs.getString("product_id"));
+					agentAuthVO.setProduct_spec(rs.getString("product_spec"));
 					agentAuthVO.setRegion_code(rs.getString("region_code"));
 					agentAuthVO.setAuth_quantity(rs.getString("auth_quantity"));
 					agentAuthVO.setSale_quantity(rs.getString("sale_quantity"));
@@ -520,9 +521,6 @@ public class AgentAuth extends HttpServlet {
 				CallableStatement cs = null;
 				cs = con.prepareCall(sp_delete_agent_auth);
 
-				logger.debug("productId: " + productId);
-				logger.debug("agentId: " + agentId);
-				logger.debug("groupId: " + groupId);
 				cs.setString(1, productId);
 				cs.setString(2, agentId);
 				cs.setString(3, groupId);
