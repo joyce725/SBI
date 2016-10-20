@@ -1,4 +1,4 @@
-package tw.com.sbi.product.controller;
+package tw.com.sbi.agent.controller;
 
 import java.io.IOException;
 import java.sql.CallableStatement;
@@ -20,12 +20,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
-import tw.com.sbi.vo.ProductVO;
+import tw.com.sbi.vo.AgentVO;
 
-public class Product extends HttpServlet {
+public class Agent extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger logger = LogManager.getLogger(Product.class);
+	private static final Logger logger = LogManager.getLogger(Agent.class);
        
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request, response);
@@ -36,15 +36,15 @@ public class Product extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		
-		ProductService productService = null;
+		AgentService agentService = null;
 
 		String groupId = request.getSession().getAttribute("group_id").toString();
 		String action = request.getParameter("action");
 		
 		if ("selectAll".equals(action)) {
 			try {								
-				productService = new ProductService();
-				List<ProductVO> list = productService.selectByGroupId(groupId);
+				agentService = new AgentService();
+				List<AgentVO> list = agentService.selectByGroupId(groupId);
 				
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(list);
@@ -54,13 +54,17 @@ public class Product extends HttpServlet {
 				e.printStackTrace();
 			}
 		} else if ("insert".equals(action)) {
+			logger.debug("enter agent insert method");
 			try {
-				String productSpec = request.getParameter("product_spec");
-				String photo = request.getParameter("photo");
+				String agentName = request.getParameter("agent_name");
+				String website = request.getParameter("web_site");
+				String regionCode = request.getParameter("region_code");
+				String email = request.getParameter("contact_mail");
+				String phone = request.getParameter("contact_phone");
 				String seed = request.getParameter("seed");
 								
-				productService = new ProductService();
-				List<ProductVO> list = productService.addProduct(groupId, productSpec, photo, seed);
+				agentService = new AgentService();
+				List<AgentVO> list = agentService.addAgent(groupId, agentName, website, regionCode, email, phone, seed);
 			
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(list);
@@ -70,32 +74,34 @@ public class Product extends HttpServlet {
 				e.printStackTrace();
 			}
 		} else if ("update".equals(action)) {
-			logger.debug("enter product update method");
+			logger.debug("enter agent update method");
 			try {				
-				String productId = request.getParameter("product_id");
-				String productSpec = request.getParameter("product_spec");
-				String photo = request.getParameter("photo");
+				String agentId = request.getParameter("agent_id");
+				String agentName = request.getParameter("agent_name");
+				String website = request.getParameter("web_site");
+				String regionCode = request.getParameter("region_code");
+				String email = request.getParameter("contact_mail");
+				String phone = request.getParameter("contact_phone");
 				String seed = request.getParameter("seed");
 				
-				productService = new ProductService();
+				agentService = new AgentService();
 				
-				List<ProductVO> list = productService.updateProduct(groupId, productId, productSpec, photo, seed);
+				List<AgentVO> list = agentService.updateAgent(groupId, agentId, agentName, website, regionCode, email, phone, seed);
 
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(list);
 				response.getWriter().write(jsonStrList);
-				logger.debug("jsonStrList: " + jsonStrList);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else if ("delete".equals(action)) {
 			try {
-				String productId = request.getParameter("product_id");
+				String agentId = request.getParameter("agent_id");
 				
-				productService = new ProductService();
+				agentService = new AgentService();
 				
-				List<ProductVO> list = productService.deleteProduct(groupId, productId);
+				List<AgentVO> list = agentService.deleteAgent(groupId, agentId);
 
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(list);
@@ -108,82 +114,82 @@ public class Product extends HttpServlet {
 	}
 
 	/*************************** 處理業務邏輯 ****************************************/
-	public class ProductService {
-		private product_interface dao;
+	public class AgentService {
+		private agent_interface dao;
 
-		public ProductService() {
-			dao = new ProductDAO();
+		public AgentService() {
+			dao = new AgentDAO();
 		}
 
-		public List<ProductVO> selectByGroupId(String groupId) {
+		public List<AgentVO> selectByGroupId(String groupId) {
 			return dao.selectByGroupId(groupId);
 		}
 		
-		public List<ProductVO> addProduct(String groupId, String productSpec, String photo, String seed) {
-			ProductVO productVO = new ProductVO();
+		public List<AgentVO> addAgent(String groupId, String agentName, String website, String regionCode, String email, String phone, String seed) {
+			AgentVO agentVO = new AgentVO();
 			
-			productVO.setGroup_id(groupId);
-			productVO.setProduct_spec(productSpec);
-			productVO.setPhoto(photo);
-			productVO.setSeed(seed);
+			agentVO.setGroup_id(groupId);
+			agentVO.setAgent_name(agentName);
+			agentVO.setWeb_site(website);
+			agentVO.setRegion_code(regionCode);
+			agentVO.setContact_mail(email);
+			agentVO.setContact_phone(phone);
+			agentVO.setSeed(seed);
 
-			dao.insertDB(productVO);
+			dao.insertDB(agentVO);
 			return dao.selectByGroupId(groupId);
 		}
 		
-		public List<ProductVO> updateProduct(String groupId, String productId, String productSpec, String photo, String seed){
-			ProductVO productVO = new ProductVO();
+		public List<AgentVO> updateAgent(String groupId, String agentId, String agentName, String website, String regionCode, String email, String phone, String seed){
+			AgentVO agentVO = new AgentVO();
 
-			productVO.setGroup_id(groupId);
-			productVO.setProduct_id(productId);
-			productVO.setProduct_spec(productSpec);
-			productVO.setPhoto(photo);
-			productVO.setSeed(seed);
+			agentVO.setGroup_id(groupId);
+			agentVO.setAgent_id(agentId);
+			agentVO.setAgent_name(agentName);
+			agentVO.setWeb_site(website);
+			agentVO.setRegion_code(regionCode);
+			agentVO.setContact_mail(email);
+			agentVO.setContact_phone(phone);
+			agentVO.setSeed(seed);
 			
-			logger.debug("groupId: " + productVO.getGroup_id());
-			logger.debug("productId: " + productVO.getProduct_id());
-			logger.debug("productSpec: " + productVO.getProduct_spec());
-			logger.debug("photo: " + productVO.getPhoto());
-			logger.debug("seed: " + productVO.getSeed());
-			
-			dao.updateDB(productVO);
+			dao.updateDB(agentVO);
 			return dao.selectByGroupId(groupId);
 		}
 		
-		public List<ProductVO> deleteProduct(String groupId, String productId){
-			dao.deleteDB(groupId, productId);
+		public List<AgentVO> deleteAgent(String groupId, String agentId){
+			dao.deleteDB(groupId, agentId);
 			return dao.selectByGroupId(groupId);
 		}
 	}
 	
 	/*************************** 制定規章方法 ****************************************/
-	interface product_interface {
-		public void insertDB(ProductVO productVO);
+	interface agent_interface {
+		public void insertDB(AgentVO agentVO);
 
-		public void updateDB(ProductVO productVO);
+		public void updateDB(AgentVO agentVO);
 
-		public void deleteDB(String groupId, String productId);
+		public void deleteDB(String groupId, String agentId);
 		
-		public List<ProductVO> selectByGroupId(String groupId);
+		public List<AgentVO> selectByGroupId(String groupId);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
-	class ProductDAO implements product_interface {
+	class AgentDAO implements agent_interface {
 		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL")
 				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 
 		// 會使用到的Stored procedure
-		private static final String sp_get_product_by_group = "call sp_get_product_by_group(?)";
-		private static final String sp_insert_product = "call sp_insert_product(?,?,?,?)";
-		private static final String sp_update_product = "call sp_update_product(?,?,?,?,?)";
-		private static final String sp_delete_product = "call sp_delete_product(?,?)";
+		private static final String sp_get_agent_by_group = "call sp_get_agent_by_group(?)";
+		private static final String sp_insert_agent = "call sp_insert_agent(?,?,?,?,?,?,?)";
+		private static final String sp_update_agent = "call sp_update_agent(?,?,?,?,?,?,?,?)";
+		private static final String sp_delete_agent = "call sp_delete_agent(?,?)";
 
 		@Override
-		public List<ProductVO> selectByGroupId(String groupId) {
-			List<ProductVO> list = new ArrayList<ProductVO>();
-			ProductVO productVO = null;
+		public List<AgentVO> selectByGroupId(String groupId) {
+			List<AgentVO> list = new ArrayList<AgentVO>();
+			AgentVO agentVO = null;
 			
 			Connection con = null;
 			PreparedStatement pstmt = null;
@@ -192,19 +198,22 @@ public class Product extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(sp_get_product_by_group);
+				pstmt = con.prepareStatement(sp_get_agent_by_group);
 				pstmt.setString(1, groupId);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					productVO = new ProductVO();
+					agentVO = new AgentVO();
 					
-					productVO.setGroup_id(groupId);
-					productVO.setPhoto(rs.getString("photo"));
-					productVO.setProduct_id(rs.getString("product_id"));
-					productVO.setProduct_spec(rs.getString("product_spec"));
-					productVO.setSeed(rs.getString("seed"));
+					agentVO.setGroup_id(groupId);
+					agentVO.setAgent_id(rs.getString("agent_id"));
+					agentVO.setAgent_name(rs.getString("agent_name"));
+					agentVO.setWeb_site(rs.getString("web_site"));
+					agentVO.setRegion_code(rs.getString("region_code"));
+					agentVO.setContact_mail(rs.getString("contact_mail"));
+					agentVO.setContact_phone(rs.getString("contact_phone"));
+					agentVO.setSeed(rs.getString("seed"));
 					
-					list.add(productVO); // Store the row in the list
+					list.add(agentVO); // Store the row in the list
 				}				
 			} catch (SQLException se) {
 				// Handle any driver errors
@@ -239,7 +248,7 @@ public class Product extends HttpServlet {
 		}
 
 		@Override
-		public void insertDB(ProductVO productVO) {
+		public void insertDB(AgentVO agentVO) {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			try {
@@ -247,12 +256,15 @@ public class Product extends HttpServlet {
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				
 				CallableStatement cs = null;
-				cs = con.prepareCall(sp_insert_product);
+				cs = con.prepareCall(sp_insert_agent);
 
-				cs.setString(1, productVO.getGroup_id());
-				cs.setString(2, productVO.getProduct_spec());
-				cs.setString(3, productVO.getPhoto());
-				cs.setString(4, productVO.getSeed());
+				cs.setString(1, agentVO.getGroup_id());
+				cs.setString(2, agentVO.getWeb_site());
+				cs.setString(3, agentVO.getRegion_code());
+				cs.setString(4, agentVO.getAgent_name());
+				cs.setString(5, agentVO.getContact_mail());
+				cs.setString(6, agentVO.getContact_phone());
+				cs.setString(7, agentVO.getSeed());
 
 				cs.execute();
 			
@@ -281,7 +293,7 @@ public class Product extends HttpServlet {
 		}
 		
 		@Override
-		public void updateDB(ProductVO productVO) {
+		public void updateDB(AgentVO agentVO) {
 			logger.debug("enter updateDB method");
 			Connection con = null;
 			PreparedStatement pstmt = null;
@@ -290,13 +302,16 @@ public class Product extends HttpServlet {
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				
 				CallableStatement cs = null;
-				cs = con.prepareCall(sp_update_product);
+				cs = con.prepareCall(sp_update_agent);
 
-				cs.setString(1, productVO.getGroup_id());
-				cs.setString(2, productVO.getProduct_id());
-				cs.setString(3, productVO.getProduct_spec());
-				cs.setString(4, productVO.getPhoto());
-				cs.setString(5, productVO.getSeed());
+				cs.setString(1, agentVO.getAgent_id());
+				cs.setString(2, agentVO.getGroup_id());
+				cs.setString(3, agentVO.getWeb_site());
+				cs.setString(4, agentVO.getRegion_code());
+				cs.setString(5, agentVO.getAgent_name());
+				cs.setString(6, agentVO.getContact_mail());
+				cs.setString(7, agentVO.getContact_phone());
+				cs.setString(8, agentVO.getSeed());
 
 				cs.execute();
 			
@@ -325,7 +340,7 @@ public class Product extends HttpServlet {
 		}
 		
 		@Override
-		public void deleteDB(String groupId, String productId) {
+		public void deleteDB(String groupId, String agentId) {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			try {
@@ -333,10 +348,10 @@ public class Product extends HttpServlet {
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				
 				CallableStatement cs = null;
-				cs = con.prepareCall(sp_delete_product);
+				cs = con.prepareCall(sp_delete_agent);
 
 				cs.setString(1, groupId);
-				cs.setString(2, productId);
+				cs.setString(2, agentId);
 
 				cs.execute();
 			

@@ -8,7 +8,7 @@
 <script>
 $(function(){
 	
-	var p_product_id = ""; 
+	var p_agent_id = ""; 
 	var p_row = "";
 	
 	var validator_insert = $("#insert-dialog-form-post").validate({
@@ -34,11 +34,11 @@ $(function(){
 		}
 	});	
 	
-	// 查詢商品資料 事件聆聽
+	// 查詢通路商 事件聆聽
 	$("#btn_query").click(function(e) {
 		$.ajax({
 			type : "POST",
-			url : "product.do",
+			url : "agent.do",
 			data : {
 				action : "selectAll"
 			},
@@ -48,14 +48,17 @@ $(function(){
 				$.each(json_obj,function(i, item) {
 					result_table 
 						+= "<tr>"
-						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+						+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
+						+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
+						+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
+						+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
+						+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
 						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 						+ "<div class='table-function-list'>"
-						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-						+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-						+ "</div></div></td></tr>";								
+						+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+						+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+						+ "</div></div></td></tr>";							
 				});		
 				//判斷查詢結果
 				var resultRunTime = 0;
@@ -63,7 +66,7 @@ $(function(){
 					resultRunTime+=1;
 				});
 				if(resultRunTime!=0){
-					$("#table_product tbody").html(result_table);
+					$("#table_agent tbody").html(result_table);
 				}else{
 					// todo
 				}
@@ -71,13 +74,13 @@ $(function(){
 		});
 	});
 	
-	// 新增商品資料 事件聆聽
-	$("#btn_insert_product").click(function(e) {
+	// 新增通路商 事件聆聽
+	$("#btn_insert_agent").click(function(e) {
 		e.preventDefault();		
 		insert_dialog.dialog("open");
 	});
 	
-	// "新增商品資料" Dialog相關設定
+	// "新增通路商" Dialog相關設定
 	insert_dialog = $("#dialog-form-insert").dialog({
 		draggable : false,//防止拖曳
 		resizable : false,//防止縮放
@@ -99,11 +102,14 @@ $(function(){
 				if ($('#insert-dialog-form-post').valid()) {
 					$.ajax({
 						type : "POST",
-						url : "product.do",
+						url : "agent.do",
 						data : {
 							action : "insert",
-							product_spec: $("#insert_product_spec").val(),
-							photo: $("#insert_photo").val(),
+							agent_name: $("#insert_agent_name").val(),
+							web_site: $("#insert_web_site").val(),
+							region_code: $("#insert_region_code").val(),
+							contact_mail: $("#insert_contact_mail").val(),
+							contact_phone: $("#insert_contact_phone").val(),
 							seed: $("#insert_seed").val()
 						},
 						success : function(result) {
@@ -112,13 +118,16 @@ $(function(){
 							$.each(json_obj,function(i, item) {
 								result_table 
 									+= "<tr>"
-									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-									+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+									+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
+									+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
+									+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
+									+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
+									+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+									+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+									+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 									+ "</div></div></td></tr>";							
 							});		
 							//判斷查詢結果
@@ -127,7 +136,7 @@ $(function(){
 								resultRunTime+=1;
 							});
 							if(resultRunTime!=0){
-								$("#table_product tbody").html(result_table);
+								$("#table_agent tbody").html(result_table);
 							}else{
 								// todo
 							}
@@ -152,12 +161,15 @@ $(function(){
 	});
 	
 	// 修改 事件聆聽
-	$("#table_product").delegate(".btn-update", "click", function(e) {
+	$("#table_agent").delegate(".btn-update", "click", function(e) {
 		e.preventDefault();
-		p_product_id = $(this).val();
+		p_agent_id = $(this).val();
 		p_row = $(this).attr('name');
-		$("#dialog-form-update input[name='product_spec']").val($('#product_spec_' + p_row).html());
-		$("#dialog-form-update input[name='photo']").val($('#photo_' + p_row).html());
+		$("#dialog-form-update input[name='agent_name']").val($('#agent_name_' + p_row).html());
+		$("#dialog-form-update input[name='web_site']").val($('#web_site_' + p_row).html());
+		$("#dialog-form-update input[name='region_code']").val($('#region_code_' + p_row).html());
+		$("#dialog-form-update input[name='contact_mail']").val($('#contact_mail_' + p_row).html());
+		$("#dialog-form-update input[name='contact_phone']").val($('#contact_phone_' + p_row).html());
 		$("#dialog-form-update input[name='seed']").val($('#seed_' + p_row).html());
 		update_dialog.dialog("open");
 	});
@@ -184,12 +196,15 @@ $(function(){
 // 				if ($('#update-dialog-form-post').valid()) {
 					$.ajax({
 						type : "POST",
-						url : "product.do",
+						url : "agent.do",
 						data : {
  							action : "update",
- 							product_id: p_product_id,
- 							product_spec: $("#update_product_spec").val(),
- 							photo : $("#update_photo").val(),
+ 							agent_id: p_agent_id,
+ 							agent_name: $("#update_agent_name").val(),
+ 							web_site : $("#update_web_site").val(),
+ 							region_code: $("#update_region_code").val(),
+ 							contact_mail: $("#update_contact_mail").val(),
+ 							contact_phone : $("#update_contact_phone").val(),
  							seed : $("#update_seed").val()
 						},
 						success : function(result) {
@@ -198,14 +213,17 @@ $(function(){
 							$.each(json_obj,function(i, item) {
 								result_table 
 									+= "<tr>"
-									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-									+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+									+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
+									+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
+									+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
+									+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
+									+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td></tr>";									
+									+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+									+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+									+ "</div></div></td></tr>";							
 							});			
 							//判斷查詢結果
 							var resultRunTime = 0;
@@ -213,7 +231,7 @@ $(function(){
 								resultRunTime+=1;
 							});
 							if(resultRunTime!=0){
-								$("#table_product tbody").html(result_table);
+								$("#table_agent tbody").html(result_table);
 							}else{
 								// todo
 							}
@@ -238,10 +256,10 @@ $(function(){
 	});
 	
 // 	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
-	$("#table_product").delegate(".btn-delete", "click", function(e) {
+	$("#table_agent").delegate(".btn-delete", "click", function(e) {
 		e.preventDefault();
-		p_product_id = $(this).val();
-		$("#delete_product_spec").html($(this).attr('name'));
+		p_agent_id = $(this).val();
+		$("#delete_agent_name").html($(this).attr('name'));
 		del_dialog.dialog("open");
 	});
 // 	// "刪除" Dialog相關設定
@@ -265,10 +283,10 @@ $(function(){
 			click : function() {
 				$.ajax({
 					type : "POST",
-					url : "product.do",
+					url : "agent.do",
 					data : {
 						action: "delete",
-						product_id: p_product_id
+						agent_id: p_agent_id
 					},
 					success : function(result) {
 						var json_obj = $.parseJSON(result);
@@ -276,16 +294,24 @@ $(function(){
 						$.each(json_obj,function(i, item) {
 							result_table 
 								+= "<tr>"
-								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-								+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+								+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
+								+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
+								+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
+								+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
+								+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
 								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 								+ "<div class='table-function-list'>"
-								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+								+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+								+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 								+ "</div></div></td></tr>";							
 						});		
-						$("#table_product tbody").html(result_table);
+						//判斷查詢結果
+						var resultRunTime = 0;
+						$.each (json_obj, function (i) {
+							resultRunTime+=1;
+						});
+						$("#table_agent tbody").html(result_table);
 					}
 				});
 				$(this).dialog("close");
@@ -304,29 +330,32 @@ $(function(){
 </script>
 <jsp:include page="header.jsp" flush="true"/>
 	<div class="content-wrap">
-		<h2 class="page-title">授權商品通路</h2>
+		<h2 class="page-title">授權商品通路商</h2>
 		<div class="input-field-wrap">
 			<div class="form-wrap">
 				<div class="form-row">
 					<label for="">
-						<span class="block-label">產品名稱查詢</span>
+						<span class="block-label">通路商查詢</span>
 						<input type="text">
 					</label>
 					<a href="#" id="btn_query" class="btn btn-darkblue">查詢</a>
 				</div>
 				<div class="btn-row">
-					<a href="#" id="btn_insert_product" class="btn btn-exec btn-wide">新增商品資料</a>
+					<a href="#" id="btn_insert_agent" class="btn btn-exec btn-wide">新增通路商</a>
 				</div>
 			</div><!-- /.form-wrap -->
 		</div><!-- /.input-field-wrap -->
 		
 		<div class="search-result-wrap">
 			<div class="result-table-wrap">
-				<table id="table_product" class="result-table">
+				<table id="table_agent" class="result-table">
 					<thead>
 						<tr>
-							<th>商品規格</th>
-							<th>產品圖片名稱</th>
+							<th>通路商名稱</th>
+							<th>網址</th>
+							<th>區域碼</th>
+							<th>聯絡人Email</th>
+							<th>聯絡人電話</th>
 							<th>加密因子</th>
 							<th>功能</th>
 						</tr>
@@ -343,16 +372,22 @@ $(function(){
 				<table style="border-collapse: separate;border-spacing: 10px 20px;">
 					<tbody>
 						<tr>
-							<td><p>商品規格：</p></td>
-							<td><input type="text" id="insert_product_spec" name="product_spec" ></td>
-							<td><p>產品圖片名稱：</p></td>
-							<td><input type="text" id="insert_photo" name="photo" ></td>
+							<td><p>通路商名稱：</p></td>
+							<td><input type="text" id="insert_agent_name" name="agent_name" ></td>
+							<td><p>網址：</p></td>
+							<td><input type="text" id="insert_web_site" name="web_site" ></td>
 						</tr>
 						<tr>
-							<td><p>加密因子</p></td>
+							<td><p>區域碼：</p></td>
+							<td><input type="text" id="insert_region_code" name="region_code" ></td>
+							<td><p>聯絡人Email：</p></td>
+							<td><input type="text" id="insert_contact_mail" name="contact_mail" ></td>
+						</tr>
+						<tr>
+							<td><p>聯絡人電話：</p></td>
+							<td><input type="text" id="insert_contact_phone" name="contact_phone" ></td>
+							<td><p>加密因子：</p></td>
 							<td><input type="text" id="insert_seed" name="seed" ></td>
-							<td></td>
-							<td></td>
 						</tr>
 					</tbody>
 				</table>	
@@ -365,16 +400,22 @@ $(function(){
 				<table style="border-collapse: separate;border-spacing: 10px 20px;">
 					<tbody>
 						<tr>
-							<td><p>商品規格：</p></td>
-							<td><input type="text" id="update_product_spec" name="product_spec" ></td>
-							<td><p>產品圖片名稱：</p></td>
-							<td><input type="text" id="update_photo" name="photo" ></td>
+							<td><p>通路商名稱：</p></td>
+							<td><input type="text" id="update_agent_name" name="agent_name" ></td>
+							<td><p>網址：</p></td>
+							<td><input type="text" id="update_web_site" name="web_site" ></td>
 						</tr>
 						<tr>
-							<td><p>加密因子</p></td>
+							<td><p>區域碼：</p></td>
+							<td><input type="text" id="update_region_code" name="region_code" ></td>
+							<td><p>聯絡人Email：</p></td>
+							<td><input type="text" id="update_contact_mail" name="contact_mail" ></td>
+						</tr>
+						<tr>
+							<td><p>聯絡人電話：</p></td>
+							<td><input type="text" id="update_contact_phone" name="contact_phone" ></td>
+							<td><p>加密因子：</p></td>
 							<td><input type="text" id="update_seed" name="seed" ></td>
-							<td></td>
-							<td></td>
 						</tr>
 					</tbody>
 				</table>	
@@ -382,11 +423,11 @@ $(function(){
 		</div>	
 		
 		<!--對話窗樣式-刪除 -->
-		<div id="dialog-form-delete" title="確認刪除資料嗎?" style="display:none">
+		<div id="dialog-form-delete" title="確認刪除此資料?" style="display:none">
 			<form name="delete-dialog-form-post" id="delete-dialog-form-post" style="display:inline">
-				<p>是否確認刪除:</p>
+				<p>是否確認刪除：</p>
 				<div style="text-align:center">
-					<label id="delete_product_spec"></label>
+					<label id="delete_agent_name"></label>
 				</div>
 			</form>
 		</div>	

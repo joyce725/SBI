@@ -172,6 +172,22 @@
     <servlet-name>product</servlet-name>
     <url-pattern>/product.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>agent</servlet-name>
+    <servlet-class>tw.com.sbi.agent.controller.Agent</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>agent</servlet-name>
+    <url-pattern>/agent.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>agentAuth</servlet-name>
+    <servlet-class>tw.com.sbi.agent.controller.AgentAuth</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>agentAuth</servlet-name>
+    <url-pattern>/agentAuth.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>

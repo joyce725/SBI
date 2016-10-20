@@ -512,7 +512,7 @@ public class FinModel extends HttpServlet {
     		String insertStr = "INSERT INTO tb_finsimu " + 
     						"(simulation_id, case_id, user_id, f_date, f_type, action, amount, f_kind, description, strategy) " + 
     						"VALUES " +
-    						"('"+simulationId+"', '"+ caseId +"', '"+ userId +"', STR_TO_DATE('" + f_date + "', '%Y-%m-%d'), '" + f_type + "', " + p_action + ", '" + amount + "', '" + f_kind + "', '" + description + "', '" + strategy + "')";
+    						"('"+simulationId+"', '"+ caseId +"', '"+ userId +"', convert('" + f_date + "', date), '" + f_type + "', " + p_action + ", '" + amount + "', '" + f_kind + "', '" + description + "', '" + strategy + "')";
 
 			Connection con = null;
 			Statement statement = null; 
