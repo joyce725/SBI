@@ -36,10 +36,13 @@
 			event.preventDefault();
 			$("#tbl1").html('');
 			
+			
 		    $("#divMain").hide();
 		    $("#div1").show();
 			$("#div3").hide();
 			$("#divTest").hide();
+			
+// 			$("#addRow").click();
 		});
 		
 		$("[id^=back2List-a]").click(function() {
@@ -89,7 +92,8 @@
 							'</tr>');
 						$.each(json_obj, function(i, item) {
 							$("#point").append('<tr><td><label>' + json_obj[i].user_name + '</label></td>' + 
-									'<td><input id="rdo-1-' + i + '" type="radio" name="rdoweight-' + i + '" value="1" checked><label for="rdo-1-' + i + '"><span class="form-label">1</span></label>' +
+									'<td><input id="rdo-0-' + i + '" type="radio" name="rdoweight-' + i + '" value="0"><label for="rdo-0-' + i + '"><span class="form-label">0</span></label>' +
+									'<input id="rdo-1-' + i + '" type="radio" name="rdoweight-' + i + '" value="1" checked><label for="rdo-1-' + i + '"><span class="form-label">1</span></label>' +
 									'<input id="rdo-2-' + i + '" type="radio" name="rdoweight-' + i + '" value="2"><label for="rdo-2-' + i + '"><span class="form-label">2</span></label>' + 
 									'<input id="rdo-3-' + i + '" type="radio" name="rdoweight-' + i + '" value="3"><label for="rdo-3-' + i + '"><span class="form-label">3</span></label>' + 
 									'<input id="rdo-4-' + i + '" type="radio" name="rdoweight-' + i + '" value="4"><label for="rdo-4-' + i + '"><span class="form-label">4</span></label>' +
@@ -575,7 +579,7 @@
 						$("#main").append('<tr>' + 
 							str_checkbox +
 							'<td class="product_name_main">' + json_obj[i].product_name + '</td>' +
-							'<td>' + json_obj[i].cost + '</td>' + 
+							'<td class="cost_main">' + json_obj[i].cost + '</td>' + 
 							'<td>' + str_button + '</td>' +
 							'<td class="forecast_id_main" hidden="true">' + json_obj[i].forecast_id + '</td>' +
 							'</tr>'
@@ -599,7 +603,10 @@
 						
 						if ( column_num == 3 && row.find('u').val() == '' ) {
 							var forecast_id = row.find('.forecast_id_main').html();
+							var cost = row.find('.cost_main').html();
 							$("#resultModal").html('');
+							
+							$("#resultModal").append('<h2>總成本：' + cost + '</h2>');
 							
 				        	$.ajax({
 								type : "POST",
@@ -619,10 +626,12 @@
 										$("#tblResult").append('<tr>' + 
 													'<th>優先次序</th>' + 
 													'<th>名稱</th>' +
+													'<th>比例</th>' +
 												'</tr>');
 										
 										$.each( result_list, function(index, value){
-											$("#tblResult").append('<tr><td>' + index + '</td><td><label>' + value + '</label></td></tr>');
+											var temp = value.split("$");
+											$("#tblResult").append('<tr><td>' + index + '</td><td><label>' + temp[0] + '</label><td><label>' + temp[1] + '</td></td></tr>');
 										});
 
 				 						$("#resultModal").dialog({
