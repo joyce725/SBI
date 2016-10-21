@@ -1,10 +1,40 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="import.jsp" flush="true"/>
+<link rel="stylesheet" href="css/photo/jquery.fileupload.css">
 <script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+
+<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+<script src="js/photo/vendor/jquery.ui.widget.js"></script>
+<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+<script src="js/photo/load-image.all.min.js"></script>
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<script src="js/photo/canvas-to-blob.min.js"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<script src="js/photo/bootstrap.min.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="js/photo/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="js/photo/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="js/photo/jquery.fileupload-process.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="js/photo/jquery.fileupload-image.js"></script>
+<!-- The File Upload audio preview plugin -->
+<script src="js/photo/jquery.fileupload-audio.js"></script>
+<!-- The File Upload video preview plugin -->
+<script src="js/photo/jquery.fileupload-video.js"></script>
+<!-- The File Upload validation plugin -->
+<script src="js/photo/jquery.fileupload-validate.js"></script>
+<style>
+table.form-table {
+ 	border-spacing: 10px 8px !important; 
+}
+</style>
+
 <script>
 $(function(){
 	
@@ -46,16 +76,20 @@ $(function(){
 				var json_obj = $.parseJSON(result);
 				var result_table = "";
 				$.each(json_obj,function(i, item) {
+					var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" style='max-width:100px;max-height:100px'>";
 					result_table 
 						+= "<tr>"
 						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+						+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
+// 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
 						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+						+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
 						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 						+ "<div class='table-function-list'>"
-						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-						+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-						+ "</div></div></td></tr>";								
+						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+						+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+						+ "</div></div></td>"
+						+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";										
 				});		
 				//判斷查詢結果
 				var resultRunTime = 0;
@@ -74,6 +108,8 @@ $(function(){
 	// 新增商品資料 事件聆聽
 	$("#btn_insert_product").click(function(e) {
 		e.preventDefault();		
+		$("#files").html('');
+		$("#photo0").val('');
 		insert_dialog.dialog("open");
 	});
 	
@@ -103,23 +139,28 @@ $(function(){
 						data : {
 							action : "insert",
 							product_spec: $("#insert_product_spec").val(),
-							photo: $("#insert_photo").val(),
+							photo: $("#photo0").val(),
 							seed: $("#insert_seed").val()
 						},
 						success : function(result) {
+							alert("新增");
 							var json_obj = $.parseJSON(result);
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
+								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" style='max-width:100px;max-height:100px'>";
 								result_table 
 									+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-									+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+									+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
+//			 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+									+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td></tr>";							
+									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+									+ "</div></div></td>"
+									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";	
 							});		
 							//判斷查詢結果
 							var resultRunTime = 0;
@@ -151,9 +192,109 @@ $(function(){
 		}
 	});
 	
+	//<!-- photo section jquery begin by Melvin -->
+	'use strict';
+    var url = window.location.hostname === 'blueimp.github.io' ?
+                '//jquery-file-upload.appspot.com/' : '/sbi/photo.do',
+        uploadButton = $('<button/>')
+            .addClass('btn btn-primary')
+            .prop('disabled', true)
+            .text('處理中...')
+            .on('click', function () {
+            	var $this = $(this),
+                    data = $this.data();
+                $this
+                    .off('click')
+                    .text('Abort')
+                    .on('click', function () {
+                        $this.remove();
+                        data.abort();
+                    });
+                data.submit().always(function () {
+                    $this.remove();
+                });
+            });
+                
+    $('#fileupload').fileupload({
+        url: url,
+        dataType: 'json',
+        autoUpload: false,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        maxFileSize: 600000,
+        disableImageResize: /Android(?!.*Chrome)|Opera/
+            .test(window.navigator.userAgent),
+        previewMaxWidth: 200,
+        previewMaxHeight: 200,
+        previewCrop: true
+    }).on('fileuploadadd', function (e, data) {
+        data.context = $('<div/>').appendTo('#files');
+        $.each(data.files, function (index, file) {
+            var node = $('<p/>')
+                    .append($('<span/>').text(file.name));
+            if (!index) {
+                node
+                    .append('<br>')
+                    .append(uploadButton.clone(true).data(data));
+            }
+            node.appendTo(data.context);
+            //$("#photo0").val(file.name);
+        });
+    }).on('fileuploadprocessalways', function (e, data) {
+        var index = data.index,
+            file = data.files[index],
+            node = $(data.context.children()[index]);
+        if (file.preview) {
+            node
+                .prepend('<br>')
+                .prepend(file.preview);
+        }
+        if (file.error) {
+            node
+                .append('<br>')
+                .append($('<span class="text-danger"/>').text(file.error));
+        }
+        if (index + 1 === data.files.length) {
+            data.context.find('button')
+                .text('上傳')
+                .prop('disabled', !!data.files.error);
+        }
+    }).on('fileuploadprogressall', function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css(
+            'width',
+            progress + '%'
+        );
+    }).on('fileuploaddone', function (e, data) {
+        $.each(data.result.files, function (index, file) {
+        	$("#photo0").val(file.name);/////////////////////////////////////
+            if (file.url) {
+                var link = $('<a>')
+                    .attr('target', '_blank')
+                    .prop('href', file.url);
+                $(data.context.children()[index])
+                    .wrap(link);
+            } else if (file.error) {
+                var error = $('<span class="text-danger"/>').text(file.error);
+                $(data.context.children()[index])
+                    .append('<br>')
+                    .append(error);
+            }
+        });
+    }).on('fileuploadfail', function (e, data) {
+    	$.each(data.files, function (index) {
+            var error = $('<span class="text-danger"/>').text('File upload failed.');
+            $(data.context.children()[index])
+                .append('<br>')
+                .append(error);
+        });
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+	
 	// 修改 事件聆聽
 	$("#table_product").delegate(".btn-update", "click", function(e) {
 		e.preventDefault();
+		$("#files-update").html('');
+		$("#photo0-update").val('');
 		p_product_id = $(this).val();
 		p_row = $(this).attr('name');
 		$("#dialog-form-update input[name='product_spec']").val($('#product_spec_' + p_row).html());
@@ -189,23 +330,28 @@ $(function(){
  							action : "update",
  							product_id: p_product_id,
  							product_spec: $("#update_product_spec").val(),
- 							photo : $("#update_photo").val(),
+ 							photo : $("#photo0-update").val(),
  							seed : $("#update_seed").val()
 						},
 						success : function(result) {
+							alert("修改");
 							var json_obj = $.parseJSON(result);
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
+								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" style='max-width:100px;max-height:100px'>";
 								result_table 
 									+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-									+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+									+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
+//			 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+									+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td></tr>";									
+									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+									+ "</div></div></td>"
+									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";	
 							});			
 							//判斷查詢結果
 							var resultRunTime = 0;
@@ -237,14 +383,90 @@ $(function(){
 		}
 	});
 	
-// 	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
+	$('#fileupload-update').fileupload({
+        url: url,
+        dataType: 'json',
+        autoUpload: false,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        maxFileSize: 600000,
+        disableImageResize: /Android(?!.*Chrome)|Opera/
+            .test(window.navigator.userAgent),
+        previewMaxWidth: 200,
+        previewMaxHeight: 200,
+        previewCrop: true
+    }).on('fileuploadadd', function (e, data) {
+        data.context = $('<div/>').appendTo('#files-update');
+        $.each(data.files, function (index, file) {
+            var node = $('<p/>')
+                    .append($('<span/>').text(file.name));
+            if (!index) {
+                node
+                    .append('<br>')
+                    .append(uploadButton.clone(true).data(data));
+            }
+            node.appendTo(data.context);
+            $("#photo-update").val(file.name);
+        });
+    }).on('fileuploadprocessalways', function (e, data) {
+        var index = data.index,
+            file = data.files[index],
+            node = $(data.context.children()[index]);
+        if (file.preview) {
+            node
+                .prepend('<br>')
+                .prepend(file.preview);
+        }
+        if (file.error) {
+            node
+                .append('<br>')
+                .append($('<span class="text-danger"/>').text(file.error));
+        }
+        if (index + 1 === data.files.length) {
+            data.context.find('button')
+                .text('上傳')
+                .prop('disabled', !!data.files.error);
+        }
+    }).on('fileuploadprogressall', function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css(
+            'width',
+            progress + '%'
+        );
+    }).on('fileuploaddone', function (e, data) {
+    	console.log("fileuploaddone");
+        $.each(data.result.files, function (index, file) {
+        	$("#photo0-update").val(file.name);///////////////////////////////////////
+            if (file.url) {
+                var link = $('<a>')
+                    .attr('target', '_blank')
+                    .prop('href', file.url);
+                $(data.context.children()[index])
+                    .wrap(link);
+            } else if (file.error) {
+                var error = $('<span class="text-danger"/>').text(file.error);
+                $(data.context.children()[index])
+                    .append('<br>')
+                    .append(error);
+            }
+        });
+    }).on('fileuploadfail', function (e, data) {
+    	$.each(data.files, function (index) {
+            var error = $('<span class="text-danger"/>').text('File upload failed.');
+            $(data.context.children()[index])
+                .append('<br>')
+                .append(error);
+        });
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');  
+	
+	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
 	$("#table_product").delegate(".btn-delete", "click", function(e) {
 		e.preventDefault();
 		p_product_id = $(this).val();
 		$("#delete_product_spec").html($(this).attr('name'));
 		del_dialog.dialog("open");
 	});
-// 	// "刪除" Dialog相關設定
+	// "刪除" Dialog相關設定
 	del_dialog = $("#dialog-form-delete").dialog({
 		draggable : false,//防止拖曳
 		resizable : false,//防止縮放
@@ -274,16 +496,85 @@ $(function(){
 						var json_obj = $.parseJSON(result);
 						var result_table = "";
 						$.each(json_obj,function(i, item) {
+							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" style='max-width:100px;max-height:100px'>";
 							result_table 
 								+= "<tr>"
 								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-								+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+								+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
+//		 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
 								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+								+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 								+ "<div class='table-function-list'>"
-								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-								+ "</div></div></td></tr>";							
+								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+								+ "</div></div></td>"
+								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";	
+						});		
+						$("#table_product tbody").html(result_table);
+					}
+				});
+				$(this).dialog("close");
+			}
+		}, {
+			text : "取消",
+			click : function() {
+				$(this).dialog("close");
+			}
+		} ],
+		close : function() {
+			$(this).dialog("close");
+		}
+	});
+
+ 	// 取得產品識別碼 事件聆聽 
+	$("#table_product").delegate(".btn-iden", "click", function(e) {
+		e.preventDefault();
+		p_product_id = $(this).val();
+		identitiy_dialog.dialog("open");
+	});
+	// "取得產品識別碼" Dialog相關設定
+	identitiy_dialog = $("#dialog-form-identity").dialog({
+		draggable : false,//防止拖曳
+		resizable : false,//防止縮放
+		autoOpen : false,
+		show : {
+			effect : "clip",
+			duration : 500
+		},
+		hide : {
+			effect : "fade",
+			duration : 500
+		},
+		height : 'auto',
+		modal : true,
+		buttons : [{
+			id : "gen_identity",
+			text : "確認",
+			click : function() {
+				$.ajax({
+					type : "POST",
+					url : "product.do",
+					data : {
+						action: "gen_identity",
+						product_id: p_product_id
+					},
+					success : function(result) {
+						var json_obj = $.parseJSON(result);
+						var result_table = "";
+						$.each(json_obj,function(i, item) {
+							result_table 
+							+= "<tr>"
+								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+								+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+								+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+								+ "<div class='table-function-list'>"
+								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+								+ "</div></div></td>"
+								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";				
 						});		
 						$("#table_product tbody").html(result_table);
 					}
@@ -328,7 +619,9 @@ $(function(){
 							<th>商品規格</th>
 							<th>產品圖片名稱</th>
 							<th>加密因子</th>
+							<th>產品識別碼</th>
 							<th>功能</th>
+							<th>取得產品識別碼</th>
 						</tr>
 					</thead>
 					<tbody style="text-align:center">
@@ -345,17 +638,28 @@ $(function(){
 						<tr>
 							<td><p>商品規格：</p></td>
 							<td><input type="text" id="insert_product_spec" name="product_spec" ></td>
-							<td><p>產品圖片名稱：</p></td>
-							<td><input type="text" id="insert_photo" name="photo" ></td>
-						</tr>
-						<tr>
-							<td><p>加密因子</p></td>
+							<td><p>加密因子：</p></td>
 							<td><input type="text" id="insert_seed" name="seed" ></td>
-							<td></td>
-							<td></td>
 						</tr>
 					</tbody>
-				</table>	
+				</table>
+				<!-- photo section begin by Melvin -->
+				<table class='form-table'>
+					<tbody>
+						<tr>
+							<td>產品圖片：</td>
+							<td>
+								<span class="btn btn-success fileinput-button btn-primary" style="padding: 6px 12px;border-radius: 5px;">
+								<span><font color="white">+&nbsp;</font>瀏覽<font color="red">(最大500K)</font></span>
+								<input id="fileupload" type="file" name="files[]">
+								<br>
+								</span>
+								<div id="files" class="files" ></div>
+	               			</td>
+	               		</tr>	
+               	  		</tbody>
+               	  </table>		
+               	<!-- photo section end by Melvin -->	
 			</form>
 		</div>	
 			
@@ -367,17 +671,28 @@ $(function(){
 						<tr>
 							<td><p>商品規格：</p></td>
 							<td><input type="text" id="update_product_spec" name="product_spec" ></td>
-							<td><p>產品圖片名稱：</p></td>
-							<td><input type="text" id="update_photo" name="photo" ></td>
-						</tr>
-						<tr>
-							<td><p>加密因子</p></td>
+							<td><p>加密因子：</p></td>
 							<td><input type="text" id="update_seed" name="seed" ></td>
-							<td></td>
-							<td></td>
 						</tr>
 					</tbody>
 				</table>	
+				<!-- photo section begin by Melvin -->
+				<table class="form-table">
+					<tbody>
+						<tr>
+							<td>產品圖片：</td>
+							<td>
+								<span class="btn btn-success fileinput-button btn-primary" style="padding: 6px 12px;border-radius: 5px;">
+								<span><font color="white">+&nbsp;</font>瀏覽<font color="red">(最大500K)</font></span>
+								<input id="fileupload-update" type="file" name="files-update[]">
+							<br>
+								</span>
+								<div id="files-update" class="files" ></div>
+	               			</td>
+               		 	</tr>	
+           	  		</tbody>
+              	</table>		
+               	<!-- photo section end by Melvin -->
 			</form>
 		</div>	
 		
@@ -390,5 +705,14 @@ $(function(){
 				</div>
 			</form>
 		</div>	
+		
+		<!--對話窗樣式-產生商品識別碼 -->
+		<div id="dialog-form-identity" title="確認產生商品識別碼?" style="display:none">
+			<form name="identity-dialog-form-post" id="identity-dialog-form-post" style="display:inline">
+				<p>確認是否產生?:</p>
+			</form>
+		</div>	
 	</div>
+	<input type="text" id="photo0" style="display:none"/>
+	<input type="text" id="photo0-update" style="display:none"/>
 <jsp:include page="footer.jsp" flush="true"/>

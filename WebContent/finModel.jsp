@@ -52,9 +52,9 @@ h2.ui-list-title {
 $(function(){
 	// jquery-ui tab function 
     $( "#tabs" ).tabs();
-    $( "#tabs" ).tabs({
-      	event: "mouseover"
-    });
+//     $( "#tabs" ).tabs({
+//       	event: "mouseover"
+//     });
 });
 </script>
 <!-- /**************************************  以上共用JS區塊    **********************************************/ 		-->	

@@ -37,6 +37,11 @@
     <param-value>/data/sbiupload</param-value>
   </context-param>
   <context-param>
+    <param-name>photopath</param-name>
+<!--     <param-value>D:</param-value> -->
+    <param-value>/data/cdriproductpic</param-value>
+  </context-param>
+  <context-param>
     <param-name>pythonwebservice</param-name>
 <!--     <param-value>http://61.218.8.55:8099</param-value> -->
     <param-value>http://192.168.112.164:8070</param-value>
@@ -187,6 +192,22 @@
   <servlet-mapping>
     <servlet-name>agentAuth</servlet-name>
     <url-pattern>/agentAuth.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>photo</servlet-name>
+    <servlet-class>tw.com.sbi.product.controller.photo</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>photo</servlet-name>
+    <url-pattern>/photo.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>image</servlet-name>
+    <servlet-class>tw.com.sbi.product.controller.image</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>image</servlet-name>
+    <url-pattern>/image.do</url-pattern>
   </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>

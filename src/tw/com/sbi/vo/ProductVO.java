@@ -11,6 +11,7 @@ public class ProductVO implements Serializable {
 	private String product_spec;
 	private String photo;
 	private String seed;
+	private String identity_id;
 	
 	public String getMessage() {
 		return message;
@@ -47,5 +48,11 @@ public class ProductVO implements Serializable {
 	}
 	public void setSeed(String seed) {
 		this.seed = seed;
+	}
+	public String getIdentity_id() {
+		return identity_id;
+	}
+	public void setIdentity_id(String identity_id) {
+		this.identity_id = identity_id;
 	}
 }
