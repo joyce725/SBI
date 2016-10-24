@@ -124,8 +124,10 @@
 
 
 	<div class="content-wrap">
-		<iframe id="ifm1" width="100%" height="100%" src="\/persona\/Persona_ProductAdminCtrl"></iframe>
+		<div class="search-result-wrap" style="height:100%">
+			<iframe id="ifm1" width="100%" height="100%" src="\/persona\/Persona_ProductAdminCtrl"></iframe>
 <!-- 		<object type="text/html" width="100%" height="100%" id="page1" data="\/persona\/Persona_ProductAdminCtrl"></object> -->
+		</div>
 	</div>
 
 </body>

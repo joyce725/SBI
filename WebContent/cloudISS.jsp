@@ -122,7 +122,9 @@
 	</div>
 
 	<div class="content-wrap">
-		<object type="text/html" width="100%" height="100%" data="http://61.218.8.51/SBI/user/sso.aspx"></object>
+		<div class="search-result-wrap" style="height:100%">
+			<object type="text/html" width="100%" height="100%" data="http://61.218.8.51/SBI/user/sso.aspx"></object>
+		</div>
 	</div>
 
 </body>

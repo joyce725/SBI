@@ -117,8 +117,10 @@
 	</div>
 	
 	<div class="content-wrap">
-		<iframe id="ifm1" width="100%" height="100%" src="\/marketplace\/MarketPlaceX_MiscCtrl"></iframe>
+		<div class="search-result-wrap" style="height:100%">
+			<iframe id="ifm1" width="100%" height="100%" src="\/marketplace\/MarketPlaceX_MiscCtrl"></iframe>
 <!-- 		<object type="text/html" width="100%" height="100%" id="page1" data="\/marketplace\/MarketPlaceX_MiscCtrl" ></object> -->
+		</div>
 	</div>
 	
 </body>
