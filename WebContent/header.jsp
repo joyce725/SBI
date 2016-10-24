@@ -42,7 +42,7 @@
 					<li><a href="cloudISS.jsp">動態統計</a></li>
 				</ul>
 			</li>
-			<li><img src="images/sidenav-store.svg" alt="">POI
+			<li><a href="cloudISS.jsp"><img src="images/sidenav-store.svg" alt="">POI</a>
 			</li>
 		</ul>
 	</div><!-- /.sidenav -->

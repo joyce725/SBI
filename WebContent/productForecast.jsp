@@ -25,6 +25,18 @@
 <script>
 	
 	$(function() {
+		$("#logout").click(function(e) {
+			$.ajax({
+				type : "POST",
+				url : "login.do",
+				data : {
+					action : "logout"
+				},
+				success : function(result) {
+					top.location.href = "login.jsp";
+				}
+			});
+		});
 
 		var user_count = 0;
 		
@@ -760,7 +772,7 @@
 		<div class="header">
 			<div class="userinfo">
 				<p>使用者<span><%= (request.getSession().getAttribute("user_name")==null)?"":request.getSession().getAttribute("user_name").toString() %></span></p>
-				<a id="logout" class="btn-logout" >登出</a>
+				<a href="#" id="logout" class="btn-logout">登出</a>
 			</div>
 		</div>
 	
@@ -795,7 +807,7 @@
 						<li><a href="cloudISS.jsp">動態統計</a></li>
 					</ul>
 				</li>
-				<li><img src="images/sidenav-store.svg" alt="">POI
+				<li><a href="cloudISS.jsp"><img src="images/sidenav-store.svg" alt="">POI</a>
 				</li>
 			</ul>
 		</div>
