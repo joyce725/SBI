@@ -1,6 +1,8 @@
 package tw.com.sbi.agent.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,8 +17,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 
 import com.google.gson.Gson;
 
@@ -143,6 +152,22 @@ public class AgentAuth extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("gen_auth".equals(action)) {
+			try {
+				String agentId = request.getParameter("agent_id");
+				String productId = request.getParameter("product_id");
+				
+				agentAuthService = new AgentAuthService();
+				
+				List<AgentAuthVO> list = agentAuthService.genAuthCode(groupId, agentId, productId);
+
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -203,6 +228,11 @@ public class AgentAuth extends HttpServlet {
 			dao.deleteDB(groupId, agentId, productId);
 			return dao.getAgentAuthByGroupId(groupId);
 		}
+		
+		public List<AgentAuthVO> genAuthCode(String groupId, String agentId, String productId){
+			dao.genAuthCode(groupId, agentId, productId);
+			return dao.getAgentAuthByGroupId(groupId);
+		}
 	}
 	
 	/*************************** 制定規章方法 ****************************************/
@@ -218,6 +248,8 @@ public class AgentAuth extends HttpServlet {
 		public List<AgentVO> getAgentByGroupId(String groupId);
 		
 		public List<AgentAuthVO> getAgentAuthByGroupId(String groupId);
+		
+		public void genAuthCode(String groupId, String agentId, String productId);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -226,6 +258,7 @@ public class AgentAuth extends HttpServlet {
 				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
+		private final String wsPath = getServletConfig().getServletContext().getInitParameter("pythonwebservice");
 
 		// 會使用到的Stored procedure
 		private static final String sp_get_agent_auth_1_by_group = "call sp_get_agent_auth_1_by_group(?)";
@@ -235,6 +268,7 @@ public class AgentAuth extends HttpServlet {
 		private static final String sp_insert_agent_auth = "call sp_insert_agent_auth(?,?,?,?,?,?,?,?)";
 		private static final String sp_update_agent_auth = "call sp_update_agent_auth(?,?,?,?,?,?,?,?)";
 		private static final String sp_delete_agent_auth = "call sp_delete_agent_auth(?,?,?)";
+		private static final String sp_update_agent_auth_auth_code = "call sp_update_agent_auth_auth_code(?,?,?,?)";
 
 
 		@Override
@@ -385,6 +419,7 @@ public class AgentAuth extends HttpServlet {
 					agentAuthVO.setSale_quantity(rs.getString("sale_quantity"));
 					agentAuthVO.setRegister_quantity(rs.getString("register_quantity"));
 					agentAuthVO.setSeed(rs.getString("seed"));
+					agentAuthVO.setAuth_code(rs.getString("auth_code"));
 					
 					list.add(agentAuthVO); // Store the row in the list
 				}				
@@ -549,6 +584,89 @@ public class AgentAuth extends HttpServlet {
 					}
 				}
 			}
+		}	
+		
+		@Override
+		public void genAuthCode(String groupId, String agentId, String productId) {
+
+			String encodeProductId = new String(Base64.encodeBase64String(productId.getBytes()));
+			String encodeAgentId = new String(Base64.encodeBase64String(agentId.getBytes()));
+    		String url = wsPath + "/license/type=Q2hhbm5lbEF1dGg=&prod=" + encodeProductId + "&agnt=" + encodeAgentId;
+
+    		HttpGet httpRequest = new HttpGet(url);
+        	HttpClient client = HttpClientBuilder.create().build();
+        	HttpResponse httpResponse;
+        	try {
+        		StringBuffer result = new StringBuffer();
+        		httpResponse = client.execute(httpRequest);
+    			int responseCode = httpResponse.getStatusLine().getStatusCode();
+    
+    	    	if(responseCode==200){
+    	    		BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+
+        	    	String line = "";
+        	    	while ((line = rd.readLine()) != null) {
+        	    		result.append(line);
+        	    	}
+        	    	
+    	    		logger.debug("webservice result: " + result.toString()); 
+    	    		JSONArray jsonArray = new JSONArray(result.toString());
+    	    		logger.debug(jsonArray.getJSONObject(0).get("auth"));
+    	    		
+    	    		Connection con = null;
+    				PreparedStatement pstmt = null;
+    				String authCode = (String) jsonArray.getJSONObject(0).get("auth");
+    				try {
+    					Class.forName("com.mysql.jdbc.Driver");
+    					con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+    					
+    					CallableStatement cs = null;
+    					cs = con.prepareCall(sp_update_agent_auth_auth_code);
+
+    					cs.setString(1, productId);
+    					cs.setString(2, agentId);
+    					cs.setString(3, groupId);
+    					cs.setString(4, authCode);
+
+    					cs.execute();
+    				
+    				} catch (SQLException se) {
+    					// Handle any SQL errors
+    					throw new RuntimeException("A database error occured. " + se.getMessage());
+    				} catch (ClassNotFoundException cnfe) {
+    					throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+    				} finally {
+    					// Clean up JDBC resources
+    					if (pstmt != null) {
+    						try {
+    							pstmt.close();
+    						} catch (SQLException se) {
+    							se.printStackTrace(System.err);
+    						}
+    					}
+    					if (con != null) {
+    						try {
+    							con.close();
+    						} catch (Exception e) {
+    							e.printStackTrace(System.err);
+    						}
+    					}
+    				}
+    	    	}
+    	    	else {
+    	    		logger.debug("webservice fail"); 
+    	    	}
+  	    	
+    		} catch (ClientProtocolException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (UnsupportedOperationException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
 		}		
-	}
+	}	
 }

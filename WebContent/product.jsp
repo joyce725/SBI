@@ -302,7 +302,6 @@ $(function(){
 		p_product_id = $(this).val();
 		p_row = $(this).attr('name');
 		$("#dialog-form-update input[name='product_spec']").val($('#product_spec_' + p_row).html());
-		$("#dialog-form-update input[name='photo']").val($('#photo_' + p_row).html());
 		$("#dialog-form-update input[name='seed']").val($('#seed_' + p_row).html());
 		update_dialog.dialog("open");
 	});
@@ -326,6 +325,9 @@ $(function(){
 			id : "update",
 			text : "修改",
 			click : function() {
+				if($("#photo0-update").val()==""){
+					$("#photo0-update").val($('#photo_' + p_row).attr("name"));					
+				}
 // 				if ($('#update-dialog-form-post').valid()) {
 					$.ajax({
 						type : "POST",

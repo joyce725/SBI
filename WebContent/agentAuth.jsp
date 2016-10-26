@@ -70,11 +70,13 @@ $(function(){
 						+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
 						+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+						+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
 						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 						+ "<div class='table-function-list'>"
 						+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 						+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-						+ "</div></div></td></tr>";							
+						+ "</div></div></td>"	
+						+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
 				});		
 				//判斷查詢結果
 				var resultRunTime = 0;
@@ -170,7 +172,7 @@ $(function(){
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
 								result_table 
-									+= "<tr>"
+								+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
 									+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
 									+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
@@ -178,11 +180,13 @@ $(function(){
 									+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
 									+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+									+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
 									+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 									+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td></tr>";							
+									+ "</div></div></td>"	
+									+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";		
 							});		
 							//判斷查詢結果
 							var resultRunTime = 0;
@@ -274,7 +278,7 @@ $(function(){
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
 								result_table 
-									+= "<tr>"
+								+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
 									+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
 									+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
@@ -282,11 +286,13 @@ $(function(){
 									+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
 									+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+									+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
 									+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 									+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td></tr>";						
+									+ "</div></div></td>"	
+									+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";				
 							});			
 							//判斷查詢結果
 							var resultRunTime = 0;
@@ -318,14 +324,14 @@ $(function(){
 		}
 	});
 	
-// 	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
+	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
 	$("#table_agent_auth").delegate(".btn-delete", "click", function(e) {
 		e.preventDefault();
 		$("#delete_agent_id").val($(this).val());
 		$("#delete_product_id").val($(this).attr('name'));
 		del_dialog.dialog("open");
 	});
-// 	// "刪除" Dialog相關設定
+	// "刪除" Dialog相關設定
 	del_dialog = $("#dialog-form-delete").dialog({
 		draggable : false,//防止拖曳
 		resizable : false,//防止縮放
@@ -357,21 +363,97 @@ $(function(){
 						var result_table = "";
 						$.each(json_obj,function(i, item) {
 							result_table 
-								+= "<tr>"
-								+ "<td id='product_id_"+i+"'>" + item.product_id + "</td>"
-								+ "<td id='agent_id_"+i+"'>"+ item.agent_id + "</td>"
+							+= "<tr>"
+								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+								+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
 								+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
 								+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
 								+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
 								+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+								+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 								+ "<div class='table-function-list'>"
-								+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+								+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 								+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-								+ "</div></div></td></tr>";							
+								+ "</div></div></td>"	
+								+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";				
 						});		
 						//判斷查詢結果
+						$("#table_agent_auth tbody").html(result_table);
+					}
+				});
+				$(this).dialog("close");
+			}
+		}, {
+			text : "取消",
+			click : function() {
+				$(this).dialog("close");
+			}
+		} ],
+		close : function() {
+			$(this).dialog("close");
+		}
+	});
+
+ 	// 取得產品授權碼 事件聆聽 
+	$("#table_agent_auth").delegate(".btn-auth", "click", function(e) {
+		e.preventDefault();
+		$("#auth_agent_id").val($(this).val());
+		$("#auth_product_id").val($(this).attr('name'));
+		identitiy_dialog.dialog("open");
+	});
+	// "取得產品授權碼" Dialog相關設定
+	identitiy_dialog = $("#dialog-form-auth").dialog({
+		draggable : false,//防止拖曳
+		resizable : false,//防止縮放
+		autoOpen : false,
+		show : {
+			effect : "clip",
+			duration : 500
+		},
+		hide : {
+			effect : "fade",
+			duration : 500
+		},
+		height : 'auto',
+		modal : true,
+		buttons : [{
+			id : "gen_auth",
+			text : "確認",
+			click : function() {
+				$.ajax({
+					type : "POST",
+					url : "agentAuth.do",
+					data : {
+						action: "gen_auth",
+						product_id: $("#auth_product_id").val(),
+						agent_id: $("#auth_agent_id").val()
+					},
+					success : function(result) {
+						var json_obj = $.parseJSON(result);
+						var result_table = "";
+						$.each(json_obj,function(i, item) {
+// 							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+							var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+							result_table 
+							+= "<tr>"
+								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+								+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
+								+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
+								+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
+								+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
+								+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
+								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+								+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
+								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+								+ "<div class='table-function-list'>"
+								+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+								+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+								+ "</div></div></td>"	
+								+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
+						});
+// 						console.log('"取得產品識別碼" Dialog相關設定');
 						$("#table_agent_auth tbody").html(result_table);
 					}
 				});
@@ -426,7 +508,9 @@ $(function(){
 							<th>已銷售數量</th>
 							<th>已登錄數量</th>
 							<th>加密因子</th>
-							<th>功能</th>
+							<th>產品授權碼</th>							
+							<th>功能</th>						
+							<th>取得產品授權碼</th>
 						</tr>
 					</thead>
 					<tbody style="text-align:center">
@@ -519,6 +603,15 @@ $(function(){
 				<p>是否確認刪除：</p>
 				<input type="hidden" id="delete_agent_id">
 				<input type="hidden" id="delete_product_id">
+			</form>
+		</div>	
+		
+		<!--對話窗樣式-產生產品授權碼 -->
+		<div id="dialog-form-auth" title="確認產生產品授權碼?" style="display:none">
+			<form name="auth-dialog-form-post" id="auth-dialog-form-post" style="display:inline">
+				<p>確認是否產生?:</p>
+				<input type="hidden" id="auth_agent_id">
+				<input type="hidden" id="auth_product_id">
 			</form>
 		</div>	
 	</div>
