@@ -107,7 +107,14 @@ public class FinModel extends HttpServlet {
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
-			
+			if ("case_query".equals(action)){
+				String caseId = request.getParameter("case_id");
+				finModelService = new FinModelService();
+				List<FinsimuVO> list = finModelService.getFinsimuData(caseId);
+				gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+				String jsonList = gson.toJson(list);
+				response.getWriter().write(jsonList);
+			}
 			if ("create".equals(action)) {
 	    		String caseId = UUID.randomUUID().toString();
 				String caseName = request.getParameter("case_name");
@@ -118,6 +125,48 @@ public class FinModel extends HttpServlet {
 				finModelService = new FinModelService();
 				List<FincaseVO> list = finModelService.createModel(caseId, groupId, caseName, amount, safetyMoney, createDate);
 	
+				gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+				String jsonList = gson.toJson(list);
+				response.getWriter().write(jsonList);
+			}
+			if ("insert".equals(action)){
+				String caseId = request.getParameter("case_id");
+				String simulationId = UUID.randomUUID().toString();
+				String f_date = request.getParameter("f_date");
+				String f_type = request.getParameter("f_type");
+				Boolean p_action = Boolean.parseBoolean(request.getParameter("p_action"));
+				String amount = request.getParameter("amount");
+				int f_kind = Integer.parseInt(request.getParameter("f_kind"));
+				String description = request.getParameter("description");
+				String strategy = request.getParameter("strategy");
+				finModelService = new FinModelService();
+				List<FinsimuVO> list = finModelService.insertFinsimuData(caseId, simulationId, userId, f_date, f_type, p_action, amount, f_kind, description, strategy);
+				gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+				String jsonList = gson.toJson(list);
+				response.getWriter().write(jsonList);
+			}
+			if ("update".equals(action)){
+				String caseId = request.getParameter("case_id");
+				String simulationId = request.getParameter("simulation_id");
+				String f_date = request.getParameter("f_date");
+				String f_type = request.getParameter("f_type");
+				Boolean p_action = Boolean.parseBoolean(request.getParameter("p_action"));
+				String amount = request.getParameter("amount");
+				int f_kind = Integer.parseInt(request.getParameter("f_kind"));
+				String description = request.getParameter("description");
+				String strategy = request.getParameter("strategy");
+				finModelService = new FinModelService();
+				List<FinsimuVO> list = finModelService.updateFinsimuData(caseId, simulationId, f_date, f_type, p_action, amount, f_kind, description, strategy);
+				gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+				String jsonList = gson.toJson(list);
+				response.getWriter().write(jsonList);
+			}
+			
+			if ("delete".equals(action)) {
+				String caseId = request.getParameter("case_id");
+				String simulationId = request.getParameter("simulation_id");
+	    		finModelService = new FinModelService();
+	    		List<FinsimuVO> list = finModelService.deleteFinsimuData(caseId, simulationId);
 				gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);

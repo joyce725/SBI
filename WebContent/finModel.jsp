@@ -80,11 +80,13 @@ $(function(){
 					}
 				}
 			});
+			
 			// 建立模型 事件聆聽
 			$("#create-model-button").click( function(e) {
 				e.preventDefault();		
 				create_dialog.dialog("open");
 			});	
+			
 			// 建立模型Dialog相關設定
 			create_dialog = $("#dialog-form-create").dialog({
 				draggable : false,//防止拖曳
@@ -166,8 +168,11 @@ $(function(){
 					$.each(json_obj,function(i, item) {
 						result_table += 
 								"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
-								+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
-								+ "' class='btn-simu btn btn-wide btn-primary'>產生</button></td></tr>";;
+								+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
+								+ "class='btn-simu btn btn-wide btn-primary'>產生</button></td>"
+								+ "<td><button value='"+ json_obj[i].case_id+"' name='user_query' "
+								+ "class='btn_query btn btn-primary'>查看</button></td>"
+								+ "</tr>";
 					});					
 					//判斷查詢結果
 					var resultRunTime = 0;
@@ -180,6 +185,821 @@ $(function(){
 						// todo
 					}
 				}
+			});
+			
+			// 查看財務計畫 事件聆聽
+			$("#fincase-table-admin").delegate(".btn_query", "click", function() {
+				uuid = $(this).val();					
+				$.ajax({
+					type : "POST",
+					url : "finModel.do",
+					data : {
+						action : "case_query",
+						case_id: uuid
+					},
+					success : function(result) {
+						
+						
+						$("#fincase-div-admin").hide();
+						$("#finsimu-div-admin").show();
+						$("#switch-simu-button").prop('name', uuid);
+						$("#insert-simu-button").prop('name', uuid);
+						$("#hidden_case_id").val(uuid);
+						var json_obj = $.parseJSON(result);
+						
+						console.log(json_obj);
+						
+// 						var len=json_obj.length;
+						var result_table = "";
+						$.each(json_obj,function(i, item) {
+// 							if(i<len){
+								var str_f_type = "";
+								var str_action = "";
+								var str_f_kind = "";
+								if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+							        json_obj[i].f_date ="";
+							    }
+								if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+							        json_obj[i].f_type ="";
+							    }
+								if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+							        json_obj[i].action ="";
+							    }
+								if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+							        json_obj[i].amount ="";
+							    }
+								if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+							        json_obj[i].f_kind ="";
+							    }
+								if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+							        json_obj[i].description ="";
+							    }
+								if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+							        json_obj[i].strategy ="";
+							    }
+								
+								if(json_obj[i].action){
+									str_action = "實際";
+								}
+								else{
+									str_action = "模擬";
+								} 
+								
+								switch(json_obj[i].f_type){
+						        	case 1 :
+						        		str_f_type = "已發生";
+						        		break;
+						        	case 2 :
+						        		str_f_type = "應收/應付";
+						        		break;
+						        	default: 
+						        		str_f_type = "default";
+					        			break;
+						      	}
+
+								switch(json_obj[i].f_kind){
+						        	case 1 :
+						        		str_f_kind = "營業收入";
+						        		break;
+						        	case 2 :
+						        		str_f_kind = "業務支出";
+						        		break;
+						        	case 3 :
+						        		str_f_kind = "固定資產支出";
+						        		break;
+						        	case 4 :
+						        		str_f_kind = "管銷費用";
+						        		break;
+						        	case 5 :
+						        		str_f_kind = "薪資";
+						        		break;
+						        	case 6 :
+						        		str_f_kind = "研發費用";
+						        		break;
+						        	case 7 :
+						        		str_f_kind = "行銷費用";
+						        		break;
+						        	case 8 :
+						        		str_f_kind = "投資收入/支出";
+						        		break;
+						        	case 9 :
+						        		str_f_kind = "其他收入/支出";
+						        		break;
+						        	default: 
+						        		str_f_kind = "default";
+					        			break;
+						      	}
+// 							}
+							result_table 
+								+= "<tr>"
+								+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
+								+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+								+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
+								+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
+								+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
+								+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
+								+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
+								+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+								+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+								+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+								+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
+// 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+// 								+ "<div class='table-function-list'>"
+// 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
+// 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
+// 								+ "</div></div></td></tr>";								
+							console.log
+						});		
+						//判斷查詢結果
+						var resultRunTime = 0;
+						$.each (json_obj, function (i) {
+							resultRunTime+=1;
+						});
+						if(resultRunTime!=0){
+							$("#finsimu-table-admin tbody").html(result_table);
+						}else{
+							// todo
+						}
+					}
+				});					
+			});
+
+			//新增事件聆聽
+			$("#insert-simu-button").click(function(e) {
+				e.preventDefault();		
+				uuid = $(this).attr('name');
+				insert_dialog.dialog("open");
+			});
+			
+			// "新增" Dialog相關設定
+			insert_dialog = $("#dialog-form-insert").dialog({
+				draggable : false,//防止拖曳
+				resizable : false,//防止縮放
+				autoOpen : false,
+				show : {
+					effect : "clip",
+					duration : 500
+				},
+				hide : {
+					effect : "fade",
+					duration : 500
+				},
+				width : 'auto',
+				modal : true,
+				buttons : [{
+					id : "insert",
+					text : "新增",
+					click : function() {
+						if ($('#insert-dialog-form-post').valid()) {
+							$.ajax({
+								type : "POST",
+								url : "finModel.do",
+								data : {
+									action : "insert",
+		 							case_id: uuid,
+		 							f_date : $("#insert_f_date").val(),
+		 							f_type : $("#insert_f_type").val(),
+		 							p_action : $("#insert_action").val(),
+		 							amount : $("#insert_amount").val(),
+		 							f_kind : $("#insert_f_kind").val(),
+									description : $("#insert_description").val(),
+									strategy : $("#insert_strategy").val()
+								},
+								success : function(result) {
+									var json_obj = $.parseJSON(result);
+// 									var len=json_obj.length;
+									var result_table = "";
+									$.each(json_obj,function(i, item) {
+//			 							if(i<len){
+											var str_f_type = "";
+											var str_action = "";
+											var str_f_kind = "";
+											if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+										        json_obj[i].f_date ="";
+										    }
+											if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+										        json_obj[i].f_type ="";
+										    }
+											if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+										        json_obj[i].action ="";
+										    }
+											if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+										        json_obj[i].amount ="";
+										    }
+											if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+										        json_obj[i].f_kind ="";
+										    }
+											if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+										        json_obj[i].description ="";
+										    }
+											if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+										        json_obj[i].strategy ="";
+										    }
+											
+											if(json_obj[i].action){
+												str_action = "實際";
+											}
+											else{
+												str_action = "模擬";
+											} 
+											
+											switch(json_obj[i].f_type){
+									        	case 1 :
+									        		str_f_type = "已發生";
+									        		break;
+									        	case 2 :
+									        		str_f_type = "應收/應付";
+									        		break;
+									        	default: 
+									        		str_f_type = "default";
+								        			break;
+									      	}
+
+											switch(json_obj[i].f_kind){
+									        	case 1 :
+									        		str_f_kind = "營業收入";
+									        		break;
+									        	case 2 :
+									        		str_f_kind = "業務支出";
+									        		break;
+									        	case 3 :
+									        		str_f_kind = "固定資產支出";
+									        		break;
+									        	case 4 :
+									        		str_f_kind = "管銷費用";
+									        		break;
+									        	case 5 :
+									        		str_f_kind = "薪資";
+									        		break;
+									        	case 6 :
+									        		str_f_kind = "研發費用";
+									        		break;
+									        	case 7 :
+									        		str_f_kind = "行銷費用";
+									        		break;
+									        	case 8 :
+									        		str_f_kind = "投資收入/支出";
+									        		break;
+									        	case 9 :
+									        		str_f_kind = "其他收入/支出";
+									        		break;
+									        	default: 
+									        		str_f_kind = "default";
+								        			break;
+									      	}
+//			 							}
+										result_table 
+											+= "<tr>"
+											+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
+											+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+											+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
+											+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
+											+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
+											+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
+											+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
+											+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+											+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+											+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+											+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
+//			 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+//			 								+ "<div class='table-function-list'>"
+//			 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
+//			 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
+//			 								+ "</div></div></td></tr>";								
+									});		
+									//判斷查詢結果
+									var resultRunTime = 0;
+									$.each (json_obj, function (i) {
+										resultRunTime+=1;
+									});
+									if(resultRunTime!=0){
+										$("#finsimu-table-admin tbody").html(result_table);
+									}else{
+										// todo
+									}
+								}
+							});
+							insert_dialog.dialog("close");
+						}
+					}
+				}, {
+					text : "取消",
+					click : function() {
+						validator_insert.resetForm();
+						$("#insert-dialog-form-post").trigger("reset");
+						insert_dialog.dialog("close");
+					}
+				} ],
+				close : function() {
+					validator_insert.resetForm();
+					$("#insert-dialog-form-post").trigger("reset");
+					insert_dialog.dialog("close");
+				}
+			});
+			
+			// 修改 事件聆聽
+			$("#finsimu-table-admin").delegate(".btn_update", "click", function(e) {
+				e.preventDefault();
+				p_simulation_id = $(this).val();
+				p_case_id = $(this).attr('name');
+				row = $(this).attr("id");
+				$("#dialog-form-update input[name='f_date']").val($('#f_date_'+row).html());
+				$("#dialog-form-update select#edit_f_type option[value="+$('#hidden_f_type_'+row).val()+"]").prop("selected", true);
+				$("#dialog-form-update select#edit_action option[value="+$('#hidden_action_'+row).val()+"]").prop("selected", true);
+				$("#dialog-form-update input[name='amount']").val($('#amount_'+row).html());
+				$("#dialog-form-update select#edit_f_kind option[value="+$('#hidden_f_kind_'+row).val()+"]").prop("selected", true);
+				$("#dialog-form-update input[name='description']").val($('#description_'+row).html());
+				$("#dialog-form-update input[name='strategy']").val($('#strategy_'+row).html());
+				$("#dialog-form-update input[name='simulation_id']").val(p_simulation_id);
+				$("#dialog-form-update input[name='case_id']").val(p_case_id);
+				update_dialog.dialog("open");
+			});
+			
+			// "修改" Dialog相關設定
+			update_dialog = $("#dialog-form-update").dialog({
+				draggable : false,//防止拖曳
+				resizable : false,//防止縮放
+				autoOpen : false,
+				show : {
+					effect : "clip",
+					duration : 500
+				},
+				hide : {
+					effect : "fade",
+					duration : 500
+				},
+				width : 'auto',
+				modal : true,
+				buttons : [{
+					id : "update",
+					text : "修改",
+					click : function() {
+						if ($('#update-dialog-form-post').valid()) {
+							$.ajax({
+								type : "POST",
+								url : "finModel.do",
+								data : {
+		 							action : "update",
+		 							case_id: p_case_id,
+		 							simulation_id: p_simulation_id, 
+		 							f_date : $("#edit_f_date").val(),
+		 							f_type : $("#edit_f_type").val(),
+		 							p_action : $("#edit_action").val(),
+		 							amount : $("#edit_amount").val(),
+		 							f_kind : $("#edit_f_kind").val(),
+									description : $("#edit_description").val(),
+									strategy : $("#edit_strategy").val()
+								},
+								success : function(result) {
+									var json_obj = $.parseJSON(result);
+									var len=json_obj.length;
+									var result_table = "";
+									$.each(json_obj,function(i, item) {
+//			 							if(i<len){
+											var str_f_type = "";
+											var str_action = "";
+											var str_f_kind = "";
+											if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+										        json_obj[i].f_date ="";
+										    }
+											if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+										        json_obj[i].f_type ="";
+										    }
+											if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+										        json_obj[i].action ="";
+										    }
+											if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+										        json_obj[i].amount ="";
+										    }
+											if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+										        json_obj[i].f_kind ="";
+										    }
+											if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+										        json_obj[i].description ="";
+										    }
+											if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+										        json_obj[i].strategy ="";
+										    }
+											
+											if(json_obj[i].action){
+												str_action = "實際";
+											}
+											else{
+												str_action = "模擬";
+											} 
+											
+											switch(json_obj[i].f_type){
+									        	case 1 :
+									        		str_f_type = "已發生";
+									        		break;
+									        	case 2 :
+									        		str_f_type = "應收/應付";
+									        		break;
+									        	default: 
+									        		str_f_type = "default";
+								        			break;
+									      	}
+
+											switch(json_obj[i].f_kind){
+									        	case 1 :
+									        		str_f_kind = "營業收入";
+									        		break;
+									        	case 2 :
+									        		str_f_kind = "業務支出";
+									        		break;
+									        	case 3 :
+									        		str_f_kind = "固定資產支出";
+									        		break;
+									        	case 4 :
+									        		str_f_kind = "管銷費用";
+									        		break;
+									        	case 5 :
+									        		str_f_kind = "薪資";
+									        		break;
+									        	case 6 :
+									        		str_f_kind = "研發費用";
+									        		break;
+									        	case 7 :
+									        		str_f_kind = "行銷費用";
+									        		break;
+									        	case 8 :
+									        		str_f_kind = "投資收入/支出";
+									        		break;
+									        	case 9 :
+									        		str_f_kind = "其他收入/支出";
+									        		break;
+									        	default: 
+									        		str_f_kind = "default";
+								        			break;
+									      	}
+//			 							}
+										result_table 
+											+= "<tr>"
+											+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
+											+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+											+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
+											+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
+											+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
+											+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
+											+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
+											+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+											+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+											+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+											+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
+//			 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+//			 								+ "<div class='table-function-list'>"
+//			 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
+//			 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
+//			 								+ "</div></div></td></tr>";								
+									});			
+									//判斷查詢結果
+									var resultRunTime = 0;
+									$.each (json_obj, function (i) {
+										resultRunTime+=1;
+									});
+									if(resultRunTime!=0){
+										$("#finsimu-table-admin tbody").html(result_table);
+									}else{
+										// todo
+									}
+								}
+							});
+							update_dialog.dialog("close");
+						}
+					}
+				}, {
+					text : "取消",
+					click : function() {
+						validator_update.resetForm();
+						$("#update-dialog-form-post").trigger("reset");
+						update_dialog.dialog("close");
+					}
+				} ],
+				close : function() {
+					$("#update-dialog-form-post").trigger("reset");
+					validator_update.resetForm();
+					update_dialog.dialog("close");
+				}
+			});
+			
+			//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
+			$("#finsimu-table-admin").delegate(".btn_delete", "click", function() {
+				var p_simulation_id = $(this).val();
+				var p_case_id = $(this).attr('name');
+				$("#delete_case_id").val(p_case_id);
+				$("#delete_simu_id").val(p_simulation_id);
+				confirm_dialog.dialog("open");
+			});
+			// "刪除" Dialog相關設定
+			confirm_dialog = $("#dialog-confirm").dialog({
+				draggable : false,//防止拖曳
+				resizable : false,//防止縮放
+				autoOpen : false,
+				show : {
+					effect : "clip",
+					duration : 500
+				},
+				hide : {
+					effect : "fade",
+					duration : 500
+				},
+				height : 'auto',
+				modal : true,
+				buttons : {
+					"確認刪除" : function() {
+						$.ajax({
+							type : "POST",
+							url : "finModel.do",
+							data : {
+								action : "delete",
+								case_id : $("#delete_case_id").val(),
+								simulation_id : $("#delete_simu_id").val()
+							},
+							success : function(result) {
+								var json_obj = $.parseJSON(result);
+								var len=json_obj.length;
+								var result_table = "";
+								$.each(json_obj,function(i, item) {
+//		 							if(i<len){
+										var str_f_type = "";
+										var str_action = "";
+										var str_f_kind = "";
+										if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+									        json_obj[i].f_date ="";
+									    }
+										if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+									        json_obj[i].f_type ="";
+									    }
+										if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+									        json_obj[i].action ="";
+									    }
+										if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+									        json_obj[i].amount ="";
+									    }
+										if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+									        json_obj[i].f_kind ="";
+									    }
+										if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+									        json_obj[i].description ="";
+									    }
+										if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+									        json_obj[i].strategy ="";
+									    }
+										
+										if(json_obj[i].action){
+											str_action = "實際";
+										}
+										else{
+											str_action = "模擬";
+										} 
+										
+										switch(json_obj[i].f_type){
+								        	case 1 :
+								        		str_f_type = "已發生";
+								        		break;
+								        	case 2 :
+								        		str_f_type = "應收/應付";
+								        		break;
+								        	default: 
+								        		str_f_type = "default";
+							        			break;
+								      	}
+
+										switch(json_obj[i].f_kind){
+								        	case 1 :
+								        		str_f_kind = "營業收入";
+								        		break;
+								        	case 2 :
+								        		str_f_kind = "業務支出";
+								        		break;
+								        	case 3 :
+								        		str_f_kind = "固定資產支出";
+								        		break;
+								        	case 4 :
+								        		str_f_kind = "管銷費用";
+								        		break;
+								        	case 5 :
+								        		str_f_kind = "薪資";
+								        		break;
+								        	case 6 :
+								        		str_f_kind = "研發費用";
+								        		break;
+								        	case 7 :
+								        		str_f_kind = "行銷費用";
+								        		break;
+								        	case 8 :
+								        		str_f_kind = "投資收入/支出";
+								        		break;
+								        	case 9 :
+								        		str_f_kind = "其他收入/支出";
+								        		break;
+								        	default: 
+								        		str_f_kind = "default";
+							        			break;
+								      	}
+//		 							}
+									result_table 
+										+= "<tr>"
+										+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
+										+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+										+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
+										+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
+										+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
+										+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
+										+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
+										+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+										+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+										+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+										+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
+//		 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+//		 								+ "<div class='table-function-list'>"
+//		 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
+//		 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
+//		 								+ "</div></div></td></tr>";								
+								});		
+								//判斷查詢結果
+								var resultRunTime = 0;
+								$.each (json_obj, function (i) {
+									resultRunTime+=1;
+								});
+								if(resultRunTime!=0){
+									$("#finsimu-table-admin tbody").html(result_table);
+								}else{
+									// todo
+								}
+							}
+						});
+						$(this).dialog("close");
+					},
+					"取消刪除" : function() {
+						$(this).dialog("close");
+					}
+				}
+			});
+			
+			// 切換至"產生模擬資料"頁面
+			$("#switch-simu-button").click( function() {
+				uuid = $(this).attr('name');
+				simu_dialog.dialog("open");
+			});
+			
+			// "產生模擬資料" Dialog相關設定
+			simu_dialog = $("#dialog-gen-simu").dialog({
+				draggable : false,//防止拖曳
+				resizable : false,//防止縮放
+				autoOpen : false,
+				show : {
+					effect : "clip",
+					duration : 500
+				},
+				hide : {
+					effect : "fade",
+					duration : 500
+				},
+				height : 'auto',
+				width : 'auto',
+				modal : true,
+				buttons : [{
+					text : "確認",
+					click : function() {
+						$('body').css('cursor', 'progress');
+						degree = $("#degree").val();
+						blndel = document.querySelector('input[name="blndel"]:checked').value;
+// 						alert("uuid: " + uuid);
+// 						alert("degree: " + degree);
+// 						alert("blndel: " + blndel);
+						$.ajax({
+							type : "POST",
+							url : "finModel.do",
+							data : {
+								action : "gen_simu_data",
+								case_id: uuid,
+								degree: degree, 
+								blndel:	blndel
+							},
+							success : function(result) {
+								$("body").css("cursor", "default");	
+								var json_obj = $.parseJSON(result);
+								var result_table = "";
+								$.each(json_obj,function(i, item) {
+//		 							if(i<len){
+										var str_f_type = "";
+										var str_action = "";
+										var str_f_kind = "";
+										if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
+									        json_obj[i].f_date ="";
+									    }
+										if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
+									        json_obj[i].f_type ="";
+									    }
+										if(json_obj[i].action==null||json_obj[i].action=='NULL'){
+									        json_obj[i].action ="";
+									    }
+										if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
+									        json_obj[i].amount ="";
+									    }
+										if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
+									        json_obj[i].f_kind ="";
+									    }
+										if(json_obj[i].description==null||json_obj[i].description=='NULL'){
+									        json_obj[i].description ="";
+									    }
+										if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
+									        json_obj[i].strategy ="";
+									    }
+										
+										if(json_obj[i].action){
+											str_action = "實際";
+										}
+										else{
+											str_action = "模擬";
+										} 
+										
+										switch(json_obj[i].f_type){
+								        	case 1 :
+								        		str_f_type = "已發生";
+								        		break;
+								        	case 2 :
+								        		str_f_type = "應收/應付";
+								        		break;
+								        	default: 
+								        		str_f_type = "default";
+							        			break;
+								      	}
+
+										switch(json_obj[i].f_kind){
+								        	case 1 :
+								        		str_f_kind = "營業收入";
+								        		break;
+								        	case 2 :
+								        		str_f_kind = "業務支出";
+								        		break;
+								        	case 3 :
+								        		str_f_kind = "固定資產支出";
+								        		break;
+								        	case 4 :
+								        		str_f_kind = "管銷費用";
+								        		break;
+								        	case 5 :
+								        		str_f_kind = "薪資";
+								        		break;
+								        	case 6 :
+								        		str_f_kind = "研發費用";
+								        		break;
+								        	case 7 :
+								        		str_f_kind = "行銷費用";
+								        		break;
+								        	case 8 :
+								        		str_f_kind = "投資收入/支出";
+								        		break;
+								        	case 9 :
+								        		str_f_kind = "其他收入/支出";
+								        		break;
+								        	default: 
+								        		str_f_kind = "default";
+							        			break;
+								      	}
+//		 							}
+									result_table 
+										+= "<tr>"
+										+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
+										+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
+										+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
+										+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
+										+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
+										+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
+										+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
+										+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+										+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+										+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
+										+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
+//		 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+//		 								+ "<div class='table-function-list'>"
+//		 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
+//		 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
+//		 								+ "</div></div></td></tr>";								
+								});				
+								//判斷查詢結果
+								var resultRunTime = 0;
+								$.each (json_obj, function (i) {
+									resultRunTime+=1;
+								});
+//		 						$("#finsimu-table-admin").dataTable().fnDestroy();
+								if(resultRunTime!=0){
+									$("#finsimu-table-admin tbody").html(result_table);
+								}else{
+									// todo
+								}
+							}
+						});	
+ 						$(this).dialog("close");
+					}
+				}, {
+					text : "取消",
+					click : function() {
+						$(this).dialog("close");
+					}
+				} ]
 			});
 				
 			// 產生模擬圖
@@ -401,7 +1221,6 @@ $(function(){
 					}
 				});					
 			});
-			
 			
 			//新增事件聆聽
 			$("#insert-simu-button").click(function(e) {
@@ -1159,17 +1978,58 @@ $(function(){
 			        	</div>
 			        	<br>
 			        	<div>
-				            <table id="fincase-table-admin" class="result-table">
-								<thead>
-									<tr>
-										<th>案件名稱</th>
-										<th>案件產生日期</th>
-										<th>產生模擬圖</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
+			        		<div class="text-center" id="fincase-div-admin">
+					            <table id="fincase-table-admin" class="result-table">
+									<thead>
+										<tr>
+											<th>案件名稱</th>
+											<th>案件產生日期</th>
+											<th>產生模擬圖</th>
+											<th>財務計畫</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+							<div class="text-center" id="finsimu-div-admin" style="display:none;">
+							
+					       
+			                	<div class="btn-row">			    
+			                		<input type="hidden" id="hidden_case_id" name="hidden_case_id" />                
+	<!-- 				                    <input id="insert-simu-button" type="button" class="btn btn-primary" value="新增" /> -->
+	<!-- 				                    <input id="gen_d3js_button" type="button" class="btn btn-primary" value="產生模擬圖" /> -->
+	<!-- 				                    <input id="switch-simu-button" type="button" class="btn btn-primary" value="產生模擬資料" /> -->
+	<!-- 				                    <input type="button" class="btn btn-primary" id="insert-simu-button" value="回上頁" onClick="location.reload()" /> -->
+				                    <button class="btn btn-primary" id="insert-simu-button">新增</button>
+				                    <button class="btn btn-primary" id="gen_d3js_button">產生模擬圖</button>
+				                    <button class="btn btn-primary" id="switch-simu-button">產生模擬資料</button>
+				                    <button class="btn btn-exec" onClick="location.reload()">回上頁</button>
+			                    </div>
+			                    <br>     				                
+				                <div>
+				                    <table id="finsimu-table-admin" class="result-table">
+				                    	<thead>
+				                    		<tr>
+				                    			<th>資金動態日期</th>
+				                    			<th>動態類別</th>
+				                    			<th>實際/模擬</th>
+				                    			<th>資金金額</th>
+				                    			<th>資金動態類別</th>
+				                    			<th>資金動態說明</th>
+				                    			<th>策略因應說明</th>
+				                    			<th>功能</th>
+				                    		</tr>
+				                    	</thead>
+				                    	<tbody>
+										</tbody>  
+									</table> 
+				                </div>
+			  
+
+
+
+							</div>
 						</div>
 					</div>
 		      	</c:if>
@@ -1260,7 +2120,7 @@ $(function(){
 		</c:if>
 		
 		<!--==================    jquery-ui dialog (使用者)    ==================-->
-		<c:if test="${sessionScope.role==0}">
+<%-- 		<c:if test="${sessionScope.role==0}"> --%>
 			<!--對話窗樣式-新增 -->
 			<div id="dialog-form-insert" title="新增資料" style="display:none">
 				<form name="insert-dialog-form-post" id="insert-dialog-form-post" style="display:inline">
@@ -1427,7 +2287,7 @@ $(function(){
 					</fieldset>
 				</form>		
 			</div>
-		</c:if>
+<%-- 		</c:if> --%>
 	</div>
 </div>
 </div>
