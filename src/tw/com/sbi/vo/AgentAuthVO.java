@@ -15,7 +15,8 @@ public class AgentAuthVO implements Serializable {
 	private String auth_quantity;
 	private String sale_quantity;
 	private String register_quantity;
-	private String seed;	
+	private String seed;
+	private String auth_code;
 	
 	public String getMessage() {
 		return message;
@@ -82,5 +83,11 @@ public class AgentAuthVO implements Serializable {
 	}
 	public void setSeed(String seed) {
 		this.seed = seed;
+	}
+	public String getAuth_code() {
+		return auth_code;
+	}
+	public void setAuth_code(String auth_code) {
+		this.auth_code = auth_code;
 	}
 }

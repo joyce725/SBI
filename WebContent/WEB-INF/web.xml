@@ -34,12 +34,13 @@
   </context-param>
   <context-param>
     <param-name>uploadpath</param-name>
-    <param-value>/data/sbiupload</param-value>
+<!--     <param-value>/data/sbiupload</param-value> -->
+    <param-value>D:/data/sbiupload</param-value>
   </context-param>
   <context-param>
     <param-name>photopath</param-name>
-<!--     <param-value>D:</param-value> -->
-    <param-value>/data/cdriproductpic</param-value>
+<!--     <param-value>/data/cdriproductpic</param-value> -->
+    <param-value>D:/data/cdriproductpic</param-value>
   </context-param>
   <context-param>
     <param-name>pythonwebservice</param-name>
@@ -208,6 +209,22 @@
   <servlet-mapping>
     <servlet-name>image</servlet-name>
     <url-pattern>/image.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>productVerify</servlet-name>
+    <servlet-class>tw.com.sbi.productverify.controller.ProductVerify</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>productVerify</servlet-name>
+    <url-pattern>/productVerify.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>authVerify</servlet-name>
+    <servlet-class>tw.com.sbi.authverify.controller.AuthVerify</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>authVerify</servlet-name>
+    <url-pattern>/authVerify.do</url-pattern>
   </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>

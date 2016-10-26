@@ -102,10 +102,10 @@ public class ProductVerify extends HttpServlet {
 					productVO = new ProductVO();
 					
 					productVO.setGroup_id(groupId);
-					productVO.setPhoto(rs.getString("photo"));
-					productVO.setProduct_id(rs.getString("product_id"));
-					productVO.setProduct_spec(rs.getString("product_spec"));
-					productVO.setSeed(rs.getString("seed"));
+					productVO.setPhoto(rs.getString("photo") == null?"":rs.getString("photo"));
+					productVO.setProduct_id(rs.getString("product_id") == null?"":rs.getString("product_id"));
+					productVO.setProduct_spec(rs.getString("product_spec") == null?"":rs.getString("product_spec"));
+					productVO.setSeed(rs.getString("seed") == null?"":rs.getString("seed"));
 					
 					list.add(productVO); // Store the row in the list
 				}				

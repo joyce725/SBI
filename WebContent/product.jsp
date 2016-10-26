@@ -76,7 +76,8 @@ $(function(){
 				var json_obj = $.parseJSON(result);
 				var result_table = "";
 				$.each(json_obj,function(i, item) {
-					var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" style='max-width:100px;max-height:100px'>";
+// 					var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+					var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 					result_table 
 						+= "<tr>"
 						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -97,6 +98,7 @@ $(function(){
 					resultRunTime+=1;
 				});
 				if(resultRunTime!=0){
+// 					console.log('查詢商品資料 事件聆聽');
 					$("#table_product tbody").html(result_table);
 				}else{
 					// todo
@@ -143,11 +145,11 @@ $(function(){
 							seed: $("#insert_seed").val()
 						},
 						success : function(result) {
-							alert("新增");
 							var json_obj = $.parseJSON(result);
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
-								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" style='max-width:100px;max-height:100px'>";
+// 								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 								result_table 
 									+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -168,6 +170,7 @@ $(function(){
 								resultRunTime+=1;
 							});
 							if(resultRunTime!=0){
+// 								console.log('"新增商品資料" Dialog相關設定');
 								$("#table_product tbody").html(result_table);
 							}else{
 								// todo
@@ -194,13 +197,14 @@ $(function(){
 	
 	//<!-- photo section jquery begin by Melvin -->
 	'use strict';
-    var url = window.location.hostname === 'blueimp.github.io' ?
-                '//jquery-file-upload.appspot.com/' : '/sbi/photo.do',
+    var url = '/sbi/photo.do',
         uploadButton = $('<button/>')
             .addClass('btn btn-primary')
             .prop('disabled', true)
             .text('處理中...')
-            .on('click', function () {
+            .on('click', function (e) {
+            	e.preventDefault();
+            	
             	var $this = $(this),
                     data = $this.data();
                 $this
@@ -334,11 +338,11 @@ $(function(){
  							seed : $("#update_seed").val()
 						},
 						success : function(result) {
-							alert("修改");
 							var json_obj = $.parseJSON(result);
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
-								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" style='max-width:100px;max-height:100px'>";
+// 								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 								result_table 
 									+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -359,6 +363,7 @@ $(function(){
 								resultRunTime+=1;
 							});
 							if(resultRunTime!=0){
+// 								console.log('"新增商品資料" Dialog相關設定");
 								$("#table_product tbody").html(result_table);
 							}else{
 								// todo
@@ -433,8 +438,7 @@ $(function(){
             progress + '%'
         );
     }).on('fileuploaddone', function (e, data) {
-    	console.log("fileuploaddone");
-        $.each(data.result.files, function (index, file) {
+    	$.each(data.result.files, function (index, file) {
         	$("#photo0-update").val(file.name);///////////////////////////////////////
             if (file.url) {
                 var link = $('<a>')
@@ -496,7 +500,8 @@ $(function(){
 						var json_obj = $.parseJSON(result);
 						var result_table = "";
 						$.each(json_obj,function(i, item) {
-							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" style='max-width:100px;max-height:100px'>";
+// 							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+							var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 							result_table 
 								+= "<tr>"
 								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -511,6 +516,7 @@ $(function(){
 								+ "</div></div></td>"
 								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";	
 						});		
+// 						console.log('"刪除" Dialog相關設定');
 						$("#table_product tbody").html(result_table);
 					}
 				});
@@ -563,10 +569,12 @@ $(function(){
 						var json_obj = $.parseJSON(result);
 						var result_table = "";
 						$.each(json_obj,function(i, item) {
+// 							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+							var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 							result_table 
 							+= "<tr>"
 								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-								+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+								+ "<td id='photo_"+i+"'>"+ tmp + "</td>"
 								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 								+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
@@ -575,7 +583,8 @@ $(function(){
 								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 								+ "</div></div></td>"
 								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";				
-						});		
+						});
+// 						console.log('"取得產品識別碼" Dialog相關設定');
 						$("#table_product tbody").html(result_table);
 					}
 				});
