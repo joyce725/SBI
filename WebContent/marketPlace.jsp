@@ -93,7 +93,9 @@
 						<li><a href="cloudISS.jsp">競爭者定位</a></li>
 						<li><a href="cloudISS.jsp">商品通路</a></li>
 						<li><a href="persona.jsp">城市定位</a></li>
-<!-- 						<li><a href="">授權商品檢索機制</a></li> -->
+						<li><a href="product.jsp">授權商品檢索機制</a></li>
+						<li><a href="agent.jsp">授權商品通路商</a></li>
+						<li><a href="agentAuth.jsp">授權通路商檢索機制</a></li>
 						<li><a href="productForecast.jsp">新產品風向預測</a></li>
 						<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
 <!-- 						<li><a href="">海外布局選擇</a></li> -->

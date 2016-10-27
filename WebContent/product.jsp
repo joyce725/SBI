@@ -78,6 +78,8 @@ $(function(){
 				$.each(json_obj,function(i, item) {
 // 					var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 					var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+					var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+					
 					result_table 
 						+= "<tr>"
 						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -85,6 +87,7 @@ $(function(){
 // 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
 						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 						+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+						+ "<td>"+ tmp2 + "</td>"
 						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 						+ "<div class='table-function-list'>"
 						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -150,6 +153,8 @@ $(function(){
 							$.each(json_obj,function(i, item) {
 // 								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+								
 								result_table 
 									+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -157,6 +162,7 @@ $(function(){
 //			 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 									+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+									+ "<td>"+ tmp2 + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
 									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -345,6 +351,8 @@ $(function(){
 							$.each(json_obj,function(i, item) {
 // 								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
 								result_table 
 									+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -352,6 +360,7 @@ $(function(){
 //			 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 									+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+									+ "<td>"+ tmp2 + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
 									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -504,6 +513,8 @@ $(function(){
 						$.each(json_obj,function(i, item) {
 // 							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 							var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+							var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
 							result_table 
 								+= "<tr>"
 								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -511,6 +522,7 @@ $(function(){
 //		 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
 								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 								+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+								+ "<td>"+ tmp2 + "</td>"
 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 								+ "<div class='table-function-list'>"
 								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -573,12 +585,15 @@ $(function(){
 						$.each(json_obj,function(i, item) {
 // 							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 							var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+							var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
 							result_table 
 							+= "<tr>"
 								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
 								+ "<td id='photo_"+i+"'>"+ tmp + "</td>"
 								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 								+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+								+ "<td>"+ tmp2 + "</td>"
 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 								+ "<div class='table-function-list'>"
 								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -631,6 +646,7 @@ $(function(){
 							<th>產品圖片名稱</th>
 							<th>加密因子</th>
 							<th>產品識別碼</th>
+							<th>產品識別碼QR code</th>
 							<th>功能</th>
 							<th>取得產品識別碼</th>
 						</tr>

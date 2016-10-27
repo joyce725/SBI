@@ -61,6 +61,8 @@ $(function(){
 				var json_obj = $.parseJSON(result);
 				var result_table = "";
 				$.each(json_obj,function(i, item) {
+					var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
 					result_table 
 						+= "<tr>"
 						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -71,6 +73,7 @@ $(function(){
 						+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 						+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
+						+ "<td>"+ tmp2 + "</td>"
 						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 						+ "<div class='table-function-list'>"
 						+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -171,6 +174,8 @@ $(function(){
 							var json_obj = $.parseJSON(result);
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
+								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
 								result_table 
 								+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -181,6 +186,7 @@ $(function(){
 									+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 									+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
+									+ "<td>"+ tmp2 + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
 									+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -277,6 +283,8 @@ $(function(){
 							var json_obj = $.parseJSON(result);
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
+								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
 								result_table 
 								+= "<tr>"
 									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -287,6 +295,7 @@ $(function(){
 									+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 									+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
+									+ "<td>"+ tmp2 + "</td>"
 									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 									+ "<div class='table-function-list'>"
 									+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -362,6 +371,8 @@ $(function(){
 						var json_obj = $.parseJSON(result);
 						var result_table = "";
 						$.each(json_obj,function(i, item) {
+							var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
 							result_table 
 							+= "<tr>"
 								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -372,6 +383,7 @@ $(function(){
 								+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 								+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
+								+ "<td>"+ tmp2 + "</td>"
 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 								+ "<div class='table-function-list'>"
 								+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -434,8 +446,8 @@ $(function(){
 						var json_obj = $.parseJSON(result);
 						var result_table = "";
 						$.each(json_obj,function(i, item) {
-// 							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-							var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+							var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
 							result_table 
 							+= "<tr>"
 								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
@@ -446,6 +458,7 @@ $(function(){
 								+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
 								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 								+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
+								+ "<td>"+ tmp2 + "</td>"
 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 								+ "<div class='table-function-list'>"
 								+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
@@ -508,7 +521,8 @@ $(function(){
 							<th>已銷售數量</th>
 							<th>已登錄數量</th>
 							<th>加密因子</th>
-							<th>產品授權碼</th>							
+							<th>產品授權碼</th>
+							<th>產品授權碼QR code</th>
 							<th>功能</th>						
 							<th>取得產品授權碼</th>
 						</tr>

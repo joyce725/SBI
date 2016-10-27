@@ -608,12 +608,12 @@
 					$("#divTest").hide();
 					
 					$('#main td').click(function () {
-						
 						var $this = $(this);
 						var row = $this.closest("tr");
 						var column_num = parseInt( $(this).index() ) + 1;
+						var test_column_index = "${sessionScope.role}" == "1"? 3:4;
 						
-						if ( column_num == 3 && row.find('u').val() == '' ) {
+						if ( column_num == test_column_index && row.find('u').val() == '' ) {
 							var forecast_id = row.find('.forecast_id_main').html();
 							var cost = row.find('.cost_main').html();
 							$("#resultModal").html('');
@@ -788,6 +788,8 @@
 						<li><a href="cloudISS.jsp">商品通路</a></li>
 						<li><a href="persona.jsp">城市定位</a></li>
 						<li><a href="product.jsp">授權商品檢索機制</a></li>
+						<li><a href="agent.jsp">授權商品通路商</a></li>
+						<li><a href="agentAuth.jsp">授權通路商檢索機制</a></li>
 						<li><a href="productForecast.jsp">新產品風向預測</a></li>
 						<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
 <!-- 						<li><a href="">海外布局選擇</a></li> -->

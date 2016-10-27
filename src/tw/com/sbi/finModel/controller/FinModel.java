@@ -7,8 +7,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,14 +21,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,14 +41,14 @@ import tw.com.sbi.vo.FinsimuVO;
 public class FinModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-//	private static final Logger logger = LogManager.getLogger(FinModel.class);
+	private static final Logger logger = LogManager.getLogger(FinModel.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-				
+		logger.debug("FinModel doPost");
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
@@ -59,6 +61,8 @@ public class FinModel extends HttpServlet {
 		Gson gson = null;
 
 		if("gen_d3js".equals(action)){
+			logger.debug("action: gen_d3js");
+			
 			String caseId = request.getParameter("case_id");
     		String incomeStr = "SELECT f_date AS date, SUM(amount) AS pv FROM tb_finsimu WHERE case_id = '" + caseId + "' AND amount > 0 GROUP BY f_date ORDER BY f_date";
     		String outlayStr = "SELECT f_date AS date, ABS(SUM(amount)) AS pv FROM tb_finsimu WHERE case_id = '" + caseId + "' AND amount < 0 GROUP BY f_date ORDER BY f_date";
@@ -100,14 +104,21 @@ public class FinModel extends HttpServlet {
 		
 		// 以admin身份登入
 		if ("1".equals(role)){
+			logger.debug("role: admin");
+			
 			if ("onload".equals(action)){
+				logger.debug("action: onload");
+				
 				finModelService = new FinModelService();
 				List<FincaseVO> list = finModelService.getFincaseData(groupId);
 				gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
+			
 			if ("case_query".equals(action)){
+				logger.debug("action: case_query");
+				
 				String caseId = request.getParameter("case_id");
 				finModelService = new FinModelService();
 				List<FinsimuVO> list = finModelService.getFinsimuData(caseId);
@@ -115,7 +126,10 @@ public class FinModel extends HttpServlet {
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
+			
 			if ("create".equals(action)) {
+				logger.debug("action: create");
+				
 	    		String caseId = UUID.randomUUID().toString();
 				String caseName = request.getParameter("case_name");
 				Float amount = Float.valueOf(request.getParameter("amount"));
@@ -129,7 +143,10 @@ public class FinModel extends HttpServlet {
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
+			
 			if ("insert".equals(action)){
+				logger.debug("action: insert");
+				
 				String caseId = request.getParameter("case_id");
 				String simulationId = UUID.randomUUID().toString();
 				String f_date = request.getParameter("f_date");
@@ -145,7 +162,10 @@ public class FinModel extends HttpServlet {
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
+			
 			if ("update".equals(action)){
+				logger.debug("action: update");
+				
 				String caseId = request.getParameter("case_id");
 				String simulationId = request.getParameter("simulation_id");
 				String f_date = request.getParameter("f_date");
@@ -163,6 +183,8 @@ public class FinModel extends HttpServlet {
 			}
 			
 			if ("delete".equals(action)) {
+				logger.debug("action: delete");
+				
 				String caseId = request.getParameter("case_id");
 				String simulationId = request.getParameter("simulation_id");
 	    		finModelService = new FinModelService();
@@ -175,14 +197,21 @@ public class FinModel extends HttpServlet {
 
 		// 以user身份登入
 		if ("0".equals(role)){
+			logger.debug("role: user");
+			
 			if ("onload".equals(action)){
+				logger.debug("action: onload");
+				
 				finModelService = new FinModelService();
 				List<FincaseVO> list = finModelService.getFincaseData(groupId);
 				gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
+			
 			if ("case_query".equals(action)){
+				logger.debug("action: case_query");
+				
 				String caseId = request.getParameter("case_id");
 				finModelService = new FinModelService();
 				List<FinsimuVO> list = finModelService.getFinsimuData(caseId);
@@ -190,23 +219,29 @@ public class FinModel extends HttpServlet {
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
+			
 			if ("gen_simu_data".equals(action)){
+				logger.debug("action: gen_simu_data");
+				
 				String caseId = request.getParameter("case_id");
 				String degree = request.getParameter("degree");
 				String blndel = request.getParameter("blndel");
 				finModelService = new FinModelService();
 				String balance = finModelService.genSimuData(caseId, degree, blndel);
+				
 				if (!"fail".equals(balance)){
 					List<FinsimuVO> list = finModelService.getFinsimuData(caseId);
 					gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 					String jsonList = gson.toJson(list);
 					response.getWriter().write(jsonList);
-				}
-				else{
+				} else {
 					response.getWriter().write("fail");
 				}	
 			}
+			
 			if ("insert".equals(action)){
+				logger.debug("action: insert");
+				
 				String caseId = request.getParameter("case_id");
 				String simulationId = UUID.randomUUID().toString();
 				String f_date = request.getParameter("f_date");
@@ -222,7 +257,10 @@ public class FinModel extends HttpServlet {
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
+			
 			if ("update".equals(action)){
+				logger.debug("action: update");
+				
 				String caseId = request.getParameter("case_id");
 				String simulationId = request.getParameter("simulation_id");
 				String f_date = request.getParameter("f_date");
@@ -240,6 +278,8 @@ public class FinModel extends HttpServlet {
 			}
 			
 			if ("delete".equals(action)) {
+				logger.debug("action: delete");
+				
 				String caseId = request.getParameter("case_id");
 				String simulationId = request.getParameter("simulation_id");
 	    		finModelService = new FinModelService();
@@ -514,13 +554,16 @@ public class FinModel extends HttpServlet {
 
 		@Override
 		public String genSimuData(String caseId, String degree, String blndel) {
-
+			logger.debug("genSimuData:");
+			
         	String encodeCaseId = new String(Base64.encodeBase64String(caseId.getBytes()));
         	String encodeDegree = new String(Base64.encodeBase64String(degree.getBytes()));
         	String encodeBlndel = new String(Base64.encodeBase64String(blndel.getBytes()));
     		String url = wsPath + "/CashFlow/caseid=" + encodeCaseId + "&degree=" + encodeDegree + "&blndel=" + encodeBlndel;
 //    		String url = "http://61.218.8.55:8099/CashFlow/caseid=" + encodeCaseId + "&degree=" + encodeDegree + "&blndel=" + encodeBlndel;
 
+    		logger.debug(url);
+    		
     		HttpGet httpRequest = new HttpGet(url);
         	HttpClient client = HttpClientBuilder.create().build();
         	HttpResponse httpResponse;
@@ -530,6 +573,7 @@ public class FinModel extends HttpServlet {
     			int responseCode = httpResponse.getStatusLine().getStatusCode();
     
     	    	if(responseCode==200){
+    	    		logger.debug("genSimuData responseCode 200.");
     	    		BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
         			
         	    	String line = "";
@@ -537,8 +581,8 @@ public class FinModel extends HttpServlet {
         	    		result.append(line);
         	    	}
         	    	return result.toString();
-    	    	}
-    	    	else {
+    	    	} else {
+    	    		logger.debug("genSimuData fail.");
     	    		return "fail"; 
     	    	}
   	    	
@@ -557,7 +601,8 @@ public class FinModel extends HttpServlet {
 		
 		@Override
 		public void insertFinsimuData(String caseId, String simulationId, String userId, String f_date, String f_type, Boolean p_action, String amount, int f_kind, String description, String strategy) {
-
+			logger.debug("insertFinsimuData:");
+			
     		String insertStr = "INSERT INTO tb_finsimu " + 
     						"(simulation_id, case_id, user_id, f_date, f_type, action, amount, f_kind, description, strategy) " + 
     						"VALUES " +
@@ -596,7 +641,8 @@ public class FinModel extends HttpServlet {
 
 		@Override
 		public void updataFinsimuData(String simulationId, String f_date, String f_type, Boolean p_action, String amount, int f_kind, String description, String strategy) {
-
+			logger.debug("updataFinsimuData:");
+			
 			String updateStr = "UPDATE tb_finsimu SET " + 
 								"f_date = STR_TO_DATE('" + f_date + "', '%Y-%m-%d'), " +
 								"f_type = '" + f_type + "' ," +
@@ -640,6 +686,7 @@ public class FinModel extends HttpServlet {
 		
 		@Override
 		public void deleteFinsimuData(String simulationId) {
+			logger.debug("deleteFinsimuData: " + simulationId);
 			
     		String delStr = "DELETE FROM tb_finsimu WHERE simulation_id = '" + simulationId + "'";
 
@@ -684,7 +731,7 @@ public class FinModel extends HttpServlet {
 	    	try {				
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				statement = con.createStatement();        
+				statement = con.createStatement();
 	    		ResultSet rs = statement.executeQuery(queryStr);            
 	    		ResultSetMetaData rsmeta = rs.getMetaData();          
 	    		int cols = rsmeta.getColumnCount();
@@ -722,6 +769,7 @@ public class FinModel extends HttpServlet {
 
 		@Override
 		public String queryDataInStr(String queryStr) {
+			logger.debug("queryDataInStr: " + queryStr);
 			
 			String returnStr = "";  
 			Connection con = null;
@@ -739,7 +787,9 @@ public class FinModel extends HttpServlet {
 	    			for(int i=1; i<=cols; i++) {
 	    				returnStr = rs.getString(i);
 	    			}              
-	    		} 
+	    		}
+	    		
+	    		logger.debug("returnStr: " + returnStr);
 			} catch (SQLException se) {
 				throw new RuntimeException("A database error occured. " + se.getMessage());
 			} catch (ClassNotFoundException cnfe) {

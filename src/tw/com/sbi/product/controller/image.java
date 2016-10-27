@@ -50,6 +50,10 @@ public class image extends HttpServlet {
 
 		String upload_root = getServletConfig().getServletContext().getInitParameter("photopath");
 		
+		if(request.getParameter("action") != null && request.getParameter("action").equals("qrcode")) {
+			upload_root = getServletConfig().getServletContext().getInitParameter("qrcodephotopath");
+		}
+		
 		String picname = request.getParameter("picname");
 		if(picname!=null&&!picname.equals("")){
 			File f = new File(upload_root + "/" + picname);

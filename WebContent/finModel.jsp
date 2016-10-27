@@ -121,9 +121,15 @@ $(function(){
 											var result_table = "";
 											$.each(json_obj,function(i, item) {
 												result_table += 
+// 														"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
+// 														+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
+// 														+ "' class='btn-simu btn btn-wide btn-primary btn_delete'>產生</button></td></tr>";;
+											
 														"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
+														+ "<button value='"+ json_obj[i].case_id+"' name='user_query'"
+														+ " class='btn-simu btn btn-primary'>產生</button></td><td>"
 														+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
-														+ "' class='btn-simu btn btn-wide btn-primary btn_delete'>產生</button></td></tr>";;
+														+ "' class='btn_query btn btn-primary'>查看</button></td></tr>";											
 											});
 											//判斷查詢結果
 											var resultRunTime = 0;
@@ -1074,7 +1080,7 @@ $(function(){
 						result_table += 
 								"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
 							+ "<button value='"+ json_obj[i].case_id+"' name='user_query'"
-							+ "' class='btn_query btn btn-primary'>查看</button></td><td>"
+							+ " class='btn_query btn btn-primary'>查看</button></td><td>"
 							+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
 							+ "' class='btn-simu btn btn-primary'>產生</button></td></tr>";
 					});					

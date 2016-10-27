@@ -22,6 +22,7 @@
   <context-param>
     <param-name>dbURL</param-name>
 <!--     <param-value>jdbc:mysql://localhost:3306/sbi</param-value> -->
+<!--     <param-value>jdbc:mysql://localhost:3306/cdri</param-value> -->
     <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value>
   </context-param>
   <context-param>
@@ -43,17 +44,14 @@
     <param-value>D:/data/cdriproductpic</param-value>
   </context-param>
   <context-param>
+    <param-name>qrcodephotopath</param-name>
+<!--     <param-value>/data/cdriqrcode</param-value> -->
+    <param-value>D:/data/cdriqrcode</param-value>
+  </context-param>
+  <context-param>
     <param-name>pythonwebservice</param-name>
 <!--     <param-value>http://61.218.8.55:8099</param-value> -->
     <param-value>http://192.168.112.164:8070</param-value>
-  </context-param>
-  <context-param>
-    <param-name>pythonwebservice90</param-name>
-    <param-value>http://192.168.112.164:8090</param-value>
-  </context-param>
-  <context-param>
-    <param-name>pythonwebservice99</param-name>
-    <param-value>http://192.168.112.164:8099</param-value>
   </context-param>
   <context-param>
     <param-name>mongodbpath</param-name>
@@ -225,6 +223,22 @@
   <servlet-mapping>
     <servlet-name>authVerify</servlet-name>
     <url-pattern>/authVerify.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Grouptmp</servlet-name>
+    <servlet-class>tw.com.sbi.group.controller.Grouptmp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Grouptmp</servlet-name>
+    <url-pattern>/Grouptmp.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Usertmp</servlet-name>
+    <servlet-class>tw.com.sbi.user.controller.Usertmp</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Usertmp</servlet-name>
+    <url-pattern>/Usertmp.do</url-pattern>
   </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>

@@ -410,16 +410,16 @@ public class AgentAuth extends HttpServlet {
 					agentAuthVO = new AgentAuthVO();
 					
 					agentAuthVO.setGroup_id(groupId);
-					agentAuthVO.setAgent_id(rs.getString("agent_id"));
-					agentAuthVO.setAgent_name(rs.getString("agent_name"));
-					agentAuthVO.setProduct_id(rs.getString("product_id"));
-					agentAuthVO.setProduct_spec(rs.getString("product_spec"));
-					agentAuthVO.setRegion_code(rs.getString("region_code"));
-					agentAuthVO.setAuth_quantity(rs.getString("auth_quantity"));
-					agentAuthVO.setSale_quantity(rs.getString("sale_quantity"));
-					agentAuthVO.setRegister_quantity(rs.getString("register_quantity"));
-					agentAuthVO.setSeed(rs.getString("seed"));
-					agentAuthVO.setAuth_code(rs.getString("auth_code"));
+					agentAuthVO.setAgent_id(rs.getString("agent_id") == null?"":rs.getString("agent_id"));
+					agentAuthVO.setAgent_name(rs.getString("agent_name") == null?"":rs.getString("agent_name"));
+					agentAuthVO.setProduct_id(rs.getString("product_id") == null?"":rs.getString("product_id"));
+					agentAuthVO.setProduct_spec(rs.getString("product_spec") == null?"":rs.getString("product_spec"));
+					agentAuthVO.setRegion_code(rs.getString("region_code") == null?"":rs.getString("region_code"));
+					agentAuthVO.setAuth_quantity(rs.getString("auth_quantity") == null?"":rs.getString("auth_quantity"));
+					agentAuthVO.setSale_quantity(rs.getString("sale_quantity") == null?"":rs.getString("sale_quantity"));
+					agentAuthVO.setRegister_quantity(rs.getString("register_quantity") == null?"":rs.getString("register_quantity"));
+					agentAuthVO.setSeed(rs.getString("seed") == null?"":rs.getString("seed"));
+					agentAuthVO.setAuth_code(rs.getString("auth_code") == null?"":rs.getString("auth_code"));
 					
 					list.add(agentAuthVO); // Store the row in the list
 				}				

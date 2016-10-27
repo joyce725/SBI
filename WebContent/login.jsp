@@ -212,7 +212,12 @@
 		</div><!-- /.login-panel-wrap -->
 
 		<div class="login-footer">
-			北祥股份有限公司 <span>服務電話：+886-2-2658-1910 | 傳真：+886-2-2658-1920</span>
+			<p>委辦單位：<a href="http://www.moea.gov.tw/Mns/doit/home/Home1.aspx" target="_blank"><img src="images/經濟部技術處logo.jpg" style="width: 8.5%">經濟部技術處</a>&nbsp;&nbsp;執行單位：<a href="http://www.cdri.org.tw/MainPage.aspx?func=884C5749-91C8-4730-9941-794" target="_blank"><img src="images/商研院LOGO.jpg" style="width: 7%">財團法人商業發展研究院</a></p>
+            <p>Copyright © Commerce Development Research Institute <strong>財團法人商業發展研究院</strong>登載的內容係屬本院版權所有</p>
+            <p>10665臺北市復興南路一段303號4樓&nbsp;&nbsp;&nbsp;電話：02-7713-1010&nbsp;&nbsp;&nbsp;傳真：02-7713-3366</p>
+            <p>請使用IE8以上版本&nbsp;&nbsp;&nbsp;最佳瀏覽解析度<!-- start: 2013 correcting -->1280×1024<!-- end: 2013 correcting --></p>
+
+<!-- 			北祥股份有限公司 <span>服務電話：+886-2-2658-1910 | 傳真：+886-2-2658-1920</span> -->
 		</div><!-- /.login-footer -->
 
 	</div><!-- /.login-wrapper -->
