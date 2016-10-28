@@ -51,11 +51,39 @@ public class AgentAuth extends HttpServlet {
 
 		String groupId = request.getSession().getAttribute("group_id").toString();
 		String action = request.getParameter("action");
-		
+
 		if ("selectAll".equals(action)) {
 			try {								
 				agentAuthService = new AgentAuthService();
 				List<AgentAuthVO> list = agentAuthService.getAgentAuthByGroupId(groupId);
+				logger.debug("list.size(): " + list.size());
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if("searchByAgentName".equals(action)) {
+			try {		
+				String agentName = request.getParameter("agent_name");
+				
+				agentAuthService = new AgentAuthService();
+				List<AgentAuthVO> list = agentAuthService.getAgentAuthByAgentName(groupId, agentName);
+				logger.debug("list.size(): " + list.size());
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if("searchByProductSpec".equals(action)) {
+			try {			
+				String productSpec = request.getParameter("product_spec");
+				
+				agentAuthService = new AgentAuthService();
+				List<AgentAuthVO> list = agentAuthService.getAgentAuthByProductSpec(groupId, productSpec);
 				logger.debug("list.size(): " + list.size());
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(list);
@@ -168,6 +196,30 @@ public class AgentAuth extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("autocomplete_agent".equals(action)) {
+			try {
+				String term = request.getParameter("term");
+				
+				agentAuthService = new AgentAuthService();
+				List<AgentAuthVO> list = agentAuthService.getAgentAuthByAgentName(groupId, term);
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("autocomplete_product".equals(action)) {
+			try {
+				String term = request.getParameter("term");
+				
+				agentAuthService = new AgentAuthService();
+				List<AgentAuthVO> list = agentAuthService.getAgentAuthByProductSpec(groupId, term);
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -233,6 +285,14 @@ public class AgentAuth extends HttpServlet {
 			dao.genAuthCode(groupId, agentId, productId);
 			return dao.getAgentAuthByGroupId(groupId);
 		}
+		
+		public List<AgentAuthVO> getAgentAuthByAgentName(String groupId, String agentName){
+			return dao.getAgentAuthByAgentName(groupId, agentName);
+		}
+		
+		public List<AgentAuthVO> getAgentAuthByProductSpec(String groupId, String productSpec){
+			return dao.getAgentAuthByProductSpec(groupId, productSpec);
+		}
 	}
 	
 	/*************************** 制定規章方法 ****************************************/
@@ -250,6 +310,10 @@ public class AgentAuth extends HttpServlet {
 		public List<AgentAuthVO> getAgentAuthByGroupId(String groupId);
 		
 		public void genAuthCode(String groupId, String agentId, String productId);
+		
+		public List<AgentAuthVO> getAgentAuthByAgentName(String groupId, String agentName);
+
+		public List<AgentAuthVO> getAgentAuthByProductSpec(String groupId, String productSpec);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -269,8 +333,10 @@ public class AgentAuth extends HttpServlet {
 		private static final String sp_update_agent_auth = "call sp_update_agent_auth(?,?,?,?,?,?,?,?)";
 		private static final String sp_delete_agent_auth = "call sp_delete_agent_auth(?,?,?)";
 		private static final String sp_update_agent_auth_auth_code = "call sp_update_agent_auth_auth_code(?,?,?,?)";
+		private static final String sp_get_agent_auth_by_group_and_agent_name = "call sp_get_agent_auth_by_group_and_agent_name(?,?)";
+		private static final String sp_get_agent_auth_by_group_and_product_spec = "call sp_get_agent_auth_by_group_and_product_spec(?,?)";
 
-
+		
 		@Override
 		public List<ProductVO> getProductByGroupId(String groupId) {
 			List<ProductVO> list = new ArrayList<ProductVO>();
@@ -454,6 +520,7 @@ public class AgentAuth extends HttpServlet {
 			}
 			return list;
 		}
+		
 		@Override
 		public void insertDB(AgentAuthVO agentAuthVO) {
 			Connection con = null;
@@ -668,5 +735,137 @@ public class AgentAuth extends HttpServlet {
     			e.printStackTrace();
     		}
 		}		
+		
+		@Override
+		public List<AgentAuthVO> getAgentAuthByAgentName(String groupId, String agentName) {
+			List<AgentAuthVO> list = new ArrayList<AgentAuthVO>();
+			AgentAuthVO agentAuthVO = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(sp_get_agent_auth_by_group_and_agent_name);
+				pstmt.setString(1, groupId);
+				pstmt.setString(2, agentName);
+				
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					agentAuthVO = new AgentAuthVO();
+					
+					agentAuthVO.setGroup_id(groupId);
+					agentAuthVO.setAgent_id(rs.getString("agent_id") == null?"":rs.getString("agent_id"));
+					agentAuthVO.setAgent_name(rs.getString("agent_name") == null?"":rs.getString("agent_name"));
+					agentAuthVO.setProduct_id(rs.getString("product_id") == null?"":rs.getString("product_id"));
+					agentAuthVO.setProduct_spec(rs.getString("product_spec") == null?"":rs.getString("product_spec"));
+					agentAuthVO.setRegion_code(rs.getString("region_code") == null?"":rs.getString("region_code"));
+					agentAuthVO.setAuth_quantity(rs.getString("auth_quantity") == null?"":rs.getString("auth_quantity"));
+					agentAuthVO.setSale_quantity(rs.getString("sale_quantity") == null?"":rs.getString("sale_quantity"));
+					agentAuthVO.setRegister_quantity(rs.getString("register_quantity") == null?"":rs.getString("register_quantity"));
+					agentAuthVO.setSeed(rs.getString("seed") == null?"":rs.getString("seed"));
+					agentAuthVO.setAuth_code(rs.getString("auth_code") == null?"":rs.getString("auth_code"));
+					
+					list.add(agentAuthVO); // Store the row in the list
+				}				
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}
+
+		@Override
+		public List<AgentAuthVO> getAgentAuthByProductSpec(String groupId, String productSpec) {
+			List<AgentAuthVO> list = new ArrayList<AgentAuthVO>();
+			AgentAuthVO agentAuthVO = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(sp_get_agent_auth_by_group_and_product_spec);
+				pstmt.setString(1, groupId);
+				pstmt.setString(2, productSpec);
+				
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					agentAuthVO = new AgentAuthVO();
+					
+					agentAuthVO.setGroup_id(groupId);
+					agentAuthVO.setAgent_id(rs.getString("agent_id") == null?"":rs.getString("agent_id"));
+					agentAuthVO.setAgent_name(rs.getString("agent_name") == null?"":rs.getString("agent_name"));
+					agentAuthVO.setProduct_id(rs.getString("product_id") == null?"":rs.getString("product_id"));
+					agentAuthVO.setProduct_spec(rs.getString("product_spec") == null?"":rs.getString("product_spec"));
+					agentAuthVO.setRegion_code(rs.getString("region_code") == null?"":rs.getString("region_code"));
+					agentAuthVO.setAuth_quantity(rs.getString("auth_quantity") == null?"":rs.getString("auth_quantity"));
+					agentAuthVO.setSale_quantity(rs.getString("sale_quantity") == null?"":rs.getString("sale_quantity"));
+					agentAuthVO.setRegister_quantity(rs.getString("register_quantity") == null?"":rs.getString("register_quantity"));
+					agentAuthVO.setSeed(rs.getString("seed") == null?"":rs.getString("seed"));
+					agentAuthVO.setAuth_code(rs.getString("auth_code") == null?"":rs.getString("auth_code"));
+					
+					list.add(agentAuthVO); // Store the row in the list
+				}				
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}
 	}	
 }

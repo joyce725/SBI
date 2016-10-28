@@ -53,6 +53,19 @@ public class Agent extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("search".equals(action)) {
+			try {			
+				String agentName = request.getParameter("agent_name");
+				agentService = new AgentService();
+				List<AgentVO> list = agentService.getAgentByAgentName(groupId, agentName);
+				
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if ("insert".equals(action)) {
 			logger.debug("enter agent insert method");
 			try {
@@ -110,6 +123,18 @@ public class Agent extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("autocomplete_name".equals(action)) {
+			try {
+				String term = request.getParameter("term");
+				
+				agentService = new AgentService();
+				List<AgentVO> list = agentService.getAgentByAgentName(groupId, term);
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -160,6 +185,10 @@ public class Agent extends HttpServlet {
 			dao.deleteDB(groupId, agentId);
 			return dao.selectByGroupId(groupId);
 		}
+		
+		public List<AgentVO> getAgentByAgentName(String groupId, String agentName){
+			return dao.getAgentByAgentName(groupId, agentName);
+		}
 	}
 	
 	/*************************** 制定規章方法 ****************************************/
@@ -171,6 +200,8 @@ public class Agent extends HttpServlet {
 		public void deleteDB(String groupId, String agentId);
 		
 		public List<AgentVO> selectByGroupId(String groupId);
+		
+		public List<AgentVO> getAgentByAgentName(String groupId, String agentName);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -185,6 +216,7 @@ public class Agent extends HttpServlet {
 		private static final String sp_insert_agent = "call sp_insert_agent(?,?,?,?,?,?,?)";
 		private static final String sp_update_agent = "call sp_update_agent(?,?,?,?,?,?,?,?)";
 		private static final String sp_delete_agent = "call sp_delete_agent(?,?)";
+		private static final String sp_get_agent_by_group_and_agent_name = "call sp_get_agent_by_group_and_agent_name(?,?)";
 
 		@Override
 		public List<AgentVO> selectByGroupId(String groupId) {
@@ -377,7 +409,69 @@ public class Agent extends HttpServlet {
 					}
 				}
 			}
-		}		
+		}	
+		
+		@Override
+		public List<AgentVO> getAgentByAgentName(String groupId, String agentName) {
+			List<AgentVO> list = new ArrayList<AgentVO>();
+			AgentVO agentVO = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(sp_get_agent_by_group_and_agent_name);
+				pstmt.setString(1, groupId);
+				pstmt.setString(2, agentName);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					agentVO = new AgentVO();
+					
+					agentVO.setGroup_id(groupId);
+					agentVO.setAgent_id(rs.getString("agent_id"));
+					agentVO.setAgent_name(rs.getString("agent_name"));
+					agentVO.setWeb_site(rs.getString("web_site"));
+					agentVO.setRegion_code(rs.getString("region_code"));
+					agentVO.setContact_mail(rs.getString("contact_mail"));
+					agentVO.setContact_phone(rs.getString("contact_phone"));
+					agentVO.setSeed(rs.getString("seed"));
+					
+					list.add(agentVO); // Store the row in the list
+				}				
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}	
 	}
 
 }
