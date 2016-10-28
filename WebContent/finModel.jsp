@@ -56,6 +56,92 @@ $(function(){
 //       	event: "mouseover"
 //     });
 });
+
+function convertAction (action){
+	var temp = "";
+	if(action){
+		temp = "<font color='red'><b>實際</b></font>";
+	} else {
+		temp = "模擬";
+	}
+	return temp;
+}
+
+function convertType (type){
+	var temp = "";
+	switch(type){
+		case 1 :
+			temp = "已發生";
+			break;
+		case 2 :
+			temp = "應收/應付";
+			break;
+		default: 
+			temp = "default";
+			break;
+	}
+	return temp;
+}
+
+function convertKind (kind){
+	var temp = "";
+	switch(kind){
+		case 1 :
+			temp = "營業收入";
+			break;
+		case 2 :
+			temp = "業務支出";
+			break;
+		case 3 :
+			temp = "固定資產支出";
+			break;
+		case 4 :
+			temp = "管銷費用";
+			break;
+		case 5 :
+			temp = "薪資";
+			break;
+		case 6 :
+			temp = "研發費用";
+			break;
+		case 7 :
+			temp = "行銷費用";
+			break;
+		case 8 :
+			temp = "投資收入/支出";
+			break;
+		case 9 :
+			temp = "其他收入/支出";
+			break;
+		default: 
+			temp = "default";
+			break;
+	}
+	return temp;
+}
+
+function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
+	resultTable 
+	+= "<tr>"
+	+ "<td id='f_date_"+index+"'>"+ jsonobj.f_date+ "</td>"
+	+ "<td id='f_type_"+index+"'>"+ f_type+ "<input type='hidden' id='hidden_f_type_"+index+"' value='"+ jsonobj.f_type +"' ></td>"
+	+ "<td id='action_"+index+"'>"+ action+ "<input type='hidden' id='hidden_action_"+index+"' value='"+ jsonobj.action +"' ></td>"
+	+ "<td id='amount_"+index+"'>"+ jsonobj.amount+ "</td>"
+	+ "<td id='f_kind_"+index+"'>"+ f_kind+ "<input type='hidden' id='hidden_f_kind_"+index+"' value='"+ jsonobj.f_kind +"' ></td>"
+	+ "<td id='description_"+index+"'>"+ jsonobj.description+ "</td>"
+	+ "<td id='strategy_"+index+"'>"+ jsonobj.strategy+ "</td>"
+	+ "<td><button id='"+index+"' value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id
+	+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+	+ "<button value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id
+	+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
+//		+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+//		+ "<div class='table-function-list'>"
+//		+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
+//		+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
+//		+ "</div></div></td></tr>";	
+
+	return resultTable;
+}
 </script>
 <!-- /**************************************  以上共用JS區塊    **********************************************/ 		-->	
 
@@ -246,99 +332,13 @@ $(function(){
 								var str_f_type = "";
 								var str_action = "";
 								var str_f_kind = "";
-								if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-							        json_obj[i].f_date ="";
-							    }
-								if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-							        json_obj[i].f_type ="";
-							    }
-								if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-							        json_obj[i].action ="";
-							    }
-								if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-							        json_obj[i].amount ="";
-							    }
-								if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-							        json_obj[i].f_kind ="";
-							    }
-								if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-							        json_obj[i].description ="";
-							    }
-								if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-							        json_obj[i].strategy ="";
-							    }
-								
-								if(json_obj[i].action){
-									str_action = "<font color='red'><b>實際</b></font>";
-								}
-								else{
-									str_action = "模擬";
-								} 
-								
-								switch(json_obj[i].f_type){
-						        	case 1 :
-						        		str_f_type = "已發生";
-						        		break;
-						        	case 2 :
-						        		str_f_type = "應收/應付";
-						        		break;
-						        	default: 
-						        		str_f_type = "default";
-					        			break;
-						      	}
 
-								switch(json_obj[i].f_kind){
-						        	case 1 :
-						        		str_f_kind = "營業收入";
-						        		break;
-						        	case 2 :
-						        		str_f_kind = "業務支出";
-						        		break;
-						        	case 3 :
-						        		str_f_kind = "固定資產支出";
-						        		break;
-						        	case 4 :
-						        		str_f_kind = "管銷費用";
-						        		break;
-						        	case 5 :
-						        		str_f_kind = "薪資";
-						        		break;
-						        	case 6 :
-						        		str_f_kind = "研發費用";
-						        		break;
-						        	case 7 :
-						        		str_f_kind = "行銷費用";
-						        		break;
-						        	case 8 :
-						        		str_f_kind = "投資收入/支出";
-						        		break;
-						        	case 9 :
-						        		str_f_kind = "其他收入/支出";
-						        		break;
-						        	default: 
-						        		str_f_kind = "default";
-					        			break;
-						      	}
+								str_action = convertAction(json_obj[i].action);
+								str_f_type = convertType(json_obj[i].f_type);
+								str_f_kind = convertKind(json_obj[i].f_kind);
 // 							}
-							result_table 
-								+= "<tr>"
-								+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-								+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-								+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-								+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-								+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-								+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-								+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-								+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-								+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-								+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-								+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-// 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-// 								+ "<div class='table-function-list'>"
-// 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-// 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-// 								+ "</div></div></td></tr>";								
-							console.log
+
+							result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 						});		
 						//判斷查詢結果
 						var resultRunTime = 0;
@@ -404,98 +404,12 @@ $(function(){
 											var str_f_type = "";
 											var str_action = "";
 											var str_f_kind = "";
-											if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-										        json_obj[i].f_date ="";
-										    }
-											if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-										        json_obj[i].f_type ="";
-										    }
-											if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-										        json_obj[i].action ="";
-										    }
-											if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-										        json_obj[i].amount ="";
-										    }
-											if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-										        json_obj[i].f_kind ="";
-										    }
-											if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-										        json_obj[i].description ="";
-										    }
-											if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-										        json_obj[i].strategy ="";
-										    }
 											
-											if(json_obj[i].action){
-												str_action = "<font color='red'><b>實際</b></font>";
-											}
-											else{
-												str_action = "模擬";
-											} 
-											
-											switch(json_obj[i].f_type){
-									        	case 1 :
-									        		str_f_type = "已發生";
-									        		break;
-									        	case 2 :
-									        		str_f_type = "應收/應付";
-									        		break;
-									        	default: 
-									        		str_f_type = "default";
-								        			break;
-									      	}
-
-											switch(json_obj[i].f_kind){
-									        	case 1 :
-									        		str_f_kind = "營業收入";
-									        		break;
-									        	case 2 :
-									        		str_f_kind = "業務支出";
-									        		break;
-									        	case 3 :
-									        		str_f_kind = "固定資產支出";
-									        		break;
-									        	case 4 :
-									        		str_f_kind = "管銷費用";
-									        		break;
-									        	case 5 :
-									        		str_f_kind = "薪資";
-									        		break;
-									        	case 6 :
-									        		str_f_kind = "研發費用";
-									        		break;
-									        	case 7 :
-									        		str_f_kind = "行銷費用";
-									        		break;
-									        	case 8 :
-									        		str_f_kind = "投資收入/支出";
-									        		break;
-									        	case 9 :
-									        		str_f_kind = "其他收入/支出";
-									        		break;
-									        	default: 
-									        		str_f_kind = "default";
-								        			break;
-									      	}
+											str_action = convertAction(json_obj[i].action);
+											str_f_type = convertType(json_obj[i].f_type);
+											str_f_kind = convertKind(json_obj[i].f_kind);
 //			 							}
-										result_table 
-											+= "<tr>"
-											+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-											+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-											+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-											+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-											+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-											+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-											+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-											+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-											+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-											+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-											+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//			 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//			 								+ "<div class='table-function-list'>"
-//			 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//			 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//			 								+ "</div></div></td></tr>";								
+										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 									});		
 									//判斷查詢結果
 									var resultRunTime = 0;
@@ -589,98 +503,12 @@ $(function(){
 											var str_f_type = "";
 											var str_action = "";
 											var str_f_kind = "";
-											if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-										        json_obj[i].f_date ="";
-										    }
-											if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-										        json_obj[i].f_type ="";
-										    }
-											if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-										        json_obj[i].action ="";
-										    }
-											if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-										        json_obj[i].amount ="";
-										    }
-											if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-										        json_obj[i].f_kind ="";
-										    }
-											if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-										        json_obj[i].description ="";
-										    }
-											if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-										        json_obj[i].strategy ="";
-										    }
 											
-											if(json_obj[i].action){
-												str_action = "<font color='red'><b>實際</b></font>";
-											}
-											else{
-												str_action = "模擬";
-											} 
-											
-											switch(json_obj[i].f_type){
-									        	case 1 :
-									        		str_f_type = "已發生";
-									        		break;
-									        	case 2 :
-									        		str_f_type = "應收/應付";
-									        		break;
-									        	default: 
-									        		str_f_type = "default";
-								        			break;
-									      	}
-
-											switch(json_obj[i].f_kind){
-									        	case 1 :
-									        		str_f_kind = "營業收入";
-									        		break;
-									        	case 2 :
-									        		str_f_kind = "業務支出";
-									        		break;
-									        	case 3 :
-									        		str_f_kind = "固定資產支出";
-									        		break;
-									        	case 4 :
-									        		str_f_kind = "管銷費用";
-									        		break;
-									        	case 5 :
-									        		str_f_kind = "薪資";
-									        		break;
-									        	case 6 :
-									        		str_f_kind = "研發費用";
-									        		break;
-									        	case 7 :
-									        		str_f_kind = "行銷費用";
-									        		break;
-									        	case 8 :
-									        		str_f_kind = "投資收入/支出";
-									        		break;
-									        	case 9 :
-									        		str_f_kind = "其他收入/支出";
-									        		break;
-									        	default: 
-									        		str_f_kind = "default";
-								        			break;
-									      	}
+											str_action = convertAction(json_obj[i].action);
+											str_f_type = convertType(json_obj[i].f_type);
+											str_f_kind = convertKind(json_obj[i].f_kind);
 //			 							}
-										result_table 
-											+= "<tr>"
-											+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-											+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-											+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-											+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-											+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-											+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-											+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-											+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-											+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-											+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-											+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//			 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//			 								+ "<div class='table-function-list'>"
-//			 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//			 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//			 								+ "</div></div></td></tr>";								
+										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 									});			
 									//判斷查詢結果
 									var resultRunTime = 0;
@@ -754,98 +582,12 @@ $(function(){
 										var str_f_type = "";
 										var str_action = "";
 										var str_f_kind = "";
-										if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-									        json_obj[i].f_date ="";
-									    }
-										if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-									        json_obj[i].f_type ="";
-									    }
-										if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-									        json_obj[i].action ="";
-									    }
-										if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-									        json_obj[i].amount ="";
-									    }
-										if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-									        json_obj[i].f_kind ="";
-									    }
-										if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-									        json_obj[i].description ="";
-									    }
-										if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-									        json_obj[i].strategy ="";
-									    }
 										
-										if(json_obj[i].action){
-											str_action = "<font color='red'><b>實際</b></font>";
-										}
-										else{
-											str_action = "模擬";
-										} 
-										
-										switch(json_obj[i].f_type){
-								        	case 1 :
-								        		str_f_type = "已發生";
-								        		break;
-								        	case 2 :
-								        		str_f_type = "應收/應付";
-								        		break;
-								        	default: 
-								        		str_f_type = "default";
-							        			break;
-								      	}
-
-										switch(json_obj[i].f_kind){
-								        	case 1 :
-								        		str_f_kind = "營業收入";
-								        		break;
-								        	case 2 :
-								        		str_f_kind = "業務支出";
-								        		break;
-								        	case 3 :
-								        		str_f_kind = "固定資產支出";
-								        		break;
-								        	case 4 :
-								        		str_f_kind = "管銷費用";
-								        		break;
-								        	case 5 :
-								        		str_f_kind = "薪資";
-								        		break;
-								        	case 6 :
-								        		str_f_kind = "研發費用";
-								        		break;
-								        	case 7 :
-								        		str_f_kind = "行銷費用";
-								        		break;
-								        	case 8 :
-								        		str_f_kind = "投資收入/支出";
-								        		break;
-								        	case 9 :
-								        		str_f_kind = "其他收入/支出";
-								        		break;
-								        	default: 
-								        		str_f_kind = "default";
-							        			break;
-								      	}
+										str_action = convertAction(json_obj[i].action);
+										str_f_type = convertType(json_obj[i].f_type);
+										str_f_kind = convertKind(json_obj[i].f_kind);
 //		 							}
-									result_table 
-										+= "<tr>"
-										+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-										+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-										+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-										+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-										+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-										+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-										+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-										+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-										+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-										+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-										+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//		 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//		 								+ "<div class='table-function-list'>"
-//		 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//		 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//		 								+ "</div></div></td></tr>";								
+									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 								});		
 								//判斷查詢結果
 								var resultRunTime = 0;
@@ -918,98 +660,12 @@ $(function(){
 										var str_f_type = "";
 										var str_action = "";
 										var str_f_kind = "";
-										if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-									        json_obj[i].f_date ="";
-									    }
-										if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-									        json_obj[i].f_type ="";
-									    }
-										if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-									        json_obj[i].action ="";
-									    }
-										if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-									        json_obj[i].amount ="";
-									    }
-										if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-									        json_obj[i].f_kind ="";
-									    }
-										if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-									        json_obj[i].description ="";
-									    }
-										if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-									        json_obj[i].strategy ="";
-									    }
 										
-										if(json_obj[i].action){
-											str_action = "<font color='red'><b>實際</b></font>";
-										}
-										else{
-											str_action = "模擬";
-										} 
-										
-										switch(json_obj[i].f_type){
-								        	case 1 :
-								        		str_f_type = "已發生";
-								        		break;
-								        	case 2 :
-								        		str_f_type = "應收/應付";
-								        		break;
-								        	default: 
-								        		str_f_type = "default";
-							        			break;
-								      	}
-
-										switch(json_obj[i].f_kind){
-								        	case 1 :
-								        		str_f_kind = "營業收入";
-								        		break;
-								        	case 2 :
-								        		str_f_kind = "業務支出";
-								        		break;
-								        	case 3 :
-								        		str_f_kind = "固定資產支出";
-								        		break;
-								        	case 4 :
-								        		str_f_kind = "管銷費用";
-								        		break;
-								        	case 5 :
-								        		str_f_kind = "薪資";
-								        		break;
-								        	case 6 :
-								        		str_f_kind = "研發費用";
-								        		break;
-								        	case 7 :
-								        		str_f_kind = "行銷費用";
-								        		break;
-								        	case 8 :
-								        		str_f_kind = "投資收入/支出";
-								        		break;
-								        	case 9 :
-								        		str_f_kind = "其他收入/支出";
-								        		break;
-								        	default: 
-								        		str_f_kind = "default";
-							        			break;
-								      	}
+										str_action = convertAction(json_obj[i].action);
+										str_f_type = convertType(json_obj[i].f_type);
+										str_f_kind = convertKind(json_obj[i].f_kind);
 //		 							}
-									result_table 
-										+= "<tr>"
-										+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-										+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-										+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-										+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-										+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-										+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-										+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-										+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-										+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-										+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-										+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//		 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//		 								+ "<div class='table-function-list'>"
-//		 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//		 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//		 								+ "</div></div></td></tr>";								
+									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 								});				
 								//判斷查詢結果
 								var resultRunTime = 0;
@@ -1170,98 +826,12 @@ $(function(){
 								var str_f_type = "";
 								var str_action = "";
 								var str_f_kind = "";
-								if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-							        json_obj[i].f_date ="";
-							    }
-								if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-							        json_obj[i].f_type ="";
-							    }
-								if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-							        json_obj[i].action ="";
-							    }
-								if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-							        json_obj[i].amount ="";
-							    }
-								if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-							        json_obj[i].f_kind ="";
-							    }
-								if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-							        json_obj[i].description ="";
-							    }
-								if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-							        json_obj[i].strategy ="";
-							    }
 								
-								if(json_obj[i].action){
-									str_action = "<font color='red'><b>實際</b></font>";
-								}
-								else{
-									str_action = "模擬";
-								} 
-								
-								switch(json_obj[i].f_type){
-						        	case 1 :
-						        		str_f_type = "已發生";
-						        		break;
-						        	case 2 :
-						        		str_f_type = "應收/應付";
-						        		break;
-						        	default: 
-						        		str_f_type = "default";
-					        			break;
-						      	}
-
-								switch(json_obj[i].f_kind){
-						        	case 1 :
-						        		str_f_kind = "營業收入";
-						        		break;
-						        	case 2 :
-						        		str_f_kind = "業務支出";
-						        		break;
-						        	case 3 :
-						        		str_f_kind = "固定資產支出";
-						        		break;
-						        	case 4 :
-						        		str_f_kind = "管銷費用";
-						        		break;
-						        	case 5 :
-						        		str_f_kind = "薪資";
-						        		break;
-						        	case 6 :
-						        		str_f_kind = "研發費用";
-						        		break;
-						        	case 7 :
-						        		str_f_kind = "行銷費用";
-						        		break;
-						        	case 8 :
-						        		str_f_kind = "投資收入/支出";
-						        		break;
-						        	case 9 :
-						        		str_f_kind = "其他收入/支出";
-						        		break;
-						        	default: 
-						        		str_f_kind = "default";
-					        			break;
-						      	}
+								str_action = convertAction(json_obj[i].action);
+								str_f_type = convertType(json_obj[i].f_type);
+								str_f_kind = convertKind(json_obj[i].f_kind);
 // 							}
-							result_table 
-								+= "<tr>"
-								+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-								+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-								+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-								+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-								+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-								+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-								+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-								+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-								+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-								+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-								+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-// 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-// 								+ "<div class='table-function-list'>"
-// 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-// 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-// 								+ "</div></div></td></tr>";								
+							result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 						});		
 						//判斷查詢結果
 						var resultRunTime = 0;
@@ -1327,98 +897,12 @@ $(function(){
 											var str_f_type = "";
 											var str_action = "";
 											var str_f_kind = "";
-											if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-										        json_obj[i].f_date ="";
-										    }
-											if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-										        json_obj[i].f_type ="";
-										    }
-											if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-										        json_obj[i].action ="";
-										    }
-											if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-										        json_obj[i].amount ="";
-										    }
-											if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-										        json_obj[i].f_kind ="";
-										    }
-											if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-										        json_obj[i].description ="";
-										    }
-											if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-										        json_obj[i].strategy ="";
-										    }
 											
-											if(json_obj[i].action){
-												str_action = "<font color='red'><b>實際</b></font>";
-											}
-											else{
-												str_action = "模擬";
-											} 
-											
-											switch(json_obj[i].f_type){
-									        	case 1 :
-									        		str_f_type = "已發生";
-									        		break;
-									        	case 2 :
-									        		str_f_type = "應收/應付";
-									        		break;
-									        	default: 
-									        		str_f_type = "default";
-								        			break;
-									      	}
-
-											switch(json_obj[i].f_kind){
-									        	case 1 :
-									        		str_f_kind = "營業收入";
-									        		break;
-									        	case 2 :
-									        		str_f_kind = "業務支出";
-									        		break;
-									        	case 3 :
-									        		str_f_kind = "固定資產支出";
-									        		break;
-									        	case 4 :
-									        		str_f_kind = "管銷費用";
-									        		break;
-									        	case 5 :
-									        		str_f_kind = "薪資";
-									        		break;
-									        	case 6 :
-									        		str_f_kind = "研發費用";
-									        		break;
-									        	case 7 :
-									        		str_f_kind = "行銷費用";
-									        		break;
-									        	case 8 :
-									        		str_f_kind = "投資收入/支出";
-									        		break;
-									        	case 9 :
-									        		str_f_kind = "其他收入/支出";
-									        		break;
-									        	default: 
-									        		str_f_kind = "default";
-								        			break;
-									      	}
+											str_action = convertAction(json_obj[i].action);
+											str_f_type = convertType(json_obj[i].f_type);
+											str_f_kind = convertKind(json_obj[i].f_kind);
 //			 							}
-										result_table 
-											+= "<tr>"
-											+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-											+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-											+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-											+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-											+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-											+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-											+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-											+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-											+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-											+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-											+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//			 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//			 								+ "<div class='table-function-list'>"
-//			 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//			 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//			 								+ "</div></div></td></tr>";								
+										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 									});		
 									//判斷查詢結果
 									var resultRunTime = 0;
@@ -1512,98 +996,12 @@ $(function(){
 											var str_f_type = "";
 											var str_action = "";
 											var str_f_kind = "";
-											if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-										        json_obj[i].f_date ="";
-										    }
-											if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-										        json_obj[i].f_type ="";
-										    }
-											if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-										        json_obj[i].action ="";
-										    }
-											if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-										        json_obj[i].amount ="";
-										    }
-											if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-										        json_obj[i].f_kind ="";
-										    }
-											if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-										        json_obj[i].description ="";
-										    }
-											if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-										        json_obj[i].strategy ="";
-										    }
 											
-											if(json_obj[i].action){
-												str_action = "<font color='red'><b>實際</b></font>";
-											}
-											else{
-												str_action = "模擬";
-											} 
-											
-											switch(json_obj[i].f_type){
-									        	case 1 :
-									        		str_f_type = "已發生";
-									        		break;
-									        	case 2 :
-									        		str_f_type = "應收/應付";
-									        		break;
-									        	default: 
-									        		str_f_type = "default";
-								        			break;
-									      	}
-
-											switch(json_obj[i].f_kind){
-									        	case 1 :
-									        		str_f_kind = "營業收入";
-									        		break;
-									        	case 2 :
-									        		str_f_kind = "業務支出";
-									        		break;
-									        	case 3 :
-									        		str_f_kind = "固定資產支出";
-									        		break;
-									        	case 4 :
-									        		str_f_kind = "管銷費用";
-									        		break;
-									        	case 5 :
-									        		str_f_kind = "薪資";
-									        		break;
-									        	case 6 :
-									        		str_f_kind = "研發費用";
-									        		break;
-									        	case 7 :
-									        		str_f_kind = "行銷費用";
-									        		break;
-									        	case 8 :
-									        		str_f_kind = "投資收入/支出";
-									        		break;
-									        	case 9 :
-									        		str_f_kind = "其他收入/支出";
-									        		break;
-									        	default: 
-									        		str_f_kind = "default";
-								        			break;
-									      	}
+											str_action = convertAction(json_obj[i].action);
+											str_f_type = convertType(json_obj[i].f_type);
+											str_f_kind = convertKind(json_obj[i].f_kind);
 //			 							}
-										result_table 
-											+= "<tr>"
-											+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-											+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-											+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-											+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-											+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-											+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-											+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-											+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-											+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-											+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-											+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//			 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//			 								+ "<div class='table-function-list'>"
-//			 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//			 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//			 								+ "</div></div></td></tr>";								
+										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 									});			
 									//判斷查詢結果
 									var resultRunTime = 0;
@@ -1677,98 +1075,12 @@ $(function(){
 										var str_f_type = "";
 										var str_action = "";
 										var str_f_kind = "";
-										if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-									        json_obj[i].f_date ="";
-									    }
-										if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-									        json_obj[i].f_type ="";
-									    }
-										if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-									        json_obj[i].action ="";
-									    }
-										if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-									        json_obj[i].amount ="";
-									    }
-										if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-									        json_obj[i].f_kind ="";
-									    }
-										if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-									        json_obj[i].description ="";
-									    }
-										if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-									        json_obj[i].strategy ="";
-									    }
 										
-										if(json_obj[i].action){
-											str_action = "<font color='red'><b>實際</b></font>";
-										}
-										else{
-											str_action = "模擬";
-										} 
-										
-										switch(json_obj[i].f_type){
-								        	case 1 :
-								        		str_f_type = "已發生";
-								        		break;
-								        	case 2 :
-								        		str_f_type = "應收/應付";
-								        		break;
-								        	default: 
-								        		str_f_type = "default";
-							        			break;
-								      	}
-
-										switch(json_obj[i].f_kind){
-								        	case 1 :
-								        		str_f_kind = "營業收入";
-								        		break;
-								        	case 2 :
-								        		str_f_kind = "業務支出";
-								        		break;
-								        	case 3 :
-								        		str_f_kind = "固定資產支出";
-								        		break;
-								        	case 4 :
-								        		str_f_kind = "管銷費用";
-								        		break;
-								        	case 5 :
-								        		str_f_kind = "薪資";
-								        		break;
-								        	case 6 :
-								        		str_f_kind = "研發費用";
-								        		break;
-								        	case 7 :
-								        		str_f_kind = "行銷費用";
-								        		break;
-								        	case 8 :
-								        		str_f_kind = "投資收入/支出";
-								        		break;
-								        	case 9 :
-								        		str_f_kind = "其他收入/支出";
-								        		break;
-								        	default: 
-								        		str_f_kind = "default";
-							        			break;
-								      	}
+										str_action = convertAction(json_obj[i].action);
+										str_f_type = convertType(json_obj[i].f_type);
+										str_f_kind = convertKind(json_obj[i].f_kind);
 //		 							}
-									result_table 
-										+= "<tr>"
-										+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-										+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-										+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-										+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-										+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-										+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-										+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-										+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-										+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-										+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-										+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//		 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//		 								+ "<div class='table-function-list'>"
-//		 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//		 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//		 								+ "</div></div></td></tr>";								
+									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 								});		
 								//判斷查詢結果
 								var resultRunTime = 0;
@@ -1839,98 +1151,12 @@ $(function(){
 										var str_f_type = "";
 										var str_action = "";
 										var str_f_kind = "";
-										if(json_obj[i].f_date==null||json_obj[i].f_date=='NULL'){
-									        json_obj[i].f_date ="";
-									    }
-										if(json_obj[i].f_type==null||json_obj[i].f_type=='NULL'){
-									        json_obj[i].f_type ="";
-									    }
-										if(json_obj[i].action==null||json_obj[i].action=='NULL'){
-									        json_obj[i].action ="";
-									    }
-										if(json_obj[i].amount==null||json_obj[i].amount=='NULL'){
-									        json_obj[i].amount ="";
-									    }
-										if(json_obj[i].f_kind==null||json_obj[i].f_kind=='NULL'){
-									        json_obj[i].f_kind ="";
-									    }
-										if(json_obj[i].description==null||json_obj[i].description=='NULL'){
-									        json_obj[i].description ="";
-									    }
-										if(json_obj[i].strategy==null||json_obj[i].strategy=='NULL'){
-									        json_obj[i].strategy ="";
-									    }
 										
-										if(json_obj[i].action){
-											str_action = "<font color='red'><b>實際</b></font>";
-										}
-										else{
-											str_action = "模擬";
-										} 
-										
-										switch(json_obj[i].f_type){
-								        	case 1 :
-								        		str_f_type = "已發生";
-								        		break;
-								        	case 2 :
-								        		str_f_type = "應收/應付";
-								        		break;
-								        	default: 
-								        		str_f_type = "default";
-							        			break;
-								      	}
-
-										switch(json_obj[i].f_kind){
-								        	case 1 :
-								        		str_f_kind = "營業收入";
-								        		break;
-								        	case 2 :
-								        		str_f_kind = "業務支出";
-								        		break;
-								        	case 3 :
-								        		str_f_kind = "固定資產支出";
-								        		break;
-								        	case 4 :
-								        		str_f_kind = "管銷費用";
-								        		break;
-								        	case 5 :
-								        		str_f_kind = "薪資";
-								        		break;
-								        	case 6 :
-								        		str_f_kind = "研發費用";
-								        		break;
-								        	case 7 :
-								        		str_f_kind = "行銷費用";
-								        		break;
-								        	case 8 :
-								        		str_f_kind = "投資收入/支出";
-								        		break;
-								        	case 9 :
-								        		str_f_kind = "其他收入/支出";
-								        		break;
-								        	default: 
-								        		str_f_kind = "default";
-							        			break;
-								      	}
+										str_action = convertAction(json_obj[i].action);
+										str_f_type = convertType(json_obj[i].f_type);
+										str_f_kind = convertKind(json_obj[i].f_kind);
 //		 							}
-									result_table 
-										+= "<tr>"
-										+ "<td id='f_date_"+i+"'>"+ json_obj[i].f_date+ "</td>"
-										+ "<td id='f_type_"+i+"'>"+ str_f_type+ "<input type='hidden' id='hidden_f_type_"+i+"' value='"+ json_obj[i].f_type +"' ></td>"
-										+ "<td id='action_"+i+"'>"+ str_action+ "<input type='hidden' id='hidden_action_"+i+"' value='"+ json_obj[i].action +"' ></td>"
-										+ "<td id='amount_"+i+"'>"+ json_obj[i].amount+ "</td>"
-										+ "<td id='f_kind_"+i+"'>"+ str_f_kind+ "<input type='hidden' id='hidden_f_kind_"+i+"' value='"+ json_obj[i].f_kind +"' ></td>"
-										+ "<td id='description_"+i+"'>"+ json_obj[i].description+ "</td>"
-										+ "<td id='strategy_"+i+"'>"+ json_obj[i].strategy+ "</td>"
-										+ "<td><button id='"+i+"' value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-										+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-										+ "<button value='"+ json_obj[i].simulation_id+"' name='"+ json_obj[i].case_id
-										+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//		 								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//		 								+ "<div class='table-function-list'>"
-//		 								+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//		 								+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//		 								+ "</div></div></td></tr>";								
+									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 								});				
 								//判斷查詢結果
 								var resultRunTime = 0;
