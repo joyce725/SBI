@@ -62,6 +62,19 @@ public class Product extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("search".equals(action)) {
+			try {			
+				String productSpec = request.getParameter("product_spec");
+				productService = new ProductService();
+				List<ProductVO> list = productService.getProductBySpec(groupId, productSpec);
+				
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if ("insert".equals(action)) {
 			try {
 				String productSpec = request.getParameter("product_spec");
@@ -128,6 +141,18 @@ public class Product extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("autocomplete_spec".equals(action)) {
+			try {
+				String term = request.getParameter("term");
+				
+				productService = new ProductService();
+				List<ProductVO> list = productService.getProductBySpec(groupId, term);
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -183,6 +208,10 @@ public class Product extends HttpServlet {
 			dao.genIdentityID(groupId, productId);
 			return dao.selectByGroupId(groupId);
 		}
+		
+		public List<ProductVO> getProductBySpec(String groupId, String productSpec){
+			return dao.getProductBySpec(groupId, productSpec);
+		}
 	}
 	
 	/*************************** 制定規章方法 ****************************************/
@@ -196,6 +225,8 @@ public class Product extends HttpServlet {
 		public List<ProductVO> selectByGroupId(String groupId);
 		
 		public void genIdentityID(String groupId, String productId);
+		
+		public List<ProductVO> getProductBySpec(String groupId, String productSpec);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -212,6 +243,8 @@ public class Product extends HttpServlet {
 		private static final String sp_update_product = "call sp_update_product(?,?,?,?,?)";
 		private static final String sp_delete_product = "call sp_delete_product(?,?)";
 		private static final String sp_update_product_identity = "call sp_update_product_identity(?,?,?)";
+		private static final String sp_get_product_by_group_and_product_spec = "call sp_get_product_by_group_and_product_spec(?,?)";
+		
 
 		@Override
 		public List<ProductVO> selectByGroupId(String groupId) {
@@ -477,7 +510,66 @@ public class Product extends HttpServlet {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
-		}		
-	}
+		}	
+		
+		@Override
+		public List<ProductVO> getProductBySpec(String groupId, String productSpec) {
+			List<ProductVO> list = new ArrayList<ProductVO>();
+			ProductVO productVO = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
 
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(sp_get_product_by_group_and_product_spec);
+				pstmt.setString(1, groupId);
+				pstmt.setString(2, productSpec);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					productVO = new ProductVO();
+					
+					productVO.setGroup_id(groupId);
+					productVO.setPhoto(rs.getString("photo") == null?"":rs.getString("photo"));
+					productVO.setProduct_id(rs.getString("product_id") == null?"":rs.getString("product_id"));
+					productVO.setProduct_spec(rs.getString("product_spec") == null?"":rs.getString("product_spec"));
+					productVO.setSeed(rs.getString("seed") == null?"":rs.getString("seed"));
+					productVO.setIdentity_id(rs.getString("identity_id") == null?"":rs.getString("identity_id"));
+					
+					list.add(productVO); // Store the row in the list
+				}				
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}
+	}
 }
