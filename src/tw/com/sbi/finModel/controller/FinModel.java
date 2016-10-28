@@ -126,6 +126,25 @@ public class FinModel extends HttpServlet {
 				String jsonList = gson.toJson(list);
 				response.getWriter().write(jsonList);
 			}
+
+			if ("gen_simu_data".equals(action)){
+				logger.debug("action: gen_simu_data");
+				
+				String caseId = request.getParameter("case_id");
+				String degree = request.getParameter("degree");
+				String blndel = request.getParameter("blndel");
+				finModelService = new FinModelService();
+				String balance = finModelService.genSimuData(caseId, degree, blndel);
+				
+				if (!"fail".equals(balance)){
+					List<FinsimuVO> list = finModelService.getFinsimuData(caseId);
+					gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+					String jsonList = gson.toJson(list);
+					response.getWriter().write(jsonList);
+				} else {
+					response.getWriter().write("fail");
+				}	
+			}
 			
 			if ("create".equals(action)) {
 				logger.debug("action: create");

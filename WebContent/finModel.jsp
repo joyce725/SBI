@@ -81,6 +81,30 @@ $(function(){
 				}
 			});
 			
+			var validator_insert = $("#insert-dialog-form-post").validate({
+				rules : {
+					f_date : {
+						required : true,
+						dateISO : true
+					},
+					amount : {
+						number : true
+					}
+				}
+			});
+			
+			var validator_update = $("#update-dialog-form-post").validate({
+				rules : {
+					f_date : {
+						required : true,
+						dateISO : true
+					},
+					amount : {
+						number : true
+					}
+				}
+			});
+			
 			// 建立模型 事件聆聽
 			$("#create-model-button").click( function(e) {
 				e.preventDefault();		
@@ -245,7 +269,7 @@ $(function(){
 							    }
 								
 								if(json_obj[i].action){
-									str_action = "實際";
+									str_action = "<font color='red'><b>實際</b></font>";
 								}
 								else{
 									str_action = "模擬";
@@ -403,7 +427,7 @@ $(function(){
 										    }
 											
 											if(json_obj[i].action){
-												str_action = "實際";
+												str_action = "<font color='red'><b>實際</b></font>";
 											}
 											else{
 												str_action = "模擬";
@@ -588,7 +612,7 @@ $(function(){
 										    }
 											
 											if(json_obj[i].action){
-												str_action = "實際";
+												str_action = "<font color='red'><b>實際</b></font>";
 											}
 											else{
 												str_action = "模擬";
@@ -753,7 +777,7 @@ $(function(){
 									    }
 										
 										if(json_obj[i].action){
-											str_action = "實際";
+											str_action = "<font color='red'><b>實際</b></font>";
 										}
 										else{
 											str_action = "模擬";
@@ -868,6 +892,8 @@ $(function(){
 				buttons : [{
 					text : "確認",
 					click : function() {
+						console.log('產生模擬資料');
+						
 						$('body').css('cursor', 'progress');
 						degree = $("#degree").val();
 						blndel = document.querySelector('input[name="blndel"]:checked').value;
@@ -915,7 +941,7 @@ $(function(){
 									    }
 										
 										if(json_obj[i].action){
-											str_action = "實際";
+											str_action = "<font color='red'><b>實際</b></font>";
 										}
 										else{
 											str_action = "模擬";
@@ -1006,6 +1032,29 @@ $(function(){
 						$(this).dialog("close");
 					}
 				} ]
+			});
+			
+			// 產生模擬圖
+			$("#gen_d3js_button").click( function() {
+				uuid = $("#hidden_case_id").val();
+				$.ajax({
+					type : "POST",
+					url : "finModel.do",
+					data : {
+						action : "gen_d3js",
+						case_id: uuid
+					},
+					success : function(result) {
+						var obj = JSON.parse(result);
+						var income = obj[0].income;
+						var outlay = obj[1].outlay;
+						var detailData = obj[2].detailData;
+						var fincase = obj[3].fincase;
+						var totalIncome = obj[4].totalIncome;
+						var totalOutlay = obj[5].totalOutlay;
+						genSimuGraph(income, outlay, detailData, fincase, totalIncome, totalOutlay);
+					}
+				});	
 			});
 				
 			// 產生模擬圖
@@ -1144,7 +1193,7 @@ $(function(){
 							    }
 								
 								if(json_obj[i].action){
-									str_action = "實際";
+									str_action = "<font color='red'><b>實際</b></font>";
 								}
 								else{
 									str_action = "模擬";
@@ -1301,7 +1350,7 @@ $(function(){
 										    }
 											
 											if(json_obj[i].action){
-												str_action = "實際";
+												str_action = "<font color='red'><b>實際</b></font>";
 											}
 											else{
 												str_action = "模擬";
@@ -1486,7 +1535,7 @@ $(function(){
 										    }
 											
 											if(json_obj[i].action){
-												str_action = "實際";
+												str_action = "<font color='red'><b>實際</b></font>";
 											}
 											else{
 												str_action = "模擬";
@@ -1651,7 +1700,7 @@ $(function(){
 									    }
 										
 										if(json_obj[i].action){
-											str_action = "實際";
+											str_action = "<font color='red'><b>實際</b></font>";
 										}
 										else{
 											str_action = "模擬";
@@ -1813,7 +1862,7 @@ $(function(){
 									    }
 										
 										if(json_obj[i].action){
-											str_action = "實際";
+											str_action = "<font color='red'><b>實際</b></font>";
 										}
 										else{
 											str_action = "模擬";
