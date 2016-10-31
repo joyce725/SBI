@@ -37,7 +37,7 @@ public class Usertmp extends HttpServlet {
 		// TODO Auto-generated method stub
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		String group_id = request.getSession().getAttribute("group_id").toString();;
+		String group_id = request.getSession().getAttribute("group_id").toString();
 		UserService userService = null;
 		String action = request.getParameter("action");
 		//System.out.println(action);

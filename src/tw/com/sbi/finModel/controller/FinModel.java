@@ -99,7 +99,7 @@ public class FinModel extends HttpServlet {
 			jsonObject.put("totalOutlay", totalOutlay);
 			jsonArray.put(jsonObject);
 			
-			response.getWriter().write(jsonArray.toString());;
+			response.getWriter().write(jsonArray.toString());
 		}
 		
 		// 以admin身份登入

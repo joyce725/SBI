@@ -233,7 +233,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 												result_table += 
 // 														"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
 // 														+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
-// 														+ "' class='btn-simu btn btn-wide btn-primary btn_delete'>產生</button></td></tr>";;
+// 														+ "' class='btn-simu btn btn-wide btn-primary btn_delete'>產生</button></td></tr>";
 											
 														"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
 														+ "<button value='"+ json_obj[i].case_id+"' name='user_query'"
@@ -263,7 +263,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 								$("#create-dialog-form-post").trigger("reset");
 								create_dialog.dialog("close");
 							}
-						} ],
+						}],
 				close : function() {
 					validator_create.resetForm();
 					$("#create-dialog-form-post").trigger("reset");
@@ -433,7 +433,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						$("#insert-dialog-form-post").trigger("reset");
 						insert_dialog.dialog("close");
 					}
-				} ],
+				}],
 				close : function() {
 					validator_insert.resetForm();
 					$("#insert-dialog-form-post").trigger("reset");
@@ -532,7 +532,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						$("#update-dialog-form-post").trigger("reset");
 						update_dialog.dialog("close");
 					}
-				} ],
+				}],
 				close : function() {
 					$("#update-dialog-form-post").trigger("reset");
 					validator_update.resetForm();
@@ -687,7 +687,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					click : function() {
 						$(this).dialog("close");
 					}
-				} ]
+				}]
 			});
 			
 			// 產生模擬圖
@@ -926,7 +926,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						$("#insert-dialog-form-post").trigger("reset");
 						insert_dialog.dialog("close");
 					}
-				} ],
+				}],
 				close : function() {
 					validator_insert.resetForm();
 					$("#insert-dialog-form-post").trigger("reset");
@@ -1025,7 +1025,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						$("#update-dialog-form-post").trigger("reset");
 						update_dialog.dialog("close");
 					}
-				} ],
+				}],
 				close : function() {
 					$("#update-dialog-form-post").trigger("reset");
 					validator_update.resetForm();
@@ -1178,7 +1178,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					click : function() {
 						$(this).dialog("close");
 					}
-				} ]
+				}]
 			});
 						
 			// 產生模擬圖
