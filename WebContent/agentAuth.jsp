@@ -51,191 +51,102 @@ $(function(){
 		
 	// 查詢通路商 事件聆聽
 	$("#btn_query_agent").click(function(e) {
-		if($("#search_agent_name").val()==""){
-			$.ajax({
-				type : "POST",
-				url : "agentAuth.do",
-				data : {
-					action : "selectAll"
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					$.each(json_obj,function(i, item) {
-						var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+		$.ajax({
+			type : "POST",
+			url : "agentAuth.do",
+			data : {
+				action : "searchByAgentName",
+				agent_name : $("#search_agent_name").val()
+			},
+			success : function(result) {
+				var json_obj = $.parseJSON(result);
+				var result_table = "";
+				$.each(json_obj,function(i, item) {
+					var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 
-						result_table 
-							+= "<tr>"
-							+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-							+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
-							+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-							+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
-							+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
-							+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
-							+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-							+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
-							+ "<td>"+ tmp2 + "</td>"
-							+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-							+ "<div class='table-function-list'>"
-							+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-							+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-							+ "</div></div></td>"	
-							+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
-					});		
-					//判斷查詢結果
-					var resultRunTime = 0;
-					$.each (json_obj, function (i) {
-						resultRunTime+=1;
-					});
-					if(resultRunTime!=0){
-						$("#table_agent_auth tbody").html(result_table);
-					}else{
-						// todo
-					}
+					result_table 
+						+= "<tr>"
+						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+						+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
+						+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
+						+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
+						+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
+						+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
+						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+						+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
+						+ "<td>"+ tmp2 + "</td>"
+						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+						+ "<div class='table-function-list'>"
+						+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+						+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+						+ "</div></div></td>"	
+						+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
+				});		
+				//判斷查詢結果
+				var resultRunTime = 0;
+				$.each (json_obj, function (i) {
+					resultRunTime+=1;
+				});
+				if(resultRunTime!=0){
+					$("#table_agent_auth tbody").html(result_table);
+				}else{
+					// todo
 				}
-			});
-		} else {
-			$.ajax({
-				type : "POST",
-				url : "agentAuth.do",
-				data : {
-					action : "searchByAgentName",
-					agent_name : $("#search_agent_name").val()
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					$.each(json_obj,function(i, item) {
-						var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-
-						result_table 
-							+= "<tr>"
-							+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-							+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
-							+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-							+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
-							+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
-							+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
-							+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-							+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
-							+ "<td>"+ tmp2 + "</td>"
-							+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-							+ "<div class='table-function-list'>"
-							+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-							+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-							+ "</div></div></td>"	
-							+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
-					});		
-					//判斷查詢結果
-					var resultRunTime = 0;
-					$.each (json_obj, function (i) {
-						resultRunTime+=1;
-					});
-					if(resultRunTime!=0){
-						$("#table_agent_auth tbody").html(result_table);
-					}else{
-						// todo
-					}
-				}
-			});
-		}
+			}
+		});
 	});
 	
 	// 查詢商品 事件聆聽
 	$("#btn_query_product").click(function(e) {
-		if($("#search_product_spec").val()==""){
-			$.ajax({
-				type : "POST",
-				url : "agentAuth.do",
-				data : {
-					action : "selectAll"
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					$.each(json_obj,function(i, item) {
-						var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+		$.ajax({
+			type : "POST",
+			url : "agentAuth.do",
+			data : {
+				action : "searchByProductSpec",
+				product_spec : $("#search_product_spec").val()
+			},
+			success : function(result) {
+				var json_obj = $.parseJSON(result);
+				var result_table = "";
+				$.each(json_obj,function(i, item) {
+					var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 
-						result_table 
-							+= "<tr>"
-							+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-							+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
-							+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-							+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
-							+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
-							+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
-							+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-							+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
-							+ "<td>"+ tmp2 + "</td>"
-							+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-							+ "<div class='table-function-list'>"
-							+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-							+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-							+ "</div></div></td>"	
-							+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
-					});		
-					//判斷查詢結果
-					var resultRunTime = 0;
-					$.each (json_obj, function (i) {
-						resultRunTime+=1;
-					});
-					if(resultRunTime!=0){
-						$("#table_agent_auth tbody").html(result_table);
-					}else{
-						// todo
-					}
+					result_table 
+						+= "<tr>"
+						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+						+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
+						+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
+						+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
+						+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
+						+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
+						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+						+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
+						+ "<td>"+ tmp2 + "</td>"
+						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+						+ "<div class='table-function-list'>"
+						+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+						+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+						+ "</div></div></td>"	
+						+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
+				});		
+				//判斷查詢結果
+				var resultRunTime = 0;
+				$.each (json_obj, function (i) {
+					resultRunTime+=1;
+				});
+				if(resultRunTime!=0){
+					$("#table_agent_auth tbody").html(result_table);
+				}else{
+					// todo
 				}
-			});
-		} else {
-			$.ajax({
-				type : "POST",
-				url : "agentAuth.do",
-				data : {
-					action : "searchByProductSpec",
-					product_spec : $("#search_product_spec").val()
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					$.each(json_obj,function(i, item) {
-						var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.auth_code+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-
-						result_table 
-							+= "<tr>"
-							+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-							+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
-							+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-							+ "<td id='auth_quantity_"+i+"'>"+ item.auth_quantity + "</td>"
-							+ "<td id='sale_quantity_"+i+"'>"+ item.sale_quantity + "</td>"
-							+ "<td id='register_quantity_"+i+"'>"+ item.register_quantity + "</td>"
-							+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-							+ "<td id='auth_code_"+i+"'>"+ item.auth_code + "</td>"
-							+ "<td>"+ tmp2 + "</td>"
-							+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-							+ "<div class='table-function-list'>"
-							+ "<button href='#' id='"+i+"' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-							+ "<button href='#' name='" + item.product_id + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-							+ "</div></div></td>"	
-							+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
-					});		
-					//判斷查詢結果
-					var resultRunTime = 0;
-					$.each (json_obj, function (i) {
-						resultRunTime+=1;
-					});
-					if(resultRunTime!=0){
-						$("#table_agent_auth tbody").html(result_table);
-					}else{
-						// todo
-					}
-				}
-			});
-		}
+			}
+		});
 	});
 	
 	// 新增通路商 事件聆聽
 	$("#btn_insert_agent_auth").click(function(e) {
 		e.preventDefault();	
+		
 		// loading agent info
 		$.ajax({
 			type : "POST",
@@ -254,6 +165,7 @@ $(function(){
 				console.log('getProductInfo Fail.');
 			}
 		});
+		
 		// loading product info
 		$.ajax({
 			type : "POST",
@@ -272,6 +184,7 @@ $(function(){
 				console.log('getProductInfo Fail.');
 			}
 		});
+		
 		insert_dialog.dialog("open");
 	});
 	
@@ -348,6 +261,7 @@ $(function(){
 					        alert("Error: " + errorThrown); 
 					    }
 					});
+					
 					insert_dialog.dialog("close");
 				}
 			}
@@ -358,7 +272,7 @@ $(function(){
 				$("#insert-dialog-form-post").trigger("reset");
 				insert_dialog.dialog("close");
 			}
-		} ],
+		}],
 		close : function() {
 			validator_insert.resetForm();
 			$("#insert-dialog-form-post").trigger("reset");
@@ -463,7 +377,7 @@ $(function(){
 				$("#update-dialog-form-post").trigger("reset");
 				update_dialog.dialog("close");
 			}
-		} ],
+		}],
 		close : function() {
 			$("#update-dialog-form-post").trigger("reset");
 			validator_update.resetForm();
@@ -478,6 +392,7 @@ $(function(){
 		$("#delete_product_id").val($(this).attr('name'));
 		del_dialog.dialog("open");
 	});
+	
 	// "刪除" Dialog相關設定
 	del_dialog = $("#dialog-form-delete").dialog({
 		draggable : false,//防止拖曳
@@ -540,7 +455,7 @@ $(function(){
 			click : function() {
 				$(this).dialog("close");
 			}
-		} ],
+		}],
 		close : function() {
 			$(this).dialog("close");
 		}
@@ -615,7 +530,7 @@ $(function(){
 			click : function() {
 				$(this).dialog("close");
 			}
-		} ],
+		}],
 		close : function() {
 			$(this).dialog("close");
 		}

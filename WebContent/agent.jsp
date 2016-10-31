@@ -36,82 +36,47 @@ $(function(){
 	
 	// 查詢通路商 事件聆聽
 	$("#btn_query").click(function(e) {
-		if($("#search_agent_name").val()==""){
-			$.ajax({
-				type : "POST",
-				url : "agent.do",
-				data : {
-					action : "selectAll"
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					$.each(json_obj,function(i, item) {
-						result_table 
-							+= "<tr>"
-							+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
-							+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
-							+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-							+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
-							+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
-							+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-							+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-							+ "<div class='table-function-list'>"
-							+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-							+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-							+ "</div></div></td></tr>";							
-					});		
-					//判斷查詢結果
-					var resultRunTime = 0;
-					$.each (json_obj, function (i) {
-						resultRunTime+=1;
-					});
-					if(resultRunTime!=0){
-						$("#table_agent tbody").html(result_table);
-					}else{
-						// todo
-					}
+		$.ajax({
+			type : "POST",
+			url : "agent.do",
+			data : {
+				action : "search",
+				agent_name : $("#search_agent_name").val()
+			},
+			success : function(result) {
+				var json_obj = $.parseJSON(result);
+				var result_table = "";
+				
+				$.each(json_obj,function(i, item) {
+					result_table 
+						+= "<tr>"
+						+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
+						+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
+						+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
+						+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
+						+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
+						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+						+ "<div class='table-function-list'>"
+						+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+						+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+						+ "</div></div></td></tr>";							
+				});
+				
+				//判斷查詢結果
+				var resultRunTime = 0;
+				$.each (json_obj, function (i) {
+					resultRunTime+=1;
+				});
+				
+				if(resultRunTime!=0){
+					$("#table_agent tbody").html(result_table);
+				}else{
+					// todo
 				}
-			});
-		} else{
-			$.ajax({
-				type : "POST",
-				url : "agent.do",
-				data : {
-					action : "search",
-					agent_name : $("#search_agent_name").val()
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					$.each(json_obj,function(i, item) {
-						result_table 
-							+= "<tr>"
-							+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
-							+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
-							+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-							+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
-							+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
-							+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-							+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-							+ "<div class='table-function-list'>"
-							+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-							+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-							+ "</div></div></td></tr>";							
-					});		
-					//判斷查詢結果
-					var resultRunTime = 0;
-					$.each (json_obj, function (i) {
-						resultRunTime+=1;
-					});
-					if(resultRunTime!=0){
-						$("#table_agent tbody").html(result_table);
-					}else{
-						// todo
-					}
-				}
-			});
-		}
+			}
+		});
+		
 	});
 	
 	// 新增通路商 事件聆聽

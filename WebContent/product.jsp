@@ -66,94 +66,52 @@ $(function(){
 	
 	// 查詢商品資料 事件聆聽
 	$("#btn_query").click(function(e) {
-		if($("#search_product_spec").val()==""){
-			$.ajax({
-				type : "POST",
-				url : "product.do",
-				data : {
-					action : "selectAll"
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					$.each(json_obj,function(i, item) {
-//	 					var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-						var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-						var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-						
-						result_table 
-							+= "<tr>"
-							+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-							+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
-//	 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
-							+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-							+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
-							+ "<td>"+ tmp2 + "</td>"
-							+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-							+ "<div class='table-function-list'>"
-							+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-							+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-							+ "</div></div></td>"
-							+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";										
-					});		
-					//判斷查詢結果
-					var resultRunTime = 0;
-					$.each (json_obj, function (i) {
-						resultRunTime+=1;
-					});
-					if(resultRunTime!=0){
-//	 					console.log('查詢商品資料 事件聆聽');
-						$("#table_product tbody").html(result_table);
-					}else{
-						// todo
-					}
+		$.ajax({
+			type : "POST",
+			url : "product.do",
+			data : {
+				action : "search",
+				product_spec : $("#search_product_spec").val()
+			},
+			success : function(result) {
+				var json_obj = $.parseJSON(result);
+				var result_table = "";
+				
+				$.each(json_obj,function(i, item) {
+					//var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+					var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+					var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+					
+					result_table 
+						+= "<tr>"
+						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+						+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
+						//+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+						+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+						+ "<td>"+ tmp2 + "</td>"
+						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+						+ "<div class='table-function-list'>"
+						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+						+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+						+ "</div></div></td>"
+						+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";										
+				});	
+				
+				//判斷查詢結果
+				var resultRunTime = 0;
+				$.each (json_obj, function (i) {
+					resultRunTime+=1;
+				});
+				
+				if(resultRunTime!=0){
+					//console.log('查詢商品資料 事件聆聽');
+					$("#table_product tbody").html(result_table);
+				}else{
+					// todo
 				}
-			});
-		} else{
-			$.ajax({
-				type : "POST",
-				url : "product.do",
-				data : {
-					action : "search",
-					product_spec : $("#search_product_spec").val()
-				},
-				success : function(result) {
-					var json_obj = $.parseJSON(result);
-					var result_table = "";
-					$.each(json_obj,function(i, item) {
-//	 					var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-						var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-						var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-						
-						result_table 
-							+= "<tr>"
-							+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-							+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
-//	 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
-							+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-							+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
-							+ "<td>"+ tmp2 + "</td>"
-							+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-							+ "<div class='table-function-list'>"
-							+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-							+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-							+ "</div></div></td>"
-							+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";										
-					});		
-					//判斷查詢結果
-					var resultRunTime = 0;
-					$.each (json_obj, function (i) {
-						resultRunTime+=1;
-					});
-					if(resultRunTime!=0){
-//	 					console.log('查詢商品資料 事件聆聽');
-						$("#table_product tbody").html(result_table);
-					}else{
-						// todo
-					}
-				}
-			});
-		}
+			}
+		});
 	});
 	
 	// 新增商品資料 事件聆聽
