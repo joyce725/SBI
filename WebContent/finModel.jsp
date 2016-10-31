@@ -702,6 +702,10 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					},
 					success : function(result) {
 						var obj = JSON.parse(result);
+						genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
+						return;
+						
+						var obj = JSON.parse(result);
 						var income = obj[0].income;
 						var outlay = obj[1].outlay;
 						var detailData = obj[2].detailData;
@@ -724,6 +728,10 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						case_id: uuid
 					},
 					success : function(result) {
+						var obj = JSON.parse(result);
+						genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
+						return;
+						
 						var obj = JSON.parse(result);
 						var income = obj[0].income;
 						var outlay = obj[1].outlay;
@@ -1193,6 +1201,10 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					},
 					success : function(result) {
 						var obj = JSON.parse(result);
+						genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
+						return;
+						
+						var obj = JSON.parse(result);
 						var income = obj[0].income;
 						var outlay = obj[1].outlay;
 						var detailData = obj[2].detailData;
@@ -1215,6 +1227,10 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						case_id: uuid
 					},
 					success : function(result) {
+						var obj = JSON.parse(result);
+						genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
+						return;
+						
 						var obj = JSON.parse(result);
 						var income = obj[0].income;
 						var outlay = obj[1].outlay;
@@ -1371,6 +1387,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 		
 		<div id="simuGraph">         
       		<div class="content">
+      			<div id="newpic" style="margin-left: 50px"></div>
       			<div id="z" style="margin-left: 50px"></div>
 			</div>
 		</div>
@@ -1574,6 +1591,245 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 </div>
 
 <script>
+
+//BEE
+
+function red_line(income,outcome){
+	if(income.length<1||outcome.length<1){return"X_X";}
+	var i=0,j=0,amount,move=2;
+	var bigger=outcome,smaller=income;
+	if(income[0].Percent>outcome[0].Percent){
+		bigger=income;
+		smaller=outcome;
+	};
+	while(i<bigger.length && j< smaller.length){
+		if(bigger[i].Percent<smaller[j].Percent){return (move?bigger[i].Date:smaller[j].Date);}
+		if(i+1==bigger.length||j+1==smaller.length)break;
+		//alert(bigger[i].Date+" "+bigger[i].Percent+"\n"+smaller[j].Date+" "+smaller[j].Percent);
+		if(bigger[i+1].Date>smaller[j+1].Date){
+			move=0;
+			j++;
+		}else{
+			move=1;
+			i++;
+		}
+	}
+	return "X_X";
+	
+}
+
+function zero_v(vector){
+	var minDate=(Math.random()>0.5?d3.max(vector, function(d) { return d.Date; }):d3.min(vector, function(d) { return d.Date; }));
+	var averageDate= vector[Math.floor(vector.length/2)].Date;
+	var minAmount=d3.min(vector, function(d) { return d.Amount; });
+	var minPercent=(Math.random()>0.5?d3.max(vector, function(d) { return d.Percent; }):d3.min(vector, function(d) { return d.Percent; }));
+	var new_vector=[];
+	$.each (vector, function (i,item) {
+		//alert(minDate +" "+vector[i].Date + " "+(minDate + vector[i].Date));
+		//tmp1+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+		new_vector[i]={};
+		new_vector[i].Date=minDate;//(new Date(minDate)+new Date(vector[i].Date))/2;
+		new_vector[i].Amount=minAmount;
+		new_vector[i].Percent=minPercent;
+	});
+	return new_vector;
+}
+function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
+	var tmp1='in:\n', tmp2='out:\n', tmp3='', tmp4='';
+	$.each (income, function (i,item) {
+		tmp1+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+	});
+	$.each (outcome, function (i,item) {
+		tmp2+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+	});
+	var mind=(d3.min(income, function(d) { return d.Date; })<d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; }));
+	//(d3.min(income, function(d) { return d.Date; })>d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; })),
+	var maxd=(d3.max(income, function(d) { return d.Date; })>d3.max(outcome, function(d) { return d.Date; })?d3.max(income, function(d) { return d.Date; }):d3.max(outcome, function(d) { return d.Date; }));
+	d3.select("svg").remove();
+	var red=(red_line(income,outcome));
+	
+	var margin = {top: 70, right: 80, bottom: 50, left: 80};
+	var width = 960;
+	var height = 450;
+//底圖大小
+	var svg = d3.select("#newpic").append("svg")
+	.attr("width", width + margin.left + margin.right)							
+	.attr("height", height + margin.top + margin.bottom);
+//X軸Y軸 還有大加的Scaler
+	var xScale = d3.time.scale()
+ 					.domain([new Date(mind),new Date(maxd)])
+  				.range([0, width - margin.left - margin.right]);		
+  var yScale = d3.scale.linear()
+				    .domain([0,100])
+				    .range([height - margin.top - margin.bottom, 0]);
+  var xAxis = d3.svg.axis()
+				    .scale(xScale)
+				    .orient("bottom")
+				    .tickFormat(d3.time.format('%Y-%m-%d'));
+//				    .ticks(d3.time.month, 1).ticks(d3.time.week, 2);
+
+  var yAxis = d3.svg.axis()
+				    .scale(yScale)
+				    //.tickFormat(d3.format(",%"))
+				    .tickFormat(function(d){return d+'%';})
+				    .orient("left");
+//title 和收入支出 X軸數
+  svg.append("g")
+	.append("text")
+	.text("財務損益平衡統計圖")
+	.attr("class","title")
+	.attr({'fill':'#222','x':((width * 0.5) - (margin.right*1.5)) ,'y':(margin.top/2) })
+	.style({'font-size':'32px','font-family':'Microsoft JhengHei'});
+  
+  svg.append("g")
+	.append("text")
+	.text("█ 總支出:"+totalOutcome[0].Total)
+	.attr("class","title")
+	.attr({'fill':'#9c0','x':(width-margin.right *0.5) ,'y':(margin.top+30) })
+	.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
+  
+  svg.append("g")
+	.append("text")
+	.text("█ 總收入: "+totalIncome[0].Total)
+	.attr("class","title")
+	.attr({'fill':'#09F','x':(width-margin.right *0.5) ,'y':(margin.top) })
+	.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
+  
+  svg.append("g")
+  .append('text')
+  .text("時間")
+  .attr('transform', 'translate('+(width-margin.right+20)+','+(height-margin.bottom)+')');
+  
+  svg.append("g")
+  .attr("class","axis")
+  .attr("transform","translate(" + margin.left + "," + (height - margin.bottom) + ")")
+  .call(xAxis)
+	.selectAll("text")
+	.attr("transform", "rotate(25)")
+	.style("text-anchor", "start");
+  
+	svg.append("g")
+  .attr("class","axis")
+  .attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+  .call(yAxis)
+  .append('text')
+  .text("比例")
+  .attr('transform', 'translate(-10, -20)');
+//產生線條
+	var lineGen = d3.svg.line()
+	.x(function(data) {return xScale(new Date(data.Date));})
+  .y(function(data) {return yScale(data.Percent);})
+  .interpolate("linear");
+//三條線
+	svg.append('path')
+    .attr({
+      'd': lineGen(zero_v(income)),
+      'stroke': '#09F',
+      'fill': 'none',
+      'stroke-width':'3'
+    }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+    .transition()
+    .delay(300)
+    .duration(1500)
+    .attr({
+      'd': lineGen(income),
+    });
+	  
+	  svg.append('path')
+	  .attr({
+      'd': lineGen(zero_v(outcome)),
+      'stroke': '#9c0',
+      'fill': 'none',
+      'stroke-width':'3'
+	  }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+	  .transition()
+    .duration(1500)
+    .attr({
+      'd': lineGen(outcome),
+    });
+	  
+	  
+	  
+	if(red.length>5){
+	  svg.append('path')
+	  .attr({
+      'd': lineGen([{"Date": red,"Percent": 0},{"Date": red,"Percent": 0}]),
+      'stroke': '#F00',
+      'fill': 'none',
+      'stroke-width':'2',
+      'stroke-dasharray' : '5,3',
+	  }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+	  .transition()
+    .duration(1500)
+    .attr({
+      'd': lineGen([{"Date": red,"Percent": 0},{"Date": red,"Percent": 100}]),
+    });
+	}
+	  
+//兩條線的tool圓圈圈
+	  svg.append("g").selectAll("circle")
+		.data(outcome)
+		.enter()
+		.append("circle")
+		.attr({    
+//			"cx":function(d) {return xScale(new Date(d.Date));},
+			"cx":function(d) {return xScale(new Date(d3.min(outcome,function(d){return d.Date})))-margin.left-10;},
+			"cy":function(d) {return yScale(d3.mean(outcome,function(d){return d.Percent}));},
+			"r" : 5,
+			"fill": "#9c0",//綠色
+			"title" : function(d){return "日期: "+d.Date+"<br>支出: "+Math.abs(d.Amount)+"<br>比例: "+Math.floor(d.Percent)+"%";},
+			"class" : "tool"
+		}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		.transition()
+		.delay(500)
+  	.duration(1500)
+  	.attr({
+   		"cx":function(d) {return xScale(new Date(d.Date));},
+			"cy":function(d) {return yScale(d.Percent);}
+ 		});
+  svg.append("g").selectAll("circle")
+		.data(income)
+		.enter()
+		.append("circle")
+		.attr({
+			"cx":function(d) {return xScale(new Date(d3.max(income, function(d) { return d.Date; })))+margin.right*3+10;},
+			"cy":function(d) {return yScale(d3.mean(income,function(d){return d.Percent}));},
+			"r" : 5,
+			"fill": "#09F",//藍色
+			"title" : function(d){return "日期: "+d.Date+"<br>收入: "+d.Amount+"<br>比例: "+Math.floor(d.Percent)+"%";},
+			"class" : "tool"
+		}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		.transition()
+		.delay(700)
+    	.duration(1500)
+    	.attr({
+    		"cx":function(d) {return xScale(new Date(d.Date));},
+			"cy":function(d) {return yScale(d.Percent);}
+   	});
+//tool顯示
+  $(".tool").mouseover(function(e){
+//   	alert('111');
+		 $(this).attr("newTitle",$(this).attr("title"));
+		 $(this).attr("title","");
+		 var tooltip = "<div id='tooltip'style='position:absolute;border:1px solid #333;background:#f7f5d1;padding:5px;color:#333;min-width:140px;display:none;'>"+ $(this).attr("newtitle") +"<\/div>";
+		 $("body").append(tooltip);
+		 $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"}).show("fast");
+	 }).mouseout(function(){
+		 $(this).attr("title",$(this).attr("newTitle"));
+	         $("#tooltip").remove();
+	 }).mousemove(function(e){
+	         $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"});
+	 });
+  
+  $("#tabs").tabs( "option", "active", 1 );
+//	alert(tmp1);
+//	alert(tmp2);
+//	alert(totalIncome[0].Total);
+//	alert(totalOutcome[0].Total);
+}
+
+
+
 	function genSimuGraph(income, outlay, detailData, fincase, totalIncome, totalOutlay){
 		
 		d3.select("svg").remove();

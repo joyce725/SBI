@@ -64,6 +64,40 @@ public class FinModel extends HttpServlet {
 			logger.debug("action: gen_d3js");
 			
 			String caseId = request.getParameter("case_id");
+			String caseIdbase64 = new String(Base64.encodeBase64String(caseId.getBytes()));
+			String url = getServletConfig().getServletContext().getInitParameter("pythonwebservice")+"/finance/case="+caseIdbase64;
+			
+			HttpGet httpRequest = new HttpGet(url);
+        	HttpClient client = HttpClientBuilder.create().build();
+        	HttpResponse httpResponse;
+        	try {
+        		StringBuffer result = new StringBuffer();
+        		httpResponse = client.execute(httpRequest);
+    			int responseCode = httpResponse.getStatusLine().getStatusCode();
+    
+    	    	if(responseCode==200){
+    	    		BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+        	    	String line = "";
+        	    	while ((line = rd.readLine()) != null) {
+        	    		result.append(line);
+        	    	}	
+    	    		//Gson gson2 = new Gson();
+    	    		//String answer = gson2.fromJson(result.toString(), List.class);
+    	    		//System.out.println(result.toString());
+    	    		response.getWriter().write(result.toString());
+    	    	} else {
+    	    		System.out.println("responseCode: " + responseCode);
+    	    		System.out.println("fail to get data");
+    	    	}    	    	
+    		}catch (Exception e){
+    			System.out.println(e.toString());
+    		}
+        	
+			int i = 0;
+			if(i == 0){
+				return;
+			}
+			
     		String incomeStr = "SELECT f_date AS date, SUM(amount) AS pv FROM tb_finsimu WHERE case_id = '" + caseId + "' AND amount > 0 GROUP BY f_date ORDER BY f_date";
     		String outlayStr = "SELECT f_date AS date, ABS(SUM(amount)) AS pv FROM tb_finsimu WHERE case_id = '" + caseId + "' AND amount < 0 GROUP BY f_date ORDER BY f_date";
     		String detailDataStr = "SELECT f_date AS date, amount AS pv FROM tb_finsimu WHERE case_id = '" + caseId + "' ORDER BY f_date";
@@ -524,16 +558,16 @@ public class FinModel extends HttpServlet {
 				rs = statement.executeQuery(queryStr);
 				while (rs.next()) {
 					FinsimuVO finsimuVO= new FinsimuVO();
-					finsimuVO.setSimulation_id(rs.getString("simulation_id") == null?"":rs.getString("simulation_id"));
-					finsimuVO.setCase_id(rs.getString("case_id") == null?"":rs.getString("case_id"));
+					finsimuVO.setSimulation_id(rs.getString("simulation_id"));
+					finsimuVO.setCase_id(rs.getString("case_id"));
 //					finsimuVO.setUser_id(rs.getString("user_id"));
-					finsimuVO.setF_date(sdf.parse(rs.getString("f_date") == null?"":rs.getString("f_date")));
-					finsimuVO.setF_type(Integer.valueOf(rs.getString("f_type") == null?"":rs.getString("f_type")));
+					finsimuVO.setF_date(sdf.parse(rs.getString("f_date")));
+					finsimuVO.setF_type(Integer.valueOf(rs.getString("f_type")));
 					finsimuVO.setAction("1".equals(rs.getString("action").toString())?true:false);
-					finsimuVO.setAmount(Float.valueOf(rs.getString("amount") == null?"":rs.getString("amount")));
-					finsimuVO.setF_kind(Integer.valueOf(rs.getString("f_kind") == null?"":rs.getString("f_kind")));
-					finsimuVO.setDescription(rs.getString("description") == null?"":rs.getString("description"));
-					finsimuVO.setStrategy(rs.getString("strategy") == null?"":rs.getString("strategy"));
+					finsimuVO.setAmount(Float.valueOf(rs.getString("amount")));
+					finsimuVO.setF_kind(Integer.valueOf(rs.getString("f_kind")));
+					finsimuVO.setDescription(rs.getString("description"));
+					finsimuVO.setStrategy(rs.getString("strategy"));
 					list.add(finsimuVO); // Store the row in the list
 				}
 				// Handle any driver errors
