@@ -50,11 +50,7 @@ h2.ui-list-title {
 <!-- /**************************************  以下共用JS區塊    *********************************************/ 	-->
 <script>
 $(function(){
-	// jquery-ui tab function 
-    $( "#tabs" ).tabs();
-//     $( "#tabs" ).tabs({
-//       	event: "mouseover"
-//     });
+	$( "#tabs" ).tabs();
 });
 
 function convertAction (action){
@@ -121,26 +117,49 @@ function convertKind (kind){
 }
 
 function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
+	var tempAmount = "";
+	
+	if (jsonobj.amount < 0 ){
+		tempAmount = "<font color='red'><b>" + jsonobj.amount + "</b></font>";
+	} else {
+		tempAmount = jsonobj.amount;
+	}
+		
 	resultTable 
 	+= "<tr>"
 	+ "<td id='f_date_"+index+"'>"+ jsonobj.f_date+ "</td>"
 	+ "<td id='f_type_"+index+"'>"+ f_type+ "<input type='hidden' id='hidden_f_type_"+index+"' value='"+ jsonobj.f_type +"' ></td>"
 	+ "<td id='action_"+index+"'>"+ action+ "<input type='hidden' id='hidden_action_"+index+"' value='"+ jsonobj.action +"' ></td>"
-	+ "<td id='amount_"+index+"'>"+ jsonobj.amount+ "</td>"
+	+ "<td id='amount_"+index+"'>"+ tempAmount + "</td>"
 	+ "<td id='f_kind_"+index+"'>"+ f_kind+ "<input type='hidden' id='hidden_f_kind_"+index+"' value='"+ jsonobj.f_kind +"' ></td>"
 	+ "<td id='description_"+index+"'>"+ jsonobj.description+ "</td>"
 	+ "<td id='strategy_"+index+"'>"+ jsonobj.strategy+ "</td>"
-	+ "<td><button id='"+index+"' value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id
-	+ "' class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
-	+ "<button value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id
-	+ "' class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-//		+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-//		+ "<div class='table-function-list'>"
-//		+ "<a href='#' id='"+i+"' class='btn-in-table btn-green'><i class='fa fa-pencil'></i></a>"
-//		+ "<a href='#' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></a>"
-//		+ "</div></div></td></tr>";	
+	+ "<td><button id='"+index+"' value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id + "' "
+	+ "class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+	+ "<button value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id+ "' "
+	+ "class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
 
 	return resultTable;
+}
+
+function warningMsg(msg) {
+	$("#msgAlert").html(msg);
+	
+	$("#msgAlert").dialog({
+		title: "警告",
+		draggable : true,
+		resizable : false, //防止縮放
+		autoOpen : false,
+		height : "auto",
+		modal : true,
+		buttons : {
+			"確認" : function() {
+				$(this).dialog("close");
+			}
+		}
+	});
+		
+	$("#msgAlert").dialog("open");
 }
 </script>
 <!-- /**************************************  以上共用JS區塊    **********************************************/ 		-->	
@@ -150,6 +169,9 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 	<script>
 		$(function(){
 			var uuid = "";
+			var p_simulation_id = "";
+			var p_case_id = "";
+			var g_create_date = "";
 				
 			var validator_create = $("#create-dialog-form-post").validate({
 				rules : {
@@ -191,13 +213,13 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}
 			});
 			
-			// 建立模型 事件聆聽
+			//建立模型 事件聆聽
 			$("#create-model-button").click( function(e) {
 				e.preventDefault();		
 				create_dialog.dialog("open");
 			});	
 			
-			// 建立模型Dialog相關設定
+			//建立模型Dialog相關設定
 			create_dialog = $("#dialog-form-create").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -213,57 +235,58 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				width : 'auto',
 				modal : true,
 				buttons : [{
-							id : "create",
-							text : "建立",
-							click : function() {
-								if ($('#create-dialog-form-post').valid()) {
-									$.ajax({
-										type : "POST",
-										url : "finModel.do",
-										data : {
-											action : "create",
-											case_name : $("#dialog-form-create input[name='case_name']").val(),
-											amount : $("#dialog-form-create input[name='amount']").val(),
-											safety_money : $("#dialog-form-create input[name='safety_money']").val()
-										},
-										success : function(result) {
-											var json_obj = $.parseJSON(result);
-											var result_table = "";
-											$.each(json_obj,function(i, item) {
-												result_table += 
-// 														"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
-// 														+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
-// 														+ "' class='btn-simu btn btn-wide btn-primary btn_delete'>產生</button></td></tr>";
-											
-														"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
-														+ "<button value='"+ json_obj[i].case_id+"' name='user_query'"
-														+ " class='btn-simu btn btn-primary'>產生</button></td><td>"
-														+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
-														+ "' class='btn_query btn btn-primary'>查看</button></td></tr>";											
-											});
-											//判斷查詢結果
-											var resultRunTime = 0;
-											$.each (json_obj, function (i) {
-												resultRunTime+=1;
-											});
-											if(resultRunTime!=0){
-												$("#fincase-table-admin tbody").html(result_table);
-											}else{
-												// todo
-											}
-										}
+					id : "create",
+					text : "建立",
+					click : function() {
+						
+						if ($('#create-dialog-form-post').valid()) {
+							$.ajax({
+								type : "POST",
+								url : "finModel.do",
+								data : {
+									action : "create",
+									case_name : $("#dialog-form-create input[name='case_name']").val(),
+									amount : $("#dialog-form-create input[name='amount']").val(),
+									safety_money : $("#dialog-form-create input[name='safety_money']").val()
+								},
+								success : function(result) {
+									var json_obj = $.parseJSON(result);
+									var result_table = "";
+									
+									$.each(json_obj,function(i, item) {
+										result_table += "<tr>"
+											+ "<td>"+json_obj[i].case_name+"</td>"
+											+ "<td class='create_date'>"+json_obj[i].create_date+"</td>"
+											+ "<td><button value='" + json_obj[i].case_id + "' name='" + json_obj[i].case_id + "' "
+											+ "class='btn_query btn btn-primary'>查看</button></td>"
+											+ "<td><button value='" + json_obj[i].case_id + "' name='user_query'"
+											+ "class='btn-simu btn btn-primary'>產生</button></td>"
+											+ "</tr>";											
 									});
-									create_dialog.dialog("close");
+									
+									//判斷查詢結果
+									var resultRunTime = 0;
+									$.each (json_obj, function (i) {
+										resultRunTime+=1;
+									});
+									
+									if(resultRunTime!=0){
+										$("#fincase-table-admin tbody").html(result_table);
+									}
 								}
-							}
-						}, {
-							text : "取消",
-							click : function() {
-								validator_create.resetForm();
-								$("#create-dialog-form-post").trigger("reset");
-								create_dialog.dialog("close");
-							}
-						}],
+							});
+							
+							create_dialog.dialog("close");
+						}
+					}
+				}, {
+					text : "取消",
+					click : function() {
+						validator_create.resetForm();
+						$("#create-dialog-form-post").trigger("reset");
+						create_dialog.dialog("close");
+					}
+				}],
 				close : function() {
 					validator_create.resetForm();
 					$("#create-dialog-form-post").trigger("reset");
@@ -271,7 +294,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}
 			}); 
 				
-			// onload 時帶入fincase資料
+			//onload 時帶入fincase資料
 			$.ajax({
 				type : "POST",
 				url : "finModel.do",
@@ -282,13 +305,14 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					var json_obj = $.parseJSON(result);
 					var result_table = "";
 					$.each(json_obj,function(i, item) {
-						result_table += 
-								"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
-								+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
-								+ "class='btn-simu btn btn-wide btn-primary'>產生</button></td>"
-								+ "<td><button value='"+ json_obj[i].case_id+"' name='user_query' "
-								+ "class='btn_query btn btn-primary'>查看</button></td>"
-								+ "</tr>";
+						result_table += "<tr>"
+							+ "<td>"+json_obj[i].case_name+"</td>"
+							+ "<td class='create_date'>"+json_obj[i].create_date+"</td>"
+							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
+							+ "class='btn_query btn btn-primary'>查看</button></td>"
+							+ "<td><button value='"+ json_obj[i].case_id+"' name='user_query'"
+							+ "class='btn-simu btn btn-primary'>產生</button></td>"
+							+ "</tr>";
 					});					
 					//判斷查詢結果
 					var resultRunTime = 0;
@@ -297,15 +321,15 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					});
 					if(resultRunTime!=0){
 						$("#fincase-table-admin tbody").html(result_table);
-					}else{
-						// todo
 					}
 				}
 			});
 			
-			// 查看財務計畫 事件聆聽
+			//查看財務計畫 事件聆聽
 			$("#fincase-table-admin").delegate(".btn_query", "click", function() {
-				uuid = $(this).val();					
+				uuid = $(this).val();
+				g_create_date = $("[name='" + uuid + "']").parent().parent().children( ".create_date" ).text();
+				
 				$.ajax({
 					type : "POST",
 					url : "finModel.do",
@@ -314,41 +338,35 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						case_id: uuid
 					},
 					success : function(result) {
-						
-						
 						$("#fincase-div-admin").hide();
 						$("#finsimu-div-admin").show();
 						$("#switch-simu-button").prop('name', uuid);
 						$("#insert-simu-button").prop('name', uuid);
 						$("#hidden_case_id").val(uuid);
+						
 						var json_obj = $.parseJSON(result);
-						
-						console.log(json_obj);
-						
-// 						var len=json_obj.length;
 						var result_table = "";
+						
 						$.each(json_obj,function(i, item) {
-// 							if(i<len){
-								var str_f_type = "";
-								var str_action = "";
-								var str_f_kind = "";
+							var str_f_type = "";
+							var str_action = "";
+							var str_f_kind = "";
 
-								str_action = convertAction(json_obj[i].action);
-								str_f_type = convertType(json_obj[i].f_type);
-								str_f_kind = convertKind(json_obj[i].f_kind);
-// 							}
+							str_action = convertAction(json_obj[i].action);
+							str_f_type = convertType(json_obj[i].f_type);
+							str_f_kind = convertKind(json_obj[i].f_kind);
 
 							result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-						});		
+						});
+						
 						//判斷查詢結果
 						var resultRunTime = 0;
 						$.each (json_obj, function (i) {
 							resultRunTime+=1;
 						});
+						
 						if(resultRunTime!=0){
 							$("#finsimu-table-admin tbody").html(result_table);
-						}else{
-							// todo
 						}
 					}
 				});					
@@ -361,7 +379,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				insert_dialog.dialog("open");
 			});
 			
-			// "新增" Dialog相關設定
+			//"新增" Dialog相關設定
 			insert_dialog = $("#dialog-form-insert").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -381,6 +399,12 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					text : "新增",
 					click : function() {
 						if ($('#insert-dialog-form-post').valid()) {
+							
+							if (new Date(g_create_date) > new Date($("#insert_f_date").val())) {
+								warningMsg("您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
+								return; 
+							}
+							
 							$.ajax({
 								type : "POST",
 								url : "finModel.do",
@@ -397,32 +421,32 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 								},
 								success : function(result) {
 									var json_obj = $.parseJSON(result);
-// 									var len=json_obj.length;
 									var result_table = "";
+									
 									$.each(json_obj,function(i, item) {
-//			 							if(i<len){
-											var str_f_type = "";
-											var str_action = "";
-											var str_f_kind = "";
-											
-											str_action = convertAction(json_obj[i].action);
-											str_f_type = convertType(json_obj[i].f_type);
-											str_f_kind = convertKind(json_obj[i].f_kind);
-//			 							}
+										var str_f_type = "";
+										var str_action = "";
+										var str_f_kind = "";
+										
+										str_action = convertAction(json_obj[i].action);
+										str_f_type = convertType(json_obj[i].f_type);
+										str_f_kind = convertKind(json_obj[i].f_kind);
+										
 										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-									});		
+									});	
+									
 									//判斷查詢結果
 									var resultRunTime = 0;
 									$.each (json_obj, function (i) {
 										resultRunTime+=1;
 									});
+									
 									if(resultRunTime!=0){
 										$("#finsimu-table-admin tbody").html(result_table);
-									}else{
-										// todo
 									}
 								}
 							});
+							
 							insert_dialog.dialog("close");
 						}
 					}
@@ -441,7 +465,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}
 			});
 			
-			// 修改 事件聆聽
+			//修改 事件聆聽
 			$("#finsimu-table-admin").delegate(".btn_update", "click", function(e) {
 				e.preventDefault();
 				p_simulation_id = $(this).val();
@@ -459,7 +483,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				update_dialog.dialog("open");
 			});
 			
-			// "修改" Dialog相關設定
+			//"修改" Dialog相關設定
 			update_dialog = $("#dialog-form-update").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -479,6 +503,12 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					text : "修改",
 					click : function() {
 						if ($('#update-dialog-form-post').valid()) {
+							
+							if (new Date(g_create_date) > new Date($("#edit_f_date").val())) {
+								warningMsg("您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
+								return; 
+							}
+							
 							$.ajax({
 								type : "POST",
 								url : "finModel.do",
@@ -498,30 +528,31 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 									var json_obj = $.parseJSON(result);
 									var len=json_obj.length;
 									var result_table = "";
+									
 									$.each(json_obj,function(i, item) {
-//			 							if(i<len){
-											var str_f_type = "";
-											var str_action = "";
-											var str_f_kind = "";
+										var str_f_type = "";
+										var str_action = "";
+										var str_f_kind = "";
+										
+										str_action = convertAction(json_obj[i].action);
+										str_f_type = convertType(json_obj[i].f_type);
+										str_f_kind = convertKind(json_obj[i].f_kind);
 											
-											str_action = convertAction(json_obj[i].action);
-											str_f_type = convertType(json_obj[i].f_type);
-											str_f_kind = convertKind(json_obj[i].f_kind);
-//			 							}
 										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 									});			
+									
 									//判斷查詢結果
 									var resultRunTime = 0;
 									$.each (json_obj, function (i) {
 										resultRunTime+=1;
 									});
+									
 									if(resultRunTime!=0){
 										$("#finsimu-table-admin tbody").html(result_table);
-									}else{
-										// todo
 									}
 								}
 							});
+							
 							update_dialog.dialog("close");
 						}
 					}
@@ -548,7 +579,8 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				$("#delete_simu_id").val(p_simulation_id);
 				confirm_dialog.dialog("open");
 			});
-			// "刪除" Dialog相關設定
+			
+			//"刪除" Dialog相關設定
 			confirm_dialog = $("#dialog-confirm").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -565,6 +597,8 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				modal : true,
 				buttons : {
 					"確認刪除" : function() {
+						$("#finsimu-table-admin tbody").html("");
+						
 						$.ajax({
 							type : "POST",
 							url : "finModel.do",
@@ -577,30 +611,31 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 								var json_obj = $.parseJSON(result);
 								var len=json_obj.length;
 								var result_table = "";
+								
 								$.each(json_obj,function(i, item) {
-//		 							if(i<len){
-										var str_f_type = "";
-										var str_action = "";
-										var str_f_kind = "";
-										
-										str_action = convertAction(json_obj[i].action);
-										str_f_type = convertType(json_obj[i].f_type);
-										str_f_kind = convertKind(json_obj[i].f_kind);
-//		 							}
+									var str_f_type = "";
+									var str_action = "";
+									var str_f_kind = "";
+									
+									str_action = convertAction(json_obj[i].action);
+									str_f_type = convertType(json_obj[i].f_type);
+									str_f_kind = convertKind(json_obj[i].f_kind);
+
 									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-								});		
+								});	
+								
 								//判斷查詢結果
 								var resultRunTime = 0;
 								$.each (json_obj, function (i) {
 									resultRunTime+=1;
 								});
+								
 								if(resultRunTime!=0){
 									$("#finsimu-table-admin tbody").html(result_table);
-								}else{
-									// todo
 								}
 							}
 						});
+						
 						$(this).dialog("close");
 					},
 					"取消刪除" : function() {
@@ -609,13 +644,13 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}
 			});
 			
-			// 切換至"產生模擬資料"頁面
+			//切換至"產生模擬資料"頁面
 			$("#switch-simu-button").click( function() {
 				uuid = $(this).attr('name');
 				simu_dialog.dialog("open");
 			});
 			
-			// "產生模擬資料" Dialog相關設定
+			//"產生模擬資料" Dialog相關設定
 			simu_dialog = $("#dialog-gen-simu").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -634,14 +669,11 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				buttons : [{
 					text : "確認",
 					click : function() {
-						console.log('產生模擬資料');
 						
 						$('body').css('cursor', 'progress');
 						degree = $("#degree").val();
 						blndel = document.querySelector('input[name="blndel"]:checked').value;
-// 						alert("uuid: " + uuid);
-// 						alert("degree: " + degree);
-// 						alert("blndel: " + blndel);
+
 						$.ajax({
 							type : "POST",
 							url : "finModel.do",
@@ -655,31 +687,31 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 								$("body").css("cursor", "default");	
 								var json_obj = $.parseJSON(result);
 								var result_table = "";
+								
 								$.each(json_obj,function(i, item) {
-//		 							if(i<len){
-										var str_f_type = "";
-										var str_action = "";
-										var str_f_kind = "";
-										
-										str_action = convertAction(json_obj[i].action);
-										str_f_type = convertType(json_obj[i].f_type);
-										str_f_kind = convertKind(json_obj[i].f_kind);
-//		 							}
+									var str_f_type = "";
+									var str_action = "";
+									var str_f_kind = "";
+									
+									str_action = convertAction(json_obj[i].action);
+									str_f_type = convertType(json_obj[i].f_type);
+									str_f_kind = convertKind(json_obj[i].f_kind);
+									
 									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-								});				
+								});	
+								
 								//判斷查詢結果
 								var resultRunTime = 0;
 								$.each (json_obj, function (i) {
 									resultRunTime+=1;
 								});
-//		 						$("#finsimu-table-admin").dataTable().fnDestroy();
+								
 								if(resultRunTime!=0){
 									$("#finsimu-table-admin tbody").html(result_table);
-								}else{
-									// todo
 								}
 							}
 						});	
+						
  						$(this).dialog("close");
 					}
 				}, {
@@ -690,7 +722,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}]
 			});
 			
-			// 產生模擬圖
+			//產生模擬圖
 			$("#gen_d3js_button").click( function() {
 				uuid = $("#hidden_case_id").val();
 				$.ajax({
@@ -717,7 +749,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				});	
 			});
 				
-			// 產生模擬圖
+			//產生模擬圖
 			$("#fincase-table-admin").delegate(".btn-simu", "click", function() {
 				uuid = $(this).val();
 				$.ajax({
@@ -755,6 +787,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 			var uuid = "";
 			var p_simulation_id = "";
 			var p_case_id = "";
+			var g_create_date = "";
 			
 			var validator_insert = $("#insert-dialog-form-post").validate({
 				rules : {
@@ -767,6 +800,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					}
 				}
 			});
+			
 			var validator_update = $("#update-dialog-form-post").validate({
 				rules : {
 					f_date : {
@@ -779,7 +813,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}
 			});
 			
-			// onload時帶入fincase資料
+			//onload時帶入fincase資料
 			$.ajax({
 				type : "POST",
 				url : "finModel.do",
@@ -790,12 +824,14 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					var json_obj = $.parseJSON(result);
 					var result_table = "";
 					$.each(json_obj,function(i, item) {
-						result_table += 
-								"<tr><td>"+json_obj[i].case_name+"</td><td>"+json_obj[i].create_date+"</td><td>"
-							+ "<button value='"+ json_obj[i].case_id+"' name='user_query'"
-							+ " class='btn_query btn btn-primary'>查看</button></td><td>"
-							+ "<button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id
-							+ "' class='btn-simu btn btn-primary'>產生</button></td></tr>";
+						result_table += "<tr>" 
+							+ "<td>"+json_obj[i].case_name+"</td>"
+							+ "<td class='create_date'>"+json_obj[i].create_date+"</td>"
+							+ "<td><button value='"+ json_obj[i].case_id+"' name='user_query' "
+							+ "class='btn_query btn btn-primary'>查看</button></td>"
+							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
+							+ "class='btn-simu btn btn-primary'>產生</button></td>"
+							+ "</tr>";
 					});					
 					//判斷查詢結果
 					var resultRunTime = 0;
@@ -804,15 +840,15 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					});
 					if(resultRunTime!=0){
 						$("#fincase-table-user tbody").html(result_table);
-					}else{
-						// todo
 					}
 				}
 			});
 			
-			// 查看財務計畫 事件聆聽
+			//查看財務計畫 事件聆聽
 			$("#fincase-table-user").delegate(".btn_query", "click", function() {
-				uuid = $(this).val();					
+				uuid = $(this).val();
+				g_create_date = $("[name='" + uuid + "']").parent().parent().children( ".create_date" ).text();
+				
 				$.ajax({
 					type : "POST",
 					url : "finModel.do",
@@ -826,21 +862,23 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						$("#switch-simu-button").prop('name', uuid);
 						$("#insert-simu-button").prop('name', uuid);
 						$("#hidden_case_id").val(uuid);
+						
 						var json_obj = $.parseJSON(result);
-// 						var len=json_obj.length;
 						var result_table = "";
+						
 						$.each(json_obj,function(i, item) {
-// 							if(i<len){
-								var str_f_type = "";
-								var str_action = "";
-								var str_f_kind = "";
-								
-								str_action = convertAction(json_obj[i].action);
-								str_f_type = convertType(json_obj[i].f_type);
-								str_f_kind = convertKind(json_obj[i].f_kind);
-// 							}
+
+							var str_f_type = "";
+							var str_action = "";
+							var str_f_kind = "";
+							
+							str_action = convertAction(json_obj[i].action);
+							str_f_type = convertType(json_obj[i].f_type);
+							str_f_kind = convertKind(json_obj[i].f_kind);
+
 							result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-						});		
+						});
+						
 						//判斷查詢結果
 						var resultRunTime = 0;
 						$.each (json_obj, function (i) {
@@ -848,8 +886,6 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						});
 						if(resultRunTime!=0){
 							$("#finsimu-table-user tbody").html(result_table);
-						}else{
-							// todo
 						}
 					}
 				});					
@@ -862,7 +898,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				insert_dialog.dialog("open");
 			});
 			
-			// "新增" Dialog相關設定
+			//"新增" Dialog相關設定
 			insert_dialog = $("#dialog-form-insert").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -882,6 +918,12 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					text : "新增",
 					click : function() {
 						if ($('#insert-dialog-form-post').valid()) {
+							
+							if (new Date(g_create_date) > new Date($("#insert_f_date").val())) {
+								warningMsg("您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
+								return; 
+							}
+							
 							$.ajax({
 								type : "POST",
 								url : "finModel.do",
@@ -900,30 +942,32 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 									var json_obj = $.parseJSON(result);
 // 									var len=json_obj.length;
 									var result_table = "";
+									
 									$.each(json_obj,function(i, item) {
-//			 							if(i<len){
-											var str_f_type = "";
-											var str_action = "";
-											var str_f_kind = "";
-											
-											str_action = convertAction(json_obj[i].action);
-											str_f_type = convertType(json_obj[i].f_type);
-											str_f_kind = convertKind(json_obj[i].f_kind);
-//			 							}
+
+										var str_f_type = "";
+										var str_action = "";
+										var str_f_kind = "";
+										
+										str_action = convertAction(json_obj[i].action);
+										str_f_type = convertType(json_obj[i].f_type);
+										str_f_kind = convertKind(json_obj[i].f_kind);
+
 										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-									});		
+									});
+									
 									//判斷查詢結果
 									var resultRunTime = 0;
 									$.each (json_obj, function (i) {
 										resultRunTime+=1;
 									});
+									
 									if(resultRunTime!=0){
 										$("#finsimu-table-user tbody").html(result_table);
-									}else{
-										// todo
 									}
 								}
 							});
+							
 							insert_dialog.dialog("close");
 						}
 					}
@@ -942,7 +986,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}
 			});
 			
-			// 修改 事件聆聽
+			//修改 事件聆聽
 			$("#finsimu-table-user").delegate(".btn_update", "click", function(e) {
 				e.preventDefault();
 				p_simulation_id = $(this).val();
@@ -960,7 +1004,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				update_dialog.dialog("open");
 			});
 			
-			// "修改" Dialog相關設定
+			//"修改" Dialog相關設定
 			update_dialog = $("#dialog-form-update").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -980,6 +1024,12 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					text : "修改",
 					click : function() {
 						if ($('#update-dialog-form-post').valid()) {
+							
+							if (new Date(g_create_date) > new Date($("#edit_f_date").val())) {
+								warningMsg("您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
+								return; 
+							}
+							
 							$.ajax({
 								type : "POST",
 								url : "finModel.do",
@@ -999,30 +1049,32 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 									var json_obj = $.parseJSON(result);
 									var len=json_obj.length;
 									var result_table = "";
+									
 									$.each(json_obj,function(i, item) {
-//			 							if(i<len){
-											var str_f_type = "";
-											var str_action = "";
-											var str_f_kind = "";
-											
-											str_action = convertAction(json_obj[i].action);
-											str_f_type = convertType(json_obj[i].f_type);
-											str_f_kind = convertKind(json_obj[i].f_kind);
-//			 							}
+
+										var str_f_type = "";
+										var str_action = "";
+										var str_f_kind = "";
+										
+										str_action = convertAction(json_obj[i].action);
+										str_f_type = convertType(json_obj[i].f_type);
+										str_f_kind = convertKind(json_obj[i].f_kind);
+
 										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-									});			
+									});		
+									
 									//判斷查詢結果
 									var resultRunTime = 0;
 									$.each (json_obj, function (i) {
 										resultRunTime+=1;
 									});
+									
 									if(resultRunTime!=0){
 										$("#finsimu-table-user tbody").html(result_table);
-									}else{
-										// todo
 									}
 								}
 							});
+							
 							update_dialog.dialog("close");
 						}
 					}
@@ -1049,7 +1101,8 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				$("#delete_simu_id").val(p_simulation_id);
 				confirm_dialog.dialog("open");
 			});
-			// "刪除" Dialog相關設定
+			
+			//"刪除" Dialog相關設定
 			confirm_dialog = $("#dialog-confirm").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -1066,6 +1119,8 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				modal : true,
 				buttons : {
 					"確認刪除" : function() {
+						$("#finsimu-table-user tbody").html("");
+						
 						$.ajax({
 							type : "POST",
 							url : "finModel.do",
@@ -1078,30 +1133,31 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 								var json_obj = $.parseJSON(result);
 								var len=json_obj.length;
 								var result_table = "";
+								
 								$.each(json_obj,function(i, item) {
-//		 							if(i<len){
-										var str_f_type = "";
-										var str_action = "";
-										var str_f_kind = "";
-										
-										str_action = convertAction(json_obj[i].action);
-										str_f_type = convertType(json_obj[i].f_type);
-										str_f_kind = convertKind(json_obj[i].f_kind);
-//		 							}
+									var str_f_type = "";
+									var str_action = "";
+									var str_f_kind = "";
+									
+									str_action = convertAction(json_obj[i].action);
+									str_f_type = convertType(json_obj[i].f_type);
+									str_f_kind = convertKind(json_obj[i].f_kind);
+
 									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-								});		
+								});
+								
 								//判斷查詢結果
 								var resultRunTime = 0;
 								$.each (json_obj, function (i) {
 									resultRunTime+=1;
 								});
+								
 								if(resultRunTime!=0){
 									$("#finsimu-table-user tbody").html(result_table);
-								}else{
-									// todo
 								}
 							}
 						});
+						
 						$(this).dialog("close");
 					},
 					"取消刪除" : function() {
@@ -1110,13 +1166,13 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}
 			});
 
-			// 切換至"產生模擬資料"頁面
+			//切換至"產生模擬資料"頁面
 			$("#switch-simu-button").click( function() {
 				uuid = $(this).attr('name');
 				simu_dialog.dialog("open");
 			});
 			
-			// "產生模擬資料" Dialog相關設定
+			//"產生模擬資料" Dialog相關設定
 			simu_dialog = $("#dialog-gen-simu").dialog({
 				draggable : false,//防止拖曳
 				resizable : false,//防止縮放
@@ -1138,9 +1194,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						$('body').css('cursor', 'progress');
 						degree = $("#degree").val();
 						blndel = document.querySelector('input[name="blndel"]:checked').value;
-// 						alert("uuid: " + uuid);
-// 						alert("degree: " + degree);
-// 						alert("blndel: " + blndel);
+
 						$.ajax({
 							type : "POST",
 							url : "finModel.do",
@@ -1155,30 +1209,30 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 								var json_obj = $.parseJSON(result);
 								var result_table = "";
 								$.each(json_obj,function(i, item) {
-//		 							if(i<len){
-										var str_f_type = "";
-										var str_action = "";
-										var str_f_kind = "";
-										
-										str_action = convertAction(json_obj[i].action);
-										str_f_type = convertType(json_obj[i].f_type);
-										str_f_kind = convertKind(json_obj[i].f_kind);
-//		 							}
+
+									var str_f_type = "";
+									var str_action = "";
+									var str_f_kind = "";
+									
+									str_action = convertAction(json_obj[i].action);
+									str_f_type = convertType(json_obj[i].f_type);
+									str_f_kind = convertKind(json_obj[i].f_kind);
+
 									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
-								});				
+								});
+								
 								//判斷查詢結果
 								var resultRunTime = 0;
 								$.each (json_obj, function (i) {
 									resultRunTime+=1;
 								});
-//		 						$("#finsimu-table-user").dataTable().fnDestroy();
+								
 								if(resultRunTime!=0){
 									$("#finsimu-table-user tbody").html(result_table);
-								}else{
-									// todo
 								}
 							}
 						});	
+						
  						$(this).dialog("close");
 					}
 				}, {
@@ -1189,7 +1243,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				}]
 			});
 						
-			// 產生模擬圖
+			//產生模擬圖
 			$("#gen_d3js_button").click( function() {
 				uuid = $("#hidden_case_id").val();
 				$.ajax({
@@ -1216,7 +1270,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				});	
 			});
 			
-			// 產生模擬圖
+			//產生模擬圖
 			$("#fincase-table-user").delegate(".btn-simu", "click", function() {
 				uuid = $(this).val();
 				$.ajax({
@@ -1243,6 +1297,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 				});	
 			});
 		})
+		
 		//日期設定
 		$(".date").datepicker({
 			dayNamesMin:["日","一","二","三","四","五","六"],
@@ -1256,48 +1311,92 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
-<h2 class="page-title">新創公司財務損益平衡評估工具</h2>
-<div class="search-result-wrap">
-	<div id="tabs">
-		<ul>
-			<li><a href="#finTool">財務評估工具</a></li>
-			<li><a href="#simuGraph">模擬圖</a></li>
-		</ul>
+	<h2 class="page-title">新創公司財務損益平衡評估工具</h2>
+	<div id="msgAlert"></div>
 	
-		<div id="finTool">
-<!-- 		<div id="finTool" class="tabcontent"> -->
-			<section>
-				<!--==================    財務評估工具 (管理者)    ==================-->
-		       	<c:if test="${sessionScope.role==1}">
-					<div class="text-center">
-			   			<div>
-				       		<button id="create-model-button" class="btn btn-primary">建立模型</button>
-			        	</div>
-			        	<br>
-			        	<div>
-			        		<div class="text-center" id="fincase-div-admin">
-					            <table id="fincase-table-admin" class="result-table">
+	<div class="search-result-wrap">
+		<div id="tabs">
+			<ul>
+				<li><a href="#finTool">財務評估工具</a></li>
+				<li><a href="#simuGraph">模擬圖</a></li>
+			</ul>
+		
+			<div id="finTool">
+				<section>
+					<!--==================    財務評估工具 (管理者)    ==================-->
+			       	<c:if test="${sessionScope.role==1}">
+						<div class="text-center">
+				   			<div>
+					       		<button id="create-model-button" class="btn btn-primary">建立模型</button>
+				        	</div>
+				        	<br>
+				        	<div>
+				        		<div class="text-center" id="fincase-div-admin">
+						            <table id="fincase-table-admin" class="result-table">
+										<thead>
+											<tr>
+												<th>案件名稱</th>
+												<th>案件產生日期</th>
+												<th>財務計畫</th>
+												<th>產生模擬圖</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+								<div class="text-center" id="finsimu-div-admin" style="display:none;">
+				                	<div class="btn-row">			    
+				                		<input type="hidden" id="hidden_case_id" name="hidden_case_id" />                
+					                    <button class="btn btn-primary" id="insert-simu-button">新增</button>
+					                    <button class="btn btn-primary" id="gen_d3js_button">產生模擬圖</button>
+					                    <button class="btn btn-primary" id="switch-simu-button">產生模擬資料</button>
+					                    <button class="btn btn-exec" onClick="location.reload()">回上頁</button>
+				                    </div>
+				                    <br>     				                
+					                <div>
+					                    <table id="finsimu-table-admin" class="result-table">
+					                    	<thead>
+					                    		<tr>
+					                    			<th>資金動態日期</th>
+					                    			<th>動態類別</th>
+					                    			<th>實際/模擬</th>
+					                    			<th>資金金額</th>
+					                    			<th>資金動態類別</th>
+					                    			<th>資金動態說明</th>
+					                    			<th>策略因應說明</th>
+					                    			<th>功能</th>
+					                    		</tr>
+					                    	</thead>
+					                    	<tbody>
+											</tbody>  
+										</table> 
+					                </div>
+								</div>
+							</div>
+						</div>
+			      	</c:if>
+					
+					<!--==================    財務評估工具 (使用者)    ==================-->
+			       	<c:if test="${sessionScope.role==0}">
+					    <div>
+					        <div class="text-center" id="fincase-div-user">
+				                <table id="fincase-table-user" class="result-table">
 									<thead>
 										<tr>
 											<th>案件名稱</th>
 											<th>案件產生日期</th>
-											<th>產生模擬圖</th>
 											<th>財務計畫</th>
+											<th>產生模擬圖</th>
 										</tr>
 									</thead>
 									<tbody>
 									</tbody>
 								</table>
-							</div>
-							<div class="text-center" id="finsimu-div-admin" style="display:none;">
-							
-					       
+					        </div>   
+					        <div class="text-center" id="finsimu-div-user" style="display:none;">
 			                	<div class="btn-row">			    
 			                		<input type="hidden" id="hidden_case_id" name="hidden_case_id" />                
-	<!-- 				                    <input id="insert-simu-button" type="button" class="btn btn-primary" value="新增" /> -->
-	<!-- 				                    <input id="gen_d3js_button" type="button" class="btn btn-primary" value="產生模擬圖" /> -->
-	<!-- 				                    <input id="switch-simu-button" type="button" class="btn btn-primary" value="產生模擬資料" /> -->
-	<!-- 				                    <input type="button" class="btn btn-primary" id="insert-simu-button" value="回上頁" onClick="location.reload()" /> -->
 				                    <button class="btn btn-primary" id="insert-simu-button">新增</button>
 				                    <button class="btn btn-primary" id="gen_d3js_button">產生模擬圖</button>
 				                    <button class="btn btn-primary" id="switch-simu-button">產生模擬資料</button>
@@ -1305,7 +1404,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 			                    </div>
 			                    <br>     				                
 				                <div>
-				                    <table id="finsimu-table-admin" class="result-table">
+				                    <table id="finsimu-table-user" class="result-table">
 				                    	<thead>
 				                    		<tr>
 				                    			<th>資金動態日期</th>
@@ -1322,103 +1421,45 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 										</tbody>  
 									</table> 
 				                </div>
-			  
-
-
-
-							</div>
-						</div>
-					</div>
-		      	</c:if>
-				
-				<!--==================    財務評估工具 (使用者)    ==================-->
-		       	<c:if test="${sessionScope.role==0}">
-				    <div>
-				        <div class="text-center" id="fincase-div-user">
-			                <table id="fincase-table-user" class="result-table">
-								<thead>
-									<tr>
-										<th>案件名稱</th>
-										<th>案件產生日期</th>
-										<th>財務計畫</th>
-										<th>產生模擬圖</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
+					        </div>     
+					    </div>   		
+			      	</c:if>
+		      	</section>
+			</div>
+			
+			<div id="simuGraph">         
+	      		<div class="content">
+	      			<div id="newpic" style="margin-left: 50px"></div>
+	      			<div id="z" style="margin-left: 50px"></div>
+				</div>
+			</div>
+			
+			<!--==================    jquery-ui dialog (管理者)    ==================-->
+			<c:if test="${sessionScope.role==1}">
+				<!--對話窗樣式- 建立模型 -->
+				<div id="dialog-form-create" title="建立模型" style="display:none">
+					<form name="create-dialog-form-post" id="create-dialog-form-post">
+						<fieldset>
+							<table style="border-collapse: separate;border-spacing: 10px 20px;">
+								<tr>
+									<td><p>案件名稱：</p></td>
+									<td><input type="text" id="case_name" name="case_name"></td>
+									<td><p>期初資金：</p></td>
+									<td><input type="text" id="amount" name="amount"></td>
+								</tr>
+								<tr>
+									<td><p>資金安全餘額： </p></td>
+									<td><input type="text" id="safety_money" name="safety_money"></td>
+									<td></td>
+									<td></td>
+								</tr>
 							</table>
-				        </div>   
-				        <div class="text-center" id="finsimu-div-user" style="display:none;">
-		                	<div class="btn-row">			    
-		                		<input type="hidden" id="hidden_case_id" name="hidden_case_id" />                
-<!-- 				                    <input id="insert-simu-button" type="button" class="btn btn-primary" value="新增" /> -->
-<!-- 				                    <input id="gen_d3js_button" type="button" class="btn btn-primary" value="產生模擬圖" /> -->
-<!-- 				                    <input id="switch-simu-button" type="button" class="btn btn-primary" value="產生模擬資料" /> -->
-<!-- 				                    <input type="button" class="btn btn-primary" id="insert-simu-button" value="回上頁" onClick="location.reload()" /> -->
-			                    <button class="btn btn-primary" id="insert-simu-button">新增</button>
-			                    <button class="btn btn-primary" id="gen_d3js_button">產生模擬圖</button>
-			                    <button class="btn btn-primary" id="switch-simu-button">產生模擬資料</button>
-			                    <button class="btn btn-exec" onClick="location.reload()">回上頁</button>
-		                    </div>
-		                    <br>     				                
-			                <div>
-			                    <table id="finsimu-table-user" class="result-table">
-			                    	<thead>
-			                    		<tr>
-			                    			<th>資金動態日期</th>
-			                    			<th>動態類別</th>
-			                    			<th>實際/模擬</th>
-			                    			<th>資金金額</th>
-			                    			<th>資金動態類別</th>
-			                    			<th>資金動態說明</th>
-			                    			<th>策略因應說明</th>
-			                    			<th>功能</th>
-			                    		</tr>
-			                    	</thead>
-			                    	<tbody>
-									</tbody>  
-								</table> 
-			                </div>
-				        </div>     
-				    </div>   		
-		      	</c:if>
-	      	</section>
-		</div>
-		
-		<div id="simuGraph">         
-      		<div class="content">
-      			<div id="newpic" style="margin-left: 50px"></div>
-      			<div id="z" style="margin-left: 50px"></div>
-			</div>
-		</div>
-		
-		<!--==================    jquery-ui dialog (管理者)    ==================-->
-		<c:if test="${sessionScope.role==1}">
-			<!--對話窗樣式- 建立模型 -->
-			<div id="dialog-form-create" title="建立模型" style="display:none">
-				<form name="create-dialog-form-post" id="create-dialog-form-post">
-					<fieldset>
-						<table style="border-collapse: separate;border-spacing: 10px 20px;">
-							<tr>
-								<td><p>案件名稱：</p></td>
-								<td><input type="text" id="case_name" name="case_name"></td>
-								<td><p>期初資金：</p></td>
-								<td><input type="text" id="amount" name="amount"></td>
-							</tr>
-							<tr>
-								<td><p>資金安全餘額： </p></td>
-								<td><input type="text" id="safety_money" name="safety_money"></td>
-								<td></td>
-								<td></td>
-							</tr>
-						</table>
-					</fieldset>
-				</form>
-			</div>
-		</c:if>
-		
-		<!--==================    jquery-ui dialog (使用者)    ==================-->
-<%-- 		<c:if test="${sessionScope.role==0}"> --%>
+						</fieldset>
+					</form>
+				</div>
+			</c:if>
+			
+			<!--==================    jquery-ui dialog (使用者)    ==================-->
 			<!--對話窗樣式-新增 -->
 			<div id="dialog-form-insert" title="新增資料" style="display:none">
 				<form name="insert-dialog-form-post" id="insert-dialog-form-post" style="display:inline">
@@ -1551,7 +1592,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 			<div id="dialog-gen-simu" title="產生模擬資料" style="display:none;">
 				<form name="update-dialog-form-post" id="update-dialog-form-post">
 					<fieldset>
-                		<input type="hidden" name="user_action" value="sim"/>
+	               		<input type="hidden" name="user_action" value="sim"/>
 						<table class="text-center">
 							<tbody>
 								<tr>
@@ -1576,8 +1617,6 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 						    		<td>
 						    			<input type="radio" name="blndel" id="delete_simu_yes" value="Y" checked/><label for="delete_simu_yes"><span class="form-label">是</span></label>
 						    			<input type="radio" name="blndel" id="delete_simu_no" value="N" /><label for="delete_simu_no"><span class="form-label">否</span></label>
-<!-- 			                    <input type="radio" name="blndel" value="Y" checked>是&nbsp;&nbsp;&nbsp;  -->
-<!-- 							    <input type="radio" name="blndel" value="N" >否<br/>   -->
 									</td>
 						        </tr>
 					        </tbody>
@@ -1585,250 +1624,245 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 					</fieldset>
 				</form>		
 			</div>
-<%-- 		</c:if> --%>
+		</div>
 	</div>
-</div>
 </div>
 
 <script>
 
-//BEE
-
-function red_line(income,outcome){
-	if(income.length<1||outcome.length<1){return"X_X";}
-	var i=0,j=0,amount,move=2;
-	var bigger=outcome,smaller=income;
-	if(income[0].Percent>outcome[0].Percent){
-		bigger=income;
-		smaller=outcome;
-	};
-	while(i<bigger.length && j< smaller.length){
-		if(bigger[i].Percent<smaller[j].Percent){return (move?bigger[i].Date:smaller[j].Date);}
-		if(i+1==bigger.length||j+1==smaller.length)break;
-		//alert(bigger[i].Date+" "+bigger[i].Percent+"\n"+smaller[j].Date+" "+smaller[j].Percent);
-		if(bigger[i+1].Date>smaller[j+1].Date){
-			move=0;
-			j++;
-		}else{
-			move=1;
-			i++;
+	function red_line(income,outcome){
+		if(income.length<1||outcome.length<1){return"X_X";}
+		
+		var i=0,j=0,amount,move=2;
+		var bigger=outcome,smaller=income;
+		
+		if(income[0].Percent>outcome[0].Percent){
+			bigger=income;
+			smaller=outcome;
+		};
+		
+		while(i<bigger.length && j< smaller.length){
+			if(bigger[i].Percent<smaller[j].Percent){return (move?bigger[i].Date:smaller[j].Date);}
+			if(i+1==bigger.length||j+1==smaller.length)break;
+			//alert(bigger[i].Date+" "+bigger[i].Percent+"\n"+smaller[j].Date+" "+smaller[j].Percent);
+			if(bigger[i+1].Date>smaller[j+1].Date){
+				move=0;
+				j++;
+			}else{
+				move=1;
+				i++;
+			}
 		}
+		
+		return "X_X";
 	}
-	return "X_X";
 	
-}
-
-function zero_v(vector){
-	var minDate=(Math.random()>0.5?d3.max(vector, function(d) { return d.Date; }):d3.min(vector, function(d) { return d.Date; }));
-	var averageDate= vector[Math.floor(vector.length/2)].Date;
-	var minAmount=d3.min(vector, function(d) { return d.Amount; });
-	var minPercent=(Math.random()>0.5?d3.max(vector, function(d) { return d.Percent; }):d3.min(vector, function(d) { return d.Percent; }));
-	var new_vector=[];
-	$.each (vector, function (i,item) {
-		//alert(minDate +" "+vector[i].Date + " "+(minDate + vector[i].Date));
-		//tmp1+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
-		new_vector[i]={};
-		new_vector[i].Date=minDate;//(new Date(minDate)+new Date(vector[i].Date))/2;
-		new_vector[i].Amount=minAmount;
-		new_vector[i].Percent=minPercent;
-	});
-	return new_vector;
-}
-function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
-	var tmp1='in:\n', tmp2='out:\n', tmp3='', tmp4='';
-	$.each (income, function (i,item) {
-		tmp1+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
-	});
-	$.each (outcome, function (i,item) {
-		tmp2+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
-	});
-	var mind=(d3.min(income, function(d) { return d.Date; })<d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; }));
-	//(d3.min(income, function(d) { return d.Date; })>d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; })),
-	var maxd=(d3.max(income, function(d) { return d.Date; })>d3.max(outcome, function(d) { return d.Date; })?d3.max(income, function(d) { return d.Date; }):d3.max(outcome, function(d) { return d.Date; }));
-	d3.select("svg").remove();
-	var red=(red_line(income,outcome));
-	
-	var margin = {top: 70, right: 80, bottom: 50, left: 80};
-	var width = 960;
-	var height = 450;
-//底圖大小
-	var svg = d3.select("#newpic").append("svg")
-	.attr("width", width + margin.left + margin.right)							
-	.attr("height", height + margin.top + margin.bottom);
-//X軸Y軸 還有大加的Scaler
-	var xScale = d3.time.scale()
- 					.domain([new Date(mind),new Date(maxd)])
-  				.range([0, width - margin.left - margin.right]);		
-  var yScale = d3.scale.linear()
-				    .domain([0,100])
-				    .range([height - margin.top - margin.bottom, 0]);
-  var xAxis = d3.svg.axis()
-				    .scale(xScale)
-				    .orient("bottom")
-				    .tickFormat(d3.time.format('%Y-%m-%d'));
-//				    .ticks(d3.time.month, 1).ticks(d3.time.week, 2);
-
-  var yAxis = d3.svg.axis()
-				    .scale(yScale)
-				    //.tickFormat(d3.format(",%"))
-				    .tickFormat(function(d){return d+'%';})
-				    .orient("left");
-//title 和收入支出 X軸數
-  svg.append("g")
-	.append("text")
-	.text("財務損益平衡統計圖")
-	.attr("class","title")
-	.attr({'fill':'#222','x':((width * 0.5) - (margin.right*1.5)) ,'y':(margin.top/2) })
-	.style({'font-size':'32px','font-family':'Microsoft JhengHei'});
-  
-  svg.append("g")
-	.append("text")
-	.text("█ 總支出:"+totalOutcome[0].Total)
-	.attr("class","title")
-	.attr({'fill':'#9c0','x':(width-margin.right *0.5) ,'y':(margin.top+30) })
-	.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
-  
-  svg.append("g")
-	.append("text")
-	.text("█ 總收入: "+totalIncome[0].Total)
-	.attr("class","title")
-	.attr({'fill':'#09F','x':(width-margin.right *0.5) ,'y':(margin.top) })
-	.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
-  
-  svg.append("g")
-  .append('text')
-  .text("時間")
-  .attr('transform', 'translate('+(width-margin.right+20)+','+(height-margin.bottom)+')');
-  
-  svg.append("g")
-  .attr("class","axis")
-  .attr("transform","translate(" + margin.left + "," + (height - margin.bottom) + ")")
-  .call(xAxis)
-	.selectAll("text")
-	.attr("transform", "rotate(25)")
-	.style("text-anchor", "start");
-  
-	svg.append("g")
-  .attr("class","axis")
-  .attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
-  .call(yAxis)
-  .append('text')
-  .text("比例")
-  .attr('transform', 'translate(-10, -20)');
-//產生線條
-	var lineGen = d3.svg.line()
-	.x(function(data) {return xScale(new Date(data.Date));})
-  .y(function(data) {return yScale(data.Percent);})
-  .interpolate("linear");
-//三條線
-	svg.append('path')
-    .attr({
-      'd': lineGen(zero_v(income)),
-      'stroke': '#09F',
-      'fill': 'none',
-      'stroke-width':'3'
-    }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
-    .transition()
-    .delay(300)
-    .duration(1500)
-    .attr({
-      'd': lineGen(income),
-    });
-	  
-	  svg.append('path')
-	  .attr({
-      'd': lineGen(zero_v(outcome)),
-      'stroke': '#9c0',
-      'fill': 'none',
-      'stroke-width':'3'
-	  }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
-	  .transition()
-    .duration(1500)
-    .attr({
-      'd': lineGen(outcome),
-    });
-	  
-	  
-	  
-	if(red.length>5){
-	  svg.append('path')
-	  .attr({
-      'd': lineGen([{"Date": red,"Percent": 0},{"Date": red,"Percent": 0}]),
-      'stroke': '#F00',
-      'fill': 'none',
-      'stroke-width':'2',
-      'stroke-dasharray' : '5,3',
-	  }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
-	  .transition()
-    .duration(1500)
-    .attr({
-      'd': lineGen([{"Date": red,"Percent": 0},{"Date": red,"Percent": 100}]),
-    });
+	function zero_v(vector){
+		var minDate=(Math.random()>0.5?d3.max(vector, function(d) { return d.Date; }):d3.min(vector, function(d) { return d.Date; }));
+		var averageDate= vector[Math.floor(vector.length/2)].Date;
+		var minAmount=d3.min(vector, function(d) { return d.Amount; });
+		var minPercent=(Math.random()>0.5?d3.max(vector, function(d) { return d.Percent; }):d3.min(vector, function(d) { return d.Percent; }));
+		var new_vector=[];
+		
+		$.each (vector, function (i,item) {
+			//alert(minDate +" "+vector[i].Date + " "+(minDate + vector[i].Date));
+			//tmp1+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+			new_vector[i]={};
+			new_vector[i].Date=minDate;//(new Date(minDate)+new Date(vector[i].Date))/2;
+			new_vector[i].Amount=minAmount;
+			new_vector[i].Percent=minPercent;
+		});
+		
+		return new_vector;
 	}
+	
+	function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
+		var tmp1='in:\n', tmp2='out:\n', tmp3='', tmp4='';
+		$.each (income, function (i,item) {
+			tmp1+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+		});
+		$.each (outcome, function (i,item) {
+			tmp2+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+		});
+		var mind=(d3.min(income, function(d) { return d.Date; })<d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; }));
+		//(d3.min(income, function(d) { return d.Date; })>d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; })),
+		var maxd=(d3.max(income, function(d) { return d.Date; })>d3.max(outcome, function(d) { return d.Date; })?d3.max(income, function(d) { return d.Date; }):d3.max(outcome, function(d) { return d.Date; }));
+		d3.select("svg").remove();
+		var red=(red_line(income,outcome));
+		
+		var margin = {top: 70, right: 80, bottom: 50, left: 80};
+		var width = 960;
+		var height = 450;
+	//底圖大小
+		var svg = d3.select("#newpic").append("svg")
+		.attr("width", width + margin.left + margin.right)							
+		.attr("height", height + margin.top + margin.bottom);
+	//X軸Y軸 還有大加的Scaler
+		var xScale = d3.time.scale()
+	 					.domain([new Date(mind),new Date(maxd)])
+	  				.range([0, width - margin.left - margin.right]);		
+	  var yScale = d3.scale.linear()
+					    .domain([0,100])
+					    .range([height - margin.top - margin.bottom, 0]);
+	  var xAxis = d3.svg.axis()
+					    .scale(xScale)
+					    .orient("bottom")
+					    .tickFormat(d3.time.format('%Y-%m-%d'));
+	//				    .ticks(d3.time.month, 1).ticks(d3.time.week, 2);
+	
+	  var yAxis = d3.svg.axis()
+					    .scale(yScale)
+					    //.tickFormat(d3.format(",%"))
+					    .tickFormat(function(d){return d+'%';})
+					    .orient("left");
+	//title 和收入支出 X軸數
+	  svg.append("g")
+		.append("text")
+		.text("財務損益平衡統計圖")
+		.attr("class","title")
+		.attr({'fill':'#222','x':((width * 0.5) - (margin.right*1.5)) ,'y':(margin.top/2) })
+		.style({'font-size':'32px','font-family':'Microsoft JhengHei'});
 	  
-//兩條線的tool圓圈圈
+	  svg.append("g")
+		.append("text")
+		.text("█ 總支出:"+totalOutcome[0].Total)
+		.attr("class","title")
+		.attr({'fill':'#9c0','x':(width-margin.right *0.5) ,'y':(margin.top+30) })
+		.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
+	  
+	  svg.append("g")
+		.append("text")
+		.text("█ 總收入: "+totalIncome[0].Total)
+		.attr("class","title")
+		.attr({'fill':'#09F','x':(width-margin.right *0.5) ,'y':(margin.top) })
+		.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
+	  
+	  svg.append("g")
+	  .append('text')
+	  .text("時間")
+	  .attr('transform', 'translate('+(width-margin.right+20)+','+(height-margin.bottom)+')');
+	  
+	  svg.append("g")
+	  .attr("class","axis")
+	  .attr("transform","translate(" + margin.left + "," + (height - margin.bottom) + ")")
+	  .call(xAxis)
+		.selectAll("text")
+		.attr("transform", "rotate(25)")
+		.style("text-anchor", "start");
+	  
+		svg.append("g")
+	  .attr("class","axis")
+	  .attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+	  .call(yAxis)
+	  .append('text')
+	  .text("比例")
+	  .attr('transform', 'translate(-10, -20)');
+	//產生線條
+		var lineGen = d3.svg.line()
+		.x(function(data) {return xScale(new Date(data.Date));})
+	  .y(function(data) {return yScale(data.Percent);})
+	  .interpolate("linear");
+	//三條線
+		svg.append('path')
+	    .attr({
+	      'd': lineGen(zero_v(income)),
+	      'stroke': '#09F',
+	      'fill': 'none',
+	      'stroke-width':'3'
+	    }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+	    .transition()
+	    .delay(300)
+	    .duration(1500)
+	    .attr({
+	      'd': lineGen(income),
+	    });
+		  
+		svg.append('path')
+			.attr({
+			   'd': lineGen(zero_v(outcome)),
+			   'stroke': '#9c0',
+			   'fill': 'none',
+			   'stroke-width':'3'
+			}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+			.transition()
+			.duration(1500)
+			.attr({
+			   'd': lineGen(outcome),
+			});
+		  
+		if(false && red.length>5){
+			svg.append('path')
+			.attr({
+			   'd': lineGen([{"Date": red,"Percent": 0},{"Date": red,"Percent": 0}]),
+			   'stroke': '#F00',
+			   'fill': 'none',
+			   'stroke-width':'2',
+			   'stroke-dasharray' : '5,3',
+			}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+			.transition()
+			.duration(1500)
+			.attr({
+		  		'd': lineGen([{"Date": red,"Percent": 0},{"Date": red,"Percent": 100}]),
+			});
+		}
+		  
+	//兩條線的tool圓圈圈
+		  svg.append("g").selectAll("circle")
+			.data(outcome)
+			.enter()
+			.append("circle")
+			.attr({    
+	//			"cx":function(d) {return xScale(new Date(d.Date));},
+				"cx":function(d) {return xScale(new Date(d3.min(outcome,function(d){return d.Date})))-margin.left-10;},
+				"cy":function(d) {return yScale(d3.mean(outcome,function(d){return d.Percent}));},
+				"r" : 5,
+				"fill": "#9c0",//綠色
+				"title" : function(d){return "日期: "+d.Date+"<br>支出: "+Math.abs(d.Amount)+"<br>比例: "+Math.floor(d.Percent)+"%";},
+				"class" : "tool"
+			}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+			.transition()
+			.delay(500)
+	  	.duration(1500)
+	  	.attr({
+	   		"cx":function(d) {return xScale(new Date(d.Date));},
+				"cy":function(d) {return yScale(d.Percent);}
+	 		});
 	  svg.append("g").selectAll("circle")
-		.data(outcome)
-		.enter()
-		.append("circle")
-		.attr({    
-//			"cx":function(d) {return xScale(new Date(d.Date));},
-			"cx":function(d) {return xScale(new Date(d3.min(outcome,function(d){return d.Date})))-margin.left-10;},
-			"cy":function(d) {return yScale(d3.mean(outcome,function(d){return d.Percent}));},
-			"r" : 5,
-			"fill": "#9c0",//綠色
-			"title" : function(d){return "日期: "+d.Date+"<br>支出: "+Math.abs(d.Amount)+"<br>比例: "+Math.floor(d.Percent)+"%";},
-			"class" : "tool"
-		}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
-		.transition()
-		.delay(500)
-  	.duration(1500)
-  	.attr({
-   		"cx":function(d) {return xScale(new Date(d.Date));},
-			"cy":function(d) {return yScale(d.Percent);}
- 		});
-  svg.append("g").selectAll("circle")
-		.data(income)
-		.enter()
-		.append("circle")
-		.attr({
-			"cx":function(d) {return xScale(new Date(d3.max(income, function(d) { return d.Date; })))+margin.right*3+10;},
-			"cy":function(d) {return yScale(d3.mean(income,function(d){return d.Percent}));},
-			"r" : 5,
-			"fill": "#09F",//藍色
-			"title" : function(d){return "日期: "+d.Date+"<br>收入: "+d.Amount+"<br>比例: "+Math.floor(d.Percent)+"%";},
-			"class" : "tool"
-		}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
-		.transition()
-		.delay(700)
-    	.duration(1500)
-    	.attr({
-    		"cx":function(d) {return xScale(new Date(d.Date));},
-			"cy":function(d) {return yScale(d.Percent);}
-   	});
-//tool顯示
-  $(".tool").mouseover(function(e){
-//   	alert('111');
-		 $(this).attr("newTitle",$(this).attr("title"));
-		 $(this).attr("title","");
-		 var tooltip = "<div id='tooltip'style='position:absolute;border:1px solid #333;background:#f7f5d1;padding:5px;color:#333;min-width:140px;display:none;'>"+ $(this).attr("newtitle") +"<\/div>";
-		 $("body").append(tooltip);
-		 $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"}).show("fast");
-	 }).mouseout(function(){
-		 $(this).attr("title",$(this).attr("newTitle"));
-	         $("#tooltip").remove();
-	 }).mousemove(function(e){
-	         $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"});
-	 });
-  
-  $("#tabs").tabs( "option", "active", 1 );
-//	alert(tmp1);
-//	alert(tmp2);
-//	alert(totalIncome[0].Total);
-//	alert(totalOutcome[0].Total);
-}
-
-
+			.data(income)
+			.enter()
+			.append("circle")
+			.attr({
+				"cx":function(d) {return xScale(new Date(d3.max(income, function(d) { return d.Date; })))+margin.right*3+10;},
+				"cy":function(d) {return yScale(d3.mean(income,function(d){return d.Percent}));},
+				"r" : 5,
+				"fill": "#09F",//藍色
+				"title" : function(d){return "日期: "+d.Date+"<br>收入: "+d.Amount+"<br>比例: "+Math.floor(d.Percent)+"%";},
+				"class" : "tool"
+			}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+			.transition()
+			.delay(700)
+	    	.duration(1500)
+	    	.attr({
+	    		"cx":function(d) {return xScale(new Date(d.Date));},
+				"cy":function(d) {return yScale(d.Percent);}
+	   	});
+	//tool顯示
+	  $(".tool").mouseover(function(e){
+	
+			 $(this).attr("newTitle",$(this).attr("title"));
+			 $(this).attr("title","");
+			 var tooltip = "<div id='tooltip'style='position:absolute;border:1px solid #333;background:#f7f5d1;padding:5px;color:#333;min-width:140px;display:none;'>"+ $(this).attr("newtitle") +"<\/div>";
+			 $("body").append(tooltip);
+			 $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"}).show("fast");
+		 }).mouseout(function(){
+			 $(this).attr("title",$(this).attr("newTitle"));
+		         $("#tooltip").remove();
+		 }).mousemove(function(e){
+		         $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"});
+		 });
+	  
+		$("#tabs").tabs( "option", "active", 1 );
+	}
 
 	function genSimuGraph(income, outlay, detailData, fincase, totalIncome, totalOutlay){
 		
@@ -1843,75 +1877,74 @@ function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
 		var balance = 0;
 		var maxAmount = 0;
 	
-			if(income.length>0){
-		        var parseDate = d3.time.format("%Y-%m-%d").parse;
-				alarm = Number(fincase[0].safety_money);
-				balance = Number(fincase[0].Amount);
-	
-				//　取出Ｘ軸的最早日期及最晚日期
-				firstDate = fincase[0].create_date;
-				endDate = income[income.length-1].date;
-				if (Date.parse(endDate) > Date.parse(outlay[outlay.length-1].date)){
-					endDate = outlay[outlay.length-1].date;
-				}
-	
-				// 如果第一筆收入日期大於期初日期，將期初資金及期初日期塞進 收入 的第一筆資料
-				if (Date.parse(income[0].date) > Date.parse(fincase[0].create_date)){
-					var firstIncome = "{\"date\":\"" + fincase[0].create_date + "\", \"pv\":\"" + fincase[0].Amount + "\"}";
-					outputIncome.push(JSON.parse(firstIncome));
-					outputDetail.push(JSON.parse(firstIncome));
-					for(i=0;i<income.length;i++){
-						var incomeData = "{\"date\":\"" + income[i].date + "\", \"pv\":\"" + income[i].pv + "\"}";
-						outputIncome.push(JSON.parse(incomeData));
-						outputDetail.push(JSON.parse(incomeData));
-						if(Number(income[i].pv) > maxAmount){
-							maxAmount = Number(income[i].pv);
-						}
-					}	
-				}
-				else{	
-					var initial =  Number(fincase[0].Amount) + Number(income[0].pv);
-					var firstIncome = "{\"date\":\"" + fincase[0].create_date + "\", \"pv\":\"" + initial + "\"}";
-					outputIncome.push(JSON.parse(firstIncome));
-					outputDetail.push(JSON.parse(firstIncome));
-					if(initial > maxAmount){
-							maxAmount = initial;
-					}
-				
-					for(i=1;i<income.length;i++){
-						var incomeData = "{\"date\":\"" + income[i].date + "\", \"pv\":\"" + income[i].pv + "\"}";
-						outputIncome.push(JSON.parse(incomeData));
-						outputDetail.push(JSON.parse(incomeData));
-						if(Number(income[i].pv) > maxAmount){
-							maxAmount = Number(income[i].pv);
-						}
-					}			
-				}
-						
-				// 以下處理支出資料
-				for(j=0;j<outlay.length;j++){
-					var outlayData = "{\"date\":\"" + outlay[j].date + "\", \"pv\":\"" + outlay[j].pv + "\"}";
-					outputOutlay.push(JSON.parse(outlayData));
-					outputDetail.push(JSON.parse(outlayData));
-	
-					if(Math.abs(Number(outlay[j].pv)) > maxAmount){
-						maxAmount = Number(outlay[j].pv);
-					}
-				}	
-				
-				// 以下處理安全警戒線
-				for(k=0;k<detailData.length;k++){
-					balance = Number(detailData[k].pv) + balance;
-					if(balance<=alarm){
-						var alarmData1 = "{\"date\":\"" + detailData[k].date + "\", \"pv\":\"" + 0 + "\"}";
-						var alarmData2 = "{\"date\":\"" + detailData[k].date + "\", \"pv\":\"" + maxAmount + "\"}";
-						outputAlarm.push(JSON.parse(alarmData1));
-						outputAlarm.push(JSON.parse(alarmData2));	
-						break;	
-					}
-				}	
+		if(income.length>0){
+	        var parseDate = d3.time.format("%Y-%m-%d").parse;
+			alarm = Number(fincase[0].safety_money);
+			balance = Number(fincase[0].Amount);
+
+			//　取出Ｘ軸的最早日期及最晚日期
+			firstDate = fincase[0].create_date;
+			endDate = income[income.length-1].date;
+			if (Date.parse(endDate) > Date.parse(outlay[outlay.length-1].date)){
+				endDate = outlay[outlay.length-1].date;
 			}
-	
+
+			// 如果第一筆收入日期大於期初日期，將期初資金及期初日期塞進 收入 的第一筆資料
+			if (Date.parse(income[0].date) > Date.parse(fincase[0].create_date)){
+				var firstIncome = "{\"date\":\"" + fincase[0].create_date + "\", \"pv\":\"" + fincase[0].Amount + "\"}";
+				outputIncome.push(JSON.parse(firstIncome));
+				outputDetail.push(JSON.parse(firstIncome));
+				for(i=0;i<income.length;i++){
+					var incomeData = "{\"date\":\"" + income[i].date + "\", \"pv\":\"" + income[i].pv + "\"}";
+					outputIncome.push(JSON.parse(incomeData));
+					outputDetail.push(JSON.parse(incomeData));
+					if(Number(income[i].pv) > maxAmount){
+						maxAmount = Number(income[i].pv);
+					}
+				}	
+			} else {	
+				var initial =  Number(fincase[0].Amount) + Number(income[0].pv);
+				var firstIncome = "{\"date\":\"" + fincase[0].create_date + "\", \"pv\":\"" + initial + "\"}";
+				outputIncome.push(JSON.parse(firstIncome));
+				outputDetail.push(JSON.parse(firstIncome));
+				if(initial > maxAmount){
+						maxAmount = initial;
+				}
+			
+				for(i=1;i<income.length;i++){
+					var incomeData = "{\"date\":\"" + income[i].date + "\", \"pv\":\"" + income[i].pv + "\"}";
+					outputIncome.push(JSON.parse(incomeData));
+					outputDetail.push(JSON.parse(incomeData));
+					if(Number(income[i].pv) > maxAmount){
+						maxAmount = Number(income[i].pv);
+					}
+				}			
+			}
+					
+			//以下處理支出資料
+			for(j=0;j<outlay.length;j++){
+				var outlayData = "{\"date\":\"" + outlay[j].date + "\", \"pv\":\"" + outlay[j].pv + "\"}";
+				outputOutlay.push(JSON.parse(outlayData));
+				outputDetail.push(JSON.parse(outlayData));
+
+				if(Math.abs(Number(outlay[j].pv)) > maxAmount){
+					maxAmount = Number(outlay[j].pv);
+				}
+			}	
+			
+			//以下處理安全警戒線
+			for(k=0;k<detailData.length;k++){
+				balance = Number(detailData[k].pv) + balance;
+				if(balance<=alarm){
+					var alarmData1 = "{\"date\":\"" + detailData[k].date + "\", \"pv\":\"" + 0 + "\"}";
+					var alarmData2 = "{\"date\":\"" + detailData[k].date + "\", \"pv\":\"" + maxAmount + "\"}";
+					outputAlarm.push(JSON.parse(alarmData1));
+					outputAlarm.push(JSON.parse(alarmData2));	
+					break;	
+				}
+			}	
+		}
+
 		CreateLines(outputIncome, outputOutlay, outputAlarm);
 	
 		function CreateLines(item1,item2,item3){
@@ -1990,7 +2023,8 @@ function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
 		        var newLine=new CreateLineObject();
 		        newLine.init(i);
 		        lines.push(newLine);		
-		    }	
+		    }
+		    
 		    function CreateLineObject(){
 	
 		        this.init = function(id){
@@ -2075,6 +2109,7 @@ function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
 			            .x(function(d) { return xScale(d.date); })
 			            .y(function(d) { return yScale(d.pv); })
 			            .interpolate('linear');
+			            
 			            svg.append("path")
 			                .datum(arr)
 			                .attr("transform","translate(" + margin.left + "," +  margin.top  + ")")
@@ -2086,47 +2121,47 @@ function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
 			                return 200*j;
 			            	})
 			                .style("stroke",lineColor[id])
-			                .attr("d", line)
-			            ;
+			                .attr("d", line);
+			            
 			            svg.append('g').selectAll('circle')
 			                .data(arr)
 			                .enter() 
 			                .append('circle')
 			                .on('mouseover', function(d) {
-			                d3.select(this).transition().duration(500).attr('r', 5);
-			                d3.select('.tips').style('display', 'block');
-			                var tx = parseFloat(d3.select(this).attr("cx"));
-			                var ty = parseFloat(d3.select(this).attr("cy"));	
-			                var tipRectx = tx+60+180>width?tx+10-180:tx+60,
-			                    tipRecty= ty+20+60>height?ty+10-60:ty+20;
-			                var theDate = d3.time.format('%Y-%m-%d')(d.date);
-			                var thePv= d.pv;
-			                var tips = svg.append("g")
-			                .attr("id","tips");
-			                var tipRect = tips.append("rect")
-			                .attr("x",tipRectx)
-			                .attr("y",tipRecty)
-			                .attr("width",180)
-			                .attr("height",30)
-			                .attr("fill","#FFF")
-			                .attr("stroke","#CCC")
-			                var tipText = tips.append("text")
-			                .attr("class","tiptools")
-			                .text("日期: "+theDate)
-			                .attr("x",tipRectx+20)
-			                .attr("y",tipRecty+20);
-			            })
+				                d3.select(this).transition().duration(500).attr('r', 5);
+				                d3.select('.tips').style('display', 'block');
+				                var tx = parseFloat(d3.select(this).attr("cx"));
+				                var ty = parseFloat(d3.select(this).attr("cy"));	
+				                var tipRectx = tx+60+180>width?tx+10-180:tx+60,
+				                    tipRecty= ty+20+60>height?ty+10-60:ty+20;
+				                var theDate = d3.time.format('%Y-%m-%d')(d.date);
+				                var thePv= d.pv;
+				                var tips = svg.append("g")
+				                .attr("id","tips");
+				                var tipRect = tips.append("rect")
+				                .attr("x",tipRectx)
+				                .attr("y",tipRecty)
+				                .attr("width",180)
+				                .attr("height",30)
+				                .attr("fill","#FFF")
+				                .attr("stroke","#CCC")
+				                var tipText = tips.append("text")
+				                .attr("class","tiptools")
+				                .text("日期: "+theDate)
+				                .attr("x",tipRectx+20)
+				                .attr("y",tipRecty+20);
+				            })
 			                .on('mouseout', function() {
-			                d3.select(this).transition().duration(500).attr('r', 3.5);
-			                d3.select('.tips').style('display', 'none');
-			                d3.select("#tips").remove();
-			            })
+				                d3.select(this).transition().duration(500).attr('r', 3.5);
+				                d3.select('.tips').style('display', 'none');
+				                d3.select("#tips").remove();
+				            })
 			                .transition()
 			                .ease("elastic")
 			                .duration(1000)
 			                .delay(function(d,j){
-			                return 200*j;
-			            })
+				                return 200*j;
+				            })
 			                .attr("transform","translate(" + margin.left + "," +  margin.top  + ")")
 			                .attr('cx', line.x())
 			                .attr('cy', line.y())
@@ -2143,6 +2178,7 @@ function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
 		        	dataset.push(item3);
 		        }
 		    }
+		    
 		    function getMaxData(arr){
 		        var maxdata = 0;
 		        var parseDate = d3.time.format("%Y-%m-%d").parse;
@@ -2156,6 +2192,7 @@ function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
 		        }
 		        return maxdata;
 		    }
+		    
 		    function getDetailData(detailArr){
 		        var parseDate = d3.time.format("%Y-%m-%d").parse;
 		        detailArr.forEach(function(d) {
@@ -2164,6 +2201,7 @@ function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
 		        });
 		        outputDetail=detailArr;
 		    }
+		    
 		    function addlegend(){
 	
 		        var legend = svg.append('g');
@@ -2186,9 +2224,11 @@ function genSimuGraph2(income, outcome, totalIncome, totalOutcome){
 		            .attr("width",12)
 		            .attr("height",12)
 		            .attr("fill",function(d,i){ return lineColor[i];});
+		        
 		        legend.attr("transform","translate("+((width-lineNames.length*100)/2)+","+(height+50)+")");	
 		    }
 		}
+		
 		$("#tabs").tabs( "option", "active", 1 );
 	}
 </script>

@@ -558,16 +558,16 @@ public class FinModel extends HttpServlet {
 				rs = statement.executeQuery(queryStr);
 				while (rs.next()) {
 					FinsimuVO finsimuVO= new FinsimuVO();
-					finsimuVO.setSimulation_id(rs.getString("simulation_id"));
-					finsimuVO.setCase_id(rs.getString("case_id"));
+					finsimuVO.setSimulation_id(rs.getString("simulation_id") == null? "":rs.getString("simulation_id"));
+					finsimuVO.setCase_id(rs.getString("case_id") == null? "":rs.getString("case_id"));
 //					finsimuVO.setUser_id(rs.getString("user_id"));
 					finsimuVO.setF_date(sdf.parse(rs.getString("f_date")));
 					finsimuVO.setF_type(Integer.valueOf(rs.getString("f_type")));
 					finsimuVO.setAction("1".equals(rs.getString("action").toString())?true:false);
-					finsimuVO.setAmount(Float.valueOf(rs.getString("amount")));
-					finsimuVO.setF_kind(Integer.valueOf(rs.getString("f_kind")));
-					finsimuVO.setDescription(rs.getString("description"));
-					finsimuVO.setStrategy(rs.getString("strategy"));
+					finsimuVO.setAmount(Float.valueOf(rs.getString("amount") == null? "0":rs.getString("amount")));
+					finsimuVO.setF_kind(Integer.valueOf(rs.getString("f_kind") == null? "0":rs.getString("f_kind")));
+					finsimuVO.setDescription(rs.getString("description") == null? "":rs.getString("description"));
+					finsimuVO.setStrategy(rs.getString("strategy") == null? "":rs.getString("strategy"));
 					list.add(finsimuVO); // Store the row in the list
 				}
 				// Handle any driver errors
