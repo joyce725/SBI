@@ -109,6 +109,21 @@ function convertKind (kind){
 		case 9 :
 			temp = "其他收入/支出";
 			break;
+		case 10 :
+			temp = "期初值";
+			break;
+		case 11 :
+			temp = "投資收入";
+			break;
+		case 12 :
+			temp = "投資支出";
+			break;
+		case 13 :
+			temp = "其他收入";
+			break;
+		case 14 :
+			temp = "其他支出";
+			break;
 		default: 
 			temp = "default";
 			break;
@@ -130,7 +145,8 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 	+ "<td id='f_date_"+index+"'>"+ jsonobj.f_date+ "</td>"
 	+ "<td id='f_type_"+index+"'>"+ f_type+ "<input type='hidden' id='hidden_f_type_"+index+"' value='"+ jsonobj.f_type +"' ></td>"
 	+ "<td id='action_"+index+"'>"+ action+ "<input type='hidden' id='hidden_action_"+index+"' value='"+ jsonobj.action +"' ></td>"
-	+ "<td id='amount_"+index+"'>"+ tempAmount + "</td>"
+	+ "<td id='amount_"+index+"' hidden='true'>"+ jsonobj.amount + "</td>"
+	+ "<td>"+ tempAmount + "</td>"
 	+ "<td id='f_kind_"+index+"'>"+ f_kind+ "<input type='hidden' id='hidden_f_kind_"+index+"' value='"+ jsonobj.f_kind +"' ></td>"
 	+ "<td id='description_"+index+"'>"+ jsonobj.description+ "</td>"
 	+ "<td id='strategy_"+index+"'>"+ jsonobj.strategy+ "</td>"
@@ -1502,8 +1518,10 @@ function warningMsg(msg) {
 							    			<option value="5">薪資</option>
 											<option value="6">研發費用</option>
 							    			<option value="7">行銷費用</option>
-											<option value="8">投資收入/支出</option>
-							    			<option value="9">其他收入/支出</option>
+							    			<option value="11">投資收入</option>
+							    			<option value="12">投資支出</option>
+							    			<option value="13">其他收入</option>
+							    			<option value="14">其他支出</option>
 							    		</select>
 							    	</td>
 									<td><p>資金動態說明：</p></td>
@@ -1562,9 +1580,10 @@ function warningMsg(msg) {
 							    			<option value="5">薪資</option>
 											<option value="6">研發費用</option>
 							    			<option value="7">行銷費用</option>
-											<option value="8">投資收入/支出</option>
-							    			<option value="9">其他收入/支出</option>
-							    		</select>
+							    			<option value="11">投資收入</option>
+							    			<option value="12">投資支出</option>
+							    			<option value="13">其他收入</option>
+							    			<option value="14">其他支出</option>							    		</select>
 							    	</td>
 									<td><p>資金動態說明：</p></td>
 									<td><input type="text" id="edit_description" name="description"></td>

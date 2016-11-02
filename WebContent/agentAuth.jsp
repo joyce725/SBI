@@ -162,7 +162,7 @@ $(function(){
 				});			
 			},
 			error:function(e){
-				console.log('getProductInfo Fail.');
+// 				console.log('getProductInfo Fail.');
 			}
 		});
 		

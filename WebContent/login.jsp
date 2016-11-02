@@ -101,7 +101,7 @@
 					});
 				},
 				error:function(e){
-					console.log('btn1 click error');
+// 					console.log('btn1 click error');
 				}
 			});
 	

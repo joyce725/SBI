@@ -70,7 +70,7 @@
 // 					page1.setAttribute("data", "\/persona\/Persona_OpportunityUser1Ctrl?Action=Page1BF");
 				},
 				error : function(result) {
-					console.log('error');
+// 					console.log('error');
 				}
 			});
 		});

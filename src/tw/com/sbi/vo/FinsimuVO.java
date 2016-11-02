@@ -13,7 +13,7 @@ public class FinsimuVO implements Serializable {
 	private Date f_date;
 	private int f_type;
 	private Boolean action;
-	private Float amount;
+	private Double amount;
 	private int f_kind;
 	private String description;
 	private String strategy;
@@ -60,10 +60,10 @@ public class FinsimuVO implements Serializable {
 	public void setAction(Boolean action) {
 		this.action = action;
 	}
-	public Float getAmount() {
+	public Double getAmount() {
 		return amount;
 	}
-	public void setAmount(Float amount) {
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
 	public int getF_kind() {
@@ -83,5 +83,8 @@ public class FinsimuVO implements Serializable {
 	}
 	public void setStrategy(String strategy) {
 		this.strategy = strategy;
-	}	
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 }

@@ -507,7 +507,7 @@ public class FinModel extends HttpServlet {
 			
 			String insertStr = "INSERT INTO tb_fincase"
     				+ "(case_id, group_id, case_name, Amount, safety_money, create_date) " + "VALUES"
-    				+ "('" + caseId + "', '" + groupId + "', '" +  caseName + "', " + amount + ", " + safetyMoney + ", STR_TO_DATE('" + createDate + "', '%Y-%m-%d'))";
+    				+ "('" + caseId + "', '" + groupId + "', '" +  caseName + "', " + amount + ", " + safetyMoney + ", convert('" + createDate + "', date))";
 
 			Connection con = null;
 			Statement statement = null; 
@@ -564,7 +564,7 @@ public class FinModel extends HttpServlet {
 					finsimuVO.setF_date(sdf.parse(rs.getString("f_date")));
 					finsimuVO.setF_type(Integer.valueOf(rs.getString("f_type")));
 					finsimuVO.setAction("1".equals(rs.getString("action").toString())?true:false);
-					finsimuVO.setAmount(Float.valueOf(rs.getString("amount") == null? "0":rs.getString("amount")));
+					finsimuVO.setAmount(Double.valueOf(rs.getString("amount") == null? "0":rs.getString("amount")));
 					finsimuVO.setF_kind(Integer.valueOf(rs.getString("f_kind") == null? "0":rs.getString("f_kind")));
 					finsimuVO.setDescription(rs.getString("description") == null? "":rs.getString("description"));
 					finsimuVO.setStrategy(rs.getString("strategy") == null? "":rs.getString("strategy"));
@@ -697,7 +697,7 @@ public class FinModel extends HttpServlet {
 			logger.debug("updataFinsimuData:");
 			
 			String updateStr = "UPDATE tb_finsimu SET " + 
-								"f_date = STR_TO_DATE('" + f_date + "', '%Y-%m-%d'), " +
+								"f_date = convert('" + f_date + "', date), " +
 								"f_type = '" + f_type + "' ," +
 								"action = " + p_action + ", " +
 								"amount = '" + amount + "', " +
