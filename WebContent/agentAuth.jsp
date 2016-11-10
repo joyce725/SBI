@@ -461,14 +461,14 @@ $(function(){
 		}
 	});
 
- 	// 取得產品授權碼 事件聆聽 
+ 	// 取得商品授權碼 事件聆聽 
 	$("#table_agent_auth").delegate(".btn-auth", "click", function(e) {
 		e.preventDefault();
 		$("#auth_agent_id").val($(this).val());
 		$("#auth_product_id").val($(this).attr('name'));
 		identitiy_dialog.dialog("open");
 	});
-	// "取得產品授權碼" Dialog相關設定
+	// "取得商品授權碼" Dialog相關設定
 	identitiy_dialog = $("#dialog-form-auth").dialog({
 		draggable : false,//防止拖曳
 		resizable : false,//防止縮放
@@ -519,7 +519,7 @@ $(function(){
 								+ "</div></div></td>"	
 								+ "<td><button name='" + item.product_id + "' value='"+ item.agent_id+"' class='btn-auth btn btn-wide btn-primary'>產生</button></td></tr>";
 						});
-// 						console.log('"取得產品識別碼" Dialog相關設定');
+// 						console.log('"取得商品識別碼" Dialog相關設定');
 						$("#table_agent_auth tbody").html(result_table);
 					}
 				});
@@ -656,10 +656,10 @@ $(function(){
 							<th>已銷售數量</th>
 							<th>已登錄數量</th>
 							<th>加密因子</th>
-							<th>產品授權碼</th>
-							<th>產品授權碼QR code</th>
+							<th>商品授權碼</th>
+							<th>商品授權碼QR code</th>
 							<th>功能</th>						
-							<th>取得產品授權碼</th>
+							<th>取得商品授權碼</th>
 						</tr>
 					</thead>
 					<tbody style="text-align:center">
@@ -755,8 +755,8 @@ $(function(){
 			</form>
 		</div>	
 		
-		<!--對話窗樣式-產生產品授權碼 -->
-		<div id="dialog-form-auth" title="確認產生產品授權碼?" style="display:none">
+		<!--對話窗樣式-產生商品授權碼 -->
+		<div id="dialog-form-auth" title="確認產生商品授權碼?" style="display:none">
 			<form name="auth-dialog-form-post" id="auth-dialog-form-post" style="display:inline">
 				<p>確認是否產生?:</p>
 				<input type="hidden" id="auth_agent_id">

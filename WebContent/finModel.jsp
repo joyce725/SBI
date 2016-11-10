@@ -1721,7 +1721,7 @@ function warningMsg(msg) {
 	 					.domain([new Date(mind),new Date(maxd)])
 	  				.range([0, width - margin.left - margin.right]);		
 	  var yScale = d3.scale.linear()
-					    .domain([0,100])
+					    .domain([0,160])
 					    .range([height - margin.top - margin.bottom, 0]);
 	  var xAxis = d3.svg.axis()
 					    .scale(xScale)

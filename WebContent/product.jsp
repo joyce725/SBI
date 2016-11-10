@@ -551,13 +551,13 @@ $(function(){
 		}
 	});
 
- 	// 取得產品識別碼 事件聆聽 
+ 	// 取得商品識別碼 事件聆聽 
 	$("#table_product").delegate(".btn-iden", "click", function(e) {
 		e.preventDefault();
 		p_product_id = $(this).val();
 		identitiy_dialog.dialog("open");
 	});
-	// "取得產品識別碼" Dialog相關設定
+	// "取得商品識別碼" Dialog相關設定
 	identitiy_dialog = $("#dialog-form-identity").dialog({
 		draggable : false,//防止拖曳
 		resizable : false,//防止縮放
@@ -605,7 +605,7 @@ $(function(){
 								+ "</div></div></td>"
 								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";				
 						});
-// 						console.log('"取得產品識別碼" Dialog相關設定');
+// 						console.log('"取得商品識別碼" Dialog相關設定');
 						$("#table_product tbody").html(result_table);
 					}
 				});
@@ -671,7 +671,7 @@ $(function(){
 			<div class="form-wrap">
 				<div class="form-row">
 					<label for="">
-						<span class="block-label">產品名稱查詢</span>
+						<span class="block-label">商品名稱查詢</span>
 						<input type="text" id="search_product_spec" placeholder="請輸入查詢商品名稱">
 					</label>
 					<a href="#" id="btn_query" class="btn btn-darkblue">查詢</a>
@@ -688,12 +688,12 @@ $(function(){
 					<thead>
 						<tr>
 							<th>商品規格</th>
-							<th>產品圖片名稱</th>
+							<th>商品圖片名稱</th>
 							<th>加密因子</th>
-							<th>產品識別碼</th>
-							<th>產品識別碼QR code</th>
+							<th>商品識別碼</th>
+							<th>商品識別碼QR code</th>
 							<th>功能</th>
-							<th>取得產品識別碼</th>
+							<th>取得商品識別碼</th>
 						</tr>
 					</thead>
 					<tbody style="text-align:center">
@@ -719,7 +719,7 @@ $(function(){
 				<table class='form-table'>
 					<tbody>
 						<tr>
-							<td>產品圖片：</td>
+							<td>商品圖片：</td>
 							<td>
 								<span class="btn btn-success fileinput-button btn-primary" style="padding: 6px 12px;border-radius: 5px;">
 								<span><font color="white">+&nbsp;</font>瀏覽<font color="red">(最大500K)</font></span>
@@ -752,7 +752,7 @@ $(function(){
 				<table class="form-table">
 					<tbody>
 						<tr>
-							<td>產品圖片：</td>
+							<td>商品圖片：</td>
 							<td>
 								<span class="btn btn-success fileinput-button btn-primary" style="padding: 6px 12px;border-radius: 5px;">
 								<span><font color="white">+&nbsp;</font>瀏覽<font color="red">(最大500K)</font></span>
