@@ -53,7 +53,10 @@ section {
 // 					news_list += "<section><h3 class='ui-list-title'>" + source + "</h3><ul>"
 					$.each(value.data,function(i, item) {
 						var jsonItem = $.parseJSON(item);
-						news_list += "<li><a href='" + jsonItem.link + "' target='_blank'>" + jsonItem.title + "   (" + source + ")</a></li>";
+// 						console.log(jsonItem.title);
+						if(jsonItem.title == '') {
+							news_list += "<li><a href='" + jsonItem.link + "' target='_blank'>" + jsonItem.title + "   (" + source + ")</a></li>";
+						}						
 					});
 				});
 				news_list += "</ul></section>";

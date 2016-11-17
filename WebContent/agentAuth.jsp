@@ -621,7 +621,7 @@ $(function(){
 </script>
 <jsp:include page="header.jsp" flush="true"/>
 	<div class="content-wrap">
-		<h2 class="page-title">通路商授權</h2>
+		<h2 class="page-title">通路商授權商品管理</h2>
 		<div class="input-field-wrap">
 			<div class="form-wrap">
 				<div class="form-row">

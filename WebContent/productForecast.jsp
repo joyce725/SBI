@@ -40,6 +40,12 @@
 
 		var user_count = 0;
 		
+		$(document).keypress(function(e) {
+			if(e.which == 13) {
+		    	event.preventDefault();
+		    }
+		});
+		
 		$( document ).ready(function() {
 			mainLoad();
 		});
@@ -792,9 +798,9 @@
 <!-- 						<li><a href="#">海外布局選擇</a></li> -->
 					</ul>
 					<ul style="top: -100px;left: 370px;height:280px;">
-						<li><a href="product.jsp">授權商品檢索機制</a></li>
-						<li><a href="agent.jsp">授權商品通路商</a></li>
-						<li><a href="agentAuth.jsp">授權通路商檢索機制</a></li>
+						<li><a href="product.jsp">商品管理</a></li>
+						<li><a href="agent.jsp">通路商管理</a></li>
+						<li><a href="agentAuth.jsp">通路商授權商品管理</a></li>
 						<li><a href="productVerify.jsp">商品真偽顧客驗證作業</a></li>
 						<li><a href="authVerify.jsp">商品真偽通路商驗證作業</a></li>
 					</ul>
@@ -873,7 +879,7 @@
 						
 						<div class="btn-row">
 							<button id="back2List-a1" class="btn btn-exec btn-wide">回列表頁</button>
-							<button id="addRow" class="btn btn-exec btn-wide">新增一列</button>
+							<button id="addRow" class="btn btn-exec btn-wide">新增項目</button>
 							<button id="next1" class="btn btn-exec btn-wide">下一步</button>
 						</div>						
 					</div>
