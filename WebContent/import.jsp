@@ -8,7 +8,7 @@
 <link rel="Shortcut Icon" type="image/x-icon" href="./images/cdri-logo.gif" />
 <link rel="stylesheet" href="css/jquery-ui.min.css">
 <link rel="stylesheet" href="css/font-awesome.min.css">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="cssPS/styles.css">
 <script src="js/jquery-1.12.4.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/scripts.js"></script>
