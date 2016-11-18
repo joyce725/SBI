@@ -9,6 +9,9 @@
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <!--  css for d3js -->
 <style>
+.header {
+	top: 0px;
+}
 .page-wrapper {
 /*     background: #194A6B; */
     background-color: #EEF3F9;
@@ -27,7 +30,6 @@
     overflow-y: scroll;
     width: 100%;
 	background-color: #EEF3F9;
-
 }
 .search-result-wrap{
 	padding: 20px;
@@ -225,7 +227,6 @@ function checkboxcheck(name){
 		<div style='font-size:18px;margin-bottom:20px;color:#888;' align='center'>--或許 我可以幫您清晰出客群的輪廓--</div>
 		<div id='view' style='background:#f8f8f8;padding:20px;border: 3px solid #666;margin:0 auto;width:60%;	border-radius: 8px;box-shadow: 10px 10px 5px #999;'>
 			<table class='bentable'>
-	<%-- 			<colgroup><col width="35%"><col width="65%"></colgroup> --%>
 				<tr><th>一、品類：</th></tr>
 				<tr>
 					<td>
