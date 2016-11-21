@@ -34,6 +34,7 @@
 			<a href="#" class="dropbtn">統計資料</a>
 			<div class="dropdown-content">
 				<a href="population.jsp">台灣人口社經</a>
+				<a href="populationNew.jsp">台灣人口社經(new)</a>
 				<a href="upload.jsp">產業分析基礎資料庫</a>
 			</div>
 		</li>
