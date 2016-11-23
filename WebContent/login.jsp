@@ -10,7 +10,7 @@
 	<script type="text/javascript">
 	
 	<%if(request.getSession().getAttribute("user_name")!=null){%>
-		top.location.href="personaNew.jsp";
+		top.location.href="businessdistrict.jsp";
 	<%}%>
 		
 	    function changeImg(){
@@ -57,7 +57,7 @@
 	                success: function(data) {
 	                	var json_obj = $.parseJSON(data);
 	                	if (json_obj.message=="success"){
-	                		window.location.href = "personaNew.jsp";
+	                		window.location.href = "businessdistrict.jsp";
 	                	}
 	                	if (json_obj.message=="failure"){
 	                		$("#validateCode").val("");

@@ -26,7 +26,7 @@
     margin-left: 0px;
     margin-top: 100px;
     padding-bottom: 50px;
-    height: calc(100vh - 190px);
+    height: 100%;
     overflow-y: scroll;
     width: 100%;
 	background-color: #EEF3F9;

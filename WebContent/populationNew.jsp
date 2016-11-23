@@ -24,7 +24,7 @@
     float: left;
     margin-left: 0px;
     margin-top: 100px;
-    padding-bottom: 50px;
+    padding-bottom: 130px;
     height: 100%;
     overflow-y: scroll;
     width: 100%;

@@ -31,11 +31,11 @@
 <%
 	String str=(String)request.getAttribute("action");
 	if(str!=null){
-		if("success".equals(str)){
+// 		if("success".equals(str)){
 			out.println("<script>alert('傳輸成功');$('body').css('cursor', 'default');window.location.href = './upload.jsp';</script>");
-		}else{
-			out.println("<script>alert('傳輸失敗 ');$('body').css('cursor', 'default');window.location.href = './upload.jsp';</script>");
-		}
+// 		}else{
+// 			out.println("<script>alert('傳輸失敗 ');$('body').css('cursor', 'default');window.location.href = './upload.jsp';</script>");
+// 		}
 	}
 %>
 <jsp:include page="header.jsp" flush="true"/>
