@@ -290,7 +290,8 @@ hr.hr-gray {
 /* Page Styles
 ---------------------------------- */
 .page-wrapper {
-    background: #3F7FAA;
+/*     background: #3F7FAA; */
+    background-color: #EEF3F9;
     color: #333;
     width: 100%;
     height: 100%;
@@ -519,7 +520,7 @@ h2.page-title {
 /* footer
 ---------------------------------- */
 .footer {
-    background: #3F7FAA;
+    background: #594A6B;
     height: 28px;
 /*     text-align: right;Ben又偷改了 */
     text-align: center;
@@ -1173,7 +1174,7 @@ button.btn {
     position: fixed;
     top: 56px;
     z-index: 9999;
-    background-color: #194A6B;
+    background-color: #594A6B;
     width: 100%;
     
 }
@@ -1183,8 +1184,8 @@ button.btn {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #194A6B;
-    width: 10%;
+    background-color: #594A6B;
+    width: 6%;
 }
 
 .topnav li {
@@ -1198,12 +1199,12 @@ button.btn {
     padding: 10px 10px;
     text-decoration: none;
     
-    min-width: 200px;
-    background-color: #194A6B;
+    min-width: 100px;
+    background-color: #594A6B;
 }
 
 .topnav li a:hover, .dropdown:hover .dropbtn {
-    background-color: #3F7FAA;
+    background-color: #3F7F22;
 }
 
 .topnav li.dropdown {
@@ -1214,7 +1215,7 @@ button.btn {
     display: none;
     position: absolute;
     background-color: #194A6B;
-    min-width: 200px;
+    min-width: 150px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     
     height: 14px;
