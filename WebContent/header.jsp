@@ -35,11 +35,12 @@
 		</li>
 		<li class="dropdown">
 			<a href="#" class="dropbtn">電子書</a>
-<!-- 			<div class="dropdown-content"> -->
+			<div class="dropdown-content">
+				<a href="./大臺北地區.pdf" target="_blank">大台北地區</a>
 <!-- 				<a href="#">人口/市場</a> -->
 <!-- 				<a href="#">商圈/競爭</a> -->
 <!-- 				<a href="#">經濟/交通</a> -->
-<!-- 			</div> -->
+			</div>
 		</li>
 		<li class="dropdown">
 			<a href="#" class="dropbtn">動態統計</a>
@@ -54,7 +55,7 @@
 			</div>
 		</li>
 		<li class="dropdown">
-			<a href="#" class="dropbtn">環域分析</a>
+			<a href="environmentAnalyse.jsp" class="dropbtn">環域分析</a>
 <!-- 			<div class="dropdown-content"> -->
 <!-- 				<a href="#">分析地點</a> -->
 <!-- 				<a href="#">交通速度</a> -->
