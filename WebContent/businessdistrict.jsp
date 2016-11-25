@@ -478,8 +478,7 @@ function AAA(){
 		$("#businessdistrict").show();
 		
 		$("#selectRegion").change(function(){
-			console.log('selectRegion');
-		
+			
 			var selecttable="<option value=''>請選擇商圈</option>";
 			deleteMarker();
 			
@@ -532,8 +531,7 @@ function AAA(){
 		});
 		
 		$("#selectBusinessdistrict").change(function(){
-			console.log('selectBusinessdistrict');
-
+			
 			deleteMarker();
 			
 			if($(this).val()!=''){
@@ -578,8 +576,7 @@ function AAA(){
 		});
 		
 		$("#selectPOI").change(function(){
-			console.log('selectPOI');
-
+			
 			var thisval=$(this).val();
 			
 			if($(this).val()!=''){
@@ -700,7 +697,6 @@ function AAA(){
 					result += "'POI_"+i+ "':{'name':'"+place.name+"','icon':'"+place.icon+"','addr':'"+place.formatted_address+"','loca':'"+place.geometry.location+"',center: {lat: "+place.geometry.location.lat()+", lng:"+place.geometry.location.lng()+"}},";
 					i++;
 					
-					console.log('icon');
 					var icon = {
 					  url: place.icon,
 					  size: new google.maps.Size(71, 71),

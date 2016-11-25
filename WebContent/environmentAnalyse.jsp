@@ -434,7 +434,6 @@ var g_markers = [];
 	}
 	
 function AAA(){
-	console.log("AAA");
 // 	$("#pac-input").focus();
 // 	$("#pac-input").val("ATM");
 // 	$("#pac-input").trigght();
@@ -478,14 +477,12 @@ function AAA(){
 		$("#businessdistrict").show();
 		
 		$("#selectRegion").change(function(){
-			console.log('selectRegion');
-		
+			
 			var selecttable="<option value=''>請選擇商圈</option>";
 			deleteMarker();
 			
 			for (var BD in businessdistrict) {
-				console.log(BD);
-
+				
 				if($(this).val()==''){ 
 					selecttable = "<option value=''>請先選擇地區</option>";
 					map.panTo(new google.maps.LatLng(23.900,121.000));
@@ -509,7 +506,6 @@ function AAA(){
 					);
 				}
 				if($(this).val()=="Taipei" && businessdistrict[BD].n < 14){ 
-					console.log(selecttable);
 					selecttable+= "<option value='"+BD+"'>"+businessdistrict[BD].name+"</option>";
 					map.panTo(new google.maps.LatLng(25.044,121.524));
 				}
@@ -535,14 +531,11 @@ function AAA(){
 		});
 		
 		$("#selectBusinessdistrict").change(function(){
-			console.log('selectBusinessdistrict');
-
+			
 			deleteMarker();
 			
 			if($(this).val()!=''){
 				
-				console.log($(this).val());
-				console.log(businessdistrict[$(this).val()].center);
 				
 				map.panTo(businessdistrict[$(this).val()].center);
 				map.setZoom(16);
@@ -584,8 +577,7 @@ function AAA(){
 		});
 		
 		$("#selectPOI").change(function(){
-			console.log('selectPOI');
-
+			
 			var thisval=$(this).val();
 			
 			if($(this).val()!=''){
@@ -593,7 +585,7 @@ function AAA(){
 // 				for (var shop in POI[$(this).val()]) {
 					var i = 0;                     //  set your counter to 1
 					function myLoop () {  //  create a loop function
-						console.log("myLoop");
+						
 					   setTimeout(
 						   function () {    //  call a 3s setTimeout when the loop is called
 							   var shop="POI_"+i;
@@ -675,7 +667,6 @@ function AAA(){
 	    var markers = [];
 	    
 	    function initMap() {
-	    	console.log("initMap");
 	    	
 			// Create the map.
 			map = new google.maps.Map(document.getElementById('map'), {
@@ -713,7 +704,6 @@ function AAA(){
 					result += "'POI_"+i+ "':{'name':'"+place.name+"','icon':'"+place.icon+"','addr':'"+place.formatted_address+"','loca':'"+place.geometry.location+"',center: {lat: "+place.geometry.location.lat()+", lng:"+place.geometry.location.lng()+"}},";
 					i++;
 					
-					console.log('icon');
 					var icon = {
 					  url: place.icon,
 					  size: new google.maps.Size(71, 71),
@@ -789,8 +779,6 @@ function AAA(){
 	    }
 	    
 	    function deleteMarker() {
-	    	console.log("deleteMarker");
-
 	    	for (var i = 0; i < g_markers.length; i++) {   
 	            g_markers[i].setMap(null);   
 	        }   

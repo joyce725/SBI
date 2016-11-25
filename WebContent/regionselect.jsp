@@ -48,46 +48,46 @@
 /*      	height: 90% !important;  */
  	/*	width:80% !important; */
     }
-input[type=checkbox] {
-    position: static;
-}
-input[type=radio] {
-    position: static;
-}
-.bentable{
-	font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
-/*  	margin-left:120px; */
-/* 	margin: 20px auto; */
-	font-size:16px;
-/* 	border:2px solid #555; */
-}
-.bentable tr{
-/* 	height:32px; */
-/* 	border:2px solid #33f; */
-}
-.bentable td{
-/* 	padding:8px; */
+	input[type=checkbox] {
+	    position: static;
+	}
+	input[type=radio] {
+	    position: static;
+	}
+	.bentable{
+		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
+	/*  	margin-left:120px; */
+	/* 	margin: 20px auto; */
+		font-size:16px;
+	/* 	border:2px solid #555; */
+	}
+	.bentable tr{
+	/* 	height:32px; */
+	/* 	border:2px solid #33f; */
+	}
+	.bentable td{
+	/* 	padding:8px; */
+		
+		padding-left:60px;
+	/* 	border:2px solid #3f3; */
+	}
+	/* .bentable td:nth-child(2n+1){ */
+	/* 	t */
+	/* 	padding:8px; */
+	/* 	padding-left:40px; */
+	/* } */
 	
-	padding-left:60px;
-/* 	border:2px solid #3f3; */
-}
-/* .bentable td:nth-child(2n+1){ */
-/* 	t */
-/* 	padding:8px; */
-/* 	padding-left:40px; */
-/* } */
-
-.bentable th{
-	word-break: keep-all;
-	padding:16px 0px 2px 0px;
-/* 	padding-bottom:4px; */
-	
-	text-align:left;
-	font-size:22px;
-	font-weight: bold;
-	color:#444;
-/* 	border:2px solid #f33; */
-}
+	.bentable th{
+		word-break: keep-all;
+		padding:16px 0px 2px 0px;
+	/* 	padding-bottom:4px; */
+		
+		text-align:left;
+		font-size:22px;
+		font-weight: bold;
+		color:#444;
+	/* 	border:2px solid #f33; */
+	}
 </style>
 	
 <style>
@@ -127,10 +127,16 @@ function analysis(){
 <div class="content-wrap">
 <h2 class="page-title">商圈定位</h2>
 	<div class="search-result-wrap">
-	<button onclick='$("#regionselect").dialog("open");' style='position:absolute;left:50%;top:100px;z-index:99;'>打開</button>
+
+<!-- 	<button onclick='$("#regionselect").dialog("open");' style='position:absolute;left:50%;top:100px;z-index:99;'>打開</button> -->
+	<a class="btn btn-orange" onclick='$("#regionselect").dialog("open");' style='position:absolute;left:23%;top:110px;z-index:99;'>選單</a>
+
 	<div id='regionselect' title='區位選擇' style='display:none;background:#E7E7E7;'>
 		<div id='QA' style='height:400px;width:800px;'>
 		   <embed id='pdf' src='http://61.218.8.51/SBI/func/formview/QA.html' style='width:99%;height:400px;'>
+		</div>
+		<div id='over' style='display:none;'>
+			<div style='padding:20px 40px;'>完成分析！請於地圖檢視結果。<br><br>請參考本系統提供之「決策建議」。<br><br>按下「確認」關閉視窗，或按「上一步」重新分析！</div>
 		</div>
 		<div id='choose' style='display:none;padding:0 20px;'>
 			<table class='bentable'>
@@ -163,37 +169,34 @@ function analysis(){
 					</td>
 				</tr>
 			</table>
-						<table style='width:600px;'>
-							<tr>
-								<td>
-									未來潛力<input type='text' id='rs1' style='width:40px' value='33.56'/>%<br>
-									　├<input type="checkbox" >未來區域規劃<br>　└<input type="checkbox" >消費發展潛力
-								</td>
-								<td>
-									<td>現況發展<input type='text' id='rs2' style='width:40px' value='39.74'/>%<br>
-									　├<input type="checkbox" >市場消費規模<br>　└<input type="checkbox" >消費發展潛力
-								</td>
-								<td>
-									<td>競爭強度<input type='text' id='rs3' style='width:40px' value='26.70'/>%<br>
-									　├<input type="checkbox" >業種業態組成<br>　└<input type="checkbox" >商圈競爭狀況
-								</td>
-							</tr>
-							<tr>
-								<td colspan=3>
-								(權重預設為該業平均值，可依實際需求進行調整。)
-								</td>
-							</tr>
-						</table>
-<!-- ├囗未來區域規劃　├囗市場消費規模　├囗業種業態組成<br> -->
-<!-- └囗消費發展潛力　└囗經營成本　　　└囗商圈競爭狀況 -->
-<!-- 	<br> -->
-
-
+			
+			<table style='width:600px;'>
+				<tr>
+					<td>
+						未來潛力<input type='text' id='rs1' style='width:40px' value='33.56'/>%<br>
+						　├<input type="checkbox" checked>未來區域規劃<br>　└<input type="checkbox" checked>消費發展潛力
+					</td>
+					<td>
+						<td>現況發展<input type='text' id='rs2' style='width:40px' value='39.74'/>%<br>
+						　├<input type="checkbox" checked>市場消費規模<br>　└<input type="checkbox" checked>消費發展潛力
+					</td>
+					<td>
+						<td>競爭強度<input type='text' id='rs3' style='width:40px' value='26.70'/>%<br>
+						　├<input type="checkbox" checked>業種業態組成<br>　└<input type="checkbox" checked>商圈競爭狀況
+					</td>
+				</tr>
+				<tr>
+					<td colspan=3>
+					(權重預設為該業平均值，可依實際需求進行調整。)
+					</td>
+				</tr>
+			</table>
 		</div>
 	</div>
 	<div id="map"></div>
     <script type="text/javascript">
 	    var markers = [];
+	    var words=['4','2','3','1','5','7','6','8','9','10','11','12','13','14','15'];
 	    
 	    function initMap() {
 			// Create the map.
@@ -204,6 +207,39 @@ function analysis(){
 			});
     	  
    		}
+	    
+	    function draw_BDS(BDs,n){
+	    	var marker = new google.maps.Marker({
+			    position: businessdistrict[BDs].center,
+//				    animation: google.maps.Animation.DROP,
+				label : words[n],
+			    title: businessdistrict[BDs].name,
+			    map: map
+			});
+			
+			var infowindow = new google.maps.InfoWindow({content: businessdistrict[BDs].name});
+			
+			var cityCircle = new google.maps.Circle({
+		      strokeColor: '#FF0000',
+		      strokeOpacity: 0.5,
+		      strokeWeight: 2,
+		      fillColor: '#FF8700',
+		      fillOpacity: 0.2,
+		      map: map,
+		      center: businessdistrict[BDs].center,
+		      radius: 800
+		    });
+			
+		  	google.maps.event.addListener(marker, "mouseover", function(event) { 
+	        	infowindow.open(marker.get('map'), marker);
+	        	setTimeout(function () { infowindow.close(); }, 2000);
+	        }); 
+		  	
+		  	google.maps.event.addListener(marker, "dblclick", function(event) { 
+	        	marker.setAnimation(null);
+	        });
+	    }
+	    
 	    $(function(){
 
 			$("#slider").slider({
@@ -245,20 +281,44 @@ function analysis(){
 					id : "gointo",
 					click : function() {
 						if($("#gointo").html().length==4){
+							
 							$('div[aria-describedby="regionselect"]').animate({
 							    left: '+=100px',
 							});
 							$('div[aria-describedby="regionselect"]').css("top","20%");
-							$('#regionselect').html("<div style='padding:20px 40px;'>完成分析！請於地圖檢視結果。<br><br>請參考本系統提供之「決策建議」。<br><br>按下「確認」關閉視窗，或按「上一步」重新分析！</div>");
+							$("#choose").hide();
+							$('#over').show();
+// 							$('#regionselect').html("<div style='padding:20px 40px;'>完成分析！請於地圖檢視結果。<br><br>請參考本系統提供之「決策建議」。<br><br>按下「確認」關閉視窗，或按「上一步」重新分析！</div>");
 							$("#rewrite").html("上一步");
 							$("#gointo").html("確認");
 							$("#jump").html("決策建議");
 							$("#jump").css('display','inline');
+							
+							for (var BD in businessdistrict) {
+								if($("#selectRegion").val()=="Taipei"&& businessdistrict[BD].n<14){
+									draw_BDS(BD, businessdistrict[BD].n-1);
+								}
+								if($("#selectRegion").val()=="Taoyuan"&& businessdistrict[BD].n>13&& businessdistrict[BD].n<25){ 
+									draw_BDS(BD,businessdistrict[BD].n-14);
+								}
+								if($("#selectRegion").val()=="Taichung"&& businessdistrict[BD].n>24&& businessdistrict[BD].n<32){ 
+									draw_BDS(BD,businessdistrict[BD].n-25);
+								}
+								if($("#selectRegion").val()=="Tainan"&& businessdistrict[BD].n>31&& businessdistrict[BD].n<44){ 
+									draw_BDS(BD,businessdistrict[BD].n-32);
+								}
+								if($("#selectRegion").val()=="Kaohsiung"&& businessdistrict[BD].n>43){ 
+									draw_BDS(BD,businessdistrict[BD].n-44);
+								}
+							}
+							
 						}else if($("#gointo").html().length==2){
-							alert("標點");
+							//###########################################################
+							map.panTo(new google.maps.LatLng(25.044571, 121.506409));
+							map.setZoom(15);
 							
-							
-							
+							$("#regionselect").dialog("close");
+							//###########################################################
 						}else if($("#gointo").html().length==6){
 							$("#regionselect").css("background","none");
 							$("#QA").hide(function(){
@@ -304,29 +364,41 @@ function analysis(){
 				}
 			});
 			$("#selectRegion").change(function(){
+				
 				var selecttable="商圈：<div id='BD' style='max-width:400px;min-height:60px;float:right;'>";
 				for (var BD in businessdistrict) {
 					if($(this).val()=="Taipei"&& businessdistrict[BD].n<14){ 
 						if(businessdistrict[BD].n==1){}else{selecttable+="、";}
 						selecttable+= businessdistrict[BD].name;
+						map.panTo(new google.maps.LatLng(25.034,121.524));
+						map.setZoom(14);
 					}
 					if($(this).val()=="Taoyuan"&& businessdistrict[BD].n>13&& businessdistrict[BD].n<25){ 
 						if(businessdistrict[BD].n==14){}else{selecttable+="、";}
 						selecttable+= businessdistrict[BD].name;
+						map.panTo(new google.maps.LatLng(24.995, 121.298));
+						map.setZoom(12);
 					}
 					if($(this).val()=="Taichung"&& businessdistrict[BD].n>24&& businessdistrict[BD].n<32){ 
 						if(businessdistrict[BD].n==25){}else{selecttable+="、";}
 						selecttable+= businessdistrict[BD].name;
+						map.panTo(new google.maps.LatLng(24.148, 120.685));
+						map.setZoom(12);
 					}
 					if($(this).val()=="Tainan"&& businessdistrict[BD].n>31&& businessdistrict[BD].n<44){ 
 						if(businessdistrict[BD].n==32){}else{selecttable+="、";}
 						selecttable+=businessdistrict[BD].name;
+						map.panTo(new google.maps.LatLng(22.994, 120.218));
+						map.setZoom(12);
 					}
 					if($(this).val()=="Kaohsiung"&& businessdistrict[BD].n>43){ 
 						if(businessdistrict[BD].n==44){}else{selecttable+="、";}
 						selecttable+=businessdistrict[BD].name;
+						map.panTo(new google.maps.LatLng(22.624, 120.307));
+						map.setZoom(12);
 					}
 				}
+				
 				selecttable+="</div>";
 				$("#BD").html(selecttable);
 			});
