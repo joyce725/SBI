@@ -429,11 +429,10 @@ var g_markers = [];
 		$('#selectPOI').html('<option value="">請先選擇地區</option>');
 		
 		deleteMarker();
-		
-		getNewPosition();
 	}
 	
 function AAA(){
+
 // 	$("#pac-input").focus();
 // 	$("#pac-input").val("ATM");
 // 	$("#pac-input").trigght();
@@ -447,6 +446,8 @@ function AAA(){
 }
 
 	$(function(){
+		
+		
 		
 		$("#businessdistrict").dialog({
 			draggable : true, 
@@ -482,7 +483,6 @@ function AAA(){
 			deleteMarker();
 			
 			for (var BD in businessdistrict) {
-				
 				if($(this).val()==''){ 
 					selecttable = "<option value=''>請先選擇地區</option>";
 					map.panTo(new google.maps.LatLng(23.900,121.000));
@@ -505,23 +505,23 @@ function AAA(){
 						"<option value='2'>停車場</option>"
 					);
 				}
-				if($(this).val()=="Taipei" && businessdistrict[BD].n < 14){ 
+				if($(this).val()=="Taipei"&& businessdistrict[BD].n<14){ 
 					selecttable+= "<option value='"+BD+"'>"+businessdistrict[BD].name+"</option>";
 					map.panTo(new google.maps.LatLng(25.044,121.524));
 				}
-				if($(this).val()=="Taoyuan" && businessdistrict[BD].n>13 && businessdistrict[BD].n < 25){ 
+				if($(this).val()=="Taoyuan"&& businessdistrict[BD].n>13&& businessdistrict[BD].n<25){ 
 					selecttable+= "<option value='"+BD+"'>"+businessdistrict[BD].name+"</option>";
 					map.panTo(new google.maps.LatLng(24.995,121.298));
 				}
-				if($(this).val()=="Taichung" && businessdistrict[BD].n>24 && businessdistrict[BD].n < 32){ 
+				if($(this).val()=="Taichung"&& businessdistrict[BD].n>24&& businessdistrict[BD].n<32){ 
 					selecttable+= "<option value='"+BD+"'>"+businessdistrict[BD].name+"</option>";
 					map.panTo(new google.maps.LatLng(24.148,120.685));
 				}
-				if($(this).val()=="Tainan" && businessdistrict[BD].n>31 && businessdistrict[BD].n < 44){ 
+				if($(this).val()=="Tainan"&& businessdistrict[BD].n>31&& businessdistrict[BD].n<44){ 
 					selecttable+= "<option value='"+BD+"'>"+businessdistrict[BD].name+"</option>";
 					map.panTo(new google.maps.LatLng(22.994,120.218));
 				}
-				if($(this).val()=="Kaohsiung" && businessdistrict[BD].n > 43){ 
+				if($(this).val()=="Kaohsiung"&& businessdistrict[BD].n>43){ 
 					selecttable+= "<option value='"+BD+"'>"+businessdistrict[BD].name+"</option>";
 					map.panTo(new google.maps.LatLng(22.624,120.307));
 				}
@@ -535,7 +535,6 @@ function AAA(){
 			deleteMarker();
 			
 			if($(this).val()!=''){
-				
 				
 				map.panTo(businessdistrict[$(this).val()].center);
 				map.setZoom(16);
@@ -585,7 +584,6 @@ function AAA(){
 // 				for (var shop in POI[$(this).val()]) {
 					var i = 0;                     //  set your counter to 1
 					function myLoop () {  //  create a loop function
-						
 					   setTimeout(
 						   function () {    //  call a 3s setTimeout when the loop is called
 							   var shop="POI_"+i;
@@ -622,27 +620,26 @@ function AAA(){
 	});
 	
 	$( document ).ready(function() {
-		$("#businessdistrict").dialog("open");
+// 		$("#businessdistrict").dialog("open");
 	});
 </script>
 <!-- /**************************************  以上使用者JS區塊    *********************************************/	-->
 
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
-<h2 class="page-title">商圈定位</h2>
+<h2 class="page-title">首頁</h2>
 	<div class="search-result-wrap">
 <!-- 	<button id='btn' onclick='console.log(result);' >TEST</button> -->
 	<input id="pac-input" class="controls" type="text" placeholder="Search Box">
 	
-<!-- 	<button onclick='$("#businessdistrict").dialog("open");' style='position:absolute;left:50%;top:100px;z-index:99;'>打開</button> -->
-	<a class="btn btn-orange" onclick='$("#businessdistrict").dialog("open");' style='position:absolute;left:23%;top:110px;z-index:99;'>選單</a>
+<!-- 	<a class="btn btn-orange" onclick='$("#businessdistrict").dialog("open");' style='position:absolute;left:23%;top:110px;z-index:99;'>選單</a> -->
 	
 	<div id='businessdistrict' title='商圈選擇' style='display:none;'>
 	<div style='padding: 10px 60px'>
 	
 	<a class='btn btn-gray' style='font-size:24px;font-weight:lighter; margin:10px;float:right;' onclick="myreset()">&nbsp;&nbsp;重設&nbsp;&nbsp;</a>
 	   <h3>搜尋條件</h3>
-		　<!-- 地區： -->　<select id='selectRegion' hidden="true">
+		　地區：　<select id='selectRegion'>
 			  	 <option value="">請選擇</option>
 	             <option value="Taipei">台北</option>
 	             <option value="Taoyuan">桃園</option>
@@ -651,12 +648,11 @@ function AAA(){
 	             <option value="Kaohsiung">高雄</option>
 			 </select>
 <!-- 					 <a class='btn btn-darkblue' href="./大臺北地區.pdf" style='font-size:24px;font-weight:lighter; margin:10px;'>電子書</a> -->
-<!-- 			 <br><br><br> -->
+			 <br><br><br>
 			 
-		　<!-- 商圈： -->　<select id='selectBusinessdistrict' hidden="true">
+		　商圈：　<select id='selectBusinessdistrict'>
 			  	 <option value="">請先選擇地區</option>
-			 </select>
-<!-- 			 <br><br><br> -->
+			 </select><br><br><br>
 		　POI ：　<select id='selectPOI'>
 			  	 <option value="">請先選擇地區</option>
 			 </select>
@@ -667,7 +663,6 @@ function AAA(){
 	    var markers = [];
 	    
 	    function initMap() {
-	    	
 			// Create the map.
 			map = new google.maps.Map(document.getElementById('map'), {
 				zoom: 8,
@@ -678,7 +673,6 @@ function AAA(){
 			
 			var input = document.getElementById('pac-input');
 			var searchBox = new google.maps.places.SearchBox(input);
-			
 			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 			map.addListener('bounds_changed', function() {
 		  		searchBox.setBounds(map.getBounds());
@@ -686,7 +680,6 @@ function AAA(){
 			
 			var markers = [];
 			var i=0;
-			
 			searchBox.addListener('places_changed', function() {
 				var places = searchBox.getPlaces();
 				if (places.length == 0) {return;}
@@ -729,54 +722,8 @@ function AAA(){
 				});
 				map.fitBounds(bounds);
 			});
-    	    
-			getNewPosition();
+    	  
    		}
-
-	    function getNewPosition() {
-			var myLatLng = {lat: 25.044571, lng: 121.506409};
-
-			map.panTo(businessdistrict["BD_4"].center);
-			map.setZoom(16);
-			
-			var marker = new google.maps.Marker({
-				position: myLatLng,
-				map: map,
-				title: ''
-			});
-			
-			var cityCircle = new google.maps.Circle({
-			      strokeColor: '#FF0000',
-			      strokeOpacity: 0.5,
-			      strokeWeight: 2,
-			      fillColor: '#FF8700',
-			      fillOpacity: 0.2,
-			      map: map,
-			      center: myLatLng,
-			      radius: 800
-		    });
-			
-			marker.setMap(map);
-			
-			g_markers.push(marker);
-			g_markers.push(cityCircle);
-			
-			$("#selectPOI").html(
-				"<option value='0'>請選擇POI</option>"+
-				"<option value='6'>餐廳</option>"+
-				"<option value='1'>ATM</option>"+
-				"<option value='8'>百貨公司</option>"+
-				"<option value='10'>捷運站</option>"+
-				"<option value='11'>豬排店</option>"+
-				"<option value='12'>勝博殿</option>"+
-				"<option value='3'>加油站</option>"+
-				"<option value='4'>速食店</option>"+
-				"<option value='5'>全聯</option>"+
-				"<option value='7'>量販店</option>"+
-				"<option value='9'>便利商店</option>"+
-				"<option value='2'>停車場</option>"
-			);
-	    }
 	    
 	    function deleteMarker() {
 	    	for (var i = 0; i < g_markers.length; i++) {   
