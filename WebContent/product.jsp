@@ -95,7 +95,8 @@ $(function(){
 						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 						+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 						+ "</div></div></td>"
-						+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";										
+						+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
+						+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
 				});	
 				
 				//判斷查詢結果
@@ -172,7 +173,8 @@ $(function(){
 									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 									+ "</div></div></td>"
-									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";	
+									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
+									+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
 							});		
 							//判斷查詢結果
 							var resultRunTime = 0;
@@ -370,7 +372,8 @@ $(function(){
 									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 									+ "</div></div></td>"
-									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";	
+									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
+									+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
 							});			
 							//判斷查詢結果
 							var resultRunTime = 0;
@@ -532,7 +535,8 @@ $(function(){
 								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 								+ "</div></div></td>"
-								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";	
+								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
+								+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
 						});		
 // 						console.log('"刪除" Dialog相關設定');
 						$("#table_product tbody").html(result_table);
@@ -603,7 +607,8 @@ $(function(){
 								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
 								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
 								+ "</div></div></td>"
-								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td></tr>";				
+								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
+								+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
 						});
 // 						console.log('"取得商品識別碼" Dialog相關設定');
 						$("#table_product tbody").html(result_table);
@@ -620,7 +625,111 @@ $(function(){
 		close : function() {
 			$(this).dialog("close");
 		}
+	});	
+	
+	// 產生服務識別碼 事件聆聽
+	$("#table_product").delegate(".btn-genService", "click", function(e) {
+		e.preventDefault();
+		
+		$("#files-update").html('');
+		$("#photo0-update").val('');
+		p_product_id = $(this).val();
+		p_row = $(this).attr('name');
+		
+		console.log("this value" + $(this).val());
+		console.log("name: " + $(this).attr('name'));
+		
+		$("#dialog-form-genService input[name='product_spec']").val($('#product_spec_' + p_row).html());
+		
+		genService_dialog.dialog("open");
 	});
+	
+	// "產生服務識別碼" Dialog相關設定
+	genService_dialog = $("#dialog-form-genService").dialog({
+		draggable : false,//防止拖曳
+		resizable : false,//防止縮放
+		autoOpen : false,
+		show : {
+			effect : "clip",
+			duration : 500
+		},
+		hide : {
+			effect : "fade",
+			duration : 500
+		},
+		width : 'auto',
+		modal : true,
+		buttons : [{
+			id : "update",
+			text : "產生",
+			click : function() {
+				if($("#photo0-update").val()==""){
+					$("#photo0-update").val($('#photo_' + p_row).attr("name"));					
+				}
+// 				if ($('#genService-dialog-form-post').valid()) {
+					$.ajax({
+						type : "POST",
+						url : "productService.do",
+						data : {
+ 							action : "genService",
+ 							product_id: p_product_id,
+ 							quantity: $("#genServcie_quantity").val()
+						},
+						success : function(result) {
+							var json_obj = $.parseJSON(result);
+							var result_table = "";
+							$.each(json_obj,function(i, item) {
+// 								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+
+								result_table 
+									+= "<tr>"
+									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+									+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
+//			 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+									+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+									+ "<td>"+ tmp2 + "</td>"
+									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+									+ "<div class='table-function-list'>"
+									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+									+ "</div></div></td>"
+									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
+									+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
+							});			
+							//判斷查詢結果
+							var resultRunTime = 0;
+							$.each (json_obj, function (i) {
+								resultRunTime+=1;
+							});
+							if(resultRunTime!=0){
+// 								console.log('"新增商品資料" Dialog相關設定");
+								$("#table_product tbody").html(result_table);
+							}else{
+								// todo
+							}
+						}
+					});
+					genService_dialog.dialog("close");
+// 				}
+			}
+		}, {
+			text : "取消",
+			click : function() {
+				//validator_update.resetForm();
+				$("#genService-dialog-form-post").trigger("reset");
+				genService_dialog.dialog("close");
+			}
+		} ],
+		close : function() {
+			$("#genService-dialog-form-post").trigger("reset");
+			//validator_update.resetForm();
+			genService_dialog.dialog("close");
+		}
+	});
+
 	
 	//處理 product spec 的autocomplete查詢
 	$("#search_product_spec").autocomplete({
@@ -694,6 +803,7 @@ $(function(){
 							<th>商品識別碼QR code</th>
 							<th>功能</th>
 							<th>取得商品識別碼</th>
+							<th>取得服務識別碼</th>
 						</tr>
 					</thead>
 					<tbody style="text-align:center">
@@ -765,6 +875,22 @@ $(function(){
            	  		</tbody>
               	</table>		
                	<!-- photo section end by Melvin -->
+			</form>
+		</div>	
+		
+		<!--對話窗樣式-產生服務識別碼 -->
+		<div id="dialog-form-genService" title="產生服務識別碼" style="display:none">
+			<form name="genService-dialog-form-post" id="genService-dialog-form-post">
+				<table style="border-collapse: separate;border-spacing: 10px 20px;">
+					<tbody>
+						<tr>
+							<td><p>商品規格：</p></td>
+							<td><input type="text" id="genServcie_product_spec" name="product_spec" ></td>
+							<td><p>數量：</p></td>
+							<td><input type="text" id="genServcie_quantity" name="seed" value="0" ></td>
+						</tr>
+					</tbody>
+				</table>
 			</form>
 		</div>	
 		
