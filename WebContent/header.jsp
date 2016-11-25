@@ -63,7 +63,7 @@
 <!-- 			</div> -->
 		</li>
 		<li class="dropdown">
-			<a href="#" class="dropbtn">區位選擇</a>
+			<a href="regionselect.jsp" class="dropbtn">區位選擇</a>
 <!-- 			<div class="dropdown-content"> -->
 <!-- 				<a href="#">商圈評估</a> -->
 <!-- 				<a href="#">問卷建立</a> -->
