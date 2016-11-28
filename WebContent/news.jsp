@@ -54,7 +54,7 @@ section {
 					$.each(value.data,function(i, item) {
 						var jsonItem = $.parseJSON(item);
 // 						console.log(jsonItem.title);
-						if(jsonItem.title == '') {
+						if(jsonItem.title != '') {
 							news_list += "<li><a href='" + jsonItem.link + "' target='_blank'>" + jsonItem.title + "   (" + source + ")</a></li>";
 						}						
 					});

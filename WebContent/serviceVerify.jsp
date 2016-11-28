@@ -107,7 +107,7 @@ $(function(){
 </script>
 <jsp:include page="header.jsp" flush="true"/>
 	<div class="content-wrap">
-		<h2 class="page-title">商品真偽顧客驗證作業</h2>
+		<h2 class="page-title">服務識別碼查詢作業</h2>
 		<div class="input-field-wrap">
 			<div class="form-wrap">
 				<div class="form-row">
