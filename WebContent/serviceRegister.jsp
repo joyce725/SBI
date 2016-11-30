@@ -198,12 +198,18 @@ input[type=text].error{
 		
 		$("#register").click(function(){
 			if($("#serviceregister").valid()){
+				
+				var service_id = $("#serviceregister input[name='service_id_1']").val()
+				+ '-' + $("#serviceregister input[name='service_id_2']").val()
+				+ '-' + $("#serviceregister input[name='service_id_3']").val()
+				+ '-' + $("#serviceregister input[name='service_id_4']").val();
+				
 				$.ajax({
 					type : "POST",
 					url : "serviceregister.do",
 					data : {
 						action : "insert_reg",
-						service_id : $("#serviceregister input[name='service_id_1']").val()+$("#serviceregister input[name='service_id_2']").val()+$("#serviceregister input[name='service_id_3']").val()+$("#serviceregister input[name='service_id_4']").val(),
+						service_id : service_id,
 						product_id : $("#serviceregister input[name='product_id']").val(),
 						cust_name : $("#serviceregister input[name='cust_name']").val(),
 						cust_tel : $("#serviceregister input[name='cust_tel']").val(),
