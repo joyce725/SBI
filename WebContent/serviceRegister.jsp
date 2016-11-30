@@ -202,7 +202,8 @@ input[type=text].error{
 				var service_id = $("#serviceregister input[name='service_id_1']").val()
 				+ '-' + $("#serviceregister input[name='service_id_2']").val()
 				+ '-' + $("#serviceregister input[name='service_id_3']").val()
-				+ '-' + $("#serviceregister input[name='service_id_4']").val();
+				+ '-' + $("#serviceregister input[name='service_id_4']").val()
+				+ '-' + $("#serviceregister input[name='service_id_5']").val();
 				
 				$.ajax({
 					type : "POST",
