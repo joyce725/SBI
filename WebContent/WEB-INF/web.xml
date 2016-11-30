@@ -248,6 +248,14 @@
     <servlet-name>productService</servlet-name>
     <url-pattern>/productService.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>serviceregister</servlet-name>
+    <servlet-class>tw.com.sbi.serviceregister.controller.ServiceRegister</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>serviceregister</servlet-name>
+    <url-pattern>/serviceregister.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
