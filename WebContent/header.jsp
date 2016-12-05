@@ -43,7 +43,7 @@
 			<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
 				<ul>
 					<li><a href="cloudISS.jsp">生活費用</a></li>
-					<li><a href="cloudISS.jsp">區位選擇</a></li>
+					<li><a href="regionSelect.jsp">區位選擇</a></li>
 					<li><a href="cloudISS.jsp">環域分析</a></li>
 					<li><a href="cloudISS.jsp">動態統計</a></li>
 				</ul>

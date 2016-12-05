@@ -256,6 +256,14 @@
     <servlet-name>serviceregister</servlet-name>
     <url-pattern>/serviceregister.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>regionselect</servlet-name>
+    <servlet-class>tw.com.sbi.regionselect.controller.RegionSelect</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>regionselect</servlet-name>
+    <url-pattern>/regionselect.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
