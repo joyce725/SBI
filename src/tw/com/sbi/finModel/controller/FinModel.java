@@ -59,14 +59,13 @@ public class FinModel extends HttpServlet {
 //		FincaseVO message = null;
 		FinModelService finModelService = null;
 		Gson gson = null;
-
 		if("gen_d3js".equals(action)){
 			logger.debug("action: gen_d3js");
 			
 			String caseId = request.getParameter("case_id");
 			String caseIdbase64 = new String(Base64.encodeBase64String(caseId.getBytes()));
-			String url = getServletConfig().getServletContext().getInitParameter("pythonwebservice")+"/finance/case="+caseIdbase64;
-			
+			String url = getServletConfig().getServletContext().getInitParameter("pythonwebservice")+"/finance/type=YmFsYW5jZQ==&case="+caseIdbase64;
+			//System.out.println(url);
 			HttpGet httpRequest = new HttpGet(url);
         	HttpClient client = HttpClientBuilder.create().build();
         	HttpResponse httpResponse;
@@ -134,6 +133,36 @@ public class FinModel extends HttpServlet {
 			jsonArray.put(jsonObject);
 			
 			response.getWriter().write(jsonArray.toString());
+		}
+		if("gen_d3js_bath".equals(action)){
+			logger.debug("action: gen_d3js_bath");
+			
+			String caseId = request.getParameter("case_id");
+			String caseIdbase64 = new String(Base64.encodeBase64String(caseId.getBytes()));
+			String url = getServletConfig().getServletContext().getInitParameter("pythonwebservice")+"/finance/type=YmF0aHR1Yg==&case="+caseIdbase64;
+			//System.out.println(url);
+			HttpGet httpRequest = new HttpGet(url);
+        	HttpClient client = HttpClientBuilder.create().build();
+        	HttpResponse httpResponse;
+        	try {
+        		StringBuffer result = new StringBuffer();
+        		httpResponse = client.execute(httpRequest);
+    			int responseCode = httpResponse.getStatusLine().getStatusCode();
+    
+    	    	if(responseCode==200){
+    	    		BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+        	    	String line = "";
+        	    	while ((line = rd.readLine()) != null) {
+        	    		result.append(line);
+        	    	}	
+    	    		response.getWriter().write(result.toString());
+    	    	} else {
+    	    		System.out.println("responseCode: " + responseCode);
+    	    		System.out.println("fail to get data");
+    	    	}    	    	
+    		}catch (Exception e){
+    			System.out.println(e.toString());
+    		}
 		}
 		
 		// 以admin身份登入

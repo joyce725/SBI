@@ -14,18 +14,15 @@
   stroke: #000;
   shape-rendering: crispEdges;
 }
-
 .grid path,
 .grid line {
   fill: none;
   stroke: rgba(0, 0, 0, 0.25);
   shape-rendering: crispEdges;
 }
-
 .x.axis path {
   display: none;
 }
-
 .line {
   fill: none;
   stroke-width: 2.5px;
@@ -36,11 +33,9 @@
 .text-center{
 	text-align: center;
 }
-
 .margin-center{
 	margin: 0px auto;
 }
-
 h2.ui-list-title {
 	border-bottom: 1px solid #ccc;
 	color: #307CB0;
@@ -52,7 +47,6 @@ h2.ui-list-title {
 $(function(){
 	$( "#tabs" ).tabs();
 });
-
 function convertAction (action){
 	var temp = "";
 	if(action){
@@ -62,7 +56,6 @@ function convertAction (action){
 	}
 	return temp;
 }
-
 function convertType (type){
 	var temp = "";
 	switch(type){
@@ -78,7 +71,6 @@ function convertType (type){
 	}
 	return temp;
 }
-
 function convertKind (kind){
 	var temp = "";
 	switch(kind){
@@ -130,7 +122,6 @@ function convertKind (kind){
 	}
 	return temp;
 }
-
 function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 	var tempAmount = "";
 	
@@ -154,10 +145,8 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 	+ "class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
 	+ "<button value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id+ "' "
 	+ "class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
-
 	return resultTable;
 }
-
 function warningMsg(msg) {
 	$("#msgAlert").html(msg);
 	
@@ -277,6 +266,8 @@ function warningMsg(msg) {
 											+ "class='btn_query btn btn-primary'>查看</button></td>"
 											+ "<td><button value='" + json_obj[i].case_id + "' name='user_query'"
 											+ "class='btn-simu btn btn-primary'>產生</button></td>"
+											+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
+											+ "class='btn-bath btn btn-primary'>產生</button></td>"
 											+ "</tr>";											
 									});
 									
@@ -328,6 +319,8 @@ function warningMsg(msg) {
 							+ "class='btn_query btn btn-primary'>查看</button></td>"
 							+ "<td><button value='"+ json_obj[i].case_id+"' name='user_query'"
 							+ "class='btn-simu btn btn-primary'>產生</button></td>"
+							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
+							+ "class='btn-bath btn btn-primary'>產生</button></td>"
 							+ "</tr>";
 					});					
 					//判斷查詢結果
@@ -344,6 +337,7 @@ function warningMsg(msg) {
 			//查看財務計畫 事件聆聽
 			$("#fincase-table-admin").delegate(".btn_query", "click", function() {
 				uuid = $(this).val();
+				$("#bathbutton").val($(this).val());
 				g_create_date = $("[name='" + uuid + "']").parent().parent().children( ".create_date" ).text();
 				
 				$.ajax({
@@ -367,11 +361,9 @@ function warningMsg(msg) {
 							var str_f_type = "";
 							var str_action = "";
 							var str_f_kind = "";
-
 							str_action = convertAction(json_obj[i].action);
 							str_f_type = convertType(json_obj[i].f_type);
 							str_f_kind = convertKind(json_obj[i].f_kind);
-
 							result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 						});
 						
@@ -387,7 +379,6 @@ function warningMsg(msg) {
 					}
 				});					
 			});
-
 			//新增事件聆聽
 			$("#insert-simu-button").click(function(e) {
 				e.preventDefault();		
@@ -636,7 +627,6 @@ function warningMsg(msg) {
 									str_action = convertAction(json_obj[i].action);
 									str_f_type = convertType(json_obj[i].f_type);
 									str_f_kind = convertKind(json_obj[i].f_kind);
-
 									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 								});	
 								
@@ -689,7 +679,6 @@ function warningMsg(msg) {
 						$('body').css('cursor', 'progress');
 						degree = $("#degree").val();
 						blndel = document.querySelector('input[name="blndel"]:checked').value;
-
 						$.ajax({
 							type : "POST",
 							url : "finModel.do",
@@ -749,9 +738,11 @@ function warningMsg(msg) {
 						case_id: uuid
 					},
 					success : function(result) {
+						//alert("1");
 						var obj = JSON.parse(result);
-						genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
-						return;
+						genSimuGraph3(obj[0].Income_True, obj[1].Income_False, obj[2].Outcome_True, obj[3].Outcome_False, obj[4].Income_Total, obj[5].Outcome_Total,obj[6].BalanceDate);
+						//genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
+						return;//draw_line_1
 						
 						var obj = JSON.parse(result);
 						var income = obj[0].income;
@@ -776,9 +767,11 @@ function warningMsg(msg) {
 						case_id: uuid
 					},
 					success : function(result) {
+						//alert("2");
 						var obj = JSON.parse(result);
-						genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
-						return;
+						genSimuGraph3(obj[0].Income_True, obj[1].Income_False, obj[2].Outcome_True, obj[3].Outcome_False, obj[4].Income_Total, obj[5].Outcome_Total,obj[6].BalanceDate);
+						//genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
+						return;//draw_line_2
 						
 						var obj = JSON.parse(result);
 						var income = obj[0].income;
@@ -791,7 +784,26 @@ function warningMsg(msg) {
 					}
 				});	
 			});
-		})
+			$("body").delegate(".btn-bath", "click", function() {
+				uuid = $(this).val();
+				$.ajax({
+					type : "POST",
+					url : "finModel.do",
+					data : {
+						action : "gen_d3js_bath",
+						case_id: uuid
+					},
+					success : function(result) {
+						//take a bath
+						var json_obj = JSON.parse(result);
+						draw_bath(json_obj);
+						//################################################################
+						return;
+					}
+				});	
+			});
+			
+		});
 	</script>
 </c:if>
 <!-- /**************************************  以上管理者JS區塊    *********************************************/	-->
@@ -847,6 +859,8 @@ function warningMsg(msg) {
 							+ "class='btn_query btn btn-primary'>查看</button></td>"
 							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
 							+ "class='btn-simu btn btn-primary'>產生</button></td>"
+							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
+							+ "class='btn-bath btn btn-primary'>產生</button></td>"
 							+ "</tr>";
 					});					
 					//判斷查詢結果
@@ -863,6 +877,7 @@ function warningMsg(msg) {
 			//查看財務計畫 事件聆聽
 			$("#fincase-table-user").delegate(".btn_query", "click", function() {
 				uuid = $(this).val();
+				$("#bathbutton").val($(this).val());
 				g_create_date = $("[name='" + uuid + "']").parent().parent().children( ".create_date" ).text();
 				
 				$.ajax({
@@ -883,7 +898,6 @@ function warningMsg(msg) {
 						var result_table = "";
 						
 						$.each(json_obj,function(i, item) {
-
 							var str_f_type = "";
 							var str_action = "";
 							var str_f_kind = "";
@@ -891,7 +905,6 @@ function warningMsg(msg) {
 							str_action = convertAction(json_obj[i].action);
 							str_f_type = convertType(json_obj[i].f_type);
 							str_f_kind = convertKind(json_obj[i].f_kind);
-
 							result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 						});
 						
@@ -960,7 +973,6 @@ function warningMsg(msg) {
 									var result_table = "";
 									
 									$.each(json_obj,function(i, item) {
-
 										var str_f_type = "";
 										var str_action = "";
 										var str_f_kind = "";
@@ -968,7 +980,6 @@ function warningMsg(msg) {
 										str_action = convertAction(json_obj[i].action);
 										str_f_type = convertType(json_obj[i].f_type);
 										str_f_kind = convertKind(json_obj[i].f_kind);
-
 										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 									});
 									
@@ -1067,7 +1078,6 @@ function warningMsg(msg) {
 									var result_table = "";
 									
 									$.each(json_obj,function(i, item) {
-
 										var str_f_type = "";
 										var str_action = "";
 										var str_f_kind = "";
@@ -1075,7 +1085,6 @@ function warningMsg(msg) {
 										str_action = convertAction(json_obj[i].action);
 										str_f_type = convertType(json_obj[i].f_type);
 										str_f_kind = convertKind(json_obj[i].f_kind);
-
 										result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 									});		
 									
@@ -1158,7 +1167,6 @@ function warningMsg(msg) {
 									str_action = convertAction(json_obj[i].action);
 									str_f_type = convertType(json_obj[i].f_type);
 									str_f_kind = convertKind(json_obj[i].f_kind);
-
 									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 								});
 								
@@ -1181,7 +1189,6 @@ function warningMsg(msg) {
 					}
 				}
 			});
-
 			//切換至"產生模擬資料"頁面
 			$("#switch-simu-button").click( function() {
 				uuid = $(this).attr('name');
@@ -1210,7 +1217,6 @@ function warningMsg(msg) {
 						$('body').css('cursor', 'progress');
 						degree = $("#degree").val();
 						blndel = document.querySelector('input[name="blndel"]:checked').value;
-
 						$.ajax({
 							type : "POST",
 							url : "finModel.do",
@@ -1225,7 +1231,6 @@ function warningMsg(msg) {
 								var json_obj = $.parseJSON(result);
 								var result_table = "";
 								$.each(json_obj,function(i, item) {
-
 									var str_f_type = "";
 									var str_action = "";
 									var str_f_kind = "";
@@ -1233,7 +1238,6 @@ function warningMsg(msg) {
 									str_action = convertAction(json_obj[i].action);
 									str_f_type = convertType(json_obj[i].f_type);
 									str_f_kind = convertKind(json_obj[i].f_kind);
-
 									result_table = genResultTable(i, json_obj[i], str_action, str_f_type, str_f_kind, result_table);
 								});
 								
@@ -1270,9 +1274,11 @@ function warningMsg(msg) {
 						case_id: uuid
 					},
 					success : function(result) {
+						//alert("3");
 						var obj = JSON.parse(result);
-						genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
-						return;
+						genSimuGraph3(obj[0].Income_True, obj[1].Income_False, obj[2].Outcome_True, obj[3].Outcome_False, obj[4].Income_Total, obj[5].Outcome_Total,obj[6].BalanceDate);
+						//genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
+						return; //draw_line_3
 						
 						var obj = JSON.parse(result);
 						var income = obj[0].income;
@@ -1298,8 +1304,9 @@ function warningMsg(msg) {
 					},
 					success : function(result) {
 						var obj = JSON.parse(result);
-						genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
-						return;
+						genSimuGraph3(obj[0].Income_True, obj[1].Income_False, obj[2].Outcome_True, obj[3].Outcome_False, obj[4].Income_Total, obj[5].Outcome_Total,obj[6].BalanceDate);
+						//genSimuGraph2(obj[0].Income, obj[1].Outcome, obj[2].Income_Total, obj[3].Outcome_Total);
+						return; //draw_line_4
 						
 						var obj = JSON.parse(result);
 						var income = obj[0].income;
@@ -1309,6 +1316,24 @@ function warningMsg(msg) {
 						var totalIncome = obj[4].totalIncome;
 						var totalOutlay = obj[5].totalOutlay;
 						genSimuGraph(income, outlay, detailData, fincase, totalIncome, totalOutlay);
+					}
+				});	
+			});
+			$("body").delegate(".btn-bath", "click", function() {
+				uuid = $(this).val();
+				$.ajax({
+					type : "POST",
+					url : "finModel.do",
+					data : {
+						action : "gen_d3js_bath",
+						case_id: uuid
+					},
+					success : function(result) {
+						//take a bath
+						var json_obj = JSON.parse(result);
+						draw_bath(json_obj);
+						//################################################################
+						return;
 					}
 				});	
 			});
@@ -1335,6 +1360,7 @@ function warningMsg(msg) {
 			<ul>
 				<li><a href="#finTool">財務評估工具</a></li>
 				<li><a href="#simuGraph">模擬圖</a></li>
+				<li><a href="#bathtub">浴盆曲線</a></li>
 			</ul>
 		
 			<div id="finTool">
@@ -1355,6 +1381,7 @@ function warningMsg(msg) {
 												<th>案件產生日期</th>
 												<th>財務計畫</th>
 												<th>產生模擬圖</th>
+												<th>產生浴盆曲線圖</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -1366,6 +1393,7 @@ function warningMsg(msg) {
 				                		<input type="hidden" id="hidden_case_id" name="hidden_case_id" />                
 					                    <button class="btn btn-primary" id="insert-simu-button">新增</button>
 					                    <button class="btn btn-primary" id="gen_d3js_button">產生模擬圖</button>
+					                    <button class="btn btn-primary btn-bath" id="bathbutton">產生浴盆曲線圖</button>
 					                    <button class="btn btn-primary" id="switch-simu-button">產生模擬資料</button>
 					                    <button class="btn btn-exec" onClick="location.reload()">回上頁</button>
 				                    </div>
@@ -1404,6 +1432,7 @@ function warningMsg(msg) {
 											<th>案件產生日期</th>
 											<th>財務計畫</th>
 											<th>產生模擬圖</th>
+											<th>產生浴盆曲線圖</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -1415,6 +1444,7 @@ function warningMsg(msg) {
 			                		<input type="hidden" id="hidden_case_id" name="hidden_case_id" />                
 				                    <button class="btn btn-primary" id="insert-simu-button">新增</button>
 				                    <button class="btn btn-primary" id="gen_d3js_button">產生模擬圖</button>
+				                    <button class="btn btn-primary btn-bath" id='bathbutton'>產生浴盆曲線圖</button>
 				                    <button class="btn btn-primary" id="switch-simu-button">產生模擬資料</button>
 				                    <button class="btn btn-exec" onClick="location.reload()">回上頁</button>
 			                    </div>
@@ -1450,6 +1480,11 @@ function warningMsg(msg) {
 				</div>
 			</div>
 			
+			<div id="bathtub">
+	      		<div class="content">
+	      			<div id="bath" style="margin-left: 50px"></div>
+				</div>
+			</div>
 			<!--==================    jquery-ui dialog (管理者)    ==================-->
 			<c:if test="${sessionScope.role==1}">
 				<!--對話窗樣式- 建立模型 -->
@@ -1648,7 +1683,403 @@ function warningMsg(msg) {
 </div>
 
 <script>
+	function draw_bath(bath_data){
+		//take a bath
+		
+		d3.select("svg").remove();
+		var margin = {top: 70, right: 80, bottom: 50, left: 80};
+		var width = 960;
+		var height = 450;
+	//底圖大小
+	//alert(new Date(d3.min(bath_data, function(d) { return d.FinanceDate; })));
+		var svg = d3.select("#bath").append("svg")
+			.attr("width", width + margin.left + margin.right)							
+			.attr("height", height + margin.top + margin.bottom);
+		
+		//var a=(Math.round(d3.min(bath_data, function(d) { return d.FailureRate; })*10)*0.1);
+		//var b=((1>Math.round(d3.max(bath_data, function(d) { return d.FailureRate; })*10) * 0.1 )?1:(Math.round(d3.max(bath_data, function(d) { return d.FailureRate; })*10)*0.1));
 
+		var xScale = d3.time.scale()
+			.domain([new Date(d3.min(bath_data, function(d) { return d.FinanceDate; })),new Date(d3.max(bath_data, function(d) { return d.FinanceDate; }))])
+			.range([0, width - margin.left - margin.right]);
+		var yScale = d3.scale.linear()
+		    .domain([(1.2*Math.round(d3.min(bath_data, function(d) { return d.FailureRate; })*10)*0.1),((1>Math.round(d3.max(bath_data, function(d) { return d.FailureRate; })*10) * 0.1 )?1:(Math.round(1.2*d3.max(bath_data, function(d) { return d.FailureRate; })*10)*0.1))])
+		    .range([height - margin.top - margin.bottom,0]);
+		var xAxis = d3.svg.axis()
+		    .scale(xScale)
+		    .orient("bottom")
+		    .tickFormat(d3.time.format('%Y-%m-%d'));
+		var yAxis = d3.svg.axis()
+		    .scale(yScale)
+		    .ticks(8)
+		    .tickFormat(function(d){return d;})
+		    .orient("left");
+		
+		svg.append("g")
+			.append("text")
+			.text("浴盆曲線圖")
+			.attr("class","title")
+			.attr({'fill':'#222','x':((width * 0.5) - (margin.right*1.5)+20) ,'y':(margin.top/2) })
+			.style({'font-size':'32px','font-family':'Microsoft JhengHei'});
+		
+		 svg.append("g")
+			.append('text')
+			.text("時間")
+			.attr('transform', 'translate('+(width-margin.right+20)+','+(height-margin.bottom)+')');
+		  
+		svg.append("g")
+		   .attr("class","axis")
+		   .attr("transform","translate(" + margin.left + "," + (height - margin.bottom) + ")")
+		   .call(xAxis)
+		   .selectAll("text")
+		   .attr("transform", "rotate(25)")
+		   .style("text-anchor", "start");
+		
+		svg.append("g")
+		  .attr("class","axis")
+		  .attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		  .call(yAxis)
+		  .append('text')
+// 		  .text("比例")
+		  .attr('transform', 'translate(-10, -20)');
+		
+		//產生線條
+		var lineGen = d3.svg.line()
+			.x(function(data) {return xScale(new Date(data.FinanceDate));})
+			.y(function(data) {return yScale(data.FailureRate);})
+			.interpolate("basis");
+		
+		
+		var minDate=(Math.random()>0.5?d3.max(bath_data, function(d) { return d.FinanceDate; }):d3.min(bath_data, function(d) { return d.FinanceDate; }));
+		var minRate=(Math.random()>0.5?d3.max(bath_data, function(d) { return d.FailureRate; }):d3.min(bath_data, function(d) { return d.FailureRate; }));
+		var new_vector=[];
+		$.each (bath_data, function (i,item) {
+			new_vector[i]={};
+			new_vector[i].FinanceDate=minDate;
+			new_vector[i].FailureRate=minRate;
+		});
+		
+		svg.append('path')
+		    .attr({
+		      'd': lineGen(new_vector),
+		      'stroke': '#09F',
+		      'fill': 'none',
+		      'stroke-width':'3'
+		    }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		    .transition()
+		    .delay(300)
+		    .duration(1500)
+		    .attr({
+		      'd': lineGen(bath_data),
+		    });	
+		
+		$("#tabs").tabs( "option", "active", 2 );
+	}
+
+	//###############################################
+	//###############################################
+	//############## 以上浴盆  #########################
+	//###############################################
+	//###############################################
+	function genSimuGraph3(income_true, income_false, outcome_true, outcome_false, totalIncome, totalOutcome, balance){
+		
+		var tmp1='in:\n', tmp2='out:\n', tmp3='in_false:\n', tmp4='out_false:\n';
+		var maxd='1900-01-01';
+		var mind='2300-01-01';
+		$.each (income_true, function (i,item) {
+			tmp1+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+			mind=item.Date<mind?item.Date:mind;
+			maxd=item.Date>maxd?item.Date:maxd;
+		});
+		$.each (income_false, function (i,item) {
+			tmp3+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+			mind=item.Date<mind?item.Date:mind;
+			maxd=item.Date>maxd?item.Date:maxd;
+		});
+		$.each (outcome_true, function (i,item) {
+			tmp2+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+			mind=item.Date<mind?item.Date:mind;
+			maxd=item.Date>maxd?item.Date:maxd;
+		});
+		$.each (outcome_false, function (i,item) {
+			tmp4+=i+" "+ item.Date+" "+item.Amount+" "+item.Percent+"\n";
+			mind=item.Date<mind?item.Date:mind;
+			maxd=item.Date>maxd?item.Date:maxd;
+		});
+		//income=income_true;
+		//outcome=outcome_true;
+		
+		//var mind=(d3.min(income, function(d) { return d.Date; })<d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; }));
+		//(d3.min(income, function(d) { return d.Date; })>d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; })),
+		//var maxd=(d3.max(income, function(d) { return d.Date; })>d3.max(outcome, function(d) { return d.Date; })?d3.max(income, function(d) { return d.Date; }):d3.max(outcome, function(d) { return d.Date; }));
+		d3.select("svg").remove();
+		var red = balance;//(red_line(income,outcome));
+		var margin = {top: 70, right: 80, bottom: 50, left: 80};
+		var width = 960;
+		var height = 450;
+	//底圖大小
+		var svg = d3.select("#newpic").append("svg")
+		.attr("width", width + margin.left + margin.right)							
+		.attr("height", height + margin.top + margin.bottom);
+	//X軸Y軸 還有大加的Scaler
+		var xScale = d3.time.scale()
+	 					.domain([new Date(mind),new Date(maxd)])
+	  				.range([0, width - margin.left - margin.right]);		
+	  var yScale = d3.scale.linear()
+					    .domain([0,160])
+					    .range([height - margin.top - margin.bottom, 0]);
+	  var xAxis = d3.svg.axis()
+					    .scale(xScale)
+					    .orient("bottom")
+					    .tickFormat(d3.time.format('%Y-%m-%d'));
+	//				    .ticks(d3.time.month, 1).ticks(d3.time.week, 2);
+	
+	  var yAxis = d3.svg.axis()
+					    .scale(yScale)
+					    //.tickFormat(d3.format(",%"))
+					    .tickFormat(function(d){return d+'%';})
+					    .orient("left");
+	//title 和收入支出 X軸數
+	  svg.append("g")
+		.append("text")
+		.text("財務損益平衡統計圖")
+		.attr("class","title")
+		.attr({'fill':'#222','x':((width * 0.5) - (margin.right*1.5)) ,'y':(margin.top/2) })
+		.style({'font-size':'32px','font-family':'Microsoft JhengHei'});
+	  
+	  svg.append("g")
+		.append("text")
+		.text("█ 總支出:"+totalOutcome[0].Total)
+		.attr("class","title")
+		.attr({'fill':'#9c0','x':(width-margin.right *0.5) ,'y':(margin.top+30) })
+		.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
+	  
+	  svg.append("g")
+		.append("text")
+		.text("█ 總收入: "+totalIncome[0].Total)
+		.attr("class","title")
+		.attr({'fill':'#09F','x':(width-margin.right *0.5) ,'y':(margin.top) })
+		.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
+	  
+	  svg.append("g")
+		.append("text")
+		.text("(虛線為模擬，實線為實際)")
+		.attr("class","title")
+		.attr({'fill':'#777','x':(width-margin.right *0.5-20) ,'y':(margin.top+60) })
+		.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
+	  
+	  svg.append("g")
+		.append("text")
+		.text("安全餘額警示："+(balance=="None"?"　無資料　":balance))
+		.attr("class","title")
+		.attr({'fill':'#F00','x':(width-margin.right *0.5-18) ,'y':(margin.top+90) })
+		.style({'font-size':'16px','font-family':'Microsoft JhengHei'});
+	  
+	 svg.append("g")
+		.append('text')
+		.text("時間")
+		.attr('transform', 'translate('+(width-margin.right+20)+','+(height-margin.bottom)+')');
+	  
+	svg.append("g")
+	   .attr("class","axis")
+	   .attr("transform","translate(" + margin.left + "," + (height - margin.bottom) + ")")
+	   .call(xAxis)
+	   .selectAll("text")
+	   .attr("transform", "rotate(25)")
+	   .style("text-anchor", "start");
+	
+	svg.append("g")
+	  .attr("class","axis")
+	  .attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+	  .call(yAxis)
+	  .append('text')
+	  .text("比例")
+	  .attr('transform', 'translate(-10, -20)');
+	
+	//產生線條
+	var lineGen = d3.svg.line()
+		.x(function(data) {return xScale(new Date(data.Date));})
+		.y(function(data) {return yScale(data.Percent);})
+		.interpolate("line");
+	//五條線
+	if(income_true.length!=0){
+		svg.append('path')
+	    .attr({
+	      'd': lineGen(zero_v(income_true)),
+	      'stroke': '#09F',
+	      'fill': 'none',
+	      'stroke-width':'3'
+	    }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+	    .transition()
+	    .delay(300)
+	    .duration(1500)
+	    .attr({
+	      'd': lineGen(income_true),
+	    });	
+	}
+	if(income_false.length!=0){
+		svg.append('path')
+		    .attr({
+		      'd': lineGen(zero_v(income_false)),
+		      'stroke': '#09c',
+		      'fill': 'none',
+		      'stroke-width':'3'
+		    }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		    .transition()
+		    .delay(300)
+		    .duration(1500)
+		    .attr({
+		      'd': lineGen(income_false),
+		    }).style({'stroke-dasharray':'2'});
+	}
+	if(outcome_true.length!=0){
+		svg.append('path')
+			.attr({
+			   'd': lineGen(zero_v(outcome_true)),
+			   'stroke': '#9c0',
+			   'fill': 'none',
+			   'stroke-width':'3'
+			}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+			.transition()
+			.duration(1500)
+			.attr({
+			   'd': lineGen(outcome_true),
+			});
+	}
+	if(outcome_false.length!=0){
+		svg.append('path')
+		    .attr({
+		      'd': lineGen(zero_v(outcome_false)),
+		      'stroke': '#9a0',
+		      'fill': 'none',
+		      'stroke-width':'3'
+		    }).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		    .transition()
+		    .delay(300)
+		    .duration(1500)
+		    .attr({
+		      'd': lineGen(outcome_false),
+		    }).style({'stroke-dasharray':'2'});
+	}
+	
+	if(red.length>5){
+		svg.append('path')
+			.attr({
+			   'd': lineGen([{"Date": red,"Percent": 0},{"Date": red,"Percent": 0}]),
+			   'stroke': '#F00',
+			   'fill': 'none',
+			   'stroke-width':'3',
+			   'stroke-dasharray' : '5,3',
+			}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+			.transition()
+			.duration(1500)
+			.attr({
+		  		'd': lineGen([{"Date": red,"Percent": 0},{"Date": red,"Percent": 160}]),
+			});
+	}
+
+//四條線的tool圓圈圈
+	svg.append("g").selectAll("circle")
+		.data(income_true)
+		.enter()
+		.append("circle")
+		.attr({
+			"cx":function(d) {return xScale(new Date(d3.max(income_true, function(d) { return d.Date; })))+margin.right*3+10;},
+			"cy":function(d) {return yScale(d3.mean(income_true,function(d){return d.Percent}));},
+			"r" : 5,
+			"fill": "#09F",//藍色
+			"title" : function(d){return "日期: "+d.Date+"<br>收入: "+d.Amount+"<br>比例: "+Math.floor(d.Percent)+"%";},
+			"class" : "tool"
+		}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		.transition()
+		.delay(700)
+    	.duration(1500)
+    	.attr({
+    		"cx":function(d) {return xScale(new Date(d.Date));},
+			"cy":function(d) {return yScale(d.Percent);}
+   	});
+	svg.append("g").selectAll("circle")
+		.data(income_false)
+		.enter()
+		.append("circle")
+		.attr({
+			"cx":function(d) {return xScale(new Date(d3.max(income_false, function(d) { return d.Date; })))+margin.right*3+10;},
+			"cy":function(d) {return yScale(d3.mean(income_false,function(d){return d.Percent}));},
+			"r" : 4,
+			"fill": "#09c",//藍色
+			"title" : function(d){return "日期: "+d.Date+"<br>收入: "+d.Amount+"<br>比例: "+Math.floor(d.Percent)+"%";},
+			"class" : "tool"
+		}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		.transition()
+		.delay(700)
+    	.duration(1500)
+    	.attr({
+    		"cx":function(d) {return xScale(new Date(d.Date));},
+			"cy":function(d) {return yScale(d.Percent);}
+   	});
+	svg.append("g").selectAll("circle")
+		.data(outcome_true)
+		.enter()
+		.append("circle")
+		.attr({    
+//			"cx":function(d) {return xScale(new Date(d.Date));},
+			"cx":function(d) {return xScale(new Date(d3.min(outcome_true,function(d){return d.Date})))-margin.left-10;},
+			"cy":function(d) {return yScale(d3.mean(outcome_true,function(d){return d.Percent}));},
+			"r" : 5,
+			"fill": "#9c0",//綠色
+			"title" : function(d){return "日期: "+d.Date+"<br>支出: "+Math.abs(d.Amount)+"<br>比例: "+Math.floor(d.Percent)+"%";},
+			"class" : "tool"
+		}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		.transition()
+		.delay(500)
+	  	.duration(1500)
+	  	.attr({
+		   	"cx":function(d) {return xScale(new Date(d.Date));},
+			"cy":function(d) {return yScale(d.Percent);}
+ 		});
+	
+	  svg.append("g").selectAll("circle")
+		.data(outcome_false)
+		.enter()
+		.append("circle")
+		.attr({
+			"cx":function(d) {return xScale(new Date(d3.max(outcome_false, function(d) { return d.Date; })))+margin.right*3+10;},
+			"cy":function(d) {return yScale(d3.mean(outcome_false,function(d){return d.Percent}));},
+			"r" : 4,
+			"fill": "#9a0",//藍色
+			"title" : function(d){return "日期: "+d.Date+"<br>收入: "+d.Amount+"<br>比例: "+Math.floor(d.Percent)+"%";},
+			"class" : "tool"
+		}).attr("transform","translate(" + (margin.left)+ "," + margin.top + ")")
+		.transition()
+		.delay(700)
+    	.duration(1500)
+    	.attr({
+    		"cx":function(d) {return xScale(new Date(d.Date));},
+			"cy":function(d) {return yScale(d.Percent);}
+   	});
+		  
+	  $(".tool").mouseover(function(e){
+			 $(this).attr("newTitle",$(this).attr("title"));
+			 $(this).attr("title","");
+			 var tooltip = "<div id='tooltip'style='position:absolute;border:1px solid #333;background:#f7f5d1;padding:5px;color:#333;min-width:140px;display:none;'>"+ $(this).attr("newtitle") +"<\/div>";
+			 $("body").append(tooltip);
+			 $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"}).show("fast");
+			 }).mouseout(function(){
+				 $(this).attr("title",$(this).attr("newTitle"));
+			         $("#tooltip").remove();
+			 }).mousemove(function(e){
+			         $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"});
+		});
+	  
+		$("#tabs").tabs( "option", "active", 1 );
+	}
+	
+	//##################################################
+	//############### 以上第三版 有四條線  #####################
+	//############## 分實際和模擬 收入和支出 ###################
+	//##### 以下第二版 Ben畫的可愛彈跳曲線 用百分比取代金額數值 #########
+	//##################################################
+	
 	function red_line(income,outcome){
 		if(income.length<1||outcome.length<1){return"X_X";}
 		
@@ -1882,7 +2313,6 @@ function warningMsg(msg) {
 	  
 		$("#tabs").tabs( "option", "active", 1 );
 	}
-
 	function genSimuGraph(income, outlay, detailData, fincase, totalIncome, totalOutlay){
 		
 		d3.select("svg").remove();
@@ -1900,14 +2330,12 @@ function warningMsg(msg) {
 	        var parseDate = d3.time.format("%Y-%m-%d").parse;
 			alarm = Number(fincase[0].safety_money);
 			balance = Number(fincase[0].Amount);
-
 			//　取出Ｘ軸的最早日期及最晚日期
 			firstDate = fincase[0].create_date;
 			endDate = income[income.length-1].date;
 			if (Date.parse(endDate) > Date.parse(outlay[outlay.length-1].date)){
 				endDate = outlay[outlay.length-1].date;
 			}
-
 			// 如果第一筆收入日期大於期初日期，將期初資金及期初日期塞進 收入 的第一筆資料
 			if (Date.parse(income[0].date) > Date.parse(fincase[0].create_date)){
 				var firstIncome = "{\"date\":\"" + fincase[0].create_date + "\", \"pv\":\"" + fincase[0].Amount + "\"}";
@@ -1945,7 +2373,6 @@ function warningMsg(msg) {
 				var outlayData = "{\"date\":\"" + outlay[j].date + "\", \"pv\":\"" + outlay[j].pv + "\"}";
 				outputOutlay.push(JSON.parse(outlayData));
 				outputDetail.push(JSON.parse(outlayData));
-
 				if(Math.abs(Number(outlay[j].pv)) > maxAmount){
 					maxAmount = Number(outlay[j].pv);
 				}
@@ -1963,7 +2390,6 @@ function warningMsg(msg) {
 				}
 			}	
 		}
-
 		CreateLines(outputIncome, outputOutlay, outputAlarm);
 	
 		function CreateLines(item1,item2,item3){
