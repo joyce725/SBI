@@ -142,7 +142,7 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 	+ "<td id='description_"+index+"'>"+ jsonobj.description+ "</td>"
 	+ "<td id='strategy_"+index+"'>"+ jsonobj.strategy+ "</td>"
 	+ "<td><button id='"+index+"' value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id + "' "
-	+ "class='btn_query btn_update btn btn-wide btn-primary'>修改</button>"
+	+ "class='btn_query btn_update btn btn-wide btn-primary'>修改</button>&nbsp;&nbsp;"
 	+ "<button value='"+ jsonobj.simulation_id+"' name='"+ jsonobj.case_id+ "' "
 	+ "class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
 	return resultTable;
@@ -265,9 +265,7 @@ function warningMsg(msg) {
 											+ "<td><button value='" + json_obj[i].case_id + "' name='" + json_obj[i].case_id + "' "
 											+ "class='btn_query btn btn-primary'>查看</button></td>"
 											+ "<td><button value='" + json_obj[i].case_id + "' name='user_query'"
-											+ "class='btn-simu btn btn-primary'>產生</button></td>"
-											+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
-											+ "class='btn-bath btn btn-primary'>產生</button></td>"
+											+ "class='btn-simu btn-bath btn btn-primary'>產生</button></td>"
 											+ "</tr>";											
 									});
 									
@@ -318,9 +316,7 @@ function warningMsg(msg) {
 							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
 							+ "class='btn_query btn btn-primary'>查看</button></td>"
 							+ "<td><button value='"+ json_obj[i].case_id+"' name='user_query'"
-							+ "class='btn-simu btn btn-primary'>產生</button></td>"
-							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
-							+ "class='btn-bath btn btn-primary'>產生</button></td>"
+							+ "class='btn-simu btn-bath btn btn-primary'>產生</button></td>"
 							+ "</tr>";
 					});					
 					//判斷查詢結果
@@ -337,7 +333,7 @@ function warningMsg(msg) {
 			//查看財務計畫 事件聆聽
 			$("#fincase-table-admin").delegate(".btn_query", "click", function() {
 				uuid = $(this).val();
-				$("#bathbutton").val($(this).val());
+				$("#gen_d3js_button").val($(this).val());
 				g_create_date = $("[name='" + uuid + "']").parent().parent().children( ".create_date" ).text();
 				
 				$.ajax({
@@ -858,9 +854,7 @@ function warningMsg(msg) {
 							+ "<td><button value='"+ json_obj[i].case_id+"' name='user_query' "
 							+ "class='btn_query btn btn-primary'>查看</button></td>"
 							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
-							+ "class='btn-simu btn btn-primary'>產生</button></td>"
-							+ "<td><button value='"+ json_obj[i].case_id+"' name='"+ json_obj[i].case_id + "' "
-							+ "class='btn-bath btn btn-primary'>產生</button></td>"
+							+ "class='btn-simu btn-bath btn btn-primary'>產生</button></td>"
 							+ "</tr>";
 					});					
 					//判斷查詢結果
@@ -877,7 +871,7 @@ function warningMsg(msg) {
 			//查看財務計畫 事件聆聽
 			$("#fincase-table-user").delegate(".btn_query", "click", function() {
 				uuid = $(this).val();
-				$("#bathbutton").val($(this).val());
+				$("#gen_d3js_button").val($(this).val());
 				g_create_date = $("[name='" + uuid + "']").parent().parent().children( ".create_date" ).text();
 				
 				$.ajax({
@@ -1356,11 +1350,11 @@ function warningMsg(msg) {
 	<div id="msgAlert"></div>
 	
 	<div class="search-result-wrap">
-		<div id="tabs">
+		<div id="tabs" style='min-width:1180px;'>
 			<ul>
 				<li><a href="#finTool">財務評估工具</a></li>
 				<li><a href="#simuGraph">模擬圖</a></li>
-				<li><a href="#bathtub">浴盆曲線</a></li>
+				<li><a href="#bathtub">資金失效圖</a></li>
 			</ul>
 		
 			<div id="finTool">
@@ -1381,7 +1375,6 @@ function warningMsg(msg) {
 												<th>案件產生日期</th>
 												<th>財務計畫</th>
 												<th>產生模擬圖</th>
-												<th>產生浴盆曲線圖</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -1392,8 +1385,7 @@ function warningMsg(msg) {
 				                	<div class="btn-row">			    
 				                		<input type="hidden" id="hidden_case_id" name="hidden_case_id" />                
 					                    <button class="btn btn-primary" id="insert-simu-button">新增</button>
-					                    <button class="btn btn-primary" id="gen_d3js_button">產生模擬圖</button>
-					                    <button class="btn btn-primary btn-bath" id="bathbutton">產生浴盆曲線圖</button>
+					                    <button class="btn btn-primary btn-bath" id="gen_d3js_button">產生模擬圖</button>
 					                    <button class="btn btn-primary" id="switch-simu-button">產生模擬資料</button>
 					                    <button class="btn btn-exec" onClick="location.reload()">回上頁</button>
 				                    </div>
@@ -1432,7 +1424,6 @@ function warningMsg(msg) {
 											<th>案件產生日期</th>
 											<th>財務計畫</th>
 											<th>產生模擬圖</th>
-											<th>產生浴盆曲線圖</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -1443,8 +1434,7 @@ function warningMsg(msg) {
 			                	<div class="btn-row">			    
 			                		<input type="hidden" id="hidden_case_id" name="hidden_case_id" />                
 				                    <button class="btn btn-primary" id="insert-simu-button">新增</button>
-				                    <button class="btn btn-primary" id="gen_d3js_button">產生模擬圖</button>
-				                    <button class="btn btn-primary btn-bath" id='bathbutton'>產生浴盆曲線圖</button>
+				                    <button class="btn btn-primary btn-bath" id="gen_d3js_button">產生模擬圖</button>
 				                    <button class="btn btn-primary" id="switch-simu-button">產生模擬資料</button>
 				                    <button class="btn btn-exec" onClick="location.reload()">回上頁</button>
 			                    </div>
@@ -1475,14 +1465,14 @@ function warningMsg(msg) {
 			
 			<div id="simuGraph">         
 	      		<div class="content">
-	      			<div id="newpic" style="margin-left: 50px"></div>
-	      			<div id="z" style="margin-left: 50px"></div>
+	      			<div id="newpic" style="margin-left: 50px;"></div>
+	      			<div id="z" style="margin-left: 50px;"></div>
 				</div>
 			</div>
 			
 			<div id="bathtub">
 	      		<div class="content">
-	      			<div id="bath" style="margin-left: 50px"></div>
+	      			<div id="bath" style="margin-left: 50px;"></div>
 				</div>
 			</div>
 			<!--==================    jquery-ui dialog (管理者)    ==================-->
@@ -1686,7 +1676,7 @@ function warningMsg(msg) {
 	function draw_bath(bath_data){
 		//take a bath
 		
-		d3.select("svg").remove();
+		d3.select("#bath svg").remove();
 		var margin = {top: 70, right: 80, bottom: 50, left: 80};
 		var width = 960;
 		var height = 450;
@@ -1699,27 +1689,45 @@ function warningMsg(msg) {
 		//var a=(Math.round(d3.min(bath_data, function(d) { return d.FailureRate; })*10)*0.1);
 		//var b=((1>Math.round(d3.max(bath_data, function(d) { return d.FailureRate; })*10) * 0.1 )?1:(Math.round(d3.max(bath_data, function(d) { return d.FailureRate; })*10)*0.1));
 
+// 		var tmp=d3.max(bath_data, function(d) { return d.FailureRate; });
+// 		alert(tmp);
+// 		alert(d3.min(bath_data, function(d) { return d.FailureRate; }));
+// 		if(tmp-d3.min(bath_data, function(d) { return d.FailureRate; })<0.5){
+// 			tmp=Math.round(d3.min(bath_data, function(d) { return d.FailureRate; })+0.5);
+// 		}
 		var xScale = d3.time.scale()
 			.domain([new Date(d3.min(bath_data, function(d) { return d.FinanceDate; })),new Date(d3.max(bath_data, function(d) { return d.FinanceDate; }))])
+// 			.ticks(d3.time.month, 1)
 			.range([0, width - margin.left - margin.right]);
 		var yScale = d3.scale.linear()
-		    .domain([(1.2*Math.round(d3.min(bath_data, function(d) { return d.FailureRate; })*10)*0.1),((1>Math.round(d3.max(bath_data, function(d) { return d.FailureRate; })*10) * 0.1 )?1:(Math.round(1.2*d3.max(bath_data, function(d) { return d.FailureRate; })*10)*0.1))])
+// 			.domain([(1.2*Math.round(d3.min(bath_data, function(d) { return d.FailureRate; })*10)*0.1),tmp])
+		    .domain([(1.2*Math.round(d3.min(bath_data, function(d) { return d.FailureRate; })*10)*0.1),((Math.round(1.2*d3.max(bath_data, function(d) { return d.FailureRate; })*10)*0.1))])
+// 		    .domain([(1.2*Math.round(d3.min(bath_data, function(d) { return d.FailureRate; })*10)*0.1),((1>Math.round(d3.max(bath_data, function(d) { return d.FailureRate; })*10) * 0.1 )?1:(Math.round(1.2*d3.max(bath_data, function(d) { return d.FailureRate; })*10)*0.1))])
 		    .range([height - margin.top - margin.bottom,0]);
-		var xAxis = d3.svg.axis()
+		var xAxis;
+		if(new Date(d3.max(bath_data, function(d) { return d.FinanceDate; }))-new Date(d3.min(bath_data, function(d) { return d.FinanceDate; }))>7776000000){
+			xAxis = d3.svg.axis()
+			    .scale(xScale)
+			    .ticks(d3.time.month,1)
+			    .orient("bottom")
+			    .tickFormat(d3.time.format('%Y-%m-%d'));
+		}else{
+			xAxis = d3.svg.axis()
 		    .scale(xScale)
 		    .orient("bottom")
 		    .tickFormat(d3.time.format('%Y-%m-%d'));
+		}
 		var yAxis = d3.svg.axis()
 		    .scale(yScale)
-		    .ticks(8)
+		    .ticks(5)
 		    .tickFormat(function(d){return d;})
 		    .orient("left");
 		
 		svg.append("g")
 			.append("text")
-			.text("浴盆曲線圖")
+			.text("資金失效(浴盆曲線)圖")
 			.attr("class","title")
-			.attr({'fill':'#222','x':((width * 0.5) - (margin.right*1.5)+20) ,'y':(margin.top/2) })
+			.attr({'fill':'#222','x':((width * 0.5) - (margin.right*1.5)) ,'y':(margin.top/2) })
 			.style({'font-size':'32px','font-family':'Microsoft JhengHei'});
 		
 		 svg.append("g")
@@ -1773,7 +1781,7 @@ function warningMsg(msg) {
 		      'd': lineGen(bath_data),
 		    });	
 		
-		$("#tabs").tabs( "option", "active", 2 );
+		//$("#tabs").tabs( "option", "active", 2 );
 	}
 
 	//###############################################
@@ -1812,7 +1820,7 @@ function warningMsg(msg) {
 		//var mind=(d3.min(income, function(d) { return d.Date; })<d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; }));
 		//(d3.min(income, function(d) { return d.Date; })>d3.min(outcome, function(d) { return d.Date; })?d3.min(income, function(d) { return d.Date; }):d3.min(outcome, function(d) { return d.Date; })),
 		//var maxd=(d3.max(income, function(d) { return d.Date; })>d3.max(outcome, function(d) { return d.Date; })?d3.max(income, function(d) { return d.Date; }):d3.max(outcome, function(d) { return d.Date; }));
-		d3.select("svg").remove();
+		d3.select("#newpic svg").remove();
 		var red = balance;//(red_line(income,outcome));
 		var margin = {top: 70, right: 80, bottom: 50, left: 80};
 		var width = 960;
