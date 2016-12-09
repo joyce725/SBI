@@ -35,18 +35,18 @@
   </context-param>
   <context-param>
     <param-name>uploadpath</param-name>
-<!--     <param-value>/data/sbiupload</param-value> -->
-    <param-value>D:/data/sbiupload</param-value>
+    <param-value>/data/sbiupload</param-value>
+<!--     <param-value>D:/data/sbiupload</param-value> -->
   </context-param>
   <context-param>
     <param-name>photopath</param-name>
-<!--     <param-value>/data/cdriproductpic</param-value> -->
-    <param-value>D:/data/cdriproductpic</param-value>
+    <param-value>/data/cdriproductpic</param-value>
+<!--     <param-value>D:/data/cdriproductpic</param-value> -->
   </context-param>
   <context-param>
     <param-name>qrcodephotopath</param-name>
-<!--     <param-value>/data/cdriqrcode</param-value> -->
-    <param-value>D:/data/cdriqrcode</param-value>
+    <param-value>/data/cdriqrcode</param-value>
+<!--     <param-value>D:/data/cdriqrcode</param-value> -->
   </context-param>
   <context-param>
     <param-name>pythonwebservice</param-name>
@@ -263,6 +263,14 @@
   <servlet-mapping>
     <servlet-name>regionselect</servlet-name>
     <url-pattern>/regionselect.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>serviceAgentAssign</servlet-name>
+    <servlet-class>tw.com.sbi.product.controller.ServiceAgentAssign</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>serviceAgentAssign</servlet-name>
+    <url-pattern>/serviceAgentAssign.do</url-pattern>
   </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
