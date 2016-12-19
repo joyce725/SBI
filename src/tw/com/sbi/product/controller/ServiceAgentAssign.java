@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
+import tw.com.sbi.agent.controller.Agent.AgentService;
+import tw.com.sbi.vo.AgentVO;
 import tw.com.sbi.vo.ProductServiceListVO;
 import tw.com.sbi.vo.ProductServiceVO;
 
@@ -99,6 +101,20 @@ public class ServiceAgentAssign extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("selectServiceInfo".equals(action)) {
+			try {								
+				serviceAgentAssignService = new ServiceAgentAssignService();
+				String serviceId = request.getParameter("service_id");
+				
+				List<ProductServiceVO> list = serviceAgentAssignService.selectServiceInfo(groupId, serviceId);
+				
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if ("update".equals(action)) {
 			logger.debug("product service update agent");
 			try {				
@@ -128,6 +144,22 @@ public class ServiceAgentAssign extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("autocomplete_name".equals(action)) {
+			try {
+				String productSpec = request.getParameter("product_spec");
+				String term = request.getParameter("term");
+				
+				logger.debug("Agent Name: " + term);
+				logger.debug("Product Spec: " + productSpec);
+				
+				serviceAgentAssignService = new ServiceAgentAssignService();
+				List<AgentVO> list = serviceAgentAssignService.getAgentByAgentName(groupId, term, productSpec);
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				response.getWriter().write(jsonStrList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -151,7 +183,11 @@ public class ServiceAgentAssign extends HttpServlet {
 		public List<ProductServiceVO> selectServiceAgentNull(String groupId, String productSpec, String agentName) {
 			return dao.selectServiceAgentNull(groupId, productSpec, agentName);
 		}
-		
+
+		public List<ProductServiceVO> selectServiceInfo(String groupId, String serviceId) {
+			return dao.selectServiceInfo(groupId, serviceId);
+		}
+
 		public List<ProductServiceVO> updateProductService(String service_id, String agentName, String groupId, String productSpec) {
 			ProductServiceVO productServiceVO = new ProductServiceVO();
 			
@@ -160,6 +196,10 @@ public class ServiceAgentAssign extends HttpServlet {
 			
 			dao.updateDB(productServiceVO);
 			return dao.selectServiceAgentNull(groupId, productSpec, agentName);
+		}
+		
+		public List<AgentVO> getAgentByAgentName(String groupId, String agentName, String productSpec){
+			return dao.getAgentByAgentName(groupId, agentName, productSpec);
 		}
 	}
 		
@@ -172,6 +212,10 @@ public class ServiceAgentAssign extends HttpServlet {
 		public List<ProductServiceVO> selectServiceAgentName(String groupId, String productSpec, String agentName);
 		
 		public List<ProductServiceVO> selectAgentAuth(String groupId, String productSpec);
+		
+		public List<ProductServiceVO> selectServiceInfo(String groupId, String serviceId);
+
+		public List<AgentVO> getAgentByAgentName(String groupId, String agentName, String productSpec);
 	}
 		
 	/*************************** 操作資料庫 ****************************************/
@@ -186,7 +230,9 @@ public class ServiceAgentAssign extends HttpServlet {
 		private static final String sp_get_product_service_by_agent_null = "call sp_get_product_service_by_agent_null(?, ?, ?)";
 		private static final String sp_get_product_service_by_agent_name = "call sp_get_product_service_by_agent_name(?, ?, ?)";
 		private static final String sp_get_agent_auth_by_product_spec = "call sp_get_agent_auth_by_product_spec(?, ?)";
+		private static final String sp_get_service_info_by_service_id = "call sp_get_service_info_by_service_id(?, ?)";
 		private static final String sp_update_product_service_agent = "call sp_update_product_service_agent(?, ?)";
+		private static final String sp_get_agent_by_group_and_product_spec = "call sp_get_agent_by_group_and_product_spec(?, ?, ?)";
 		
 		@Override
 		public List<ProductServiceVO> selectServiceAgentNull(String groupId, String productSpec, String agentName) {
@@ -359,7 +405,66 @@ public class ServiceAgentAssign extends HttpServlet {
 			}
 			return list;
 		}
-		
+
+		@Override
+		public List<ProductServiceVO> selectServiceInfo(String groupId, String serviceId) {
+			List<ProductServiceVO> list = new ArrayList<ProductServiceVO>();
+			ProductServiceVO productServiceVO = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(sp_get_service_info_by_service_id);
+				pstmt.setString(1, groupId);
+				pstmt.setString(2, serviceId);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					productServiceVO = new ProductServiceVO();
+					
+					productServiceVO.setService_id(rs.getString("service_id") == null?"":rs.getString("service_id"));
+					productServiceVO.setAgent_id(rs.getString("agent_id") == null?"":rs.getString("agent_id"));
+					productServiceVO.setAgent_name(rs.getString("agent_name") == null?"":rs.getString("agent_name"));
+					productServiceVO.setProduct_id(rs.getString("product_id") == null?"":rs.getString("product_id"));
+					productServiceVO.setProduct_spec(rs.getString("product_spec") == null?"":rs.getString("product_spec"));
+					
+					list.add(productServiceVO); // Store the row in the list
+				}				
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}
+
 		@Override
 		public void updateDB(ProductServiceVO productServcieVO) {
 			Connection con = null;
@@ -399,5 +504,62 @@ public class ServiceAgentAssign extends HttpServlet {
 				}
 			}
 		}
+		
+		@Override
+		public List<AgentVO> getAgentByAgentName(String groupId, String agentName, String productSpec) {
+			List<AgentVO> list = new ArrayList<AgentVO>();
+			AgentVO agentVO = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(sp_get_agent_by_group_and_product_spec);
+				pstmt.setString(1, groupId);
+				pstmt.setString(2, agentName);
+				pstmt.setString(3, productSpec);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					agentVO = new AgentVO();
+					
+					agentVO.setAgent_id(rs.getString("agent_id"));
+					agentVO.setAgent_name(rs.getString("agent_name"));
+					
+					list.add(agentVO); // Store the row in the list
+				}				
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}	
 	}
 }

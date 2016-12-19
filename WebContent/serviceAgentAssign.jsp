@@ -182,12 +182,12 @@ $(function(){
 		minLength: 1,
 		source: function (request, response) {
 			$.ajax({
-	             url : "agentAuth.do",
+	             url : "product.do",
 	             type : "POST",
 	             cache : false,
 	             delay : 1500,
 	             data : {
-	             	action : "autocomplete_product",
+	             	action : "autocomplete_spec",
 	             	term : request.term
 	             },
 	             success: function(data) {
@@ -222,12 +222,13 @@ $(function(){
 	     minLength: 1,
 	     source: function (request, response) {
 	         $.ajax({
-	             url : "agent.do",
+	             url : "serviceAgentAssign.do",
 	             type : "POST",
 	             cache : false,
 	             delay : 1500,
 	             data : {
 	             	action : "autocomplete_name",
+	             	product_spec : $("#search_product_spec").val(),
 	             	term : request.term
 	             },
 	             success: function(data) {

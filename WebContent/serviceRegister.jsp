@@ -217,12 +217,15 @@ input[type=text].error{
 						cust_mobile : $("#serviceregister input[name='cust_mobile']").val(),
 						cust_address : $("#serviceregister input[name='cust_address']").val(),
 						purchase_date : $("#serviceregister input[name='purchase_date']").val()
-					},success : function(result) {
-						if(result=="success"){
+					},
+					success : function(result) {
+						var json_obj = $.parseJSON(result);
+						console.log(json_obj);
+						if(json_obj.success){
 							$('.search-result-wrap').fadeOut(function(){
 								$("input").prop('disabled', true);
 								$("input").css('background-color', '#ddd');
-								$("#register").after("<div style='font-size:36px;'>註冊成功!　&nbsp;</div>");
+								$("#register").after("<div style='font-size:36px;'>" + json_obj.info + "　&nbsp;</div>");
 								$("#register").remove();
 								$('.search-result-wrap').fadeIn();
 							});

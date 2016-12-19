@@ -52,11 +52,7 @@ $(function(){
 					resultRunTime+=1;
 				});
 				
-				if(resultRunTime!=0){
-					$("#table_product tbody").html(result_table);
-				}else{
-					// todo
-				}
+				$("#table_product tbody").html(result_table);
 			}
 		});
 	});

@@ -272,6 +272,14 @@
     <servlet-name>serviceAgentAssign</servlet-name>
     <url-pattern>/serviceAgentAssign.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>youtube</servlet-name>
+    <servlet-class>tw.com.sbi.youtube.controller.Youtube</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>youtube</servlet-name>
+    <url-pattern>/youtube.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>

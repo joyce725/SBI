@@ -87,11 +87,7 @@ $(function(){
 				$.each (json_obj, function (i) {
 					resultRunTime+=1;
 				});
-				if(resultRunTime!=0){
-					$("#table_agent_auth tbody").html(result_table);
-				}else{
-					// todo
-				}
+				$("#table_agent_auth tbody").html(result_table);
 			}
 		});
 	});
@@ -134,11 +130,7 @@ $(function(){
 				$.each (json_obj, function (i) {
 					resultRunTime+=1;
 				});
-				if(resultRunTime!=0){
-					$("#table_agent_auth tbody").html(result_table);
-				}else{
-					// todo
-				}
+				$("#table_agent_auth tbody").html(result_table);
 			}
 		});
 	});
@@ -541,12 +533,12 @@ $(function(){
 	     minLength: 1,
 	     source: function (request, response) {
 	         $.ajax({
-	             url : "agentAuth.do",
+	             url : "agent.do",
 	             type : "POST",
 	             cache : false,
 	             delay : 1500,
 	             data : {
-	             	action : "autocomplete_agent",
+	             	action : "autocomplete_name",
 	             	term : request.term
 	             },
 	             success: function(data) {
@@ -582,12 +574,12 @@ $(function(){
 	     minLength: 1,
 	     source: function (request, response) {
 	         $.ajax({
-	             url : "agentAuth.do",
+	             url : "product.do",
 	             type : "POST",
 	             cache : false,
 	             delay : 1500,
 	             data : {
-	             	action : "autocomplete_product",
+	             	action : "autocomplete_spec",
 	             	term : request.term
 	             },
 	             success: function(data) {

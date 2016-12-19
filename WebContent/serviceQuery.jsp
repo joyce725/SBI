@@ -24,10 +24,10 @@ $(function(){
 	$("#btn_query").click(function(e) {
 		$.ajax({
 			type : "POST",
-			url : "productVerify.do",
+			url : "serviceAgentAssign.do",
 			data : {
-				action : "selectByIdentityId",
-				identity_id : $("#identity_id").val() 
+				action : "selectServiceInfo",
+				service_id : $("#search_service_id").val() 
 			},
 			success : function(result) {
 				var json_obj = $.parseJSON(result);
@@ -37,13 +37,8 @@ $(function(){
 					result_table 
 						+= "<tr>"
 						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
-						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-						+ "<div class='table-function-list'>"
-						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-						+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-						+ "</div></div></td></tr>";								
+						+ "<td id='agent_name_"+i+"'>"+ item.agent_name + "</td>"
+						+ "</tr>";								
 				});	
 				
 				//判斷查詢結果
@@ -61,13 +56,13 @@ $(function(){
 </script>
 <jsp:include page="header.jsp" flush="true"/>
 	<div class="content-wrap">
-		<h2 class="page-title">商品真偽顧客驗證作業</h2>
+		<h2 class="page-title">服務識別碼查詢作業</h2>
 		<div class="input-field-wrap">
 			<div class="form-wrap">
 				<div class="form-row">
 					<label for="">
-						<span class="block-label">商品識別碼查詢</span>
-						<input type="text" id="identity_id">
+						<span class="block-label">服務識別碼查詢</span>
+						<input type="text" id="search_service_id">
 					</label>
 					<a href="#" id="btn_query" class="btn btn-darkblue">查詢</a>
 				</div>
@@ -80,9 +75,7 @@ $(function(){
 					<thead>
 						<tr>
 							<th>商品規格</th>
-							<th>商品圖片名稱</th>
-							<th>加密因子</th>
-							<th>功能</th>
+							<th>授權代理商</th>
 						</tr>
 					</thead>
 					<tbody style="text-align:center">

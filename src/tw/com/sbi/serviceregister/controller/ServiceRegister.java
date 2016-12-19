@@ -1,21 +1,29 @@
 package tw.com.sbi.serviceregister.controller;
 
 import java.io.IOException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
+
 public class ServiceRegister extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	private static final Logger logger = LogManager.getLogger(ServiceRegister.class);
+	
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request, response);
 	}
@@ -29,22 +37,35 @@ public class ServiceRegister extends HttpServlet {
 		String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cs = null;
 		ResultSet rs = null;
 		if("insert_reg".equals(request.getParameter("action"))){
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement("call sp_insert_service_register(?,?,?,?,?,?,?)");
-				pstmt.setString(1, request.getParameter("service_id"));
-				pstmt.setString(2, request.getParameter("product_id"));
-				pstmt.setString(3, request.getParameter("cust_name"));
-				pstmt.setString(4, request.getParameter("cust_tel"));
-				pstmt.setString(5, request.getParameter("cust_mobile"));
-				pstmt.setString(6, request.getParameter("cust_address"));
-				pstmt.setString(7, request.getParameter("purchase_date"));
-				rs = pstmt.executeQuery();
-				response.getWriter().write("success");
+				
+				
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				cs = con.prepareCall("call sp_insert_service_register(?,?,?,?,?,?,?,?)");
+				cs.setString(1, request.getParameter("service_id"));
+				cs.setString(2, request.getParameter("product_id"));
+				cs.setString(3, request.getParameter("cust_name"));
+				cs.setString(4, request.getParameter("cust_tel"));
+				cs.setString(5, request.getParameter("cust_mobile"));
+				cs.setString(6, request.getParameter("cust_address"));
+				cs.setString(7, request.getParameter("purchase_date"));
+				cs.registerOutParameter(8, Types.BOOLEAN);
+				
+				cs.execute();
+				String returnParam = cs.getString(8);
+				
+				Map map = new HashMap();
+				map.put("success", true);
+				map.put("info", returnParam);
+				JSONObject result = new JSONObject(map);
+				
+				response.getWriter().write(result.toString());
 			} catch (SQLException se) {
 				// Handle any driver errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
@@ -59,9 +80,9 @@ public class ServiceRegister extends HttpServlet {
 						se.printStackTrace(System.err);
 					}
 				}
-				if (pstmt != null) {
+				if (cs != null) {
 					try {
-						pstmt.close();
+						cs.close();
 					} catch (SQLException se) {
 						se.printStackTrace(System.err);
 					}
