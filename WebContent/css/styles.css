@@ -338,7 +338,7 @@ h1.sys-title a {
     padding: 10px 20px;
     /*width: 250px;*/
 }
-.sidenav ul li ul li a:hover {
+.sidenav ul li ul li:hover {
     background-image: linear-gradient(#fff,#35ceff);
     color: #092c42;
     font-weight: bold;
@@ -383,6 +383,21 @@ h1.sys-title a {
 .sidenav > ul > li:hover ul {
     opacity: 1;
     visibility: visible;
+}
+
+/* Displays second level dropdowns to the right of the first level dropdown */
+.sidenav ul ul ul {
+  left: 100%;
+  top: 0; 
+}
+/* This hides the dropdowns */
+.sidenav li ul {
+  display: none;
+}
+/* Display the dropdown */
+.sidenav li:hover > ul {
+  display: block; 
+  position: absolute;
 }
 /* content-wrap
 ---------------------------------- */
