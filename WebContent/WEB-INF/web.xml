@@ -249,6 +249,14 @@
     <url-pattern>/persona.do</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>realMap</servlet-name>
+    <servlet-class>tw.com.sbi.realMap.controller.RealMap</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>realMap</servlet-name>
+    <url-pattern>/realMap.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>populationNew</servlet-name>
     <servlet-class>tw.com.sbi.population.controller.PopulationNew</servlet-class>
   </servlet>

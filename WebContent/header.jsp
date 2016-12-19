@@ -36,7 +36,12 @@
 		<li class="dropdown">
 			<a href="#" class="dropbtn">電子書</a>
 			<div class="dropdown-content">
+				<a href="./大台北地區商圈.pdf" target="_blank">大台北地區</a>
 				<a href="./大臺北地區.pdf" target="_blank">大台北地區</a>
+				<a href="./桃園商圈.pdf" target="_blank">桃園地區</a>
+				<a href="./台中商圈.pdf" target="_blank">台中地區</a>
+				<a href="./台南商圈.pdf" target="_blank">台南地區</a>
+				<a href="./高雄商圈.pdf" target="_blank">高雄地區</a>
 <!-- 				<a href="#">人口/市場</a> -->
 <!-- 				<a href="#">商圈/競爭</a> -->
 <!-- 				<a href="#">經濟/交通</a> -->
