@@ -272,6 +272,22 @@
     <servlet-name>serviceAgentAssign</servlet-name>
     <url-pattern>/serviceAgentAssign.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>persona</servlet-name>
+    <servlet-class>tw.com.sbi.persona.controller.Persona</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>persona</servlet-name>
+    <url-pattern>/persona.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>populationNew</servlet-name>
+    <servlet-class>tw.com.sbi.population.controller.PopulationNew</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>populationNew</servlet-name>
+    <url-pattern>/populationNew.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
