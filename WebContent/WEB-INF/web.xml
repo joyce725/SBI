@@ -280,6 +280,14 @@
     <servlet-name>youtube</servlet-name>
     <url-pattern>/youtube.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>costliving</servlet-name>
+    <servlet-class>tw.com.sbi.costliving.controller.CostLiving</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>costliving</servlet-name>
+    <url-pattern>/costliving.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>

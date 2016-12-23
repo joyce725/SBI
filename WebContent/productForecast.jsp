@@ -395,8 +395,8 @@
 			
 			$("#tbl1").append('<tr><td><select id="cmb-1-r' + rowCount + '" name="cmb-1-r' + rowCount + '"></select></td>' + 
 					'<td><select id="cmb-2-r' + rowCount + '" name="cmb-2-r' + rowCount + '"></select></td>' +
-					'<td><input id="text3-r' + rowCount + '" name="text3-r' + rowCount +'">' +
-					'</td><td>成本比例(%)</td><td><input id="text4-r' + rowCount + '" name="text4-r' + rowCount + '"></td></tr>');
+					'<td><input type="text" id="text3-r' + rowCount + '" name="text3-r' + rowCount +'">' +
+					'</td><td>成本比例(%)</td><td><input type="text" id="text4-r' + rowCount + '" name="text4-r' + rowCount + '"></td></tr>');
 						
 			$("[id^=cmb-1-r" + rowCount + "]")
 				.append($('<option></option>').val("func").html("功能性項目"))
@@ -820,7 +820,7 @@
 				</li>
 				<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
 					<ul>
-						<li><a href="cloudISS.jsp">生活費用</a></li>
+						<li><a href="costLiving.jsp">生活費用</a></li>
 						<li><a href="regionSelect.jsp">區位選擇</a></li>
 						<li><a href="cloudISS.jsp">環域分析</a></li>
 						<li><a href="cloudISS.jsp">動態統計</a></li>
