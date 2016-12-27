@@ -96,7 +96,7 @@ table.accessHide {
 					</tr>
 				</table>
 				
-				<div id="chart" hidden="true" style="padding-top: 30px;padding-left: 70px;">
+				<div id="chart" style="padding-top: 30px;padding-left: 70px;">
 					<table id="resultTable" class="result-table">
 						<th>產品名稱</th>
 						<th></th>
@@ -106,7 +106,7 @@ table.accessHide {
 				<div align='center'>
 					<a id='chart_vertical_bar' class='btn btn-primary'>長條圖</a>
 					<a id='chart_pie' class='btn btn-primary'>圓餅圖</a>
-<!-- 					<a id='register1' class='btn btn-primary'>長條圖</a> -->
+					<a id='chart_data' class='btn btn-primary'>數據資料</a>
 <!-- 					<a id='register2' class='btn btn-primary'>長條圖</a> -->
 
 					<a id='btn_reset' class='btn btn-darkblue'>重設</a>
@@ -280,7 +280,7 @@ table.accessHide {
 				return;
 			}
 			
-			show_chart(get_productlist(), chartOptions);
+			show_chart(get_productlist(), chartOptions, true);
 		});
 
 		$("#register1").click(function(){
@@ -299,10 +299,15 @@ table.accessHide {
 				'colors': color_array
 			};
 			
+			if (get_productlist() == '') {
+				alert('尚有資料未填寫完畢');
+				return;
+			}
+			
 			show_chart(get_productlist(), chartOptions);
 		});
 
-		$("#register2").click(function(){
+		$("#chart_data").click(function(){
 			var chartOptions = "";
 				
 			chartOptions = {
@@ -317,7 +322,12 @@ table.accessHide {
 				'colors': color_array
 			};
 			
-			show_chart(get_productlist(), chartOptions);
+			if (get_productlist() == '') {
+				alert('尚有資料未填寫完畢');
+				return;
+			}
+			
+			show_chart(get_productlist(), chartOptions, false);
 		});
 
 		$("#chart_pie").click(function(){
@@ -342,7 +352,7 @@ table.accessHide {
 				return;
 			}
 			
-			show_chart(get_productlist(), chartOptions);
+			show_chart(get_productlist(), chartOptions, true);
 		});
 		
 		chart = $("#chart").dialog({
@@ -376,7 +386,7 @@ table.accessHide {
 		return product_list;
 	}
 	
-	function show_chart(product_list, chartOptions) {
+	function show_chart(product_list, chartOptions, isChart) {
 
 		$.ajax({
 			type : "POST",
@@ -387,7 +397,7 @@ table.accessHide {
 				city : $("#city").val(),
 				business_type : $("#business_type").val(),
 				sub_type : $("#sub_type").val(),
-				field_name : $('input[name="field_name"]').val(),
+				field_name : $('input[name="field_name"]:checked').val(),
 				product_id : product_list
 			},
 			success : function(result) {
@@ -396,7 +406,9 @@ table.accessHide {
 				
 				chart.dialog("open");
 				
-				$("#resultTable").html('<thead><th>產品名稱</th><th></th></thead>');
+				var column_name = $('label[for="rdo-' + $('input[name="field_name"]:checked').val() + '"] > span').html();
+				
+				$("#resultTable").html('<thead><th>產品名稱</th><th>' + column_name + '</th></thead>');
 				
 				$("#resultTable").append('<tbody>');
 				$.each(json_obj, function(i, item) {
@@ -404,13 +416,21 @@ table.accessHide {
 				});
 				$("#resultTable").append('</tbody>');
 				
-				$('#resultTable').visualize();
-				
-				//hide table
-				$('#resultTable').addClass('accessHide');
-				
-				$('.visualize').remove();
-				$('#resultTable').visualize(chartOptions);
+				if (isChart) {
+					$('#resultTable').visualize();
+					
+					//hide table
+					$('#resultTable').addClass('accessHide');
+					
+					$('.visualize').remove();
+					$('#resultTable').visualize(chartOptions);					
+				} else {
+					//show table
+					$('#resultTable').removeClass('accessHide');
+					
+					$('.visualize').remove();
+				}
+
 			}
 		});
 	}
