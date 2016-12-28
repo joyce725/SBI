@@ -67,7 +67,29 @@ public class RealMap extends HttpServlet {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				statement = con.createStatement();
-				String sp="SELECT * FROM tb_data_POI WHERE type = '"+name+"'";
+				Float lat = Float.parseFloat(request.getParameter("lat").toString());
+				Float lng = Float.parseFloat(request.getParameter("lng").toString());
+				int zoom = Integer.valueOf(request.getParameter("zoom").toString());
+				String cmd ="";
+				if ( zoom < 6 ){}else{
+					float rangelat=0,rangelng=0;
+					if (zoom == 6 ){ rangelat=(float)7.189065946400108;rangelng=(float)26.7626953125; }
+					if (zoom == 7 ){ rangelat=(float)3.634160791278207;rangelng=(float)13.42529296875; }
+					if (zoom == 8 ){ rangelat=(float)1.787952365573586;rangelng=(float)6.6851806640625; }
+					if (zoom == 9 ){ rangelat=(float)0.906527594036945;rangelng=(float)3.35357666015625; }
+					if (zoom == 10 ){rangelat=(float)0.444468948036502;rangelng=(float)1.67266845703125; }
+					if (zoom == 11 ){rangelat=(float)0.224114345560578;rangelng=(float)0.83564758300781; }
+					if (zoom == 12 ){rangelat=(float)0.111742516346193;rangelng=(float)0.41885375976562; }
+					if (zoom == 13 ){rangelat=(float)0.056970028577563;rangelng=(float)0.20959854125976; }
+					if (zoom == 14 ){rangelat=(float)0.02809265942393;rangelng=(float)0.1043701171875; }
+					if (zoom == 15 ){rangelat=(float)0.01412479234012;rangelng=(float)0.05227088928223; }
+					if (zoom == 16 ){rangelat=(float)0.007062391894589;rangelng=(float)0.02619981765748; }
+					if (zoom > 16 ){ rangelat=(float)0.003491961762692;rangelng=(float)0.01306772232056; }
+					
+					cmd = " and lat > "+String.valueOf(lat-rangelat)+" and lat < "+String.valueOf(lat+rangelat)+" and lng > "+String.valueOf(lng-rangelng)+" and lng <"+String.valueOf(lng+rangelng)+"";
+				}
+//				System.out.println(cmd);
+				String sp="SELECT * FROM tb_data_POI WHERE type = '"+name+"' "+cmd;
 				rs = statement.executeQuery(sp);
 				int count=0;
 			    if (rs.last()){count = rs.getRow();}else{count = 0;}
@@ -82,7 +104,7 @@ public class RealMap extends HttpServlet {
 					poi_array[count].subtype=rs.getString("subtype");
 					poi_array[count].name=rs.getString("name");
 					poi_array[count].addr=rs.getString("address");//rs.getString("");
-					poi_array[count].icon="";
+					poi_array[count].icon="";//rs.getString("icon");
 					poi_array[count].loca="";
 					poi_array[count].center= new Center();
 					poi_array[count].center.lat=rs.getFloat("lat");
@@ -108,7 +130,31 @@ public class RealMap extends HttpServlet {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				statement = con.createStatement();
-				String sp="SELECT * FROM tb_data_POI WHERE subtype = '"+name+"'";
+				
+				Float lat = Float.parseFloat(request.getParameter("lat").toString());
+				Float lng = Float.parseFloat(request.getParameter("lng").toString());
+				int zoom = Integer.valueOf(request.getParameter("zoom").toString());
+				String cmd ="";
+				if ( zoom < 6 ){}else{
+					float rangelat=0,rangelng=0;
+					if (zoom == 6 ){ rangelat=(float)7.189065946400108;rangelng=(float)26.7626953125; }
+					if (zoom == 7 ){ rangelat=(float)3.634160791278207;rangelng=(float)13.42529296875; }
+					if (zoom == 8 ){ rangelat=(float)1.787952365573586;rangelng=(float)6.6851806640625; }
+					if (zoom == 9 ){ rangelat=(float)0.906527594036945;rangelng=(float)3.35357666015625; }
+					if (zoom == 10 ){rangelat=(float)0.444468948036502;rangelng=(float)1.67266845703125; }
+					if (zoom == 11 ){rangelat=(float)0.224114345560578;rangelng=(float)0.83564758300781; }
+					if (zoom == 12 ){rangelat=(float)0.111742516346193;rangelng=(float)0.41885375976562; }
+					if (zoom == 13 ){rangelat=(float)0.056970028577563;rangelng=(float)0.20959854125976; }
+					if (zoom == 14 ){rangelat=(float)0.02809265942393;rangelng=(float)0.1043701171875; }
+					if (zoom == 15 ){rangelat=(float)0.01412479234012;rangelng=(float)0.05227088928223; }
+					if (zoom == 16 ){rangelat=(float)0.007062391894589;rangelng=(float)0.02619981765748; }
+					if (zoom > 16 ){ rangelat=(float)0.003491961762692;rangelng=(float)0.01306772232056; }
+					
+					cmd = " and lat > "+String.valueOf(lat-rangelat)+" and lat < "+String.valueOf(lat+rangelat)+" and lng > "+String.valueOf(lng-rangelng)+" and lng <"+String.valueOf(lng+rangelng)+"";
+				}
+				
+				
+				String sp="SELECT * FROM tb_data_POI WHERE subtype = '"+name+"' "+cmd;
 				rs = statement.executeQuery(sp);
 				int count=0;
 			    if (rs.last()){count = rs.getRow();}else{count = 0;}
@@ -123,7 +169,7 @@ public class RealMap extends HttpServlet {
 					poi_array[count].subtype=rs.getString("subtype");
 					poi_array[count].name=rs.getString("name");
 					poi_array[count].addr=rs.getString("address");//rs.getString("");
-					poi_array[count].icon="";
+					poi_array[count].icon="";//rs.getString("icon");
 					poi_array[count].loca="";
 					poi_array[count].center= new Center();
 					poi_array[count].center.lat=rs.getFloat("lat");
