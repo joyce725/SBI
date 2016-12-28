@@ -409,7 +409,7 @@ var item_marker = function (speed, time, marker, circle) {
 	        animate: true,
 	        slide: function (event, ui) {
 	        	$("#time").val(ui.value);
-	        	$("#val_time").val("花費"+ui.value+"分鐘");
+	        	$("#val_time").html("花費"+ui.value+"分鐘");
 	        	$("#rr_pt").val().speed=$("#speed").val();
 		    	$("#rr_pt").val().time=$("#time").val();
 	        	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
@@ -501,7 +501,7 @@ var item_marker = function (speed, time, marker, circle) {
 				<tr>
 					<td>
 						<div class="col" id="tooltip_1" title="預設時速為車行60公里、步行4公里、單車15公里">
-							<span style='font-weight: bold;'>交通方式:</span>
+							<span style='font-weight: bold;'>交通方式：</span>
 						</div>
 					</td>
 					<td>
@@ -515,7 +515,7 @@ var item_marker = function (speed, time, marker, circle) {
 				</tr>
 				<tr>
 					<td>
-						<span style='font-weight: bold;'>通勤時間:</span>
+						<span style='font-weight: bold;'>通勤時間：</span>
 					</td>
 					<td>
 						<div id='slider'></div>
@@ -527,7 +527,7 @@ var item_marker = function (speed, time, marker, circle) {
 <!-- 				＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ -->
 				<tr style='height:50px;'>
 					<td>
-						目前選擇：
+						預設：
 					</td>
 					<td colspan='2'>
 						<a id="val_speed" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>時速10公里</a>&nbsp;
@@ -607,6 +607,8 @@ var item_marker = function (speed, time, marker, circle) {
 						$("#rr_pt").val(marker_obj);
 						$("#speed").val(marker_obj.speed);
 						$("#time").val(marker_obj.time);
+						$('#val_time').html("花費"+marker_obj.time+"分鐘");
+						$('#val_speed').html("時速"+marker_obj.speed+"公里");
 						$('#slider').slider('option', 'value', marker_obj.time);
 						rs_marker.setAnimation(google.maps.Animation.BOUNCE);
 			        }); 
@@ -693,9 +695,19 @@ var item_marker = function (speed, time, marker, circle) {
 	    }
     </script>
     
+<!--     <script async defer -->
+<!--     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc2oSzYl-UJ6brhxL3-BoNPvl3nbjNogk&signed_in=true&libraries=places&callback=initMap"> -->
+<!--      </script> -->
+
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap">
-     </script> 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8QEQE4TX2i6gpGIrGbTsrGrRPF23xvX4&signed_in=true&libraries=places&callback=initMap">
+     </script>
+     
+<!--     <script async defer -->
+<!--     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap"> -->
+<!--      </script> -->
+     
+      
 <!-- 		background-color:#F00; -->
 	<div id='picture' style='position:fixed;left:10%;top:20%;z-index:-1;'ondblclick='$("#picture").css("z-index","-1");'></div>
 	</div>
