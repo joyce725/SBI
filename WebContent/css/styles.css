@@ -388,7 +388,7 @@ h1.sys-title a {
 /* Displays second level dropdowns to the right of the first level dropdown */
 .sidenav ul ul ul {
   left: 100%;
-  top: 0; 
+  bottom: 0; 
 }
 /* This hides the dropdowns */
 .sidenav li ul {

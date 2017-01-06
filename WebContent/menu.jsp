@@ -28,6 +28,13 @@
 						<li><a href="serviceQuery.jsp">服務識別碼資訊服務作業</a></li>
 					</ul>
 				</li>
+				<li>
+					<a>空間決策</a>
+					<ul>
+						<li><a href="case.jsp">決策管理</a></li>
+						<li><a href="evaluate.jsp">決策評估</a></li>
+					</ul>
+				</li>
 			</ul>
 		</li>
 		<li><img src="images/sidenav-stastic.svg" alt="">統計資料
