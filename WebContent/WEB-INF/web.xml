@@ -288,6 +288,22 @@
     <servlet-name>costliving</servlet-name>
     <url-pattern>/costliving.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>case</servlet-name>
+    <servlet-class>tw.com.sbi.caseandevaluate.controller.Case</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>case</servlet-name>
+    <url-pattern>/case.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>evaluate</servlet-name>
+    <servlet-class>tw.com.sbi.caseandevaluate.controller.Evaluate</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>evaluate</servlet-name>
+    <url-pattern>/evaluate.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
