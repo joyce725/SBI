@@ -21,8 +21,6 @@
   </context-param>
   <context-param>
     <param-name>dbURL</param-name>
-<!--     <param-value>jdbc:mysql://localhost:3306/sbi</param-value> -->
-<!--     <param-value>jdbc:mysql://localhost:3306/cdri</param-value> -->
     <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value>
   </context-param>
   <context-param>
@@ -36,27 +34,22 @@
   <context-param>
     <param-name>uploadpath</param-name>
     <param-value>/data/sbiupload</param-value>
-<!--     <param-value>D:/data/sbiupload</param-value> -->
   </context-param>
   <context-param>
     <param-name>photopath</param-name>
     <param-value>/data/cdriproductpic</param-value>
-<!--     <param-value>D:/data/cdriproductpic</param-value> -->
   </context-param>
   <context-param>
     <param-name>qrcodephotopath</param-name>
     <param-value>/data/cdriqrcode</param-value>
-<!--     <param-value>D:/data/cdriqrcode</param-value> -->
   </context-param>
   <context-param>
     <param-name>pythonwebservice</param-name>
-<!--     <param-value>http://61.218.8.55:8099</param-value> -->
     <param-value>http://192.168.112.164:8070</param-value>
   </context-param>
   <context-param>
     <param-name>mongodbpath</param-name>
-<!-- 	<param-value>localhost</param-value> -->
-	<param-value>192.168.112.164</param-value>
+    <param-value>192.168.112.164</param-value>
   </context-param>
   <context-param>
     <param-name>mongodbport</param-name>
@@ -64,13 +57,11 @@
   </context-param>
   <context-param>
     <param-name>mongodb</param-name>
-<!-- 	<param-value>db_news</param-value> -->
-	<param-value>db_product4</param-value>
+    <param-value>db_product4</param-value>
   </context-param>
   <context-param>
     <param-name>mongocollection</param-name>
-<!-- 	<param-value>co_news</param-value> -->
-	<param-value>co_eatapple</param-value>
+    <param-value>co_eatapple</param-value>
   </context-param>
   <servlet>
     <servlet-name>login</servlet-name>
@@ -311,7 +302,7 @@
   <servlet-mapping>
     <servlet-name>caseCompetition</servlet-name>
     <url-pattern>/caseCompetition.do</url-pattern>
-  </servlet-mapping> 
+  </servlet-mapping>
   <servlet>
     <servlet-name>caseChannel</servlet-name>
     <servlet-class>tw.com.sbi.caseandevaluate.controller.CaseChannel</servlet-class>
@@ -319,7 +310,7 @@
   <servlet-mapping>
     <servlet-name>caseChannel</servlet-name>
     <url-pattern>/caseChannel.do</url-pattern>
-  </servlet-mapping>   
+  </servlet-mapping>
   <servlet>
     <servlet-name>caseCompetitionEvaluation</servlet-name>
     <servlet-class>tw.com.sbi.caseandevaluate.controller.CaseCompetitionEvaluation</servlet-class>
@@ -327,7 +318,7 @@
   <servlet-mapping>
     <servlet-name>caseCompetitionEvaluation</servlet-name>
     <url-pattern>/caseCompetitionEvaluation.do</url-pattern>
-  </servlet-mapping>   
+  </servlet-mapping>
   <servlet>
     <servlet-name>caseChannelEvaluation</servlet-name>
     <servlet-class>tw.com.sbi.caseandevaluate.controller.CaseChannelEvaluation</servlet-class>
@@ -335,8 +326,39 @@
   <servlet-mapping>
     <servlet-name>caseChannelEvaluation</servlet-name>
     <url-pattern>/caseChannelEvaluation.do</url-pattern>
-  </servlet-mapping> 
-  <!--
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>industry</servlet-name>
+    <servlet-class>tw.com.sbi.statistics.controller.Industry</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>industry</servlet-name>
+    <url-pattern>/industry.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>country</servlet-name>
+    <servlet-class>tw.com.sbi.statistics.controller.Country</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>country</servlet-name>
+    <url-pattern>/country.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>city</servlet-name>
+    <servlet-class>tw.com.sbi.statistics.controller.City</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>city</servlet-name>
+    <url-pattern>/city.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>consumer</servlet-name>
+    <servlet-class>tw.com.sbi.statistics.controller.Consumer</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>consumer</servlet-name>
+    <url-pattern>/consumer.do</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
@@ -345,5 +367,4 @@
     <filter-name>loginFilter</filter-name>
     <url-pattern>*.jsp</url-pattern>
   </filter-mapping>
-   -->
 </web-app>

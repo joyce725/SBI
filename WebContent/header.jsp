@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 </head>
 <body>
+
+<div id="msgAlert"></div>
+
 <div class="page-wrapper">
 	<div class="header">
 		<div class="userinfo">

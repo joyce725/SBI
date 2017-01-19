@@ -115,7 +115,7 @@ $(function(){
 		var limit = $( "#draggable > li" ).size();
 		
 		if (q > limit) {
-			warningMsg('服務識別碼數量不足，請確認。');
+			warningMsg("警告",'服務識別碼數量不足，請確認。');
 			return;
 		}
 		
@@ -295,31 +295,12 @@ $(function(){
 	        }
 	    });
 	
-	function warningMsg(msg) {
-		$("#msgAlert").html(msg);
-		
-		$("#msgAlert").dialog({
-			title: "警告",
-			draggable : true,
-			resizable : false, //防止縮放
-			autoOpen : false,
-			height : "auto",
-			modal : true,
-			buttons : {
-				"確認" : function() {
-					$(this).dialog("close");
-				}
-			}
-		});
-			
-		$("#msgAlert").dialog("open");
-	}
 })
 </script>
 <jsp:include page="header.jsp" flush="true"/>
 	<div class="content-wrap">
 		<h2 class="page-title">服務識別碼指定通路商作業</h2>
-		<div id="msgAlert"></div>	
+		<!--<div id="msgAlert"></div>-->	
 		
 		<div class="input-field-wrap">
 			<div class="form-wrap">

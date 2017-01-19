@@ -244,7 +244,7 @@ public class Evaluate extends HttpServlet {
 
 		// 會使用到的Stored procedure
 		private static final String sp_get_decision_evaluate_by_case_id = "call sp_get_decision_evaluate_by_case_id(?)";
-		private static final String sp_get_decision_evaluate_datail_by_case_id = "call sp_get_decision_evaluate_datail_by_case_id(?, ?)";
+		private static final String sp_get_decision_evaluate_detail_by_case_id = "call sp_get_decision_evaluate_detail_by_case_id(?, ?)";
 		private static final String sp_insert_evaluate = "call sp_insert_evaluate(?,?,?,?,?,?,?,?,?)";
 		private static final String sp_update_evaluate = "call sp_update_evaluate(?,?,?,?,?,?)";
 		private static final String sp_count_evaluate = "call sp_count_evaluate(?)";
@@ -326,7 +326,7 @@ public class Evaluate extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(sp_get_decision_evaluate_datail_by_case_id);
+				pstmt = con.prepareStatement(sp_get_decision_evaluate_detail_by_case_id);
 				pstmt.setString(1, caseId);
 				pstmt.setString(2, userId);
 				

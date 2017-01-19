@@ -52,10 +52,18 @@
 				<li><a href="costLiving.jsp">生活費用</a></li>
 				<li><a href="regionSelect.jsp">區位選擇</a></li>
 				<li><a href="cloudISS.jsp">環域分析</a></li>
-				<li><a href="cloudISS.jsp">動態統計</a></li>
+				<li>
+					<a>空間決策</a>
+					<ul>
+						<li><a href="country.jsp">國家</a></li>
+						<li><a href="city.jsp">城市</a></li>
+						<li><a href="industry.jsp">目標產業</a></li>
+						<li><a href="consumer.jsp">消費力</a></li>
+					</ul>
+				</li>
 			</ul>
 		</li>
 		<li><a href="cloudISS.jsp"><img src="images/sidenav-store.svg" alt="">POI</a>
 		</li>
 	</ul>
-</div><!-- /.sidenav -->
+</div>

@@ -147,25 +147,6 @@ function genResultTable(index, jsonobj, action, f_type, f_kind, resultTable){
 	+ "class='btn_delete btn btn-wide btn-primary'>刪除</button></td></tr>";
 	return resultTable;
 }
-function warningMsg(msg) {
-	$("#msgAlert").html(msg);
-	
-	$("#msgAlert").dialog({
-		title: "警告",
-		draggable : true,
-		resizable : false, //防止縮放
-		autoOpen : false,
-		height : "auto",
-		modal : true,
-		buttons : {
-			"確認" : function() {
-				$(this).dialog("close");
-			}
-		}
-	});
-		
-	$("#msgAlert").dialog("open");
-}
 </script>
 <!-- /**************************************  以上共用JS區塊    **********************************************/ 		-->	
 
@@ -404,7 +385,7 @@ function warningMsg(msg) {
 						if ($('#insert-dialog-form-post').valid()) {
 							
 							if (new Date(g_create_date) > new Date($("#insert_f_date").val())) {
-								warningMsg("您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
+								warningMsg("警告","您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
 								return; 
 							}
 							
@@ -508,7 +489,7 @@ function warningMsg(msg) {
 						if ($('#update-dialog-form-post').valid()) {
 							
 							if (new Date(g_create_date) > new Date($("#edit_f_date").val())) {
-								warningMsg("您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
+								warningMsg("警告","您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
 								return; 
 							}
 							
@@ -943,7 +924,7 @@ function warningMsg(msg) {
 						if ($('#insert-dialog-form-post').valid()) {
 							
 							if (new Date(g_create_date) > new Date($("#insert_f_date").val())) {
-								warningMsg("您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
+								warningMsg("警告","您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
 								return; 
 							}
 							
@@ -1047,7 +1028,7 @@ function warningMsg(msg) {
 						if ($('#update-dialog-form-post').valid()) {
 							
 							if (new Date(g_create_date) > new Date($("#edit_f_date").val())) {
-								warningMsg("您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
+								warningMsg("警告","您輸入的資金動態日期小於案件產生日期(" + g_create_date + ")");
 								return; 
 							}
 							
@@ -1347,7 +1328,7 @@ function warningMsg(msg) {
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
 	<h2 class="page-title">新創公司財務損益平衡評估工具</h2>
-	<div id="msgAlert"></div>
+	<!--<div id="msgAlert"></div>-->
 	
 	<div class="search-result-wrap">
 		<div id="tabs" style='min-width:1180px;'>

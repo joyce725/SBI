@@ -12,6 +12,7 @@
 <script src="js/jquery-1.12.4.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/scripts.js"></script>
+<script src="js/common.js"></script>
 <script>
 $(function() {
 	$("#logout").click(function(e) {

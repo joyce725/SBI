@@ -42,7 +42,9 @@ table.accessHide {
 /* .visualize-pie ul.visualize-title { font-weight: bold; border: 0; } */
 /* .visualize-pie ul.visualize-key li { float: none; } */
 </style>
- 
+
+<!--<div id="msgAlert"></div>-->
+
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
 	<h2 class="page-title">生活費用</h2>
@@ -276,7 +278,7 @@ table.accessHide {
 			};
          	
 			if (get_productlist() == '') {
-				alert('尚有資料未填寫完畢');
+				warningMsg("警告", "尚有資料未填寫完畢");
 				return;
 			}
 			
@@ -300,7 +302,7 @@ table.accessHide {
 			};
 			
 			if (get_productlist() == '') {
-				alert('尚有資料未填寫完畢');
+				warningMsg("警告", "尚有資料未填寫完畢");
 				return;
 			}
 			
@@ -323,7 +325,7 @@ table.accessHide {
 			};
 			
 			if (get_productlist() == '') {
-				alert('尚有資料未填寫完畢');
+				warningMsg("警告", "尚有資料未填寫完畢");
 				return;
 			}
 			
@@ -348,7 +350,7 @@ table.accessHide {
 			};
 			
 			if (get_productlist() == '') {
-				alert('尚有資料未填寫完畢');
+				warningMsg("警告", "尚有資料未填寫完畢");
 				return;
 			}
 			

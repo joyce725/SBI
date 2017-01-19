@@ -12,9 +12,10 @@
 
 	<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="js/jquery.validate.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 <%
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
@@ -31,6 +32,9 @@
 <script>
 	
 	$(function() {
+		
+		var div_list = ['div_main','div_create_step1','div_create_step2','div_create_step3','div_create_step4',
+			'div_create_step5','div_create_step6'];
 
 		var user_count = 0;
 		var defaultValue = "請選擇";
@@ -41,6 +45,29 @@
 		var level2_default = [['交通便利', '商圈規模', '商圈適配', '磁吸企業'],
 			['潛在通路', '類似商品', '服務能力', '商品服務適配'],
 			['消費能力', '生活文化層次', '消費者屬性差異', '消費者適配']];
+		
+		var validator_step1 = $(".custom_step1").validate({
+			rules : {
+				country : {
+					required : true
+				},
+				city : {
+					required : true
+				},
+				safety_money : {
+					required : true,
+					number : true
+				}
+			}
+		});
+		
+		var validator_step3 = $(".custom_step3").validate({
+			rules : {
+				evaluate_no : {
+					required : true
+				}
+			}
+		});
 				
 		$(document).keypress(function(e) {
 			if(e.which == 13) {
@@ -75,45 +102,44 @@
 				}
 			});
 			
-			$("#div_main").hide();
-			$("#div_create_step1").show();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			show_hide([false, true, false, false, false, false, false]);
 		});
 		
 		$("#btn_step1_next").click(function(e) {
 			e.preventDefault();
+			
+			if (!$('.custom_step1').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
 
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").show();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			show_hide([false, false, true, false, false, false, false]);
 		});
 		
 		$("#btn_step2_next").click(function(e) {
 			e.preventDefault();
 			
-			for (var i=1;i<=10;i++) {
+			if (!$('.custom_step2').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
+			
+			$("#evaluate_no").find('option').remove();
+			$("#evaluate_no").append($('<option></option>').val('').html(defaultValue));
+			for (var i = 1; i <= 10; i++) {
 				$("#evaluate_no").append($('<option></option>').val(i).html(i));	
 			}
 			
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").show();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			show_hide([false, false, false, true, false, false, false]);
 		});
 		
 		$("#btn_step3_next").click(function(e) {
 			e.preventDefault();
+			
+			if (!$('.custom_step3').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
 			
 			var count = $('#evaluate_no').val();
 			level1_count = count;
@@ -126,24 +152,40 @@
 					.append('<tr>'
 						+ '<td>' + (i + 1) + '.</td>'
 						+ '<td><input type="text" id="eval_1_text_' + i + '" name="eval_1_text_' + i + '"></td>'
-						+ '<td>評估子因子<select id="eval_1_select_' + i +'"></select>項</td>'
+						+ '<td>評估子因子<select id="eval_1_select_' + i +'" name="eval_1_select_' + i +'"></select>項</td>'
 						+ '</tr>');
+				
+				$( "#eval_1_select_" + i ).append($('<option></option>').val('').html(defaultValue));
 				for (var j = 1; j <= 10; j++) {
 					$( "#eval_1_select_" + i ).append($('<option></option>').val(j).html(j));	
 				}
 			}
 			
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").show();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			//========== validate rules (dynamic) ==========
+			$( ".custom_step4" ).validate();
+			
+			$("[name^=eval_1_text_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});
+			
+			$("select[name^=eval_1_select_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});
+			
+			show_hide([false, false, false, false, true, false, false]);
 		});
 		
 		$("#btn_step4_next").click(function(e) {
 			e.preventDefault();
+			
+			if (!$('.custom_step4').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
 			
 			$("#tbl_level3").find('tbody').remove();
 			$("#tbl_level3").append('<tbody></tbody>');
@@ -155,26 +197,34 @@
 			
 			for (var i = 0; i < level1_count; i++) {
 				var text_list = "";
-				
-				text_list += '<td>' + (i + 1) + '.' + level1_default[i] + '</td>';
+
+				text_list += '<td>' + (i + 1) + '.' + $('#eval_1_text_' + i).val() + '</td>';
 				for (var j = 0; j < level2_count_arr[i]; j++) {
-					text_list += '<td><input type="text" id="eval_2_text_' + i + '_' + j + '" name="eval_1_text_' + i + '_' + j + '"></td>';
+					text_list += '<td><input type="text" id="eval_2_text_' + i + '_' + j + '" name="eval_2_text_' + i + '_' + j + '"></td>';
 				}
 				
 				$('#tbl_level3').append('<tr>' + text_list + '</tr>');
 			}
 			
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").show();
-		    $("#div_create_step6").hide();
+			//========== validate rules (dynamic) ==========
+			$( ".custom_step5" ).validate();
+			
+			$("[name^=eval_2_text_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});			
+			
+			show_hide([false, false, false, false, false, true, false]);
 		});
 		
 		$("#btn_step5_next").click(function(e) {
 			e.preventDefault();
+			
+			if (!$('.custom_step5').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
 			
 			$("#tbl_level4").find('tbody').remove();
 			$("#tbl_level4").append('<tbody></tbody>');
@@ -189,7 +239,6 @@
 					var json_obj = $.parseJSON(result);
 					
 					user_count = json_obj.length;
-					
 
 					$.each(json_obj, function(i, item) {
 						var radio_list = "";
@@ -208,101 +257,82 @@
 								'<td>' + radio_list + '</td>' + 
 								'<td><input type="hidden" id="user_' + i + '" name="user_' + i + '" value="' + json_obj[i].user_id + '"></td></tr>');
 					});
-
+					
+					//========== validate rules (dynamic) ==========
+					$( ".custom_step6" ).validate({
+					    errorPlacement: function(error, element) {
+					        element.before(error);
+					  	}
+				  	});
+					
+					$("[name^=eval_3_text_]").each(function(){
+						$(this).rules("add", {
+						  	required: true
+						});
+				   	});
+					
+					$("[name^=user_]").each(function(){
+						$(this).rules("add", {
+						  	required: true
+						});
+				   	});
 				}
 			});
 			
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").show();
+			show_hide([false, false, false, false, false, false, true]);
 		});
 		
-		$("#btn_step6_next").click(function(e) {
-			e.preventDefault();
+// 		$("#btn_step6_next").click(function(e) {
+// 			e.preventDefault();
 			
-			$("#div_main").show();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
-		});
+// 			if (!$('.custom_step6').valid()) {
+// 				warningMsg('警告', '尚有資料未填寫完畢');
+// 				return;
+// 			}
+			
+// 			$("#div_main").show();
+// 			$("#div_create_step1").hide();
+// 		    $("#div_create_step2").hide();
+// 		    $("#div_create_step3").hide();
+// 		    $("#div_create_step4").hide();
+// 		    $("#div_create_step5").hide();
+// 		    $("#div_create_step6").hide();
+// 		});
 		
 		$("#btn_step1_cancel").click(function(e) {
 			e.preventDefault();
 			
-			$("#div_main").show();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			show_hide([true, false, false, false, false, false, false]);
 		});
 
 		$("#btn_step2_prev").click(function(e) {
 			e.preventDefault();
 			
-			$("#div_main").hide();
-			$("#div_create_step1").show();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			show_hide([false, true, false, false, false, false, false]);
 		});
 
 		$("#btn_step3_prev").click(function(e) {
 			e.preventDefault();
 			
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").show();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			show_hide([false, false, true, false, false, false, false]);
 		});
 
 		$("#btn_step4_prev").click(function(e) {
 			e.preventDefault();
 			
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").show();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			show_hide([false, false, false, true, false, false, false]);
 		});
 
 		$("#btn_step5_prev").click(function(e) {
 			e.preventDefault();
 			
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").show();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			show_hide([false, false, false, false, true, false, false]);
 		});
 
 		$("#btn_step6_prev").click(function(e) {
 			e.preventDefault();
 			
-			$("#div_main").hide();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").show();
-		    $("#div_create_step6").hide();
+			show_hide([false, false, false, false, false, true, false]);
 		});
 		
 		$("#btn_step2_default").click(function(e) {
@@ -350,6 +380,11 @@
 		
 		$("#btn_step6_confirm").click(function(e) {
 			e.preventDefault();
+			
+			if (!$('.custom_step6').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
 			
 			console.log($('#country').val());
 			console.log($('#city').val());
@@ -491,6 +526,19 @@
 								'</tr>');
 					});	
 					
+					//========== validate rules (dynamic) ==========
+					$( ".custom_step2" ).validate({
+					    errorPlacement: function(error, element) {
+				        	element.before(error);
+					  	}
+				  	});
+					
+					$("[name^=pref_]").each(function(){
+						$(this).rules("add", {
+						  	required: true
+						});
+				   	});
+					
 					if (bcircle_list.length > 0) {
 						bcircle_id_list = bcircle_id_list.substring(0, bcircle_id_list.length - 1);
 						bcircle_list = bcircle_list.substring(0, bcircle_list.length - 1);
@@ -505,14 +553,8 @@
 		function mainLoad() {
 			
 			setTblMain();
-
-			$("#div_main").show();
-			$("#div_create_step1").hide();
-		    $("#div_create_step2").hide();
-		    $("#div_create_step3").hide();
-		    $("#div_create_step4").hide();
-		    $("#div_create_step5").hide();
-		    $("#div_create_step6").hide();
+			
+			show_hide([true, false, false, false, false, false, false]);
 		}
 		
 		function setTblMain() {
@@ -642,10 +684,19 @@
 					}
 				});
 			}
-			
-			
+
 			setTimeout(mainLoad(), 1000);
 			
+		}
+		
+		function show_hide(show_hide_list) {
+			for (var i = 0; i < div_list.length; i++) {
+				if (show_hide_list[i]) {
+					$("#" + div_list[i]).show();
+				} else {
+					$("#" + div_list[i]).hide();
+				}
+			}
 		}
 		
 		$("#logout").click(function(e) {
@@ -680,6 +731,8 @@
 		</div>
 	
 		<jsp:include page="menu.jsp"></jsp:include>
+		
+		<div id="msgAlert"></div>
 				
 	 	<h2 id="title" class="page-title">決策管理</h2>
 		
@@ -774,7 +827,7 @@
 			</div>
 	
 			<div id="div_create_step3" class="form-row" >
-				<form class="form-row custom_step2">
+				<form class="form-row custom_step3">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立決策(第三步)</h2>
@@ -805,7 +858,7 @@
 			</div>
 			
 			<div id="div_create_step4" class="form-row" >
-				<form class="form-row custom_step3">
+				<form class="form-row custom_step4">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立決策(第四步)</h2>
@@ -828,7 +881,7 @@
 			</div>
 
 			<div id="div_create_step5" class="form-row" >
-				<form class="form-row custom_step4">
+				<form class="form-row custom_step5">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立決策(第五步)</h2>
@@ -849,7 +902,7 @@
 			</div>
 			
 			<div id="div_create_step6" class="form-row" >
-				<form class="form-row customDiv3">
+				<form class="form-row custom_step6">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立決策(第六步)</h2>

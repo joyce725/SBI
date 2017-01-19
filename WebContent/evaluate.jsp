@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 <%
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
@@ -26,6 +27,8 @@
 	
 	$(function() {
 		
+		var div_list = ['div_main','div_evaluate_step1','div_evaluate_step2','div_evaluate_step3'];
+
 		var user_count = 0;
 		var pref_count = 0;
 		var level1_count = 0;
@@ -46,6 +49,9 @@
 		
 		$("#btn_main_evaluate").click(function(e) {
 			e.preventDefault();
+			
+			$("#div_evaluate_step1 > form > div > div:first").find('div').remove();
+			$("#div_evaluate_step1 > form > div > div:first").find('h4').remove();
 			
 			var temp = "";
 			for (var i = 1; i <= level1_count; i++) {
@@ -68,14 +74,40 @@
 			
 			$("#div_evaluate_step1 > form > div > div:first").append(tempDiv);
 			
-			$("#div_main").hide();
-			$("#div_evaluate_step1").show();
-		    $("#div_evaluate_step2").hide();
-		    $("#div_evaluate_step3").hide();
+			//========== validate rules (dynamic) ==========
+			$( ".custom_step1" ).validate();
+			
+			$("[name$=_point]").each(function(){
+				$(this).rules("add", {
+					required: true,
+					digits: true,
+                    max: 5,
+                    min: 1
+				});
+		   	});
+			
+			$("[name$=_reason]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});			
+			
+			show_hide([false, true, false, false]);
+		});
+		
+		$("#btn_step1_cancel").click(function(e) {
+			e.preventDefault();
+			
+			show_hide([true, false, false, false]);
 		});
 		
 		$("#btn_step1_next").click(function(e) {
 			e.preventDefault();
+			
+			if (!$('.custom_step1').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
 			
 			$("#div_evaluate_step2 > form > div > div:first").find('div').remove();
 			$("#div_evaluate_step2 > form > div > div:first").find('h4').remove();
@@ -110,6 +142,19 @@
 				step2_arr.push('evaluate_step2_' + i);
 			}
 			
+			//========== validate rules (dynamic) ==========
+			$( ".custom_step2" ).validate({
+			    errorPlacement: function(error, element) {
+			        element.before(error);
+			  	}
+		  	});
+
+			$("[name^=eval_]").each(function(){
+				$(this).rules("add", {
+					required: true
+				});
+			});
+			
 			step2_index = 1;
 			
 			$("[id^=div_evaluate_step2_]").hide();
@@ -117,10 +162,7 @@
 			$('*[class^="div_evaluate_step2_"]').hide();
 			$('.div_evaluate_step2_' + step2_index).show();
 			
-			$("#div_main").hide();
-			$("#div_evaluate_step1").hide();
-		    $("#div_evaluate_step2").show();
-		    $("#div_evaluate_step3").hide();
+			show_hide([false, false, true, false]);
 		});
 		
 		$("#btn_step2_prev").click(function(e) {
@@ -129,24 +171,23 @@
 			step2_index--;
 			
 			if (step2_index != 0) {
-				// div_evaluate_step2_1
-				// "[id^=cmb-1-r" + rowCount + "]"
-				console.log('#tbl_' + step2_arr[step2_index]);
 				$("[id^=div_evaluate_step2_]").hide();
 				$('#div_' + step2_arr[step2_index]).show();
 				$('*[class^="div_evaluate_step2_"]').hide();
 				$('.div_evaluate_step2_' + step2_index).show();
 			} else {
-				$("#div_main").hide();
-				$("#div_evaluate_step1").show();
-			    $("#div_evaluate_step2").hide();
-			    $("#div_evaluate_step3").hide();   
+				show_hide([false, true, false, false]);
 			}
 		});
 		
 		$("#btn_step2_next").click(function(e) {
 			e.preventDefault();
-			
+
+			if (!$('.custom_step2').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
+
 			step2_index++;
 			
 			if (step2_index < step2_arr.length ) {
@@ -157,6 +198,9 @@
 			} else {
 				var tempDiv = "";
 				var temp_text = "";
+				
+				$("#div_evaluate_step3 > form > div > div:first").find('div').remove();
+				$("#div_evaluate_step3 > form > div > div:first").find('h4').remove();
 				
 				for (var k = 0; k < pref_count; k++) {
 					temp_text += '<th style="width:30%">' + bd_arr[k] + '</th>'
@@ -198,17 +242,31 @@
 						'</div>';
 						
 					$("#div_evaluate_step3 > form > div > div:first").append(tempDiv);
+					
+					//========== validate rules (dynamic) ==========
+					$( ".custom_step3" ).validate();
+					
+					$("[name^=txt_eval_ratio]").each(function(){
+						$(this).rules("add", {
+							required: true,
+							digits: true,
+		                    max: 5,
+		                    min: 1
+						});
+				   	});
 				}
 				
-				$("#div_main").hide();
-				$("#div_evaluate_step1").hide();
-			    $("#div_evaluate_step2").hide();
-			    $("#div_evaluate_step3").show();   
+				show_hide([false, false, false, true]);
 			}
 		});
 		
 		$("#btn_step3_send").click(function(e) {
 			e.preventDefault();
+			
+			if (!$('.custom_step3').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
 			
 			confirm();
 		});
@@ -216,10 +274,7 @@
 		$("#btn_step3_reset").click(function(e) {
 			e.preventDefault();
 			
-			$("#div_main").show();
-			$("#div_evaluate_step1").hide();
-		    $("#div_evaluate_step2").hide();
-		    $("#div_evaluate_step3").hide();
+			show_hide([true, false, false, false]);
 		});
 		
 		$( document ).ready(function() {
@@ -230,10 +285,7 @@
 			
 			getCaseNotFinish();
 
-			$("#div_main").show();
-			$("#div_evaluate_step1").hide();
-		    $("#div_evaluate_step2").hide();
-		    $("#div_evaluate_step3").hide();
+			show_hide([true, false, false, false]);
 		}
 		
 		function getCaseNotFinish() {
@@ -385,6 +437,16 @@
 			});
 		}
 		
+		function show_hide(show_hide_list) {
+			for (var i = 0; i < div_list.length; i++) {
+				if (show_hide_list[i]) {
+					$("#" + div_list[i]).show();
+				} else {
+					$("#" + div_list[i]).hide();
+				}
+			}
+		}
+
 		$("#logout").click(function(e) {
 			$.ajax({
 				type : "POST",
@@ -417,6 +479,8 @@
 		</div>
 	
 		<jsp:include page="menu.jsp"></jsp:include>
+		
+		<div id="msgAlert"></div>
 				
 	 	<h2 id="title" class="page-title">決策評估</h2>
 		
@@ -463,13 +527,11 @@
 				</form>
 			</div>
 			
-			<!-- 政策偏好 -->
 			<div id="div_evaluate_step2" class="form-row" >
 				<form class="form-row custom_step2">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>決策評估(第二步)</h2>
-							<h4>政策偏好</h4>
 						</div>
 
 						<div class="btn-row">
@@ -481,7 +543,7 @@
 			</div>
 	
 			<div id="div_evaluate_step3" class="form-row" >
-				<form class="form-row custom_step2">
+				<form class="form-row custom_step3">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>決策評估(第三步)</h2>
