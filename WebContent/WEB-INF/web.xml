@@ -304,6 +304,39 @@
     <servlet-name>evaluate</servlet-name>
     <url-pattern>/evaluate.do</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>caseCompetition</servlet-name>
+    <servlet-class>tw.com.sbi.caseandevaluate.controller.CaseCompetition</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>caseCompetition</servlet-name>
+    <url-pattern>/caseCompetition.do</url-pattern>
+  </servlet-mapping> 
+  <servlet>
+    <servlet-name>caseChannel</servlet-name>
+    <servlet-class>tw.com.sbi.caseandevaluate.controller.CaseChannel</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>caseChannel</servlet-name>
+    <url-pattern>/caseChannel.do</url-pattern>
+  </servlet-mapping>   
+  <servlet>
+    <servlet-name>caseCompetitionEvaluation</servlet-name>
+    <servlet-class>tw.com.sbi.caseandevaluate.controller.CaseCompetitionEvaluation</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>caseCompetitionEvaluation</servlet-name>
+    <url-pattern>/caseCompetitionEvaluation.do</url-pattern>
+  </servlet-mapping>   
+  <servlet>
+    <servlet-name>caseChannelEvaluation</servlet-name>
+    <servlet-class>tw.com.sbi.caseandevaluate.controller.CaseChannelEvaluation</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>caseChannelEvaluation</servlet-name>
+    <url-pattern>/caseChannelEvaluation.do</url-pattern>
+  </servlet-mapping> 
+  <!--
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
@@ -312,4 +345,5 @@
     <filter-name>loginFilter</filter-name>
     <url-pattern>*.jsp</url-pattern>
   </filter-mapping>
+   -->
 </web-app>

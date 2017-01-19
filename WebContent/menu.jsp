@@ -33,6 +33,10 @@
 					<ul>
 						<li><a href="case.jsp">決策管理</a></li>
 						<li><a href="evaluate.jsp">決策評估</a></li>
+						<li><a href="caseCompetition.jsp">競爭力決策管理</a></li>
+						<li><a href="caseCompetitionEvaluation.jsp">競爭力決策評估</a></li>
+						<li><a href="caseChannel.jsp">通路決策管理</a></li>
+						<li><a href="caseChannelEvaluation.jsp">通路決策評估</a></li>
 					</ul>
 				</li>
 			</ul>
