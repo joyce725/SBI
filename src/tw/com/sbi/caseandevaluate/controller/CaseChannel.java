@@ -206,6 +206,7 @@ public class CaseChannel extends HttpServlet {
 				caseService = new CaseService();
 				List<CaseChannelVO> list = caseService.selectCase();
 				String jsonStrList = new Gson().toJson(list);
+				logger.debug(jsonStrList);
 				response.getWriter().write(jsonStrList);
 				return;
 			} catch (Exception e) {
@@ -740,7 +741,18 @@ public class CaseChannel extends HttpServlet {
 					caseChannelVO.setEvaluate_1_no(null2Str(rs.getString("evaluate_1_no")));
 					caseChannelVO.setEvaluate_1(null2Str(rs.getString("evaluate_1")));
 					caseChannelVO.setEnding_time(null2Str(rs.getString("ending_time")));
-					caseChannelVO.setResult(null2Str(rs.getString("result")));
+					
+					String businessDistrict = rs.getString("result") == null ? ""
+							: (businessDistrict = rs.getString("result").split(";")[0].split(",")[0]);
+					String fraction = rs.getString("result") == null ? ""
+							: (fraction = rs.getString("result").split(";")[0].split(",")[1]);
+					StringBuffer strbuf = new StringBuffer();
+					strbuf = businessDistrict.length() > 0 && fraction.length() > 0
+							? strbuf.append("通路為: ").append(businessDistrict).append(" / 分數為: ").append(fraction)
+							: null;
+					String result = strbuf == null ? "" : strbuf.toString();
+					
+					caseChannelVO.setResult(null2Str(result));
 					caseChannelVO.setIsfinish(null2Int(rs.getString("isfinish")));
 					// tb_city
 					caseChannelVO.setCity_city_name(null2Str(rs.getString("city_name")));

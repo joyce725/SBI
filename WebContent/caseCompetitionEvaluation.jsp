@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 <%
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
@@ -80,7 +81,14 @@
 				'</div>';
 			
 			$("#div_evaluate_step1 > form > div > div:first").append(tempDiv);
-
+			
+			$( ".custom_step1" ).validate();
+			
+			$("[name^=txt_eval_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});
 			show_hide([false, true, false, false]);
 		});
 		
@@ -110,7 +118,12 @@
 		
 		$("#btn_step1_next").click(function(e) {
 			e.preventDefault();
-			
+
+ 			if (!$('.custom_step1').valid()) {
+ 				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+ 			}
+ 			
 			$("#div_evaluate_step2 > form > div > div:first").find('div').remove();
 			$("#div_evaluate_step2 > form > div > div:first").find('h4').remove();
 			
@@ -151,6 +164,18 @@
 			$('*[class^="div_evaluate_step2_"]').hide();
 			$('.div_evaluate_step2_' + step2_index).show();
 
+			$( ".custom_step2" ).validate({
+			    errorPlacement: function(error, element) {
+			        element.before(error);
+			  	}
+		  	});
+			
+			$("[name^=eval_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});
+			
 			show_hide([false, false, true, false]);
 		});
 		
@@ -174,7 +199,12 @@
 		
 		$("#btn_step2_next").click(function(e) {
 			e.preventDefault();
-			
+
+ 			if (!$('.custom_step2').valid()) {
+ 				warningMsg('警告', '尚有重要性質未勾選');
+				return;
+ 			}
+ 			
 			step2_index++;
 			
 			if (step2_index < step2_arr.length ) {
@@ -241,7 +271,14 @@
 						
 					$("#div_evaluate_step3 > form > div > div:first").append(tempDiv);
 				}
-
+				$( ".custom_step3" ).validate();
+				
+				$("[name^=txt_eval_ratio_]").each(function(){
+					$(this).rules("add", {
+					  	required: true
+					});
+			   	});
+				
 				show_hide([false, false, false, true]);  
 			}
 		});
@@ -262,7 +299,12 @@
 				
 		$("#btn_step3_send").click(function(e) {
 			e.preventDefault();
-			
+	
+ 			if (!$('.custom_step3').valid()) {
+ 				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+ 			}
+ 			
 			confirm();
 		});
 		
@@ -434,6 +476,8 @@
 		</div>
 	
 		<jsp:include page="menu.jsp"></jsp:include>
+		
+		<div id="msgAlert"></div>
 				
 	 	<h2 id="title" class="page-title">競爭力決策評估</h2>
 		
@@ -500,7 +544,7 @@
 			</div>
 	
 			<div id="div_evaluate_step3" class="form-row" >
-				<form class="form-row custom_step2">
+				<form class="form-row custom_step3">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>競爭力決策評估(第三步)</h2>

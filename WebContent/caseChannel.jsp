@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 <%
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
@@ -110,7 +111,7 @@
 					$.each(json_obj, function(i, item) {
 						
 						$("#tbl_decision_case_finish").append('<tr>' +
-								'<td><input type="checkbox" id="checkbox_decision_case_finish_' + i + '"/><label for="checkbox_decision_case_finish_' + i + '"></label></td>' + 
+								'<td><input type="checkbox" name= "tbl_decision_case_finish_checkbox" id="checkbox_decision_case_finish_' + i + '"/><label for="checkbox_decision_case_finish_' + i + '"></label></td>' + 
 								'<td>' + (i + 1) + '</td>' + 
 								'<td>' + item.v_country + '</td>' + 
 								'<td>' + item.v_city_name + '</td>' +  
@@ -118,7 +119,8 @@
 								'<input type="hidden" id="hidden_decision_case_finish_params_' + i + '" value="' + JSON.stringify(item).replace(/"/g,'$') + '">'+
 								'</td>' + 
 								'</tr>');
-					})
+						
+					});
 					
 					$('[id^=checkbox_decision_case_finish]').click(function(e) {
 						$("[id^=checkbox_decision_case_finish]").prop( "checked", false );
@@ -134,8 +136,15 @@
 		$("#btn_step1_next").click(function(e) {
 			e.preventDefault();
 			
+			if($("input:checkbox[name='tbl_decision_case_finish_checkbox']:checked").length === 0){
+				warningMsg('警告', '請勾選一筆欲觀察之商圈，方能進行流程!');
+				return;
+			}
+			
 			var length = $('#salesChannelNum').children('option').length;
 			if(length!=channel_count){
+				$("#salesChannelNum option").remove();
+				$("#salesChannelNum").append($('<option></option>').val(defaultValue).html(defaultValue));
 				for (var i=1;i<=channel_count;i++) {
 					$("#salesChannelNum").append($('<option></option>').val(i).html(i));	
 				}				
@@ -148,6 +157,12 @@
 			e.preventDefault();
 			
 			var count = $('#salesChannelNum').val();
+			
+			if(count==='請選擇'){
+				warningMsg('警告', '請選擇銷售通路!');
+				return;
+			}
+			
 			choose_count = count;
 			
 			$("#tbl_sales_channels_group").find('tbody').remove();
@@ -161,15 +176,49 @@
 						+ '</tr>');
 			}
 			
+			//========== validate rules (dynamic) ==========
+			$( ".custom_step3" ).validate();
+			
+			$("[name^=tbl_sales_channels_group_text_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});
+			
 			show_hide([false, false, false, true, false, false, false, false]);
 
 		});
+
+		function channels_text_validate() {
+			var valid = false;
+			var validate_array = [];
+			$("input[name^='tbl_sales_channels_group_text_']").each(function(index){
+			 if(($.trim($(this).val())).length === 0){
+				 validate_array.push(index+1);
+			    return valid = true;
+			 }
+			});
+			validate_array.push(valid);
+			
+			return validate_array;
+		}
 		
 		$("#btn_step3_next").click(function(e) {
 			e.preventDefault();
 			
+			if (!$('.custom_step3').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
+			
+			var validate_array = channels_text_validate();
+			
+			var result = validate_array.pop();
+			
 			var length = $('#evaluationNum').children('option').length;
-			if(length!=evaluation_count){
+			if(length!=evaluation_count){			
+				$("#evaluationNum option").remove();
+				$("#evaluationNum").append($('<option></option>').val(defaultValue).html(defaultValue));
 				for (var i=1;i<=evaluation_count;i++) {
 					$("#evaluationNum").append($('<option></option>').val(i).html(i));	
 				}				
@@ -183,6 +232,12 @@
 			e.preventDefault();
 			
 			var count = $('#evaluationNum ').val();
+
+			if(count==='請選擇'){
+				warningMsg('警告', '請選擇評估因子!');
+				return;
+			}
+			
 			choose_count = count;
 			
 			$("#tbl_evaluation_group").find('tbody').remove();
@@ -193,30 +248,50 @@
 					.append('<tr>'
 						+ '<td>' + (i + 1)
 						+ '.<input type="text" id="tbl_evaluation_group_text_' + i + '" name="tbl_evaluation_group_text_' + i + '">'
-						+' 評估子因子<select id="tbl_evaluation_group_select_' + i +'"></select><label>項</label>'
+						+'</td><td>'
+						+' <select id="tbl_evaluation_group_select_' + i +'" name="tbl_evaluation_group_select_' + i + '"></select><label>項評估子因子</label>'
 						+'</td>'
 						+ '</tr>');
 			}
 			for (var j=0;j<=count;j++) {
+				$("#tbl_evaluation_group_select_"+j).append($('<option></option>').val('').html(defaultValue));
 				for (var k=1;k<=evaluation_count;k++) {
 					$("#tbl_evaluation_group_select_"+j).append($('<option></option>').val(k).html(k));	
 				}
 			}
-			
+			$( ".custom_step5" ).validate({
+			    errorPlacement: function(error, element) {
+			        element.before(error);
+			  	}
+		  	});
+			$("[name^=tbl_evaluation_group_text_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});
+			$("[name^=tbl_evaluation_group_select_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});			
 			show_hide([false, false, false, false, false, true, false, false]);
 
-		});
+		});		
 		
 		$("#btn_step5_next").click(function(e) {
 			e.preventDefault();
 			
+ 			if (!$('.custom_step5').valid()) {
+ 				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+ 			}
+ 			
 			$("#tbl_evaluation_show_all_group").find('tbody').remove();
 			$("#tbl_evaluation_show_all_group").append('<tbody></tbody>');			
 			
 			tbl_evaluation_group_select_arr =[];
 			for (var i = 0; i < choose_count; i++) {
 				tbl_evaluation_group_select_arr.push($('#tbl_evaluation_group_select_' + i).val());
-				console.log(tbl_evaluation_group_select_arr);
 			}
 			
 			for (var i = 0; i < choose_count; i++) {
@@ -228,14 +303,24 @@
 				}
 				$('#tbl_evaluation_show_all_group').append('<tr>' + text_list + '</tr>');
 			}
-			
+			$( ".custom_step6" ).validate();
+			$("[name^=tbl_evaluation_show_all_group_text_]").each(function(){
+				$(this).rules("add", {
+				  	required: true
+				});
+		   	});			
 			show_hide([false, false, false, false, false, false, true, false]);
 			
 		});
 		
 		$("#btn_step6_next").click(function(e) {
 			e.preventDefault();
-
+			
+ 			if (!$('.custom_step6').valid()) {
+ 				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+ 			}
+ 			
 			$("#tbl_evaluation_final").find('tbody').remove();
 			$("#tbl_evaluation_final").append('<tbody></tbody>');
 			
@@ -268,6 +353,28 @@
 								'<td><input type="text" id="tbl_evaluation_final_text_' + i + '" name="tbl_evaluation_final_text_' + i + '"></td>' +
 								'<td>' + radio_list + '</td>'+
 								'<td><input type="hidden" id="hidden_user_text_' + i + '" value="' + json_obj[i].user_id + '"></td></tr>');
+					
+						//========== validate rules (dynamic) ==========
+						$( ".custom_step7" ).validate({
+						    errorPlacement: function(error, element) {
+						        element.before(error);
+						  	}
+					  	});
+						
+						$("[name^=user_]").each(function(){
+							$(this).rules("add", {
+							  	required: true
+							});
+					   	});
+						
+						$("[name^=tbl_evaluation_final_text_]").each(function(){
+							$(this).rules("add", {
+								required: true,
+								digits: true,
+			                    max: 5,
+			                    min: 1
+							});
+					   	});
 					});
 
 				}
@@ -388,6 +495,28 @@
 		$("#btn_step7_confirm").click(function(e) {
 			e.preventDefault();
 			
+			if (!$('.custom_step7').valid()) {
+				warningMsg('警告', '尚有資料未填寫完畢');
+				return;
+			}
+			
+			var validate_rad_array = [];
+			var validate_text_array = [];
+			
+			for(var i= 0;i<user_count;i++){
+				for (var j = 1; j <= 2; j++) {
+					if(!$('#rdo_user_'+ i + '_' + j).is(':checked')) {
+						validate_rad_array.push($('#rdo_user_'+ i + '_' + j).attr("id"));
+					}
+				}
+			}
+			$("input[name^='tbl_evaluation_final_text_']").each(function(index){
+				 if(($.trim($(this).val())).length === 0){
+					 validate_text_array.push(index+1);
+				 }
+			});
+		
+
 			var user_rdo_arr=[];
 			var user_text_arr=[];
 			var channel_name = "";
@@ -444,6 +573,11 @@
 		
 		$("#btn_main_view").click(function(e){
 			e.preventDefault();
+			
+			if($("input:checkbox[name='tbl_main_checkbox']:checked").length === 0){
+				warningMsg('警告', '查看通路決策時，請勾選一筆決策 !');
+				return;
+			}
 			
 			var channel_id = "";
 			
@@ -504,11 +638,11 @@
 						}
 						
 						$("#tbl_main").append('<tr>' + 
-								'<td><input type="checkbox" id="checkbox-r' + i + '"/><label for="checkbox-r' + i + '"></label></td>' + 
+								'<td><input type="checkbox" name="tbl_main_checkbox" id="checkbox-r' + i + '"/><label for="checkbox-r' + i + '"></label></td>' + 
 								'<td>' + (i + 1) + '</td>' + 
 								'<td>' + item.country_country_name + '</td>' + 
 								'<td>' + item.city_city_name + '</td>' + 
-								'<td><span id="bd_' + i + '"></span></td>' + 
+								'<td>' + item.result + '</td>' + 
 								'<td>' + item.ending_time + '</td>' + 
 								'<td>' + finish + 
 									'<input type="hidden" id="city_id_' + i + '" value="' + item.city_id + '">' + 
@@ -564,6 +698,8 @@
 		</div>
 	
 		<jsp:include page="menu.jsp"></jsp:include>
+		
+		<div id="msgAlert"></div>
 				
 	 	<h2 id="title" class="page-title">通路決策管理</h2>
 		
@@ -647,7 +783,7 @@
 			</div>
 	
 			<div id="div_create_step3" class="form-row" >
-				<form class="form-row custom_step2">
+				<form class="form-row custom_step3">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立通路決策</h2>
@@ -670,7 +806,7 @@
 			</div>
 			
 			<div id="div_create_step4" class="form-row" >
-				<form class="form-row custom_step3">
+				<form class="form-row custom_step4">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立通路決策</h2>
@@ -701,7 +837,7 @@
 			</div>
 
 			<div id="div_create_step5" class="form-row" >
-				<form class="form-row custom_step4">
+				<form class="form-row custom_step5">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立通路決策</h2>
@@ -722,7 +858,7 @@
 			</div>
 			
 			<div id="div_create_step6" class="form-row" >
-				<form class="form-row customDiv3">
+				<form class="form-row custom_step6">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立通路決策</h2>
@@ -742,7 +878,7 @@
 			</div>
 
 			<div id="div_create_step7" class="form-row" >
-				<form class="form-row customDiv3">
+				<form class="form-row custom_step7">
 					<div class="search-result-wrap">
 						<div class="form-row">
 							<h2>建立通路決策</h2>

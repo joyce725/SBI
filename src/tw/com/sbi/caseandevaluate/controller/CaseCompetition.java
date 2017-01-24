@@ -679,7 +679,18 @@ public class CaseCompetition extends HttpServlet {
 					caseCompetitionVO.setEvaluate_1_no(null2Str(rs.getString("evaluate_1_no")));
 					caseCompetitionVO.setEvaluate_1(null2Str(rs.getString("evaluate_1")));
 					caseCompetitionVO.setEnding_time(null2Str(rs.getString("ending_time")));
-					caseCompetitionVO.setResult(null2Str(rs.getString("result")));
+					
+					String businessDistrict = rs.getString("result") == null ? ""
+							: (businessDistrict = rs.getString("result").split(";")[0].split(",")[0]);
+					String fraction = rs.getString("result") == null ? ""
+							: (fraction = rs.getString("result").split(";")[0].split(",")[1]);
+					StringBuffer strbuf = new StringBuffer();
+					strbuf = businessDistrict.length() > 0 && fraction.length() > 0
+							? strbuf.append("通路為: ").append(businessDistrict).append(" / 分數為: ").append(fraction)
+							: null;
+					String result = strbuf == null ? "" : strbuf.toString();
+					
+					caseCompetitionVO.setResult(null2Str(result));
 					caseCompetitionVO.setIsfinish(null2Int(rs.getString("isfinish")));
 					// tb_city
 					caseCompetitionVO.setCity_city_name(null2Str(rs.getString("city_name")));
