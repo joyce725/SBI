@@ -37,6 +37,9 @@ html, body {
     text-rendering: optimizeLegibility;
     width: 100%;
 }
+* {
+    box-sizing: border-box;
+}
 h1 {
     font-size: 40px;
 }
@@ -71,6 +74,12 @@ h6 {
     top: 55%;
     margin-top: -320px;
 }
+@media (max-device-width: 640px) {
+    .login-wrapper {
+        top: 0;
+        margin-top: 80px;
+    }
+}
 .login-panel-wrap {
     background: #194A6B;
     border-radius: 5px;
@@ -88,6 +97,12 @@ h6 {
 .login-panel-wrap:after {
     clear: both;
 }
+@media (max-width: 640px) {
+    .login-panel-wrap {
+        width: 90%;
+        padding-bottom: 20px;
+    }
+}
 .login-panel {
     margin: 0 auto;
     padding-top: 25px;
@@ -96,14 +111,14 @@ h6 {
 }
 .login-panel h1.sys-logo {
     background: url('../images/SBI-logo.svg') no-repeat;
-    background-size: cover;
-    height: 160px;
+    background-size: contain;
     left: 50%;
-    margin-left: -80px;
+    margin-left: -60px;
     position: absolute;
     text-indent: -9999px;
-    top: -140px;
-    width: 160px;
+    top: -25%;
+    height: 120px;
+    width: 120px;
 }
 .login-panel h2 {
     color: #eee;
@@ -157,6 +172,44 @@ h6 {
     position: absolute;
     top: -5px;
     width: 100%;
+}
+@media (max-width: 480px) {
+    .login-panel {
+        padding-top: 36px;
+    }
+}
+@media (max-width: 320px) {
+    .login-panel {
+        width: 90%;
+    }
+}
+@media (max-width: 640px) {
+    .login-panel h1.sys-logo {}
+}
+@media (max-width: 480px) {
+    .login-panel h1.sys-logo {
+        top: -20%;
+        width: 100px;
+        height: 100px;
+        margin-left: -50px;
+    }
+}
+@media (max-width: 320px) {
+    .login-panel h1.sys-logo {}
+}
+@media (max-width: 480px) {
+    .login-panel h2 {
+        font-size: 21px;
+    }
+}
+@media (max-width: 320px) {
+    .login-panel h2 {}
+}
+@media (max-width: 640px) {
+    .login-panel input[type=text], .login-panel input[type=password] {
+        font-size: 16px;
+        padding: 5px 8px;
+    }
 }
 .verify-wrap {
     zoom: 1;
@@ -232,6 +285,12 @@ h6 {
     font-weight: 100;
     margin-left: 1em;
 }
+@media (max-width: 600px) {
+    .login-footer span {
+        display: block;
+        margin-top: 6px;
+    }
+}
 /* Page Styles
 ---------------------------------- */
 .page-wrapper {
@@ -256,19 +315,19 @@ h6 {
 .header .userinfo p {
     color: #777;
     display: block;
-    font-size: 15px;
+    font-size: 13px;
     float: left;
     font-weight: 100;
     margin-right: 20px;
-    padding-top: 1.3em;
+    padding-top: 8px;
 }
 .header .userinfo p span {
     color: #000;
+    display: block;
     font-weight: bold;
-    font-size: 18px;
-    margin-left: 20px;
+    font-size: 16px;
 }
-.header .btn-logout {
+.btn-logout {
     background-image: linear-gradient(#FF4646,#FC0000);
     border-radius: 30px;
     color: #fff;
@@ -282,8 +341,26 @@ h6 {
     width: 70px;
     text-decoration: none;
 }
-.header .btn-logout:hover {
+@media (max-width: 800px) {
+    .btn-logout {
+        display: none;
+    }
+}
+.btn-logout:hover {
     background: #FC3E3E;
+}
+.sideNav-toggle {
+    background: url('../images/sideNav-toggle.svg') no-repeat;
+    display: none;
+    float: left;
+    width: 28px;
+    height: 28px;
+    margin: 18px 8px;
+}
+@media (max-width: 800px) {
+    .sideNav-toggle {
+        display: block;
+    }
 }
 /* sidenav
 ---------------------------------- */
@@ -301,22 +378,31 @@ h1.sys-title a {
     text-align: center;
     text-indent: -99999px;
 }
+@media (max-width: 800px) {
+    h1.sys-title a {
+        background: transparent url('../images/SBI-logo.svg') no-repeat center center;
+        margin: 0 auto;
+        background-size: 75%;
+    }
+}
 .sidenav {
     border-radius: 3px;
     position: fixed;
     top: 0px;
     left: 15px;
     z-index: 9999;
+    /* MENU - Level 1 */
 }
+/* RWD - Side Menu -*/
 .sidenav ul {
     width: 120px;
 }
 .sidenav ul li {
     display: block;
 }
+/* MENU - Level 2 */
 .sidenav ul li ul {
     background: #092c42;
-    /*box-shadow: 2px 1px 3px #777;*/
     min-width: 250px;
     position: absolute;
     left: 120px;
@@ -327,6 +413,9 @@ h1.sys-title a {
     visibility: hidden;
     transition: all .3s linear;
 }
+.sidenav ul li ul li {
+    position: relative;
+}
 .sidenav ul li ul li a {
     box-sizing: border-box;
     color: #fff;
@@ -336,12 +425,55 @@ h1.sys-title a {
     text-align: left;
     text-decoration: none;
     padding: 10px 20px;
-    /*width: 250px;*/
+}
+/* MENU - Level 3 */
+.sidenav ul li ul li ul {
+    left: 100%;
+    top: 0;
+    background: #006fbe;
+    /* Hide Level 3 */
+    display: none;
+}
+.sidenav ul li ul li ul li a {
+    color: #eee !important;
+    font-weight: normal;
+}
+.sidenav ul li ul li ul li:hover {
+    background-image: linear-gradient(#092c42,#092c42);
 }
 .sidenav ul li ul li:hover {
-    background-image: linear-gradient(#fff,#35ceff);
+    /*background-image: linear-gradient(#fff,#bbb);*/
+    background: #006fbe;
     color: #092c42;
     font-weight: bold;
+}
+.sidenav ul li ul li:hover a {
+    color: #fff;
+    font-weight: bold;
+}
+.sidenav ul li ul li:hover.submenu {}
+.sidenav ul li ul li:hover.submenu:after {
+    content: ' ';
+}
+.sidenav ul li ul li.submenu {}
+.sidenav ul li ul li.submenu:after {
+    content: '+';
+    color: #ccc;
+    position: absolute;
+    right: 5%;
+    top: 10px;
+}
+.sidenav ul li:hover {
+    /* Display Level 3 */
+}
+.sidenav ul li:hover > ul {
+    display: block;
+    position: absolute;
+}
+@media (max-width: 800px) {
+    .sidenav {
+        display: none;
+    }
 }
 .sidenav > ul {}
 .sidenav > ul > li {
@@ -354,7 +486,7 @@ h1.sys-title a {
     position: relative;
 }
 .sidenav > ul > li img {
-    height: 42px;
+    /*height: 42px;*/
     display: block;
     margin: 0 auto;
     padding: 12px 0 12px;
@@ -378,26 +510,119 @@ h1.sys-title a {
 .sidenav > ul > li:hover {
     background: #092c42;
     color: #fff;
-    transition: all .3s linear;
+    transition: all .5s linear;
 }
 .sidenav > ul > li:hover ul {
     opacity: 1;
     visibility: visible;
 }
-
-/* Displays second level dropdowns to the right of the first level dropdown */
-.sidenav ul ul ul {
-  left: 100%;
-  bottom: 0; 
+.rwd-sidenav {
+    display: none;
 }
-/* This hides the dropdowns */
-.sidenav li ul {
-  display: none;
+.rwd-sidenav .btn-logout {
+    display: block;
+    float: none;
+    margin: 15px auto;
+    width: 70%;
 }
-/* Display the dropdown */
-.sidenav li:hover > ul {
-  display: block; 
-  position: absolute;
+@media (max-width: 800px) {
+    .rwd-sidenav {
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        margin-left: -100%;
+        margin-right: 100%;
+        padding-bottom: 20px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(5,30,45,.95);
+        overflow: scroll;
+        z-index: 3;
+        /* MENU - Level 1 */
+    }
+    .rwd-sidenav a {
+        color: #fff;
+        text-decoration: none;
+    }
+    .rwd-sidenav ul {
+        width: 100%;
+    }
+    .rwd-sidenav ul li {
+        display: block;
+    }
+    /* MENU - Level 2 */
+    .rwd-sidenav ul li ul {
+        //background: rgba(15,15,15,.5);
+        clear: both;
+        display: none;
+        padding: 0 0 10px 0;
+    }
+    .rwd-sidenav ul li ul li {
+        padding: 12px 15%;
+    }
+    .rwd-sidenav ul li ul li a {
+        font-size: 18px;
+    }
+    /* MENU - Level 3 */
+    .rwd-sidenav ul li ul ul {
+        display: none;
+    }
+    .rwd-sidenav ul li ul ul li {
+        padding: 12px 1em;
+    }
+    .rwd-sidenav ul li ul ul a {
+        color: #ccc;
+        font-size: 16px;
+    }
+    .rwd-sidenav.show {
+        //: block;
+        opacity: 1;
+        visibility: visible;
+        margin-left: 0;
+        margin-right: 0;
+        transition: .3s linear all;
+    }
+    .rwd-sidenav > ul {}
+    .rwd-sidenav > ul > li {
+        color: #fff;
+        padding: 15px 0;
+        font-size: 24px;
+        line-height: 48px;
+    }
+    .rwd-sidenav > ul > li img {
+        margin-right: 20px;
+        margin-left: 15%;
+        margin-bottom: 15px;
+        float: left;
+    }
+}
+@media (max-width: 800px) and (max-width: 320px) {
+    .rwd-sidenav ul li ul li a {
+        font-size: 16px;
+    }
+}
+@media (max-width: 800px) and (max-width: 320px) {
+    .rwd-sidenav ul li ul ul a {
+        font-size: 14px;
+    }
+}
+@media (max-width: 800px) and (max-width: 320px) {
+    .rwd-sidenav > ul > li {
+        font-size: 21px;
+        line-height: 42px;
+    }
+}
+.smenu-close {
+    background: url('../images/sidemenu-close.svg') no-repeat;
+    display: block;
+    width: 32px;
+    height: 32px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
 }
 /* content-wrap
 ---------------------------------- */
@@ -415,6 +640,20 @@ h2.page-title {
     position: fixed;
     text-align: center;
     top: 0;
+}
+@media (max-width: 800px) {
+    h2.page-title {
+        left: 40px;
+        letter-spacing: 1px;
+        padding: 0 12px;
+    }
+}
+@media (max-width: 480px) {
+    h2.page-title {
+        font-size: 24px;
+        letter-spacing: 1px;
+        padding: 0;
+    }
 }
 .content-wrap {
     /*background: #D6F6FF;*/
@@ -446,6 +685,21 @@ h2.page-title {
     text-align: center;
     width: 100%;
 }
+@media (max-width: 800px) {
+    .input-field-wrap {
+        padding: 20px 30px;
+    }
+}
+@media (max-width: 480px) {
+    .input-field-wrap {
+        padding: 15px;
+    }
+}
+@media (max-width: 480px) {
+    .input-field-wrap .form-wrap {
+        text-align: left;
+    }
+}
 .forward-mark {
     background: url(../images/icon-forward.svg) no-repeat;
     display: inline-block;
@@ -454,9 +708,29 @@ h2.page-title {
     margin: 0 5px 0 0px;
     vertical-align: bottom;
 }
+@media (max-width: 600px) {
+    .forward-mark {
+        display: none;
+    }
+}
 .search-result-wrap {
     padding: 20px 30px 20px 160px;
     margin-bottom: 60px;
+}
+@media (max-width: 800px) {
+    .search-result-wrap {
+        padding-left: 30px;
+    }
+}
+@media (max-width: 640px) {
+    .search-result-wrap {
+        margin-bottom: 0;
+    }
+}
+@media (max-width: 480px) {
+    .search-result-wrap {
+        padding: 15px;
+    }
 }
 .result-table-func-wrap {
     zoom: 1;
@@ -508,17 +782,33 @@ h2.page-title {
     color: #eee;
     font-size: 12px;
     font-weight: bold;
-    line-height: 2.5;
+    line-height: 1.5;
+    padding: 5px 0;
     position: fixed;
     bottom: 0;
     left: 15px;
     right: 15px;
 }
 .footer span {
-    color: #eee;
-    font-weight: 100;
+    color: #ccc;
+    font-weight: normal;
     margin-left: 1em;
     margin-right: 20px;
+}
+@media (max-width: 640px) {
+    .footer span {
+        display: block;
+    }
+}
+@media (max-width: 640px) {
+    .footer {
+        position: relative;
+        text-align: center;
+        clear: both;
+        left: 0;
+        right: 0;
+        height: auto;
+    }
 }
 /* Forms */
 .form-wrap {}
@@ -549,26 +839,42 @@ h2.page-title {
 .block-label ~ input[type="text"], .block-label ~ input[type="password"] {
     margin-bottom: 0;
 }
+@media (max-width: 360px) {
+    .block-label {
+        font-size: 14px;
+    }
+}
 label {
     display: inline-block;
     font-size: 16px;
     margin-right: 5px;
     vertical-align: middle;
 }
-input[type="text"], input[type="password"], select, textarea {
+@media(max-width: 480px) {
+    label {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    label input[type="text"], label input[type="password"], label input[type="date"] {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+input[type="text"], input[type="password"], input[type="date"], select, textarea {
     background: #efefef;
     border: 1px solid #999;
     font-size: 16px;
     margin-bottom: 5px;
     padding: 5px;
 }
-input[type="text"]:hover, input[type="password"]:hover, select:hover, textarea:hover {}
-input[type="text"]:focus, input[type="text"].focus, input[type="password"]:focus, input[type="password"].focus, select:focus, select.focus, textarea:focus, textarea.focus {
+input[type="text"]:hover, input[type="password"]:hover, input[type="date"]:hover, select:hover, textarea:hover {}
+input[type="text"]:focus, input[type="text"].focus, input[type="password"]:focus, input[type="password"].focus, input[type="date"]:focus, input[type="date"].focus, select:focus, select.focus, textarea:focus, textarea.focus {
     background-color: #fff;
     border: 1px solid #3F7FAA;
 }
-input[type="text"]:disabled, input[type="text"].readonly, input[type="password"]:disabled, input[type="password"].readonly, select:disabled, select.readonly, textarea:disabled, textarea.readonly {}
-input[type="text"].error, input[type="password"].error, select.error, textarea.error {}
+input[type="text"]:disabled, input[type="text"].readonly, input[type="password"]:disabled, input[type="password"].readonly, input[type="date"]:disabled, input[type="date"].readonly, select:disabled, select.readonly, textarea:disabled, textarea.readonly {}
+input[type="text"].error, input[type="password"].error, input[type="date"].error, select.error, textarea.error {}
 select {
     background: #eee url('../images/dropdown.svg') no-repeat 96% 2px;
     border: 1px solid #999;
@@ -816,16 +1122,19 @@ input[type=radio]:checked + label:before {
     border: 1px solid #ccc !important;
 }
 /* Table */
+.result-table-wrap {
+    background: #fff;
+}
 table.result-table {
     border: 1px solid #ccc;
-    font-size: 13px;
+    font-size: 14px;
     width: 100%;
 }
 table.result-table tr {
-    background: #eee;
+    /*background: #fff;*/
 }
 table.result-table tr:nth-child(2n+1) {
-    background: #fff;
+    /*background: #efefef;*/
 }
 table.result-table th {
     background: #194A6B;
@@ -839,25 +1148,69 @@ table.result-table th, table.result-table td {
 table.result-table td {
     border: 1px solid #ddd;
 }
+/* RWD Table */
+@media (max-width: 1200px) {
+    .scrollTable {
+        /*!
+	  // IE needs inline-block to position scrolling shadows otherwise use:
+	  // display: block;
+	  // max-width: min-content;
+	  */
+        display: inline-block;
+        vertical-align: top;
+        max-width: 100%;
+        overflow-x: auto;
+        /* for small cell values*/
+        white-space: nowrap;
+        border-collapse: collapse;
+        border-spacing: 0;
+        /* enable iOS momentum scrolling*/
+        -webkit-overflow-scrolling: touch;
+        /* scrolling shadows*/
+        /*background: radial-gradient(left, ellipse, rgba(0,0,0, .2) 0%, rgba(0,0,0, 0) 75%) 0 center,
+	              radial-gradient(right, ellipse, rgba(0,0,0, .2) 0%, rgba(0,0,0, 0) 75%) 100% center;*/
+        background: radial-gradient(ellipse at left, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 75%) 0 center, 
+	  						radial-gradient(ellipse at right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 75%) 100% center;
+        background-size: 10px 100%, 10px 100%;
+        background-attachment: scroll, scroll;
+        background-repeat: no-repeat;
+    }
+    /* change these gradients from white to your background colour if it differs gradient on the first cells to hide the left shadow*/
+    .scrollTable td {
+        /* gradient on the last cells to hide the right shadow*/
+    }
+    .scrollTable td:first-child {
+        background-image: linear-gradient(to right, rgba(255,255,255, 1) 50%, rgba(255,255,255, 0) 100%);
+        background-repeat: no-repeat;
+        background-size: 20px 100%;
+    }
+    .scrollTable td:last-child {
+        background-image: linear-gradient(to left, rgba(255,255,255, 1) 50%, rgba(255,255,255, 0) 100%);
+        background-repeat: no-repeat;
+        background-position: 100% 0;
+        background-size: 20px 100%;
+    }
+}
 /*Button*/
 .btn-row {
     padding: 10px 0;
 }
-a.btn, button.btn {
+.btn {
     display: inline-block;
     color: #fff;
     font-size: 14px;
     text-decoration: none;
     box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
-}
-a.btn:hover, button.btn:hover {
-    box-shadow: none;
-}
-a.btn {
-    padding: 7px 20px;
-}
-button.btn {
     padding: 4px 20px;
+}
+@media (max-width: 480px) {
+    .btn {
+        text-align: center;
+        width: 100%;
+    }
+}
+.btn:hover {
+    box-shadow: none;
 }
 /*- by Color -*/
 .btn-primary {
@@ -931,10 +1284,9 @@ button.btn {
     display: table-cell;
     vertical-align: middle;
 }
-
 /* 預設驗證訊息樣式 */
 .error {
-	color: red;
-	font-size: 15px;
-	margin-top: 5px;
+    color: red;
+    font-size: 15px;
+    margin-top: 5px;
 }

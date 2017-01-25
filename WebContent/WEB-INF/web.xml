@@ -359,6 +359,48 @@
     <servlet-name>consumer</servlet-name>
     <url-pattern>/consumer.do</url-pattern>
   </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>countryEconomy</servlet-name>
+    <servlet-class>tw.com.sbi.realmap.controller.CountryEconomy</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>countryEconomy</servlet-name>
+    <url-pattern>/countryEconomy.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>countryData</servlet-name>
+    <servlet-class>tw.com.sbi.realmap.controller.CountryData</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>countryData</servlet-name>
+    <url-pattern>/countryData.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>chinaCity</servlet-name>
+    <servlet-class>tw.com.sbi.realmap.controller.ChinaCity</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>chinaCity</servlet-name>
+    <url-pattern>/chinaCity.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>heatMap</servlet-name>
+    <servlet-class>tw.com.sbi.realmap.controller.HeatMap</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>heatMap</servlet-name>
+    <url-pattern>/heatMap.do</url-pattern>
+  </servlet-mapping>  
+  <servlet>
+    <servlet-name>realMap</servlet-name>
+    <servlet-class>tw.com.sbi.realmap.controller.RealMap</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>realMap</servlet-name>
+    <url-pattern>/realMap.do</url-pattern>
+  </servlet-mapping>   
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>

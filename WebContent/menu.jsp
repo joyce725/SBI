@@ -6,14 +6,6 @@
 		<li><a href="marketPlace.jsp"><img src="images/sidenav-country.svg" alt="">國家/城巿商圈</a></li>
 		<li><img src="images/sidenav-strategy.svg" alt="">決策工具
 			<ul>
-				<li><a href="cloudISS.jsp">目標市場定位</a></li>
-				<li><a href="cloudISS.jsp">目標客群定位</a></li>
-				<li><a href="cloudISS.jsp">競爭者定位</a></li>
-<!-- 				<li><a href="cloudISS.jsp">商品通路</a></li> -->
-				<li><a href="persona.jsp">城市定位</a></li>
-				<li><a href="productForecast.jsp">新產品風向評估</a></li>
-				<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
-<!-- 				<li><a href="#">海外布局選擇</a></li> -->
 				<li>
 					<a>授權商品檢索機制</a>
 					<ul>
@@ -39,6 +31,14 @@
 						<li><a href="caseChannelEvaluation.jsp">通路決策評估</a></li>
 					</ul>
 				</li>
+				<li><a href="cloudISS.jsp">目標市場定位</a></li>
+				<li><a href="cloudISS.jsp">目標客群定位</a></li>
+				<li><a href="cloudISS.jsp">競爭者定位</a></li>
+<!-- 				<li><a href="cloudISS.jsp">商品通路</a></li> -->
+				<li><a href="persona.jsp">城市定位</a></li>
+				<li><a href="productForecast.jsp">新產品風向評估</a></li>
+				<li><a href="finModel.jsp">新創公司財務損益平衡評估</a></li>
+<!-- 				<li><a href="#">海外布局選擇</a></li> -->
 			</ul>
 		</li>
 		<li><img src="images/sidenav-stastic.svg" alt="">統計資料
@@ -49,9 +49,6 @@
 		</li>
 		<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
 			<ul>
-				<li><a href="costLiving.jsp">生活費用</a></li>
-				<li><a href="regionSelect.jsp">區位選擇</a></li>
-				<li><a href="cloudISS.jsp">環域分析</a></li>
 				<li>
 					<a>空間決策</a>
 					<ul>
@@ -61,6 +58,9 @@
 						<li><a href="consumer.jsp">消費力</a></li>
 					</ul>
 				</li>
+				<li><a href="costLiving.jsp">生活費用</a></li>
+				<li><a href="regionSelect.jsp">區位選擇</a></li>
+				<li><a href="cloudISS.jsp">環域分析</a></li>
 			</ul>
 		</li>
 		<li><a href="cloudISS.jsp"><img src="images/sidenav-store.svg" alt="">POI</a>
