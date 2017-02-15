@@ -6,42 +6,24 @@
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
-<!-- <script src="http://html2canvas.hertzen.com/build/html2canvas.js"></script> -->
-
-<!-- <script src="https://arthur-e.github.io/Wicket/wicket.js"></script> -->
-<!-- <script src="https://arthur-e.github.io/Wicket/wicket-leaflet.js"></script> -->
-
-
-
-<!-- <script src="./js/jquery-1.12.4.min.js"></script> -->
 <script src="./js/jquery-ui.custom.js"></script>
-
 <link href="./fancy-tree/skin-xp/ui.fancytree.css" rel="stylesheet">
 <script src="./fancy-tree/jquery.fancytree.js"></script>
-
 <script src="refer_data/js/wicket.js"></script>
 <script src="refer_data/js/wicket-gmap3.js"></script>
 <script src="js/mapFunction.js"></script>
-
-<!-- <script src="refer_data/js/country_economy.js"></script> -->
-
 <style>
-	
-/* 	以下為SBI CSS */
+
 	.shpLegend {
 	    border: 2px groove #dfd9c3;
-/* 	    background-color: rgba(177,207,254,.3); */
 	    background-color:#F0F0F0;
 	    position: absolute;
-/* 	    top: initial; */
-/* 	    left: initial; */
 		bottom : 50px;
 		right :50px;
 	    display: block;
 	    z-index: 9999;
 	    height: 183.5px;
 	}
-
     .shpLegend tbody tr.even td {
         background: none;
     }
@@ -52,7 +34,6 @@
 	.shpLegend td:nth-child(2n+1)  {
         text-align:right;
     }
-    /*#businessDistrictLegend button {*/
     .shpLegend button {
         position: absolute;
         top: 2px;
@@ -65,27 +46,24 @@
 	    width: 10px;
 	    height: 10px;
 	}
-/* 	以上為SBI CSS */
-	
 	.header { top: 0px; }
 	.content-wrap{
 	    background: #fff;
 	    float: left;
 	    margin-left: 0px;
 	    margin-top: 100px;
- 	    margin-bottom: 20px; 
- 	    padding-bottom: 62px; 
-	    overflow-y: scroll;
+		margin-bottom: 0px;
+		padding-bottom: 6px;
+		height: calc(100vh - 136px);
+	    overflow-y: hidden;
 	    width: 100%;
 		background-color: #EEF3F9;
 	}
 	.search-result-wrap{
  		padding: 2px 5px 0px 5px; 
-		margin-bottom: 20px;
+		margin-bottom: 0px;
 		height: 100%;
 	}
-/* 	以上為整體介面CSS */
-/* 	以下為自製CSS */
 	.blink {
 	    animation-duration: 1s;
 	    animation-name: blink;
@@ -116,6 +94,40 @@
 		background: #d8d8d8;
 		box-shadow:1px 1px 2px #999;
 	}
+	.info_window{
+		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
+	}
+	.info_window th{
+		font-size: 150%;
+		font-weight: bold;
+	}
+	.info_window tr{
+		border-bottom:1px dashed #ddd;
+	}
+	.info_window tr.title{
+		border-bottom:0px dashed #ddd;
+		margin-top:20px;
+	}
+	.info_window td:nth-child(1){
+		text-align:right;
+		word-break: keep-all;
+		padding-left:16px;
+		
+	}
+	.info_window td:nth-child(2){
+		font-size: 120%;
+		padding:5px;
+	}
+	.info_window td[colspan='2']{
+		text-align: center;
+		font-size: 120%;
+		padding:10px;
+	}
+	.info_window td a{
+		text-align:left;
+		margin-left: 16px;
+		margin-right: 16px;
+	}
 	#panel{
 		background: url(./fancy-tree/skin-xp/bg.png) repeat;
 		transition: all .3s linear;
@@ -124,8 +136,7 @@
 		top:96px; 
 		min-width:200px;
 		width:auto;
-		height:calc(100vh - 129px);
-		
+		height: calc(100vh - 129px);
 		z-index:99;
 		overflow-y: auto;
 		overflow-x: auto;
@@ -133,12 +144,13 @@
 		border-radius: 2px;
 		box-shadow:5px 5px 5px #999;
 	}
-
+	
+	ul.fancytree-container {
+		max-height:calc(100vh - 174px);
+	}
 	#map{
 		height: 100%;
-		
  	}
- 	
     #map > div {}
     #tooltip{
         position:absolute;
@@ -149,6 +161,33 @@
         display:none;
         z-index:999;
 	}
+	#detail_1{ 
+		position:absolute;
+		right: 50px; 
+		top: 120px; 
+		filter: alpha(opacity=85,style=0); 
+		-moz-opacity: 0.85; 
+		opacity: 0.85; 
+		z-index: 3; 
+	}
+	#detail_1 tr{ 
+		background: #FFFFFF;
+	}
+	#detail_1 caption{ 
+		background: rgb(236,236,236);
+	}
+	#detail_1 tr:nth-child(2){ 
+		
+		background: rgb(236,236,236);
+	}
+	#detail_1 * { 
+		padding: 10px 20px;
+		word-break: keep-all;
+	}
+	.on_it:hover {
+		background: #d8d8d8;
+		border: 1px solid #bbb;
+	}
 </style>
 	
 <script>
@@ -158,11 +197,14 @@ var map;
 var transitLayer;
 var trafficLayer;
 var country_polygen=[];
+var chinaProvincial=[];
+var chinaCities={};
 var all_markers={};
 var all_BDs={};
 //Map相關的參數們
 var action={};//記錄所有 tb_data_menu出來的action 對應每一個fancytreenode
 var have_visited={};
+var population_Markers=[];
 
 
 function hidecheckbox(json){
@@ -173,7 +215,6 @@ function hidecheckbox(json){
 		if(key=="folder" && json[key]=="true"){
 			json["hideCheckbox"]=true;
 		}
-// 		alert(key);
 		if(key=="action"){
 			action[json["key"]]=json[key];
 		}
@@ -193,25 +234,14 @@ var item_marker = function (speed, time, marker, circle) {
 }
 
 	$(function(){
-		
-		
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
-// 		select_poi("超市便利商店");
-// 		select_BD("後驛商圈");
-// 		select_poi_2("圖書館");
-// setTimeout(function () {
-// 	smoothZoom(map, 12, map.getZoom());
-// panTo(12.736504830663572,122.92672729492188);
-// 	smoothZoom(map, 5, map.getZoom());
-// },3000);
 		$('#panel').css('left',(10-parseInt($('#panel').css('width'),10)));
+		
 		$.ajax({
 			type : "POST",
-// 			url : "test.do",
 			url : "realMap.do",
 			async : false,
 			data : {
-// 				action : "select_area"
 				action : "select_menu", name : ""
 			},
 			success : function(result) {
@@ -226,34 +256,15 @@ var item_marker = function (speed, time, marker, circle) {
 					source : json_obj,
 					click: function (event, data) {
 						var node = data.node;
-						//alert(node.span.innerHTML);
 						if($(node.span.childNodes[1]).hasClass('loading')) { return false; }
-						//alert(node.span.childNodes[1]);
-						//alert(data.node.key);
-						//alert($("#tree").fancytree("getTree").getNodeByKey(data.node.key));
 					    if(!data.node.isFolder()){
 					    	event.preventDefault();
-					    	 //alert($(node.span).html());//addClass(".fancytree-loading");
-					    	//$(node.span.childNodes[1]).addClass('loading');
 					    	node.setSelected( !node.isSelected() );
-// 					    	alert(data.node.key);
-					    	if(false){//data.node.key=="50007"){
-					    		//heatMap(node,"3c");
-					    		//select_poi("超市便利商店");
-					    		//panTo( 39.1290932, 117.1853255 );smoothZoom(map, 14, map.getZoom());
-					    		//smoothZoom(map, 13, map.getZoom());
-					    	}else{
-					    		
-					    		//cb.addClass('loading');
-					    		// $cb.removeClass('loading');
-					    		if(action[data.node.key].length==0){
-					    			$("#warning").dialog("open");
-					    			node.setSelected(false);
-					    		}
-					    		eval(action[data.node.key]);
-					    	}
- 					    	//console.log("out");
-// 					    	node.setSelected( !node.isSelected() );
+				    		if(action[data.node.key].length==0){
+				    			$("#warning").dialog("open");
+				    			node.setSelected(false);
+				    		}
+				    		eval(action[data.node.key]);
 					    }else{
 					    	if(have_visited[node.key]==null){
 					    		have_visited[node.key]=true;
@@ -272,26 +283,25 @@ var item_marker = function (speed, time, marker, circle) {
 					select: function(event, data) {
 						var node = data.node;
 						if($(node.span.childNodes[1]).hasClass('loading')) { return false; }
-						if(node.isSelected()){
-// 							eval(action[data.node.key]);
-// 							alert('selected: '+ data.node.key+"  "+data.node.title);
-							//用key去叫動作
-						}
-						//var s = data.tree.getSelectedNodes().join("#_# ");
-						//console.log(s);
-						//$("#echoSelected").text(s);
 					}
 				});
 			}
 		});
-// 		$("#ftal_hell-_-").parent().attr("onclick","alert('@_@');");
-		
+		$( "#opacity" ).slider({
+	      range: "min",
+	      value: 100,
+	      min: 40,
+	      max: 100,
+	      slide: function( event, ui ) {
+	        $( "#panel" ).css("opacity", (ui.value*0.01) );
+	        console.log(ui.value);
+	      }
+	    });
 		$("#region_select").dialog({
 			draggable : true,resizable : false,autoOpen : false,
 			height : "auto", width : "auto", 
 			modal : false,
 			position: { my: "center", at: "right-180px top+240px ", of: window  } ,  
-// 			bgiframe: true,
 			show : {effect : "blind",duration : 300},
 			hide : {effect : "fade",duration : 300},
 			open :function(){
@@ -299,8 +309,6 @@ var item_marker = function (speed, time, marker, circle) {
 			},
 			close : function() {
 				map.setOptions({draggableCursor:null});
-				//map.setOptions({draggableCursor:'url("https://maps.gstatic.com/mapfiles/openhand_8_8.cur"), default'});
-				//map.setOptions({draggableCursor:'url(./refer_data/cursor.cur), default'});
 				$("#region_select").dialog("close");
 			}
 		});
@@ -364,15 +372,12 @@ var item_marker = function (speed, time, marker, circle) {
 		  //###########  以下是環域分析step2相關  ###############
 		  //##############################################
 	    $("#speed").change(function(){
-// 			alert("444 "+$(this).val()); 
 	    	$('#val_speed').html("時速"+$(this).val()+"公里");
 	    	$("#rr_pt").val().speed=$("#speed").val();
 	    	$("#rr_pt").val().time=$("#time").val();
 	    	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
-// 	    	alert($(this).val()*$("#time").val()*1000);
 		});
 	    $("#time").change(function(){
-// 	    	alert($("#rr_pt").val());
 	    	$('#val_time').html("花費"+$(this).val()+"分鐘");
 	    	$("#rr_pt").val().speed=$("#speed").val();
 	    	$("#rr_pt").val().time=$("#time").val();
@@ -409,14 +414,15 @@ var item_marker = function (speed, time, marker, circle) {
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
 	<div id='panel' onmouseover="$('#panel').css('left','0px');clearTimeout($('#panel').val());" onmouseout="$('#panel').val(setTimeout(function () { $('#panel').css('left',(10-parseInt($('#panel').css('width'),10))); }, 800));">
-		<div id='tree'></div>
+		<div id='tree' ></div>
+		<div id='pin' style='position:absolute;top:5px;right:20px;' class='on_it' onclick='$("#pin").hide();$("#unpin").show();$("#panel").attr("tmp",$("#panel").attr("onmouseout"));$("#panel").attr("onmouseout","");'><img src='./refer_data/pin.png'></div>
+		<div id='unpin' style='position:absolute;top:5px;right:20px;display:none;' class='on_it' onclick='$("#unpin").hide();$("#pin").show();$("#panel").attr("onmouseout",$("#panel").attr("tmp"));'><img src='./refer_data/unpin.png'></div>
+		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'><table><tr><td>&nbsp;透明度：</td><td><div id='opacity' style='width:110px;'></div></td></tr></table></div>
 	</div>
 	
 <h2 class="page-title">商圈定位</h2>
 	<div class="search-result-wrap">
 	<div id="map"></div>
-	<button id='btn' onclick='$("#region_select").dialog("open");' style="float:right;">打開環域分析</button>
-<!-- 	<button id='test' onclick="alert('hello');" style="float:right;">test func</button> -->
 	<div id='region_select' title='環域分析' style='display:none;'>
 		<div id="instruction">
 			<div style="margin:14px 20px;font-size:22px;color:#F00;font-weight:900;" class='blink'>請點擊地圖新增分析點。</div>
@@ -431,7 +437,6 @@ var item_marker = function (speed, time, marker, circle) {
 				<tr style=''>
 					<td colspan='3' valign="bottom">
 						　&nbsp;<br>調整<span style='font-weight: bold;line-height:40px;'>點位<span id="rr_pt" style="transition: all .3s linear;">1</span></span>的[交通方式]與[通勤時間]
-<!-- 					</td><td> -->
 						<a  style="float:right;" id="suggest_time_html" href="./refer_data/Traffic_Time.htm" target="_blank">建議時數</a>
 					</td>
 				</tr>
@@ -461,7 +466,6 @@ var item_marker = function (speed, time, marker, circle) {
 						　需時：<input id='time' style='width:40px;height:14px;' value='30'>　分鐘
 					</td>
 				</tr>
-<!-- 				＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ -->
 				<tr style='height:50px;'>
 					<td>
 						預設：
@@ -471,9 +475,6 @@ var item_marker = function (speed, time, marker, circle) {
 						<a id="val_time" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>花費30分鐘</a>&nbsp;
 						之可達範圍
 					</td>
-<!-- 					<td> -->
-<!-- 						需時:<input id='time' style='width:100px;'>分鐘 -->
-<!-- 					</td> -->
 				</tr>
 			</table>
 			<hr style='height:1px;border:none;border-top:1px solid #ddd;'>
@@ -483,12 +484,11 @@ var item_marker = function (speed, time, marker, circle) {
 			</div>
 		</div>
 	</div>
-
 <!-- 左下角的框框 -->
 <div id="shpLegend" class="shpLegend" style=" height: 235.5px;display:none;">
     <button onclick='$("#shpLegend").hide();'>x</button>
     <div style="display: block; background-color: #F0F0F0;">
-        <table style="width: 280px;">
+        <table style="width:280px;">
             <tr>
                 <th colspan="2" style="font-size: large;">
                     <span id="span_legend">TITLE</span>
@@ -541,7 +541,7 @@ var item_marker = function (speed, time, marker, circle) {
     </div>
 </div>
 <!-- 左下角的框框 -->
-		
+	<div id="detail_1"></div>
 	<div id='warning' title='公告' style='display:none;padding:20px 20px 10px 20px;word-break: keep-all;'>
 		為了提供您更好的使用品質，該功能維護中。
 	</div>
@@ -555,11 +555,8 @@ var item_marker = function (speed, time, marker, circle) {
 			    zoomControl: true, //要不要出現可以放大縮小的面板
 			    mapTypeControl: false, //切換地圖檢視類型的面板
 			    scaleControl: true, //比例尺資訊
-			    streetViewControl: false,  //顯示街景服務的面板
+			    streetViewControl: true,  //顯示街景服務的面板
 			    overviewMapControl: true,
-// 			    zoom: 4,
-// 			    center: {lat: 8.0, lng: 110.0}
-			    
 			    zoom: 7,
 				center: {lat: 23.598321171324468, lng: 120.97802734375}
 			});
@@ -584,11 +581,8 @@ var item_marker = function (speed, time, marker, circle) {
 						  fillOpacity: 0.2,
 						  map: map,
 						  center: event.latLng,
-						  radius: 0 //10 * 30 *1000*0.016667
+						  radius: 0 
 					});
-					
-// 					rs_markers.push(rs_marker);
-
 					var marker_obj = new item_marker( 10, 30, rs_marker, rs_circle);
 					
 					$("#rr_pt").html(order);
@@ -639,106 +633,11 @@ var item_marker = function (speed, time, marker, circle) {
 				    google.maps.event.addListener(rs_marker, 'dragend', function(marker){
 				    	rs_marker.setAnimation(google.maps.Animation.BOUNCE);
 				    });
-				}else{
-					//alert(map.getCenter());
 				}
 			});
 			trafficLayer = new google.maps.TrafficLayer();
-			//trafficLayer.setMap(map);
 			transitLayer = new google.maps.TransitLayer();
-		    //transitLayer.setMap(map);
-// 			weatherLayer = new google.maps.weather.WeatherLayer({
-// 		        temperatureUnits: google.maps.weather.TemperatureUnit.FAHRENHEIT
-// 		    });
-// 			weatherLayer.setMap(map);
-// 		    cloudLayer = new google.maps.weather.CloudLayer();
-// 		    cloudLayer.setMap(map);
-// 			TEST_FUNC();
-			
    		}
-	    var in_smoothZoom=0;
-    	var in_panTo=0;
-	    function smoothZoom (map, max, cnt) {
-	    	console.log("zoom: "+ in_smoothZoom);
-	    	if(in_smoothZoom==1){
-// 	    		map.setZoom(max);
-	    		return;
-	    	}
-	    	if(cnt>max){
-	    		map.setZoom(max);
-	    		return;
-	    	}
-	    	in_smoothZoom=1;
-	    	smoothZoom_layer (map, max, cnt);
-	    }
-	    function smoothZoom_layer (map, max, cnt) {
-	        if (cnt >= max) {
-	        	in_smoothZoom=0;
-	            return;
-	        }
-	        else {
-	            z = google.maps.event.addListener(map, 'zoom_changed', function(event){
-	                google.maps.event.removeListener(z);
-	                smoothZoom_layer(map, max, cnt + 1);
-	            });
-	            setTimeout(function(){map.setZoom(cnt)}, 80); // 80ms is what I found to work well on my system -- it might not work well on all systems
-	        }
-	    }  
-	    var panPath = [];   // An array of points the current panning action will use
-	    var panQueue = [];  // An array of subsequent panTo actions to take
-	    var STEPS = 30;     // The number of steps that each panTo action will undergo
-	    function panTo(newLat, newLng) {
-	    	console.log("pan: "+ in_panTo);
-	    	if(in_panTo==1){
-// 	    		map.panTo( new google.maps.LatLng(newLat, newLng));
-	    		return;
-	    	}
-	    	if(map.getZoom()>8){
-	    		map.panTo( new google.maps.LatLng(newLat, newLng));
-	    		return;
-	    	}
-	    	
-	    	in_panTo=1;
-	    	panTo_layer(newLat, newLng);
-	    }
-	    function panTo_layer(newLat, newLng) {
-	      if (panPath.length > 0) {
-	        // We are already panning...queue this up for next move
-	        panQueue.push([newLat, newLng]);
-	      } else {
-	        // Lets compute the points we'll use
-	        panPath.push("LAZY SYNCRONIZED LOCK");  // make length non-zero - 'release' this before calling setTimeout
-	        var curLat = map.getCenter().lat();
-	        var curLng = map.getCenter().lng();
-	        var dLat = (newLat - curLat)/STEPS;
-	        var dLng = (newLng - curLng)/STEPS;
-
-	        for (var i=0; i < STEPS; i++) {
-	          panPath.push([curLat + dLat * i, curLng + dLng * i]);
-	        }
-	        panPath.push([newLat, newLng]);
-	        panPath.shift();      // LAZY SYNCRONIZED LOCK
-	        setTimeout(doPan, 20);
-	      }
-	    }
-
-	    function doPan() {
-	      var next = panPath.shift();
-	      if (next != null) {
-	        // Continue our current pan action
-	        map.panTo( new google.maps.LatLng(next[0], next[1]));
-	        setTimeout(doPan, 20 );
-	      } else {
-	    	 
-	        // We are finished with this pan - check if there are any queue'd up locations to pan to 
-	        var queued = panQueue.shift();
-	        if (queued != null) {
-	        	panTo_layer(queued[0], queued[1]);
-	        }else{
-	        	 in_panTo=0;
-	        }
-	      }
-	    }
     </script>
     
 <!--     <script async defer -->
@@ -752,7 +651,7 @@ var item_marker = function (speed, time, marker, circle) {
 <!--     <script async defer -->
 <!--     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap"> -->
 <!--      </script> -->
-     
+    
 	<div id='picture' style='position:fixed;left:10%;top:20%;z-index:-1;'ondblclick='$("#picture").css("z-index","-1");'></div>
 	</div>
 </div>

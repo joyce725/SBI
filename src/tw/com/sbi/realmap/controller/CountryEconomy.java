@@ -1,56 +1,24 @@
 package tw.com.sbi.realmap.controller;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.List;
-
-//import org.apache.http.HttpResponse;
-//import org.apache.http.client.ClientProtocolException;
-//import org.apache.http.config.Lookup;
-//import org.apache.http.client.HttpClient;
-//import org.apache.http.client.methods.HttpGet;
-//import org.apache.http.impl.client.BasicResponseHandler;
-//import org.apache.http.impl.client.HttpClientBuilder;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
-//import tw.com.sbi.vo.FincaseVO;
-
-import tw.com.sbi.vo.FincaseVO;
-
-import java.util.concurrent.TimeUnit;
+@SuppressWarnings("serial")
 public class CountryEconomy extends HttpServlet {
 	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
-	
 	protected void doPost(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
@@ -74,7 +42,6 @@ public class CountryEconomy extends HttpServlet {
 				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
-//		private final String wsPath = getServletConfig().getServletContext().getInitParameter("pythonwebservice");
 		String buildquery1 = "SELECT economy_detail_statistic data FROM tb_STAT_Open_CountryEconomy WHERE economy_detail_type= ? AND economy_detail_year=( SELECT  economy_detail_year FROM tb_STAT_Open_CountryEconomy WHERE economy_detail_type = ? ORDER BY economy_detail_year DESC LIMIT 1)";
 		String buildquery2 = "SELECT DISTINCT unit FROM tb_STAT_Open_CountryEconomy WHERE economy_detail_type = ? ";
 		String buildquery3 = "SELECT DISTINCT economy_detail_year year FROM tb_STAT_Open_CountryEconomy WHERE economy_detail_type = ? ORDER BY economy_detail_year DESC";
@@ -84,7 +51,6 @@ public class CountryEconomy extends HttpServlet {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-//			StringBuilder sb = new StringBuilder();
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
@@ -92,15 +58,11 @@ public class CountryEconomy extends HttpServlet {
 				pstmt.setString(1, type);
 				pstmt.setString(2, type);
 				rs = pstmt.executeQuery();
-//				int count; if (rs.last()){count = rs.getRow();}else{count = 0;}rs.beforeFirst();
-//				String[] list= new String[count];
 				int min=1000000000,max=-1000000000;
 				while (rs.next()) {
 					int tmp=Math.round(Float.parseFloat(rs.getString("data")));
 					if(tmp>max)max=tmp;
 					if(tmp<min)min=tmp;
-					//list[count++]=(rs.getString("Country"));
-//					sb.append(rs.getString("data"));
 					strlist.add(rs.getString("data"));
 				}
 				if(strlist.isEmpty()){ return "";}
@@ -112,7 +74,6 @@ public class CountryEconomy extends HttpServlet {
 					}else{
 						tmp =  "" + Math.round(( (max-min) * 0.2 * i + min) *10) * 0.1 ;
 					}
-					//System.out.println(max+" "+min+" "+tmp);
 					int tmp_comma=tmp.indexOf(".");
 					if(tmp_comma!=-1 && (tmp_comma+2)<=tmp.length()){
 						tag+=tmp.substring(0, tmp_comma+2);
@@ -121,24 +82,16 @@ public class CountryEconomy extends HttpServlet {
 					}
 					if(i!=5)tag+=",";
 				}
-//				System.out.println(tag);
-//				System.out.println(strlist.size());
 				if(strlist.size()>8){
 					return String.join(",", Quantile_GetBreaks(strlist,5))+"|"+min+"|"+max;
-					//上面是原本商發院的版本 因為資料量不多 暫時先改成Ben的版本
 				}else{
 					return tag+"|"+min+"|"+max;
 				}
-//				System.out.println("123 "+String.join(",", strlist));
-//				System.out.println("456 "+sb.toString());
-				//Gson gson = new Gson();
 			} catch (SQLException se) {
-				// Handle any driver errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
 			} catch (ClassNotFoundException cnfe) {
 				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
 			} finally {
-				// Clean up JDBC resources
 				if (rs != null) {try {rs.close();} catch (SQLException se) {se.printStackTrace(System.err);}}
 				if (pstmt != null) {try {pstmt.close();} catch (SQLException se) {se.printStackTrace(System.err);}}
 				if (con != null) {try {con.close();} catch (Exception e) {e.printStackTrace(System.err);}}
@@ -207,7 +160,6 @@ public class CountryEconomy extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				//System.out.println(changequery+" "+year+" "+type);
 				pstmt = con.prepareStatement(changequery);
 				pstmt.setString(1, year);
 				pstmt.setString(2, type);
@@ -221,14 +173,11 @@ public class CountryEconomy extends HttpServlet {
 				}
 				Gson gson = new Gson();
 				jsonList = gson.toJson(countrylist);
-				
 			} catch (SQLException se) {
-				// Handle any driver errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
 			} catch (ClassNotFoundException cnfe) {
 				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
 			} finally {
-				// Clean up JDBC resources
 				if (rs != null) {try {rs.close();} catch (SQLException se) {se.printStackTrace(System.err);}}
 				if (pstmt != null) {try {pstmt.close();} catch (SQLException se) {se.printStackTrace(System.err);}}
 				if (con != null) {try {con.close();} catch (Exception e) {e.printStackTrace(System.err);}}
@@ -248,7 +197,6 @@ public class CountryEconomy extends HttpServlet {
 	        int jumprate = list.size()/count;
 	        for ( i = 1; i < count; i++)
             {
-	        	//System.out.println((count-1)+"  "+jumprate*count);
 	        	if(Float.parseFloat(list.get(jumprate*i))>10000){
 	        		result[i-1]= "" + Math.round(Float.parseFloat(list.get(jumprate*i))/100) * 100 ;
 	        	}else{
@@ -256,12 +204,6 @@ public class CountryEconomy extends HttpServlet {
 	        	}
             }
 	        return result;
-//	        for (Object o:list) {
-//	            System.out.println(o);
-//	        }
-//	        System.out.println(String.join(",", list));
-//			
-//			return null;
 		}
 		class Country{
 			String country_name;

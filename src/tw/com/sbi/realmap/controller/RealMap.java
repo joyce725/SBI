@@ -1,43 +1,65 @@
 package tw.com.sbi.realmap.controller;
-
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import java.util.*;
 import com.google.gson.Gson;
-
+@SuppressWarnings("serial")
 public class RealMap extends HttpServlet {
-	
 	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 	
 	protected void doPost(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
-		
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		
 		final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL")
 				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
-		
 		String action = request.getParameter("action").toString();
 		String name = request.getParameter("name").toString();
-		
 		Connection con = null;
 		Statement statement = null;
 		ResultSet rs = null;
+		if("get_ChinaCity_Data".equals(action)){
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				statement = con.createStatement();
+				String sp="SELECT * FROM tb_CHART_city WHERE city = '"+name+"'";
+				rs = statement.executeQuery(sp);
+				ChinaCityData ccd= new ChinaCityData();
+				while (rs.next()) {
+					ccd.link1=rs.getString("link1");
+					ccd.link2=rs.getString("link2");
+					ccd.link3=rs.getString("link3");
+					ccd.link4=rs.getString("link4");
+					ccd.link5=rs.getString("link5");
+					ccd.link6=rs.getString("link6");
+					ccd.link7=rs.getString("link7");
+					ccd.link8=rs.getString("link8");
+				}
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(ccd);
+				response.getWriter().write(jsonStrList);
+				return;
+			} catch (Exception e) {
+				System.out.println(e.toString());
+			} finally {
+				if (rs != null) {try {rs.close();} catch (SQLException se) {se.printStackTrace(System.err);}}if (statement != null) {try {statement.close();} catch (SQLException se) {se.printStackTrace(System.err);}}if (con != null) {try {con.close();} catch (Exception e) {e.printStackTrace(System.err);}}
+			}
+			response.getWriter().write("fail!!!!!");
+			return;
+		}
 		
 		if("select_poi".equals(action)){
 			POI[] poi_array;
@@ -63,19 +85,14 @@ public class RealMap extends HttpServlet {
 					if (zoom == 15 ){rangelat=(float)0.01412479234012;rangelng=(float)0.05227088928223; }
 					if (zoom == 16 ){rangelat=(float)0.007062391894589;rangelng=(float)0.02619981765748; }
 					if (zoom > 16 ){ rangelat=(float)0.003491961762692;rangelng=(float)0.01306772232056; }
-					
 					cmd = " and lat > "+String.valueOf(lat-rangelat)+" and lat < "+String.valueOf(lat+rangelat)+" and lng > "+String.valueOf(lng-rangelng)+" and lng <"+String.valueOf(lng+rangelng)+"";
 				}
-//				System.out.println(cmd);
 				String sp="SELECT * FROM tb_data_POI WHERE type = '"+name+"' "+cmd;
-				//System.out.println(sp);
 				rs = statement.executeQuery(sp);
 				int count=0;
 			    if (rs.last()){count = rs.getRow();}else{count = 0;}
 			    poi_array=new POI[count];
-//			    System.out.println("poi count: " + count);
 			    rs.beforeFirst();count=0;
-				
 				while (rs.next()) {
 					poi_array[count]= new POI();
 					poi_array[count].id=rs.getString("poi_id");
@@ -90,7 +107,6 @@ public class RealMap extends HttpServlet {
 					poi_array[count].center.lng=rs.getFloat("lng");
 					count++;
 				}
-				
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(poi_array);
 				response.getWriter().write(jsonStrList);
@@ -109,7 +125,6 @@ public class RealMap extends HttpServlet {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				statement = con.createStatement();
-				
 				Float lat = Float.parseFloat(request.getParameter("lat").toString());
 				Float lng = Float.parseFloat(request.getParameter("lng").toString());
 				int zoom = Integer.valueOf(request.getParameter("zoom").toString());
@@ -128,19 +143,14 @@ public class RealMap extends HttpServlet {
 					if (zoom == 15 ){rangelat=(float)0.01412479234012;rangelng=(float)0.05227088928223; }
 					if (zoom == 16 ){rangelat=(float)0.007062391894589;rangelng=(float)0.02619981765748; }
 					if (zoom > 16 ){ rangelat=(float)0.003491961762692;rangelng=(float)0.01306772232056; }
-					
 					cmd = " and lat > "+String.valueOf(lat-rangelat)+" and lat < "+String.valueOf(lat+rangelat)+" and lng > "+String.valueOf(lng-rangelng)+" and lng <"+String.valueOf(lng+rangelng)+"";
 				}
-				
-				
 				String sp="SELECT * FROM tb_data_POI WHERE subtype = '"+name+"' "+cmd;
 				rs = statement.executeQuery(sp);
 				int count=0;
 			    if (rs.last()){count = rs.getRow();}else{count = 0;}
 			    poi_array=new POI[count];
-//			    System.out.println("poi2 count: " + count);
 			    rs.beforeFirst();count=0;
-				
 				while (rs.next()) {
 					poi_array[count]= new POI();
 					poi_array[count].id=rs.getString("poi_id");
@@ -155,7 +165,6 @@ public class RealMap extends HttpServlet {
 					poi_array[count].center.lng=rs.getFloat("lng");
 					count++;
 				}
-				
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(poi_array);
 				response.getWriter().write(jsonStrList);
@@ -170,7 +179,6 @@ public class RealMap extends HttpServlet {
 		}
 		if("select_BD".equals(action)){
 			BD[] bd_array;
-			//System.out.println("coming?");
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
@@ -180,9 +188,7 @@ public class RealMap extends HttpServlet {
 				int count=0;
 			    if (rs.last()){count = rs.getRow();}else{count = 0;}
 			    bd_array=new BD[count];
-//			    System.out.println(count);
 			    rs.beforeFirst();count=0;
-				
 				while (rs.next()) {
 					bd_array[count]= new BD();
 					bd_array[count].id=rs.getString("BD_id");
@@ -194,19 +200,28 @@ public class RealMap extends HttpServlet {
 					bd_array[count].middle.lng=rs.getFloat("lng");
 					bd_array[count].lat=rs.getString("lat");
 					bd_array[count].lng=rs.getString("lng");
+					bd_array[count].population=rs.getString("population");
+					bd_array[count].status=rs.getString("status");
+					bd_array[count].radiation=rs.getString("radiation");
+					bd_array[count].traffic=rs.getString("traffic");
+					bd_array[count].resident=rs.getString("resident");
+					bd_array[count].income=rs.getString("income");
+					bd_array[count].revenue=rs.getString("revenue");
+					bd_array[count].expenditur=rs.getString("expenditur");
+					bd_array[count].nearstreet=rs.getString("nearstreet");
+					bd_array[count].dept_store=rs.getString("dept_store");
+					bd_array[count].working_po=rs.getString("working_po");
+					bd_array[count].risk_5=rs.getString("5risk");
+					bd_array[count].area=rs.getString("area");
+					bd_array[count].memo=rs.getString("memo");
 					String geometrystring = rs.getString("geometry").replaceAll("\\(", "").replaceAll("\\)", "");
-//					geometrystring= "((106.821159 -6.191856, 106.822433 -6.189573, 106.822563 -6.191813, 106.821159 -6.191856))".replaceAll("\\(", "").replaceAll("\\)", "");
 					String[] point = geometrystring.split(",");
 					bd_array[count].center=new Center[point.length];
-					
-					
 			        for(int i = 0 ; i < point.length ; i ++){
 			        	bd_array[count].center[i]= new Center();
-			        	
 			        	String[] latlng = point[i].split(" ");
 			        	int get=0;
 			        	for(int j = 0 ; j < latlng.length ; j ++){
-			        		
 			        		if( isFloat(latlng[j]) ){
 			        			if(get==0){
 			        				get=1;
@@ -216,15 +231,12 @@ public class RealMap extends HttpServlet {
 			        			}
 			        		}
 			        	}
-			        	
 			        }
 					count++;
 				}
-				
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(bd_array);
 				response.getWriter().write(jsonStrList);
-				
 				return;
 			} catch (Exception e) {
 				System.out.println(e.toString());
@@ -244,7 +256,6 @@ public class RealMap extends HttpServlet {
 				int count=0;
 			    if (rs.last()){count = rs.getRow();}else{count = 0;}
 			    menu_array=new Menu[count];
-//			    System.out.println("coming?"+count);
 			    rs.beforeFirst();count=0;
 				while (rs.next()) {
 					menu_array[count] = new Menu();
@@ -253,14 +264,8 @@ public class RealMap extends HttpServlet {
 					if("true".equals(rs.getString("folder"))){menu_array[count].folder=rs.getString("folder");}
 					menu_array[count].action=rs.getString("action");
 					menu_array[count].children = new ArrayList<Menu>();
-//					menu_array[count].children.add(menu_array[count]);
-//					System.out.println("coming!!"+menu_array.length+" ");
-					//if("50090".equals(rs.getString("menu_id")))continue;
-					//if("50088".equals(rs.getString("menu_id")))continue;
-					//if("50087".equals(rs.getString("menu_id")))continue;
 					count++;
 				}
-				
 				rs.beforeFirst();count=0;
 				while (rs.next()) {
 					for(int i=0;i<menu_array.length;i++){
@@ -272,7 +277,6 @@ public class RealMap extends HttpServlet {
 					}
 					count++;
 				}
-//				System.out.println("coming##");
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(menu_array[0]);
 				response.getWriter().write(jsonStrList);
@@ -285,12 +289,6 @@ public class RealMap extends HttpServlet {
 			response.getWriter().write("fail!!!!!");
 			return;
 		}
-		if("select_menu_act".equals(action)){//好像不用?
-			
-		}
-		
-		
-		System.out.println("coming soon?");
 		return ;
 	}
 	
@@ -308,6 +306,21 @@ public class RealMap extends HttpServlet {
 		String lng;
 		Center middle;
 		Center[] center;
+		//資料
+		String population;
+		String status;
+		String radiation;
+		String traffic;
+		String resident;
+		String income;
+		String revenue;
+		String expenditur;
+		String nearstreet;
+		String dept_store;
+		String working_po;
+		String risk_5;
+		String area;
+		String memo;
 	}
 	
 	class POI{
@@ -328,11 +341,20 @@ public class RealMap extends HttpServlet {
 		String folder;
 		List<Menu> children; 
 	}
+	class ChinaCityData{
+		String link1;
+		String link2;
+		String link3;
+		String link4;
+		String link5;
+		String link6;
+		String link7;
+		String link8;
+	}
 	private static boolean isFloat(String str){
 	  try{
 	   Float.parseFloat(str);
 	  }catch (Exception e){
-	   //System.out.println("輸入錯誤");
 	   return false;
 	  }
 	  return str.contains(".");

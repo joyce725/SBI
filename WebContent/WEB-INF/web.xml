@@ -400,7 +400,24 @@
   <servlet-mapping>
     <servlet-name>realMap</servlet-name>
     <url-pattern>/realMap.do</url-pattern>
-  </servlet-mapping>   
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>chinaprovincial</servlet-name>
+    <servlet-class>tw.com.sbi.realmap.controller.ChinaProvincial</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>chinaprovincial</servlet-name>
+    <url-pattern>/chinaprovincial.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>populationData</servlet-name>
+    <servlet-class>tw.com.sbi.realmap.controller.PopulationData</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>populationData</servlet-name>
+    <url-pattern>/populationData.do</url-pattern>
+  </servlet-mapping>
+    
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
