@@ -37,6 +37,13 @@ public class CountryData extends HttpServlet {
 			String tmp = getData.change_select(year,type);
 			response.getWriter().write(tmp);
 		}
+		if("bigmac_select".equals(action)){
+			GetData getData= new GetData();
+			String tmp = getData.select_bigmac();
+			response.getWriter().write(tmp);
+		}
+		
+		
 	}
 	public class GetData{
 		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL")
@@ -47,6 +54,8 @@ public class CountryData extends HttpServlet {
 		String buildquery2 = "SELECT DISTINCT unit FROM tb_STAT_Country WHERE Second_Trget = ? ";
 		String buildquery3 = "SELECT DISTINCT Type year FROM tb_STAT_Trget_Country WHERE Second_Trget= ? ";
 		String changequery = "SELECT * FROM tb_STAT_Trget_Country CE, tb_SHP_Country WHERE CE.Country = tb_SHP_Country.CNTRY_NAME AND CE.Type = ? AND CE.Second_Trget = ? ";
+		String bigmacquery = "SELECT * FROM tb_Statistics_BigMac INNER JOIN tb_SHP_Country ON tb_Statistics_BigMac.Country = tb_SHP_Country.CNTRY_NAME ";
+		
 		public String buildup1(String type) {//分割的四個數字和 min max
 			List<String> strlist= new ArrayList<String>();
 			Connection con = null;
@@ -203,9 +212,52 @@ public class CountryData extends HttpServlet {
             }
 	        return result;
 		}
+		public String select_bigmac() {
+			List<BigMac> list= new ArrayList<BigMac>();
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(bigmacquery);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					BigMac bigmac =new BigMac();
+					bigmac.country_name=rs.getString("Country");
+					bigmac.price=rs.getString("Price");
+					bigmac.rawIndex=rs.getString("RawIndex");
+					bigmac.actualExchangeRate=rs.getString("ActualExchangeRate");
+					bigmac.impliedExchangeRate=rs.getString("ImpliedExchangeRate");
+					bigmac.geom=rs.getString("geom");
+					
+					list.add(bigmac);
+				}
+				Gson gson = new Gson();
+				String jsonList = gson.toJson(list);
+				return jsonList;
+			} catch (SQLException se) {
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				if (rs != null) {try {rs.close();} catch (SQLException se) {se.printStackTrace(System.err);}}
+				if (pstmt != null) {try {pstmt.close();} catch (SQLException se) {se.printStackTrace(System.err);}}
+				if (con != null) {try {con.close();} catch (Exception e) {e.printStackTrace(System.err);}}
+			}
+		}
+		
 		class Country {
 			String country_name;
 			String economy_detail_statistic;
+			String geom;
+		}
+		class BigMac{
+			String country_name;
+			String price;
+			String rawIndex;
+			String actualExchangeRate;
+			String impliedExchangeRate;
 			String geom;
 		}
 	}

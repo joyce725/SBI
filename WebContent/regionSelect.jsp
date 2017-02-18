@@ -16,28 +16,24 @@
 	}
 	.page-wrapper {
 	/*     background: #194A6B; */
-	    background-color: #EEF3F9;
+/* 	    background-color: #EEF3F9; */
 	}
 	.content-wrap{
-	/* 	height: calc(100vh - 84px); */
-	/* 	width: calc(100% - 136px); */
-	/* 	margin: 56px 0 28px 136px; */
-		
 	    background: #fff;
 	    float: left;
 	    margin-left: 0px;
 	    margin-top: 100px;
- 	    margin-bottom: 20px; 
- 	    padding-bottom: 62px; 
-/* 	    height: 900px; */
-	    overflow-y: scroll;
+		margin-bottom: 0px;
+		padding-bottom: 6px;
+		height: calc(100vh - 136px);
+	    overflow-y: hidden;
 	    width: 100%;
 		background-color: #EEF3F9;
 	}
 	.search-result-wrap{
- 		padding: 10px 10px 10px 10px; 
-		margin-bottom: 20px;
-		height: 70vh;
+ 		padding: 2px 5px 0px 5px; 
+		margin-bottom: 0px;
+		height: 100%;
 	}
 	.floatleft{
 		position: absolute;
@@ -135,6 +131,13 @@ function checkboxstr(selector){
 	});
 	return str;
 }
+
+var item_marker = function (speed, time, marker, circle) {
+	this.speed = speed;
+	this.time = time;
+	this.marker = marker;
+	this.circle = circle;
+}
 </script>
 <!-- /**************************************  以上使用者JS區塊    *********************************************/	-->
 
@@ -144,7 +147,11 @@ function checkboxstr(selector){
 	<div class="search-result-wrap">
 
 <!-- 	<button onclick='$("#regionselect").dialog("open");' style='position:absolute;left:50%;top:100px;z-index:99;'>打開</button> -->
-	<a class="btn btn-orange" onclick='$("#regionselect").dialog("open");' style='position:absolute;left:23%;top:110px;z-index:99;'>選單</a>
+	<a class="btn btn-orange" onclick='$("#regionselect").dialog("open");' style='position:absolute;left:15%;top:110px;z-index:99;'>區位選擇</a>
+	<a class="btn btn-orange" onclick='$("#env_analyse").dialog("open");' style='position:absolute;left:23%;top:110px;z-index:99;'>環域分析</a>
+
+	<div id="map"></div>
+
 
 	<div id='regionselect' title='區位選擇' style='display:none;'>
 		<div id='QA' style='height:460px;width:900px;margin:20px;'>
@@ -293,10 +300,76 @@ function checkboxstr(selector){
 			</table>
 		</div>
 	</div>
-	<div id="map"></div>
+	
+	
+	<div id='env_analyse' title='環域分析' style='display:none;'>
+		<div id="instruction">
+			<div style="margin:14px 20px;font-size:22px;color:#F00;font-weight:900;" class='blink'>請點擊地圖新增分析點。</div>
+			<hr style='height:1px;border:none;border-top:1px solid #ddd;'>
+			<div style="margin:0px 20px;float:right;">
+				<button class='ui-button' id='env_analyse_next'>下一步</button>
+				<button class='ui-button' onclick='while(rs_markers.length>0){var tmp = rs_markers.pop();tmp.marker.setMap(null);tmp.circle.setMap(null)};'>清除所有點</button>
+			</div>
+		</div>
+		<div id="draw_circle" style='display:none'>
+			<table id="region_step_2" class="bentable">
+				<tr style=''>
+					<td colspan='3' valign="bottom">
+						　&nbsp;<br>調整<span style='font-weight: bold;line-height:40px;'>點位<span id="rr_pt" style="transition: all .3s linear;">1</span></span>的[交通方式]與[通勤時間]
+						<a  style="float:right;" id="suggest_time_html" href="./refer_data/Traffic_Time.htm" target="_blank">建議時數</a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="col" id="tooltip_1" title="預設時速為車行60公里、步行4公里、單車15公里">
+							<span style='font-weight: bold;'>交通方式：</span>
+						</div>
+					</td>
+					<td>
+						<img src='./refer_data/car.png' title="車行" val="60" onclick='$("#speed").val(60);$("#speed").change();'>
+						<img src='./refer_data/walk.png' title="步行" val="4" onclick='$("#speed").val(4);$("#speed").change();'>
+						<img src='./refer_data/bike.png' title="單車" val="15" onclick='$("#speed").val(15);$("#speed").change();'>
+					</td>
+					<td>
+						　時速：<input id='speed' style='width:40px;height:14px;' value='10'>　公里
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span style='font-weight: bold;'>通勤時間：</span>
+					</td>
+					<td>
+						<div id='slider'></div>
+					</td>
+					<td>
+						　需時：<input id='time' style='width:40px;height:14px;' value='30'>　分鐘
+					</td>
+				</tr>
+				<tr style='height:50px;'>
+					<td>
+						預設：
+					</td>
+					<td colspan='2'>
+						<a id="val_speed" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>時速10公里</a>&nbsp;
+						<a id="val_time" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>花費30分鐘</a>&nbsp;
+						之可達範圍
+					</td>
+				</tr>
+			</table>
+			<hr style='height:1px;border:none;border-top:1px solid #ddd;'>
+			<div style="margin:0px 20px;float:right;">
+				<button class='ui-button' id='env_analyse_last'>上一步</button>
+				　<button class='ui-button' onclick='$("#env_analyse").dialog("close");'>結束</button>
+			</div>
+		</div>
+	</div>
+	
+	
     <script type="text/javascript">
 	    var markers = [];
 	    var words=['4','2','3','1','5','7','6','8','9','10','11','12','13','14','15'];
+	    
+	    var rs_markers=[];
 	    
 	    function initMap() {
 			// Create the map.
@@ -306,6 +379,85 @@ function checkboxstr(selector){
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
     	  
+			
+			google.maps.event.addListener(map, 'click', function(event) {
+				if($("#env_analyse").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+					//alert(map.getCenter()+"  "+map.getZoom());
+					if(rs_markers.length>=5){alert("最多五個點");return;}
+					var order=(rs_markers.length+1)+"";
+					var rs_marker = new google.maps.Marker({
+					    position: event.latLng,
+					    animation: google.maps.Animation.DROP,
+					    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
+					    map: map,
+					    draggable:true,
+					    title: ("--分析點"+order+"--")
+					});
+					var rs_circle = new google.maps.Circle({
+						  strokeColor: '#FF0000',
+						  strokeOpacity: 0.5,
+						  strokeWeight: 2,
+						  fillColor: '#FF8700',
+						  fillOpacity: 0.2,
+						  map: map,
+						  center: event.latLng,
+						  radius: 0 
+					});
+					var marker_obj = new item_marker( 10, 30, rs_marker, rs_circle);
+					
+					$("#rr_pt").html(order);
+					$("#rr_pt").val(marker_obj);
+					$("#speed").val(marker_obj.speed);
+					$("#time").val(marker_obj.time);
+					$('#slider').slider('option', 'value', marker_obj.time);
+			        rs_markers.push(marker_obj);
+
+					google.maps.event.addListener(rs_marker, "click", function(event) { 
+						$.each(rs_markers, function(i, node){
+							rs_markers[i].marker.setAnimation(null);
+						});
+						$("#rr_pt").css("font-size","38px");
+						setTimeout(function(){$("#rr_pt").css("font-size","16px");},1000);
+						$("#rr_pt").css("color","red");
+						setTimeout(function(){$("#rr_pt").css("color","black");},1000);
+						$("#rr_pt").html(order);
+						$("#rr_pt").val(marker_obj);
+						$("#speed").val(marker_obj.speed);
+						$("#time").val(marker_obj.time);
+						$('#val_time').html("花費"+marker_obj.time+"分鐘");
+						$('#val_speed').html("時速"+marker_obj.speed+"公里");
+						$('#slider').slider('option', 'value', marker_obj.time);
+						rs_marker.setAnimation(google.maps.Animation.BOUNCE);
+			        }); 
+			        
+				    google.maps.event.addListener(rs_marker, 'drag', function(marker){
+				    	rs_circle.setCenter(marker.latLng);
+				    });
+
+				    google.maps.event.addListener(rs_marker, 'dragstart', function(marker){
+				    	rs_marker.setAnimation(null);
+				    	$.each(rs_markers, function(i, node){
+							rs_markers[i].marker.setAnimation(null);
+						});
+						$("#rr_pt").css("font-size","38px");
+						setTimeout(function(){$("#rr_pt").css("font-size","16px");},1000);
+						$("#rr_pt").css("color","red");
+						setTimeout(function(){$("#rr_pt").css("color","black");},1000);
+						$("#rr_pt").html(order);
+						$("#rr_pt").val(marker_obj);
+						$("#speed").val(marker_obj.speed);
+						$("#time").val(marker_obj.time);
+						$('#slider').slider('option', 'value', marker_obj.time);
+				    });
+
+				    google.maps.event.addListener(rs_marker, 'dragend', function(marker){
+				    	rs_marker.setAnimation(google.maps.Animation.BOUNCE);
+				    });
+				}
+			});
+			trafficLayer = new google.maps.TrafficLayer();
+			transitLayer = new google.maps.TransitLayer();
+   		
    		}
 	    
 	    function draw_BDS(BDs,n){
@@ -743,11 +895,88 @@ function checkboxstr(selector){
 				$("#BD").html(selecttable);
 			});
 			
+			
+			//環域分析
+			$("#env_analyse").dialog({
+				draggable : true,resizable : false,autoOpen : false,
+				height : "auto", width : "auto", 
+				modal : false,
+				position: { my: "center", at: "right-180px top+240px ", of: window  } ,  
+				show : {effect : "blind",duration : 300},
+				hide : {effect : "fade",duration : 300},
+				open :function(){
+					map.setOptions({draggableCursor:("url("+location.href.replace('realMap.jsp','')+"refer_data/cursor2.cur),default")});
+				},
+				close : function() {
+					map.setOptions({draggableCursor:null});
+					$("#env_analyse").dialog("close");
+				}
+			});
+			$("#env_analyse").show();
+
+			
+			$("#env_analyse_next").click(function(){
+		    	if(rs_markers.length==0){
+		    		alert("請放置分析點。");
+		    	}else{
+		    		map.setOptions({draggableCursor:null});
+		    		$("#instruction").hide();
+		    		$("#draw_circle").show();
+		    		$.each(rs_markers,function(i, item) {
+		    			rs_markers[i].circle.setRadius(rs_markers[i].speed* rs_markers[i].time *1000 * 0.016667);
+		    		});
+//	 	    		alert($('div[aria-describedby="env_analyse"]').html());
+		    		$("div[aria-describedby='env_analyse']").animate({"left": "-=180px"});
+		    	}
+		    });
+		    $("#env_analyse_last").click(function(){
+		    	map.setOptions({draggableCursor:("url("+location.href.replace('realMap.jsp','')+"refer_data/cursor2.cur),default")});
+	    		$("#instruction").show();
+	    		$("#draw_circle").hide();
+	    		$("div[aria-describedby='env_analyse']").animate({"left": "+=180px"});
+		    });
+		    
+		    
+		    $("#speed").change(function(){
+		    	$('#val_speed').html("時速"+$(this).val()+"公里");
+		    	$("#rr_pt").val().speed=$("#speed").val();
+		    	$("#rr_pt").val().time=$("#time").val();
+		    	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
+		    	
+		    	$.each(rs_markers,function(i, item) {
+	    			rs_markers[i].circle.setRadius($("#speed").val() * $("#time").val() *1000 * 0.016667);
+	    		});
+			});
+		    $("#time").change(function(){
+		    	$('#val_time').html("花費"+$(this).val()+"分鐘");
+		    	$("#rr_pt").val().speed=$("#speed").val();
+		    	$("#rr_pt").val().time=$("#time").val();
+		    	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
+				$('#slider').slider('option', 'value', $(this).val()); 
+				
+				$.each(rs_markers,function(i, item) {
+	    			rs_markers[i].circle.setRadius($("#speed").val() * $("#time").val() *1000 * 0.016667);
+	    		});
+			});
+		    $("#tooltip_1").mouseover(function(e){
+				 this.newTitle = this.title;
+				 this.title = "";
+				 var tooltip = "<div id='tooltip'>"+ this.newTitle +"<\/div>";
+				 $("body").append(tooltip);
+				 $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"}).show("fast");
+			}).mouseout(function(){
+			        this.title = this.newTitle;
+			        $("#tooltip").remove();
+			}).mousemove(function(e){
+			        $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"});
+			});
+
+			
 		});
     </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap">
-     </script> 
+    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap">
+	</script> 
 
 	</div>
 </div>

@@ -10,6 +10,9 @@
 //############　7.Menu商圈中熱力圖功能(2)　##########################
 //############　8.整體城市概況　###################################
 //############　9.原SBI的四個function　###########################
+//############ 10.中國省份行政分界  #################################
+//#############11.大麥克  #######################################
+//############################################################
 //############################################################
 //############　皆為畫googlemap相關功能　###########################
 //############################################################
@@ -308,7 +311,7 @@ function select_BD(BD_name){
 						(json_obj[i].status.length<2?"":'<tr><td>地位：</td><td>'+json_obj[i].status+'</td></tr>')+
 						(json_obj[i].radiation.length<2?"":'<tr><td>輻射：</td><td>'+json_obj[i].radiation+'</td></tr>')+
 						(json_obj[i].traffic.length<2?"":'<tr><td>通達：</td><td>'+json_obj[i].traffic+'</td></tr>')+
-//						(json_obj[i].id.length<2?"":'<tr><td>經營成本：</td><td>'+json_obj[i].id+'</td></tr>')+
+						(json_obj[i].business_cost.length<2?"":'<tr><td>經營成本：</td><td>'+json_obj[i].business_cost+'</td></tr>')+
 						'</table>';
 				}
 				var infowindow = new google.maps.InfoWindow({content:tmp_table});
@@ -1184,3 +1187,154 @@ function SetAgeMarker(country, lat, lng, under14, between1564, up65) {
     SetMarkerAttribute(marker, country, LatLng, msg);
     population_Markers.push(marker);
 }
+
+//############################################################
+//#######################  10 中國省份行政分界 #####################
+//############################################################
+function country_POLY_for_chinaProvincial(node){
+	if(!node.isSelected()){
+		var polygen = chinaProvincial.pop();
+		while(polygen != null){
+			if (Wkt.isArray(polygen)) {
+			       for (i in polygen) {
+			           if (polygen.hasOwnProperty(i) && !Wkt.isArray(polygen[i])) {
+			           	polygen[i].setMap(null);
+			       }
+			    }
+			} else {
+			   	polygen.setMap(null);
+			}
+			polygen = chinaProvincial.pop();
+		}
+		return ;
+	}
+	
+	$(node.span.childNodes[1]).addClass('loading');
+	$.ajax({
+		type : "POST",
+		url : "chinaprovincial.do",
+		data : {
+			action : "selectall_SHP_ChinaProvincial",
+		},
+		success : function(result) {
+			panTo( 35.99498458547868,97.060791015625 );smoothZoom(map, 4, map.getZoom());
+			var json_obj = $.parseJSON(result);
+			$.each(json_obj,function(i, item) {
+				var wkt = new Wkt.Wkt();
+				wkt.read(json_obj[i].geom);
+				var config = {
+                    fillColor: '#7092BE',
+                    strokeColor: '#3F48CC',
+                    fillOpacity: 0.5,
+                    strokeOpacity: 1,
+                    strokeWeight: 1,
+                }
+	            var polygen = wkt.toObject(config);
+				if (Wkt.isArray(polygen)) {
+	                for (i in polygen) {
+	                    if (polygen.hasOwnProperty(i) && !Wkt.isArray(polygen[i])) {
+	                    	polygen[i].setMap(map);
+	                    }
+	                }
+	            } else {
+	            	polygen.setMap(map);
+	            }
+				chinaProvincial.push(polygen);
+			});
+			$(node.span.childNodes[1]).removeClass('loading');
+		}
+	});
+}
+//############################################################
+//#######################  11大麥克  ############################
+//############################################################
+function bigmac(node){
+	if(!node.isSelected()){
+	 	var polygen = country_polygen.pop();
+	 	while(polygen != null){
+	 		if (Wkt.isArray(polygen)) {
+	 		       for (i in polygen) {
+	 		           if (polygen.hasOwnProperty(i) && !Wkt.isArray(polygen[i])) {
+	 		           	polygen[i].setMap(null);
+	 		       }
+	 		    }
+	 		} else {
+	 		   	polygen.setMap(null);
+	 		}
+	 		polygen = country_polygen.pop();
+	 	}
+	 	$("#shpLegend").hide();
+	 	return;
+	}
+	if(!$(node.span.childNodes[1]).hasClass('diagrammap')){
+		$(node.span.childNodes[1]).addClass('diagrammap');
+	}
+	var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+	sibling_node.forEach(function(sib_node) {
+		if($(sib_node.span).length>0){
+			if($(sib_node.span.childNodes[1]).hasClass('diagrammap')){
+				sib_node.setSelected(false);
+			}
+		}
+	});
+	node.setSelected(true);
+	$(node.span.childNodes[1]).addClass('loading');
+	//######################################################3
+	
+	$.ajax({
+		type : "POST",
+		url : "countryData.do",
+		async : false,
+		data : {
+			action : "bigmac_select",
+		},
+		success : function(result) {
+			var json_obj = $.parseJSON(result);
+			$.each(json_obj,function(i, item) {
+				var wkt = new Wkt.Wkt();
+				wkt.read(json_obj[i].geom);
+	            var config = {
+	            	fillColor: ("hsla(" + Math.floor(Math.random()*360) + ", 85%, 50%, 0.8)"),
+	                strokeColor: '#5C5C5C',
+	                fillOpacity: 0.7,
+	                strokeOpacity: 1,
+	                strokeWeight: 1,
+	            }
+	            var msg = "<table><caption>大麥克指數 (" + json_obj[i].country_name + ")</caption>"
+	            + "<tr><td align='center'>大麥克售價：</td><td align='center'>" + json_obj[i].price + "</td></tr>"
+	            + "<tr><td align='center'>高/低估比率：</td><td align='center'>" + json_obj[i].rawIndex + "</td></tr>"
+	            + "<tr><td align='center'>實際匯率：</td><td align='center'>" + json_obj[i].actualExchangeRate + "</td></tr>"
+	            + "<tr><td align='center'>隱含匯率：</td><td align='center'>" + json_obj[i].impliedExchangeRate + "</td></tr>"
+	            +"</table>";
+	            var polygen = wkt.toObject(config);
+	            if (Wkt.isArray(polygen)) {
+	                for (i in polygen) {
+	                    if (polygen.hasOwnProperty(i) && !Wkt.isArray(polygen[i])) {
+	                    	polygen[i].setMap(map);
+	                    	google.maps.event.addListener(polygen[i], 'mouseover', function () {
+	        	                detail_1.innerHTML = '<div style="width: 320px; height: 230px;">' + msg + '</div>';
+	        	            });
+	        	            google.maps.event.addListener(polygen[i], 'mouseout', function () {
+	        	                detail_1.innerHTML = '';
+	        	            });
+	                    }
+	                }
+	            } else {
+	            	google.maps.event.addListener(polygen, 'mouseover', function () {
+    	                detail_1.innerHTML = '<div style="width: 320px; height: 230px;">' + msg + '</div>';
+    	            });
+    	            google.maps.event.addListener(polygen, 'mouseout', function () {
+    	                detail_1.innerHTML = '';
+    	            });
+	            	polygen.setMap(map);
+	            }
+	            country_polygen.push(polygen);
+			});
+	        $(node.span.childNodes[1]).removeClass('loading');
+		}
+	});
+}
+
+//############################################################
+//#######################  12  ###############################
+//############################################################

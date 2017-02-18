@@ -47,7 +47,7 @@ function consoleApply(method, args){
 
 	if(fn){
 		if(fn.apply){
-			fn.apply(window.console, args);
+			//fn.apply(window.console, args);
 		}else{
 			
 			s = "";
