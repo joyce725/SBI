@@ -394,16 +394,9 @@ var item_marker = function (speed, time, marker, circle) {
 		        min: 0,
 		        max: 1,
 		        step: 0.0001,
-		        values: [0.3, 0.6],
+		        values: [],
 		        slide: function (event, ui) {
-		            var v0 = ui.values[0];
-		            var v1 = ui.values[1];
-		            var p1 = v0;
-		            var p2 = v1 - v0;
-		            var p3 = 1 - p1 - p2;
-// 		            $("#rs1").val((p1 * 100).toFixed(2));
-// 		            $("#rs2").val((p2 * 100).toFixed(2));
-// 		            $("#rs3").val((p3 * 100).toFixed(2));
+		        	$("#time").val((ui.value * 120).toFixed(0));
 		        }
 			});
 

@@ -339,7 +339,7 @@ var item_marker = function (speed, time, marker, circle) {
 						<span style='font-weight: bold;'>通勤時間：</span>
 					</td>
 					<td>
-						<div id='slider'></div>
+						<div id='env_slider'></div>
 					</td>
 					<td>
 						　需時：<input id='time' style='width:40px;height:14px;' value='30'>　分鐘
@@ -409,7 +409,7 @@ var item_marker = function (speed, time, marker, circle) {
 					$("#rr_pt").val(marker_obj);
 					$("#speed").val(marker_obj.speed);
 					$("#time").val(marker_obj.time);
-					$('#slider').slider('option', 'value', marker_obj.time);
+					$('#env_slider').slider('option', 'value', marker_obj.time);
 			        rs_markers.push(marker_obj);
 
 					google.maps.event.addListener(rs_marker, "click", function(event) { 
@@ -426,7 +426,7 @@ var item_marker = function (speed, time, marker, circle) {
 						$("#time").val(marker_obj.time);
 						$('#val_time').html("花費"+marker_obj.time+"分鐘");
 						$('#val_speed').html("時速"+marker_obj.speed+"公里");
-						$('#slider').slider('option', 'value', marker_obj.time);
+						$('#env_slider').slider('option', 'value', marker_obj.time);
 						rs_marker.setAnimation(google.maps.Animation.BOUNCE);
 			        }); 
 			        
@@ -447,7 +447,7 @@ var item_marker = function (speed, time, marker, circle) {
 						$("#rr_pt").val(marker_obj);
 						$("#speed").val(marker_obj.speed);
 						$("#time").val(marker_obj.time);
-						$('#slider').slider('option', 'value', marker_obj.time);
+						$('#env_slider').slider('option', 'value', marker_obj.time);
 				    });
 
 				    google.maps.event.addListener(rs_marker, 'dragend', function(marker){
@@ -913,7 +913,6 @@ var item_marker = function (speed, time, marker, circle) {
 				}
 			});
 			$("#env_analyse").show();
-
 			
 			$("#env_analyse_next").click(function(){
 		    	if(rs_markers.length==0){
@@ -969,6 +968,17 @@ var item_marker = function (speed, time, marker, circle) {
 			        $("#tooltip").remove();
 			}).mousemove(function(e){
 			        $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"});
+			});
+		    
+			$("#env_slider").slider({
+				range: true,
+		        min: 0,
+		        max: 1,
+		        step: 0.0001,
+		        values: [],
+		        slide: function (event, ui) {
+		        	$("#time").val((ui.value * 120).toFixed(0));
+		        }
 			});
 
 			
