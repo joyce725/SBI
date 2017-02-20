@@ -41,7 +41,6 @@
 <!-- 				<li><a href="#">海外布局選擇</a></li> -->
 				<li><a href="regionSelect.jsp">區位選擇</a></li>
 				<li><a href="environmentAnalyse.jsp">環域分析</a></li>
-				<li><a href="environmentAnalyseKao.jsp">環域分析</a></li>
 			</ul>
 		</li>
 		<li><img src="images/sidenav-stastic.svg" alt="">統計資料
