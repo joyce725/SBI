@@ -42,7 +42,7 @@ public class HeatMap extends HttpServlet {
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 		String buildquery1 = "SELECT Sum_count FROM tb_businessdistrict_";
-		String changequery = "SELECT * FROM `tb_businessdistrict_";
+		String changequery = "SELECT * FROM tb_businessdistrict_";
 		public String buildup1(String type) {
 			List<String> strlist= new ArrayList<String>();
 			Connection con = null;

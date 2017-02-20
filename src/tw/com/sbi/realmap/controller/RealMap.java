@@ -214,6 +214,9 @@ public class RealMap extends HttpServlet {
 					bd_array[count].risk_5=rs.getString("5risk");
 					bd_array[count].area=rs.getString("area");
 					bd_array[count].memo=rs.getString("memo");
+					bd_array[count].business_cost=rs.getString("business_cost");
+					
+					
 					String geometrystring = rs.getString("geometry").replaceAll("\\(", "").replaceAll("\\)", "");
 					String[] point = geometrystring.split(",");
 					bd_array[count].center=new Center[point.length];
@@ -321,6 +324,7 @@ public class RealMap extends HttpServlet {
 		String risk_5;
 		String area;
 		String memo;
+		String business_cost;
 	}
 	
 	class POI{

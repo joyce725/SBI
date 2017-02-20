@@ -21,7 +21,7 @@
 					</ul>
 				</li>
 				<li>
-					<a>動態統計</a>
+					<a>空間決策</a>
 					<ul>
 						<li><a href="case.jsp">目標市場決策管理</a></li>
 						<li><a href="evaluate.jsp">目標市場決策評估</a></li>
@@ -53,7 +53,7 @@
 		<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
 			<ul>
 				<li>
-					<a>空間決策</a>
+					<a>動態統計</a>
 					<ul>
 						<li><a href="country.jsp">國家</a></li>
 						<li><a href="city.jsp">城市</a></li>
