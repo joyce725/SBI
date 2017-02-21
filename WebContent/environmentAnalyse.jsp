@@ -53,28 +53,23 @@
 	input[type=radio] {
 	    position: static;
 	}
-	.bentable{
-		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
-	/*  	margin-left:120px; */
-	/* 	margin: 20px auto; */
-		font-size:22px;
-	/* 	border:2px solid #555; */
+
+	.bentable {
+		margin: 0px 20px 0px 20px;
+		width:400px;
 	}
 	.bentable tr{
-	/* 	height:32px; */
-	/* 	border:2px solid #33f; */
+		padding:5px;
+		height: 30px;
 	}
-	.bentable td{
-	/* 	padding:8px; */
-		
-		padding-left:60px;
-	/* 	border:2px solid #3f3; */
+	.bentable td:nth-child(2n+1){
+		word-break: keep-all;
 	}
-	/* .bentable td:nth-child(2n+1){ */
-	/* 	t */
-	/* 	padding:8px; */
-	/* 	padding-left:40px; */
-	/* } */
+	.bentable img:hover{
+		background: #d8d8d8;
+		box-shadow:1px 1px 2px #999;
+	}
+	
 	.bentable2 td:nth-child(2n+1){
 		text-align:right;
 	}
@@ -354,28 +349,37 @@ var item_marker = function (speed, time, marker, circle) {
 	    		$("div[aria-describedby='env_analyse']").animate({"left": "+=180px"});
 		    });
 		    
-		    
-		    $("#speed").change(function(){
+		    $( "#speed" ).spinner({
+			    min: 0,
+			    max: 3000,
+			    spin: function(event, ui) {
+			    	$("#speed").val(ui.value);
+			        $(this).change();
+			    }
+			});
+			$( "#time" ).spinner({
+			    min: 0,
+			    max: 86400,
+			    spin: function(event, ui) {
+			    	$("#time").val(ui.value);
+			    	$(this).change();
+			    }
+			});
+			
+			$("#speed").change(function(){
 		    	$('#val_speed').html("時速"+$(this).val()+"公里");
 		    	$("#rr_pt").val().speed=$("#speed").val();
 		    	$("#rr_pt").val().time=$("#time").val();
 		    	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
-		    	
-		    	$.each(rs_markers,function(i, item) {
-	    			rs_markers[i].circle.setRadius($("#speed").val() * $("#time").val() *1000 * 0.016667);
-	    		});
 			});
 		    $("#time").change(function(){
 		    	$('#val_time').html("花費"+$(this).val()+"分鐘");
 		    	$("#rr_pt").val().speed=$("#speed").val();
 		    	$("#rr_pt").val().time=$("#time").val();
 		    	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
-				$('#env_slider').slider('option', 'value', $(this).val()); 
-				
-				$.each(rs_markers,function(i, item) {
-	    			rs_markers[i].circle.setRadius($("#speed").val() * $("#time").val() *1000 * 0.016667);
-	    		});
+				$('#slider').slider('option', 'value', $(this).val());   
 			});
+		    
 		    $("#tooltip_1").mouseover(function(e){
 				 this.newTitle = this.title;
 				 this.title = "";
@@ -390,13 +394,18 @@ var item_marker = function (speed, time, marker, circle) {
 			});
 		    
 		    $("#env_slider").slider({
-				range: true,
-		        min: 0,
-		        max: 1,
-		        step: 0.0001,
-		        values: [],
+		    	min: 0,
+		        max: 120,
+		        value: 30,
+		        orientation: "horizontal",
+		        range: "min",
+		        animate: true,
 		        slide: function (event, ui) {
-		        	$("#time").val((ui.value * 120).toFixed(0));
+		        	$("#time").val(ui.value);
+		        	$("#val_time").html("花費"+ui.value+"分鐘");
+		        	$("#rr_pt").val().speed=$("#speed").val();
+			    	$("#rr_pt").val().time=$("#time").val();
+		        	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
 		        }
 			});
 

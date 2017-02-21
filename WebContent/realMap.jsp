@@ -23,6 +23,7 @@
 	    display: block;
 	    z-index: 9999;
 	    height: 183.5px;
+	    max-width: 360px;
 	}
     .shpLegend tbody tr.even td {
         background: none;
@@ -533,10 +534,10 @@ var item_marker = function (speed, time, marker, circle) {
                 </th>
             </tr>
             <tr id="tr_year">
-                <td style="width: 50px;">年份&nbsp;:</td><td><span id="ddl_year">Year</span></td>
+                <td style="width: 80px;">年份&nbsp;:</td><td><span id="ddl_year">Year</span></td>
             </tr>
             <tr>
-                <td style="width: 50px;">單位&nbsp;:</td><td><span id="span_unit">Unit</span></td>
+                <td style="width: 80px;">單位&nbsp;:</td><td><span id="span_unit">Unit</span></td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">圖例&nbsp;:</td>
