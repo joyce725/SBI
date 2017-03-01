@@ -3,7 +3,66 @@
 <div class="sidenav">
 	<h1 class="sys-title"><a href="login.jsp">SBI</a></h1>
 	<ul>
-		<li><a href="marketPlace.jsp"><img src="images/sidenav-country.svg" alt="">國家/城巿商圈</a></li>
+		<li><img src="images/sidenav-store.svg" alt="">商圈情報網</a>
+			<ul>
+				<li><a href="realMap.jsp">商圈資訊</a></li>
+				<li><a href="POI.jsp">商圈 POI</a></li>
+			</ul>
+		</li>
+		
+		<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
+			<ul>
+				<li>
+					<a>電子書</a>
+					<ul>
+						<li><a href="http://61.218.8.51/SBI/pdf/天津市.pdf" target='_blank'>天津市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/瀋陽市.pdf" target='_blank'>瀋陽市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/煙臺市.pdf" target='_blank'>煙臺市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/成都市.pdf" target='_blank'>成都市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/重慶市.pdf" target='_blank'>重慶市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/武漢市.pdf" target='_blank'>武漢市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/鄭州市.pdf" target='_blank'>鄭州市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/西安市.pdf" target='_blank'>西安市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/青島市.pdf" target='_blank'>青島市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/唐山市.pdf" target='_blank'>唐山市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/濟南市.pdf" target='_blank'>濟南市</a></li>
+					</ul>
+				</li>
+				<li>
+					<a>電子書</a>
+					<ul>
+						<li><a href="http://61.218.8.51/SBI/pdf/大台北.pdf" target='_blank'>大台北</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/桃園.pdf" target='_blank'>桃園</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/台中.pdf" target='_blank'>台中</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/台南.pdf" target='_blank'>台南</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/高雄.pdf" target='_blank'>高雄</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/雅加達.pdf" target='_blank'>雅加達</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/馬尼拉.pdf" target='_blank'>馬尼拉</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/新加坡.pdf" target='_blank'>新加坡</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/吉隆坡.pdf" target='_blank'>吉隆坡</a></li>
+					</ul>
+				</li>
+				<li>
+					<a>動態統計</a>
+					<ul>
+						<li><a href="country.jsp">國家</a></li>
+						<li><a href="city.jsp">城市</a></li>
+						<li><a href="industry.jsp">目標產業</a></li>
+						<li><a href="consumer.jsp">消費力</a></li>
+					</ul>
+				</li>
+				<li><a href="costLiving.jsp">生活費用</a></li>
+			</ul>
+		</li>
+
+		<li><img src="images/sidenav-stastic.svg" alt="">統計資料
+			<ul>
+				<li><a href="population.jsp">台灣人口社經</a></li>
+				<li><a href="populationNew.jsp">台灣人口社經資料</a></li>
+				<li><a href="upload.jsp">產業分析基礎資料庫</a></li>
+			</ul>
+		</li>
+
 		<li><img src="images/sidenav-strategy.svg" alt="">決策工具
 			<ul>
 				<li>
@@ -43,69 +102,7 @@
 				<li><a href="environmentAnalyse.jsp">環域分析</a></li>
 			</ul>
 		</li>
-		<li><img src="images/sidenav-stastic.svg" alt="">統計資料
-			<ul>
-				<li><a href="population.jsp">台灣人口社經</a></li>
-				<li><a href="populationNew.jsp">台灣人口社經資料</a></li>
-				<li><a href="upload.jsp">產業分析基礎資料庫</a></li>
-			</ul>
-		</li>
-		<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
-			<ul>
-				<li>
-					<a>電子書</a>
-					<ul>
-						<li><a href="http://61.218.8.51/SBI/pdf/天津市.pdf" target='_blank'>天津市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/瀋陽市.pdf" target='_blank'>瀋陽市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/煙臺市.pdf" target='_blank'>煙臺市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/成都市.pdf" target='_blank'>成都市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/重慶市.pdf" target='_blank'>重慶市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/武漢市.pdf" target='_blank'>武漢市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/鄭州市.pdf" target='_blank'>鄭州市</a></li>
-					</ul>
-				</li>
-				<li>
-					<a>電子書</a>
-					<ul>
-						<li><a href="http://61.218.8.51/SBI/pdf/西安市.pdf" target='_blank'>西安市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/青島市.pdf" target='_blank'>青島市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/唐山市.pdf" target='_blank'>唐山市</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/濟南市.pdf" target='_blank'>濟南市</a></li>
 
-						<li><a href="http://61.218.8.51/SBI/pdf/大台北.pdf" target='_blank'>大台北</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/桃園.pdf" target='_blank'>桃園</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/台中.pdf" target='_blank'>台中</a></li>
-					</ul>
-				</li>
-				<li>
-					<a>電子書</a>
-					<ul>
-						<li><a href="http://61.218.8.51/SBI/pdf/台南.pdf" target='_blank'>台南</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/高雄.pdf" target='_blank'>高雄</a></li>
-						
-						<li><a href="http://61.218.8.51/SBI/pdf/雅加達.pdf" target='_blank'>雅加達</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/馬尼拉.pdf" target='_blank'>馬尼拉</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/新加坡.pdf" target='_blank'>新加坡</a></li>
-						<li><a href="http://61.218.8.51/SBI/pdf/吉隆坡.pdf" target='_blank'>吉隆坡</a></li>
-					</ul>
-				</li>
-				<li>
-					<a>動態統計</a>
-					<ul>
-						<li><a href="country.jsp">國家</a></li>
-						<li><a href="city.jsp">城市</a></li>
-						<li><a href="industry.jsp">目標產業</a></li>
-						<li><a href="consumer.jsp">消費力</a></li>
-					</ul>
-				</li>
-				<li><a href="costLiving.jsp">生活費用</a></li>
-			</ul>
-		</li>
-		<li><img src="images/sidenav-store.svg" alt="">商圈情報網</a>
-			<ul>
-				<li><a href="realMap.jsp">商圈資訊</a></li>
-				<li><a href="POI.jsp">商圈 POI</a></li>
-			</ul>
-		</li>
+		<li><a href="marketPlace.jsp"><img src="images/sidenav-country.svg" alt="">國家/城巿商圈</a></li>
 	</ul>
 </div>
