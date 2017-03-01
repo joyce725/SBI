@@ -314,7 +314,7 @@ var item_marker = function (speed, time, marker, circle) {
 		</div>
 	</div>
 	
-<h2 class="page-title">商圈定位</h2>
+<h2 class="page-title">商圈資訊</h2>
 	<div class="search-result-wrap">
 	<div id="map"></div>
 	<div id='region_select' title='環域分析' style='display:none;'>

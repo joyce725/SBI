@@ -64,7 +64,11 @@
 				<li><a href="costLiving.jsp">生活費用</a></li>
 			</ul>
 		</li>
-		<li><a href="realMap.jsp"><img src="images/sidenav-store.svg" alt="">POI</a>
+		<li><img src="images/sidenav-store.svg" alt="">商圈情報網</a>
+			<ul>
+				<li><a href="realMap.jsp">商圈資訊</a></li>
+				<li><a href="POI.jsp">商圈 POI</a></li>
+			</ul>
 		</li>
 	</ul>
 </div>

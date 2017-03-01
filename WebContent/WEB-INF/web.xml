@@ -45,8 +45,8 @@
   </context-param>
   <context-param>
     <param-name>qrcodephotopath</param-name>
-<!--     <param-value>/data/cdriqrcode</param-value> -->
-    <param-value>D:/data/cdriqrcode</param-value>
+    <param-value>/data/cdriqrcode</param-value>
+<!--     <param-value>D:/data/cdriqrcode</param-value> -->
   </context-param>
   <context-param>
     <param-name>pythonwebservice</param-name>
@@ -449,6 +449,14 @@
   <servlet-mapping>
     <servlet-name>uploaddoc</servlet-name>
     <url-pattern>/uploaddoc.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>groupBackstage</servlet-name>
+    <servlet-class>tw.com.sbi.groupbackstage.controller.GroupBackstage</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>groupBackstage</servlet-name>
+    <url-pattern>/groupBackstage.do</url-pattern>
   </servlet-mapping>
     
   <filter>

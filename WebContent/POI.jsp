@@ -181,7 +181,7 @@ function hidecheckbox(json){
 		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'><table><tr><td>&nbsp;透明度：</td><td><div id='opacity' style='width:110px;'></div></td></tr></table></div>
 	</div>
 	
-<h2 class="page-title">商圈定位</h2>
+<h2 class="page-title">商圈POI</h2>
 	<div class="search-result-wrap">
 	<div id="map"></div>
 <!-- 左下角的框框 -->
