@@ -53,6 +53,43 @@
 		<li><img src="images/sidenav-analytic.svg" alt="">市場商情分析
 			<ul>
 				<li>
+					<a>電子書</a>
+					<ul>
+						<li><a href="http://61.218.8.51/SBI/pdf/天津市.pdf" target='_blank'>天津市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/瀋陽市.pdf" target='_blank'>瀋陽市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/煙臺市.pdf" target='_blank'>煙臺市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/成都市.pdf" target='_blank'>成都市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/重慶市.pdf" target='_blank'>重慶市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/武漢市.pdf" target='_blank'>武漢市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/鄭州市.pdf" target='_blank'>鄭州市</a></li>
+					</ul>
+				</li>
+				<li>
+					<a>電子書</a>
+					<ul>
+						<li><a href="http://61.218.8.51/SBI/pdf/西安市.pdf" target='_blank'>西安市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/青島市.pdf" target='_blank'>青島市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/唐山市.pdf" target='_blank'>唐山市</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/濟南市.pdf" target='_blank'>濟南市</a></li>
+
+						<li><a href="http://61.218.8.51/SBI/pdf/大台北.pdf" target='_blank'>大台北</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/桃園.pdf" target='_blank'>桃園</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/台中.pdf" target='_blank'>台中</a></li>
+					</ul>
+				</li>
+				<li>
+					<a>電子書</a>
+					<ul>
+						<li><a href="http://61.218.8.51/SBI/pdf/台南.pdf" target='_blank'>台南</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/高雄.pdf" target='_blank'>高雄</a></li>
+						
+						<li><a href="http://61.218.8.51/SBI/pdf/雅加達.pdf" target='_blank'>雅加達</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/馬尼拉.pdf" target='_blank'>馬尼拉</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/新加坡.pdf" target='_blank'>新加坡</a></li>
+						<li><a href="http://61.218.8.51/SBI/pdf/吉隆坡.pdf" target='_blank'>吉隆坡</a></li>
+					</ul>
+				</li>
+				<li>
 					<a>動態統計</a>
 					<ul>
 						<li><a href="country.jsp">國家</a></li>
