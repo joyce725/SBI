@@ -1,212 +1,23 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="import.jsp" flush="true"/>
+
+<link rel="stylesheet" href="css/styles_map.css"/>
+<link href="./fancy-tree/skin-xp/ui.fancytree.css" rel="stylesheet">
+
 <script src="js/d3.v3.min.js"></script>
 <script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <script src="./js/jquery-ui.custom.js"></script>
-<link href="./fancy-tree/skin-xp/ui.fancytree.css" rel="stylesheet">
 <script src="./fancy-tree/jquery.fancytree.js"></script>
 <script src="refer_data/js/wicket.js"></script>
 <script src="refer_data/js/wicket-gmap3.js"></script>
 <script src="js/mapFunction.js"></script>
-<style>
 
-	.shpLegend {
-	    border: 2px groove #dfd9c3;
-	    background-color:#F0F0F0;
-	    position: absolute;
-		bottom : 50px;
-		right :50px;
-	    display: block;
-	    z-index: 9999;
-	    height: 183.5px;
-	    max-width: 360px;
-	}
-    .shpLegend tbody tr.even td {
-        background: none;
-    }
-    .shpLegend th { padding:3px;}
-    .shpLegend td  {
-        padding:6px 5px;
-    }
-	.shpLegend td:nth-child(2n+1)  {
-        text-align:right;
-    }
-    .shpLegend button {
-        position: absolute;
-        top: 2px;
-        right: 3px;
-        padding: 0 .1em .1em 0.2em;
-        line-height: 9px;
-        font-size: 12px;
-    }
-	.mapLegend {
-	    width: 10px;
-	    height: 10px;
-	}
-	.header { top: 0px; }
-	.content-wrap{
-	    background: #fff;
-	    float: left;
-	    margin-left: 0px;
-	    margin-top: 100px;
-		margin-bottom: 0px;
-		padding-bottom: 6px;
-		height: calc(100vh - 136px);
-	    overflow-y: hidden;
-	    width: 100%;
-		background-color: #EEF3F9;
-	}
-	.search-result-wrap{
- 		padding: 2px 5px 0px 5px; 
-		margin-bottom: 0px;
-		height: 100%;
-	}
-	.blink {
-	    animation-duration: 1s;
-	    animation-name: blink;
-	    animation-iteration-count: infinite;
-	    animation-direction: alternate;
-	    animation-timing-function: ease-in-out;
-	}
-	@keyframes blink {
-	    from {
-	        opacity: 0.8;
-	    }
-	    to {
-	        opacity: 0.5;
-	    }
-	}
-	.bentable {
-		margin: 0px 20px 0px 20px;
-		width:400px;
-	}
-	.bentable tr{
-		padding:5px;
-		height: 30px;
-	}
-	.bentable td:nth-child(2n+1){
-		word-break: keep-all;
-	}
-	.bentable img:hover{
-		background: #d8d8d8;
-		box-shadow:1px 1px 2px #999;
-	}
-	.info_window{
-		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
-	}
-	.info_window th{
-		font-size: 150%;
-		font-weight: bold;
-	}
-	.info_window tr{
-		border-bottom:1px dashed #ddd;
-	}
-	.info_window tr.title{
-		border-bottom:0px dashed #ddd;
-		margin-top:20px;
-	}
-	.info_window td:nth-child(1){
-		text-align:right;
-		word-break: keep-all;
-		padding-left:16px;
-		
-	}
-	.info_window td:nth-child(2){
-		font-size: 120%;
-		padding:5px;
-	}
-	.info_window td[colspan='2']{
-		text-align: center;
-		font-size: 120%;
-		padding:10px;
-	}
-	.info_window td a{
-		text-align:left;
-		margin-left: 16px;
-		margin-right: 16px;
-	}
-	#panel{
-		background: url(./fancy-tree/skin-xp/bg.png) repeat;
-		transition: all .3s linear;
-		position:fixed;
-		left:0px;
-		top:96px; 
-		min-width:260px;
-		width:auto;
-		height: calc(100vh - 129px);
-		z-index:99;
-		overflow-y: auto;
-		overflow-x: auto;
-		border: 2px solid #777;
-		border-radius: 2px;
-		box-shadow:5px 5px 5px #999;
-	}
-	
-	ul.fancytree-container {
-		max-height:calc(100vh - 174px);
-	}
-	#map{
-		height: 100%;
- 	}
-    #map > div {}
-    #tooltip{
-        position:absolute;
-        border:1px solid #333;
-        background:#f7f5d1;
-        padding:3px;
-        color:#333;
-        display:none;
-        z-index:999;
-	}
-	#detail_1{ 
-		position:absolute;
-		right: 50px; 
-		top: 120px; 
-		filter: alpha(opacity=85,style=0); 
-		-moz-opacity: 0.85; 
-		opacity: 0.85; 
-		z-index: 3; 
-	}
-	#detail_1 tr{ 
-		background: #FFFFFF;
-	}
-	#detail_1 caption{ 
-		background: rgb(236,236,236);
-	}
-	#detail_1 tr:nth-child(2n+2){ 
-		
-		background: rgb(236,236,236);
-	}
-	#detail_1 * { 
-		padding: 10px 20px;
-		word-break: keep-all;
-	}
-	.on_it:hover {
-		background: #d8d8d8;
-		border: 1px solid #bbb;
-	}
-	.ui-menu{
-		padding:2px;
-	}
-	.ui-menu-item{
-		padding:3px;
-		background: #ededed;
-		border:1px solid #ccc;
-		margin:0px;
-	}
-	.ui-menu-item:hover{
-		background: #554891;
-		color:yellow;
-	}
-</style>
-	
 <script>
 var result="";
-//Map相關的參數們
 var map;
 var transitLayer;
 var trafficLayer;
@@ -215,15 +26,18 @@ var chinaProvincial=[];
 var chinaCities={};
 var all_markers={};
 var all_BDs={};
-//Map相關的參數們
-var action={};//記錄所有 tb_data_menu出來的action 對應每一個fancytreenode
+var action={};
 var have_visited={};
 var population_Markers=[];
-
 function hidecheckbox(json){
 	var i=0;
-	i=0;for(item in json){i++;}
-	if(i==0)return;
+	i=0;
+	for(item in json){
+		i++;
+	}
+	if(i==0){
+		return;
+	}
 	for (key in json){
 		if(key=="folder" && json[key]=="true"){
 			json["hideCheckbox"]=true;
@@ -232,7 +46,11 @@ function hidecheckbox(json){
 			action[json["key"]]=json[key];
 		}
 		
-		i=0;for(item in json[key]){i++;}
+		i=0;
+		
+		for(item in json[key]){
+			i++;
+		}
 		if(i>0 && (typeof json[key]!="string")){
 			hidecheckbox(json[key]);
 		}
@@ -246,15 +64,13 @@ var item_marker = function (speed, time, marker, circle) {
 }
 
 	$(function(){
-		
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
-		//$('#panel').css('left',(10-parseInt($('#panel').css('width'),10)));
 		$.ajax({
 			type : "POST",
 			url : "realMap.do",
 			async : false,
 			data : {
-				action : "select_menu", name : ""
+				action : "select_menu", type : "RealMap"
 			},
 			success : function(result) {
 				json_obj = $.parseJSON(result);
@@ -266,9 +82,13 @@ var item_marker = function (speed, time, marker, circle) {
 					quicksearch: true,
 					focusOnSelect: true,
 					source : json_obj,
+					
 					click: function (event, data) {
 						var node = data.node;
-						if($(node.span.childNodes[1]).hasClass('loading')) { return false; }
+						if($(node.span.childNodes[1]).hasClass('loading')) { 
+							return false; 
+						}
+						
 					    if(!data.node.isFolder()){
 					    	event.preventDefault();
 					    	node.setSelected( !node.isSelected() );
@@ -278,7 +98,6 @@ var item_marker = function (speed, time, marker, circle) {
 				    			node.setSelected(false);
 				    		}
 				    		eval(action[data.node.key]);
-					    	
 					    }else{
 					    	if(have_visited[node.key]==null){
 					    		have_visited[node.key]=true;
@@ -288,28 +107,29 @@ var item_marker = function (speed, time, marker, circle) {
 					},
 					activate: function (event, data) {
 					    var node = data.node;
-					    if($(node.span.childNodes[1]).hasClass('loading')) { return false; }
+					    if($(node.span.childNodes[1]).hasClass('loading')) { 
+					    	return false; 
+					    }
 					    node.setSelected( !node.isSelected() );
 					    
-					    if(data.node.isFolder()&&have_visited[node.key]!=null){eval(action[data.node.key]);}
+					    if(data.node.isFolder()&&have_visited[node.key]!=null){
+					    	eval(action[data.node.key]);
+					    }
 					},
 					
 					select: function(event, data) {
 						var node = data.node;
-						if($(node.span.childNodes[1]).hasClass('loading')) { return false; }
+						if($(node.span.childNodes[1]).hasClass('loading')) { 
+							return false; 
+						}
 					}
-				}).on("mouseenter, mouseleave", ".fancytree-title", function(event){
-				    var pdf_layer=["19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","35","42","44","46","48"];
-				    var node = $.ui.fancytree.getNode(event);
-				    if(pdf_layer.indexOf(node.key)!=-1){
-				    }
-				    node.info(event.type);
 				}).on("mouseover", ".fancytree-title", function(event){
 				    var pdf_layer=["19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","35","42","44","46","48"];
 				    var node = $.ui.fancytree.getNode(event);
 				    if(pdf_layer.indexOf(node.key)!=-1){
-				    	$('#pdf_layer').children().html('<div onclick=\'window.open(\"http://61.218.8.51/SBI/pdf/'+$("#ftal_"+node.key).text().replace('商圈','')+'.pdf\", \"_blank\");\'> '+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
-				    	//$('#pdf_layer').children().html('<div onclick=\'window.open(\"./refer_data/pdf/'+$("#ftal_"+node.key).text().replace('商圈','')+'.pdf\", \"_blank\");\'> '+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
+				    	$('#pdf_layer').children().html('<div onclick=\'window.open(\"http://61.218.8.51/SBI/pdf/'
+				    			+$("#ftal_"+node.key).text().replace('商圈','')+'.pdf\", \"_blank\");\'> '
+				    			+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
 				    	$('#pdf_layer').css({
 				    		"display": "inline",
 				    		"top":($("#ftal_"+node.key).offset().top-120),
@@ -330,14 +150,31 @@ var item_marker = function (speed, time, marker, circle) {
 	      }
 	    });
 		$("#region_select").dialog({
-			draggable : true,resizable : false,autoOpen : false,
-			height : "auto", width : "auto", 
+			draggable : true,
+			resizable : false,
+			autoOpen : false,
+			height : "auto", 
+			width : "auto", 
 			modal : false,
-			position: { my: "center", at: "right-180px top+240px ", of: window  } ,  
-			show : {effect : "blind",duration : 300},
-			hide : {effect : "fade",duration : 300},
+			
+			position: { 
+				my: "center", 
+				at: "right-180px top+240px ", 
+				of: window  
+			} ,  
+			show : {
+				effect : "blind",
+				duration : 300
+			},
+			hide : {
+				effect : "fade",
+				duration : 300
+			},
 			open :function(){
-				map.setOptions({draggableCursor:("url("+location.href.replace('realMap.jsp','')+"refer_data/cursor2.cur),default")});
+				map.setOptions({
+					draggableCursor:("url("+location.href.replace('realMap.jsp','')
+							+"refer_data/cursor2.cur),default")
+				});
 			},
 			close : function() {
 				map.setOptions({draggableCursor:null});
@@ -377,9 +214,7 @@ var item_marker = function (speed, time, marker, circle) {
 	        	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
 	        }
 	    });
-	  //##############################################
-	  //###########  以下是環域分析step1相關  ###############
-	  //##############################################
+
 	    $("#region_select_next").click(function(){
 	    	if(rs_markers.length==0){
 	    		alert("請放置分析點。");
@@ -393,15 +228,17 @@ var item_marker = function (speed, time, marker, circle) {
 	    		$("div[aria-describedby='region_select']").animate({"left": "-=180px"});
 	    	}
 	    });
+	    
 	    $("#region_select_last").click(function(){
-	    	map.setOptions({draggableCursor:("url("+location.href.replace('realMap.jsp','')+"refer_data/cursor2.cur),default")});
+	    	map.setOptions({
+	    		draggableCursor:("url("+location.href.replace('realMap.jsp','')
+	    				+"refer_data/cursor2.cur),default")
+	    	});
     		$("#instruction").show();
     		$("#draw_circle").hide();
     		$("div[aria-describedby='region_select']").animate({"left": "+=180px"});
 	    });
-		  //##############################################
-		  //###########  以下是環域分析step2相關  ###############
-		  //##############################################
+
 	    $("#speed").change(function(){
 	    	$('#val_speed').html("時速"+$(this).val()+"公里");
 	    	$("#rr_pt").val().speed=$("#speed").val();
@@ -415,6 +252,8 @@ var item_marker = function (speed, time, marker, circle) {
 	    	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
 			$('#slider').slider('option', 'value', $(this).val());   
 		});
+	    
+	    
 	    $("#tooltip_1").mouseover(function(e){
 			 this.newTitle = this.title;
 			 this.title = "";
@@ -428,10 +267,20 @@ var item_marker = function (speed, time, marker, circle) {
 		         $("#tooltip").css({"top": (e.pageY+20) + "px","left": (e.pageX+10)  + "px"});
 		 });
 	    $("#warning").dialog({
-			draggable : true, resizable : false, autoOpen : false,
-			height : "auto", width : "auto", modal : true,
-			show : {effect : "fade",duration : 300},
-			hide : {effect : "fade",duration : 300},
+			draggable : true, 
+			resizable : false, 
+			autoOpen : false,
+			height : "auto", 
+			width : "auto", 
+			modal : true,
+			show : {
+				effect : "fade",
+				duration : 300
+			},
+			hide : {
+				effect : "fade",
+				duration : 300
+			},
 			buttons : {
 				"確認" : function() {
 					$(this).dialog("close");
@@ -450,13 +299,19 @@ var item_marker = function (speed, time, marker, circle) {
 	onmouseout="$('#panel').val(setTimeout(function () { $('#panel').css('left','0px'); }, 800));">
 		<div id='tree' >
 		<script>var timer="";</script>
-		<ul id='pdf_layer' onmouseover='clearTimeout(timer);$("#pdf_layer").show();' onmouseout=' timer=setTimeout(function(){$("#pdf_layer").hide();},500);' style='position:absolute;top:200px;left:10px;z-index:30;width:auto;display:none;'>
+		<ul id='pdf_layer' onmouseover='clearTimeout(timer);$("#pdf_layer").show();' 
+				onmouseout=' timer=setTimeout(function(){$("#pdf_layer").hide();},500);' 
+				style='position:absolute;top:200px;left:10px;z-index:30;width:auto;display:none;'>
 			<li><div>Books</div></li>
 		</ul>
 		</div>
-		<div id='pin' style='position:absolute;top:5px;right:20px;' class='on_it' onclick='$("#pin").hide();$("#unpin").show();$("#panel").attr("tmp",$("#panel").attr("onmouseout"));$("#panel").attr("onmouseout","");'><img src='./refer_data/pin.png'></div>
-		<div id='unpin' style='position:absolute;top:5px;right:20px;display:none;' class='on_it' onclick='$("#unpin").hide();$("#pin").show();$("#panel").attr("onmouseout",$("#panel").attr("tmp"));'><img src='./refer_data/unpin.png'></div>
-		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'><table><tr><td>&nbsp;透明度：</td><td><div id='opacity' style='width:110px;'></div></td></tr></table></div>
+		<div id='pin' style='position:absolute;top:5px;right:20px;' class='on_it' 
+				onclick='$("#pin").hide();$("#unpin").show();$("#panel").attr("tmp",$("#panel").attr("onmouseout"));$("#panel").attr("onmouseout","");'><img src='./refer_data/pin.png'></div>
+		<div id='unpin' style='position:absolute;top:5px;right:20px;display:none;' class='on_it' 
+				onclick='$("#unpin").hide();$("#pin").show();$("#panel").attr("onmouseout",$("#panel").attr("tmp"));'><img src='./refer_data/unpin.png'></div>
+		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'>
+			<table><tr><td>&nbsp;透明度：</td><td><div id='opacity' style='width:110px;'></div></td></tr></table>
+		</div>
 	</div>
 	
 <h2 class="page-title">商圈定位</h2>
@@ -486,9 +341,12 @@ var item_marker = function (speed, time, marker, circle) {
 						</div>
 					</td>
 					<td>
-						<img src='./refer_data/car.png' title="車行" val="60" onclick='$("#speed").val(60);$("#speed").change();'>
-						<img src='./refer_data/walk.png' title="步行" val="4" onclick='$("#speed").val(4);$("#speed").change();'>
-						<img src='./refer_data/bike.png' title="單車" val="15" onclick='$("#speed").val(15);$("#speed").change();'>
+						<img src='./refer_data/car.png' title="車行" val="60" 
+							onclick='$("#speed").val(60);$("#speed").change();'>
+						<img src='./refer_data/walk.png' title="步行" val="4" 
+							onclick='$("#speed").val(4);$("#speed").change();'>
+						<img src='./refer_data/bike.png' title="單車" val="15"
+							 onclick='$("#speed").val(15);$("#speed").change();'>
 					</td>
 					<td>
 						　時速：<input id='speed' style='width:40px;height:14px;' value='10'>　公里
@@ -590,11 +448,11 @@ var item_marker = function (speed, time, marker, circle) {
 	    function initMap() {
 			// Create the map.
 			map = new google.maps.Map(document.getElementById('map'), {
-				panControl: true, //要不要出現可以上下左右移動的面板
-			    zoomControl: true, //要不要出現可以放大縮小的面板
-			    mapTypeControl: false, //切換地圖檢視類型的面板
-			    scaleControl: true, //比例尺資訊
-			    streetViewControl: true,  //顯示街景服務的面板
+				panControl: true,
+			    zoomControl: true,
+			    mapTypeControl: false,
+			    scaleControl: true,
+			    streetViewControl: true,
 			    overviewMapControl: true,
 			    zoom: 7,
 				center: {lat: 23.598321171324468, lng: 120.97802734375}
@@ -630,7 +488,6 @@ var item_marker = function (speed, time, marker, circle) {
 					$("#time").val(marker_obj.time);
 					$('#slider').slider('option', 'value', marker_obj.time);
 			        rs_markers.push(marker_obj);
-
 					google.maps.event.addListener(rs_marker, "click", function(event) { 
 						$.each(rs_markers, function(i, node){
 							rs_markers[i].marker.setAnimation(null);
@@ -652,7 +509,6 @@ var item_marker = function (speed, time, marker, circle) {
 				    google.maps.event.addListener(rs_marker, 'drag', function(marker){
 				    	rs_circle.setCenter(marker.latLng);
 				    });
-
 				    google.maps.event.addListener(rs_marker, 'dragstart', function(marker){
 				    	rs_marker.setAnimation(null);
 				    	$.each(rs_markers, function(i, node){
@@ -668,29 +524,16 @@ var item_marker = function (speed, time, marker, circle) {
 						$("#time").val(marker_obj.time);
 						$('#slider').slider('option', 'value', marker_obj.time);
 				    });
-
 				    google.maps.event.addListener(rs_marker, 'dragend', function(marker){
 				    	rs_marker.setAnimation(google.maps.Animation.BOUNCE);
 				    });
-				}//else{alert(map.getCenter());}
+				}
 			});
 			trafficLayer = new google.maps.TrafficLayer();
 			transitLayer = new google.maps.TransitLayer();
    		}
     </script>
-    
-<!--     <script async defer -->
-<!--     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc2oSzYl-UJ6brhxL3-BoNPvl3nbjNogk&signed_in=true&libraries=places&callback=initMap"> -->
-<!--      </script> -->
-
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8QEQE4TX2i6gpGIrGbTsrGrRPF23xvX4&signed_in=true&libraries=places&callback=initMap">
-    </script> 
-     
-<!--     <script async defer -->
-<!--     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap"> -->
-<!--      </script> -->
-    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8QEQE4TX2i6gpGIrGbTsrGrRPF23xvX4&signed_in=true&libraries=places&callback=initMap"></script> 
 	<div id='picture' style='position:fixed;left:10%;top:20%;z-index:-1;'ondblclick='$("#picture").css("z-index","-1");'></div>
 	</div>
 </div>

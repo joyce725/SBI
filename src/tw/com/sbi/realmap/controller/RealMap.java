@@ -26,7 +26,7 @@ public class RealMap extends HttpServlet {
 		final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 		String action = request.getParameter("action").toString();
-		String name = request.getParameter("name").toString();
+		String name = ((request.getParameter("name")!=null)?request.getParameter("name").toString():"");
 		Connection con = null;
 		Statement statement = null;
 		ResultSet rs = null;
@@ -215,8 +215,6 @@ public class RealMap extends HttpServlet {
 					bd_array[count].area=rs.getString("area");
 					bd_array[count].memo=rs.getString("memo");
 					bd_array[count].business_cost=rs.getString("business_cost");
-					
-					
 					String geometrystring = rs.getString("geometry").replaceAll("\\(", "").replaceAll("\\)", "");
 					String[] point = geometrystring.split(",");
 					bd_array[count].center=new Center[point.length];
@@ -250,6 +248,7 @@ public class RealMap extends HttpServlet {
 			return;
 		}
 		if("select_menu".equals(action)){
+			String type = request.getParameter("type").toString();
 			Menu[] menu_array;
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
@@ -281,7 +280,15 @@ public class RealMap extends HttpServlet {
 					count++;
 				}
 				Gson gson = new Gson();
-				String jsonStrList = gson.toJson(menu_array[0]);
+				String jsonStrList="";
+//				System.out.println(type+"  "+ menu_array[3].title+"  "+menu_array[3].key);
+				if("POI".equals(type)){
+					jsonStrList = gson.toJson(menu_array[3]);
+//					System.out.println(jsonStrList);
+				}else if("RealMap".equals(type)){
+					jsonStrList = gson.toJson(menu_array[0]);
+				}
+//				String jsonStrList = gson.toJson(menu_array[0]);
 				response.getWriter().write(jsonStrList);
 				return;
 			} catch (Exception e) {

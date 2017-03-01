@@ -52,7 +52,7 @@ public class CountryData extends HttpServlet {
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 		String buildquery1 = "SELECT data FROM tb_STAT_Trget_Country WHERE Second_Trget= ? AND Type=( SELECT  Type FROM tb_STAT_Trget_Country WHERE Second_Trget = ? ORDER BY Type DESC LIMIT 1)";
 		String buildquery2 = "SELECT DISTINCT unit FROM tb_STAT_Country WHERE Second_Trget = ? ";
-		String buildquery3 = "SELECT DISTINCT Type year FROM tb_STAT_Trget_Country WHERE Second_Trget= ? ";
+		String buildquery3 = "SELECT DISTINCT Type year FROM tb_STAT_Trget_Country WHERE Second_Trget= ? ORDER BY TYPE DESC";
 		String changequery = "SELECT * FROM tb_STAT_Trget_Country CE, tb_SHP_Country WHERE CE.Country = tb_SHP_Country.CNTRY_NAME AND CE.Type = ? AND CE.Second_Trget = ? ";
 		String bigmacquery = "SELECT * FROM tb_Statistics_BigMac INNER JOIN tb_SHP_Country ON tb_Statistics_BigMac.Country = tb_SHP_Country.CNTRY_NAME ";
 		
