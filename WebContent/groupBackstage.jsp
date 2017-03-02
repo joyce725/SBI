@@ -1,6 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="import.jsp" flush="true"/>
+<style>
+	#group-backstage-table td {
+	    text-align: center; /* center checkbox horizontally */
+	    vertical-align: middle; /* center checkbox vertically */
+	}		
+	#group-backstage-table label{
+	    left:65px;
+	}
+</style>
 <link rel="stylesheet" href="css/jquery.dataTables.min.css" />
 <link rel="stylesheet" href="css/buttons.dataTables.min.css"/>
 
@@ -81,6 +90,8 @@
 						"		<i class='fa fa-pencil'></i></button>"+
 						"		<button class='btn-in-table btn-alert btn_delete' title='刪除' id = '" + row.group_id + "'>" +
 						"		<i class='fa fa-trash'></i></button>"+
+						"		<button class='btn-in-table btn-green btn_list' title='清單' id = '" + row.group_id + "'>" +
+						"		<i class='fa fa-pencil-square-o'></i></button>"+
 						"	</div>"+
 						"</div>";
 					   
@@ -267,6 +278,23 @@
 		return dataDialog;
 	}
 	
+	function formUtil(url){
+	    var object = this;
+	    object.form = $('<form action="'+url+'" target="output_frame" method="post" style="display:none;"></form>');
+
+	    object.addParameter = function(parameter,value){
+	        $("<input type='hidden' />")
+	         .attr("name", parameter)
+	         .attr("value", value)
+	         .appendTo(object.form);
+	    }
+	    
+	    object.send = function(){
+			$( "body" ).append(object.form);
+	        object.form.submit();
+	    }
+	}		
+	
 	function initDeleteDialog(){
 		
 		var message = "確認刪除資料嗎?";
@@ -283,7 +311,7 @@
 		
 		var grpName =  
 			"<td>公司名稱</td>" + 
-			"<td>" + 
+			"<td>&nbsp;" + 
 				"<input type='text' name='dialog_group_name' placeholder='請填寫公司名稱'>" +
 			"</td>";
 
@@ -326,6 +354,10 @@
 <!-- button listener -->
 <script>
 	$(function(){
+		
+		mainDiv = $("#mainDiv");
+		iframe = $("#iframeDiv");
+		
 		$("#search-group-backstage").click(function(e) {
 			e.preventDefault();
 			
@@ -346,7 +378,7 @@
 			var formId = "dialog-form-data-process";
 			var btnTxt_1 = "新增";
 			var btnTxt_2 = "取消";
-			var oWidth = 950;
+			var oWidth = 350;
 			var url = oUrl;
 			
 			//must be initialized to set dialog
@@ -367,7 +399,7 @@
 			var formId = "dialog-form-data-process";
 			var btnTxt_1 = "刪除";
 			var btnTxt_2 = "取消";
-			var oWidth = 250;
+			var oWidth = 200;
 			var url = oUrl;
 			
 			//must be initialized
@@ -428,7 +460,7 @@
 				var formId = "dialog-form-data-process";
 				var btnTxt_1 = "刪除";
 				var btnTxt_2 = "取消";
-				var oWidth = 250;
+				var oWidth = 200;
 				var url = oUrl;
 				
 				//must be initialized
@@ -459,7 +491,7 @@
 			var formId = "dialog-form-data-process";
 			var btnTxt_1 = "修改";
 			var btnTxt_2 = "取消";
-			var oWidth = 950;
+			var oWidth = 350;
 			var url = oUrl;
 			
 			var dialog = document.getElementById(dialogId);
@@ -475,46 +507,71 @@
 				.data("group_id",group_id)
 				.dialog("option","title","修改資料")
 				.dialog("open");	
-		});				
+		});
+		
+		//users list
+		$("#group-backstage-table").delegate(".btn_list", "click", function(e) {
+			e.preventDefault();
+
+			mainDiv.hide();//hide parent page
+			
+			//Initialized and dynamically set iframe
+			var iframes = document.querySelectorAll('iframe');
+			for (var i = 0; i < iframes.length; i++) {
+			    iframes[i].parentNode.removeChild(iframes[i]);
+			}
+			$('<iframe id= "groupUserList" scrolling="no" name = "output_frame" frameborder="0" style="width:100%;" ></iframe>').appendTo(iframe);
+			
+			$("#groupUserList").css('height','742');
+			
+			var id = $(this).attr("id");
+			var url = "groupUserList.jsp";
+			var frame = new formUtil(url);
+			frame.addParameter('groupId',id);
+			frame.send();
+		});		
 	});
 </script>
 <jsp:include page="header.jsp" flush="true"/>
 	<div class="content-wrap">
-		<h2 class="page-title">公司後台管理</h2>
-		
-		<!-- 查詢 -->
-		<div class="input-field-wrap">
-			<div class="form-wrap">			
-				<div class="form-row">
-					<label for="">
-						<span class="block-label">公司名稱</span>
-						<input type="text" id="search-group-name">
-					</label>
+		<h2 class="page-title">公司後台管理</h2>	
+		<div id="mainDiv">
+			<!-- 查詢 -->
+			<div class="input-field-wrap">
+				<div class="form-wrap">			
+					<div class="form-row">
+						<label for="">
+							<span class="block-label">公司名稱</span>
+							<input type="text" id="search-group-name">
+						</label>
+					</div>
+					<div class="form-row">
+						<button class="btn btn-darkblue" id="search-group-backstage">查詢</button>
+						<button class="btn btn-exec" id="create-group-backstage">新增</button>
+					</div>										
 				</div>
-				<div class="form-row">
-					<button class="btn btn-darkblue" id="search-group-backstage">查詢</button>
-					<button class="btn btn-exec btn-wide" id="create-group-backstage">新增</button>
-				</div>										
+			</div>
+	
+			<div class="row search-result-wrap" align="center" >
+				<div class="ui-widget">
+					<table id="group-backstage-table" class="result-table">
+						<thead>
+							<tr>					
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+							</tr>
+						</tfoot>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
-
-		<div class="row search-result-wrap" align="center" >
-			<div class="ui-widget">
-				<table id="group-backstage-table" class="result-table">
-					<thead>
-						<tr>					
-						</tr>
-					</thead>
-					<tfoot>
-						<tr>
-						</tr>
-					</tfoot>
-					<tbody>
-					</tbody>
-				</table>
-			</div>
+		<div id="iframeDiv">
+				<iframe id= "groupUserList" scrolling="no" name = "output_frame" frameborder="0" style="width:100%;" ></iframe> 
 		</div>
-		
 	</div>
 	
 	<!-- 對話窗 -->

@@ -10,6 +10,7 @@ public class UserVO implements java.io.Serializable {
 	private String email;
 	private String password;
 	private String administrator;
+	private String operation; // for log
 
 	public String getUser_id() {
 		return user_id;
@@ -57,5 +58,13 @@ public class UserVO implements java.io.Serializable {
 
 	public void setAdministrator(String administrator) {
 		this.administrator = administrator;
+	}
+
+	public String getOperation() {
+		return operation;
+	}
+
+	public void setOperation(String operation) {
+		this.operation = operation;
 	}
 }

@@ -458,7 +458,15 @@
     <servlet-name>groupBackstage</servlet-name>
     <url-pattern>/groupBackstage.do</url-pattern>
   </servlet-mapping>
-    
+   <servlet>
+    <servlet-name>groupUserList</servlet-name>
+    <servlet-class>tw.com.aber.groupuserlist.controller.GroupUserList</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>groupUserList</servlet-name>
+    <url-pattern>/groupUserList.do</url-pattern>
+  </servlet-mapping> 
+      
   <filter>
     <filter-name>loginFilter</filter-name>
     <filter-class>tw.com.sbi.login.controller.LoginFilter</filter-class>
