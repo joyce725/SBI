@@ -323,8 +323,22 @@ function select_BD(BD_name){
 		            },
 		            map: map
 		        });
+		        
+		        var dbl_timeout = null;
 				google.maps.event.addListener(bermudaTriangle, "click", function(event) { 
-		        	infowindow.open(bermudaTriangle.get('map'), infoMarker);
+					 update_timeout = setTimeout(function(){
+						if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+							google.maps.event.trigger(map, 'click',event);
+						}else{
+							infowindow.open(bermudaTriangle.get('map'), infoMarker);
+						}
+					}, 200);
+					
+		        });
+				
+				google.maps.event.addListener(bermudaTriangle, "dblclick", function(event) { 
+					clearTimeout(update_timeout);
+					infowindow.open(bermudaTriangle.get('map'), infoMarker);
 		        });
 				google.maps.event.addListener(infowindow, "closeclick", function () {
 		            infoMarker.setMap(null);
