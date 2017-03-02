@@ -7,7 +7,6 @@
 <link href="./fancy-tree/skin-xp/ui.fancytree.css" rel="stylesheet">
 
 <script src="js/d3.v3.min.js"></script>
-<!-- <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script> -->
 <script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
@@ -18,19 +17,12 @@
 <script src="refer_data/js/wicket.js"></script>
 <script src="refer_data/js/wicket-gmap3.js"></script>
 <script src="js/mapFunction.js"></script>
+
 	<style>
-/* 		#tree{ */
-/* 			font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4; */
-/* 		} */
-		#region_select{
-			font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
-		}
-		#warning{
+		#region_select,#warning{
 			font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
 		}
 	</style>
-	
-	
 <script>
 var result="";
 var map;
@@ -44,10 +36,15 @@ var all_BDs={};
 var action={};
 var have_visited={};
 var population_Markers=[];
+
 function hidecheckbox(json){
 	var i=0;
-	i=0;for(item in json){i++;}
-	if(i==0)return;
+	for(item in json){
+		i++;
+	}
+	if(i==0){
+		return;
+	}
 	for (key in json){
 		if(key=="folder" && json[key]=="true"){
 			json["hideCheckbox"]=true;
@@ -62,6 +59,7 @@ function hidecheckbox(json){
 		}
 	}
 }
+
 var item_marker = function (speed, time, marker, circle) {
 	this.speed = speed;
 	this.time = time;
@@ -112,22 +110,22 @@ var item_marker = function (speed, time, marker, circle) {
 					},
 					activate: function (event, data) {
 					    var node = data.node;
-					    if($(node.span.childNodes[1]).hasClass('loading')) { return false; }
+					    if($(node.span.childNodes[1]).hasClass('loading')) {
+					    	return false; 
+					    }
 					    node.setSelected( !node.isSelected() );
 					    
-					    if(data.node.isFolder()&&have_visited[node.key]!=null){eval(action[data.node.key]);}
+					    if(data.node.isFolder()&&have_visited[node.key]!=null){
+					    	eval(action[data.node.key]);
+					    }
 					},
 					
 					select: function(event, data) {
 						var node = data.node;
-						if($(node.span.childNodes[1]).hasClass('loading')) { return false; }
+						if($(node.span.childNodes[1]).hasClass('loading')) {
+							return false; 
+						}
 					}
-				}).on("mouseenter, mouseleave", ".fancytree-title", function(event){
-				    var pdf_layer=["19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","35","42","44","46","48"];
-				    var node = $.ui.fancytree.getNode(event);
-				    if(pdf_layer.indexOf(node.key)!=-1){
-				    }
-				    node.info(event.type);
 				}).on("mouseover", ".fancytree-title", function(event){
 				    var pdf_layer=["19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","35","42","44","46","48"];
 				    var node = $.ui.fancytree.getNode(event);
@@ -158,6 +156,8 @@ var item_marker = function (speed, time, marker, circle) {
 			draggable : true,
 			resizable : false,
 			autoOpen : false,
+			//minHeight : 125,
+            //minWidth : 500 ,
 			height : "auto", 
 			width : "auto", 
 			modal : false,
@@ -222,7 +222,6 @@ var item_marker = function (speed, time, marker, circle) {
 
 	    $("#region_select_next").click(function(){
 	    	if(rs_markers.length==0){
-	    		//alert("請放置分析點。");
     			$("#warning").html("<div style='padding:5px 80px;font-size:28px;'>請放置分析點。</div>");
     			$("#warning").dialog("open");
 	    	}else{
@@ -301,11 +300,11 @@ var item_marker = function (speed, time, marker, circle) {
 			<li><div>Books</div></li>
 		</ul>
 		</div>
-		<div id='pin' style='position:absolute;top:5px;right:20px;display:none;' class='on_it' 
+		<div id='pin' style='position:absolute;top:5px;right:20px;' class='on_it' 
 				onclick='$("#pin").hide();$("#unpin").show();$("#panel").attr("tmp",$("#panel").attr("onmouseout"));$("#panel").attr("onmouseout","");'><img src='./refer_data/pin.png'></div>
-		<div id='unpin' style='position:absolute;top:5px;right:20px;' class='on_it' 
+		<div id='unpin' style='position:absolute;top:5px;right:20px;display:none;' class='on_it' 
 				onclick='$("#unpin").hide();$("#pin").show();$("#panel").attr("onmouseout",$("#panel").attr("tmp"));'><img src='./refer_data/unpin.png'></div>
-		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'><table><tr><td>&nbsp;透明度：</td><td><div id='opacity' style='width:110px;'></div></td></tr></table></div>
+		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'><table><tr><td>&nbsp;&nbsp;透明度：</td><td><div id='opacity' style='width:160px;'></div></td></tr></table></div>
 	</div>
 	
 <h2 class="page-title">商圈POI</h2>
@@ -314,7 +313,7 @@ var item_marker = function (speed, time, marker, circle) {
 	<div id="map"></div>
 	<div id='region_select' title='環域分析' style='display:none;'>
 		<div id="instruction">
-			<div style="margin:14px 20px;font-size:22px;color:#F00;font-weight:900;" class='blink'>請點擊地圖新增分析點。</div>
+			<div style="margin:14px 20px;font-size:22px;color:#F00;font-weight:900;word-break: keep-all;" class='blink'>請點擊地圖新增分析點。</div>
 			<hr style='height:1px;border:none;border-top:1px solid #ddd;'>
 			<div style="margin:0px 20px;float:right;">
 				<button class='ui-button' id='region_select_next'>下一步</button>
@@ -376,7 +375,6 @@ var item_marker = function (speed, time, marker, circle) {
 			</div>
 		</div>
 	</div>
-<!-- 左下角的框框 -->
 <div id="shpLegend" class="shpLegend" style=" height: 235.5px;display:none;">
     <button onclick='$("#shpLegend").hide();'>x</button>
     <div style="display: block; background-color: #F0F0F0;">
@@ -453,7 +451,6 @@ var item_marker = function (speed, time, marker, circle) {
 			google.maps.event.addListener(map, 'click', function(event) {
 				
 				if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
-					//alert(map.getCenter()+"  "+map.getZoom());
 					if(rs_markers.length>=5){alert("最多五個點");return;}
 					var order=(rs_markers.length+1)+"";
 					var rs_marker = new google.maps.Marker({
