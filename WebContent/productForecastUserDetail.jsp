@@ -68,9 +68,6 @@
 		});
 		
 		function User() {
-			
-			console.log('user');
-			
 			$("#div_detail > form > div > div:first").find('h4').remove();
 			
 			$("#tbl_user").find('tbody').remove();
@@ -93,18 +90,19 @@
 				},
 				success : function(result) {
 					var json_obj = $.parseJSON(result);
-					console.log(json_obj);
 					
 					user_count = json_obj.length;
 
 					$.each(json_obj, function(i, item) {
-						console.log(item);
-						
 						$("#tbl_user").append('<tr><td><label>' + json_obj[i].v_user_name + '</label></td>' + 
 								'<td>' + (json_obj[i].weight * 10) + '%</td>' +
 								'<td><button name="' + json_obj[i].forecast_id + '" value="'+ json_obj[i].user_id + '" class="btn-chkpoint btn btn-wide btn-primary">查看評估內容</button></td>' + 
 								'</tr>');
 					});
+					
+					$('#div_main .btn-row').prepend('<a class="btn btn-exec btn-wide" onclick="window.close();">' + 
+							'返回清單' +
+							'</a>');
 					
 					$(".btn-chkpoint").click(function(e){
 						e.preventDefault();
@@ -123,9 +121,6 @@
 		}
 		
 		function showForecast(forecast_id, user_id) {
-			console.log("forecast_id:" + forecast_id);
-			console.log("user_id:" + user_id);
-			
 			$("#div_detail > form > div > div:first").find('div').remove();
 			$("#div_detail > form > div > div:first").find('h4').remove();
 			
