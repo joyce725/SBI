@@ -309,7 +309,7 @@ var item_marker = function (speed, time, marker, circle) {
 	
 <h2 class="page-title">商圈POI</h2>
 	<div class="search-result-wrap">
-	<a class="btn btn-orange" onclick='$("#region_select").dialog("open");' style='position:absolute;right:5%;top:110px;z-index:99;'>區位選擇</a>
+	<a class="btn btn-orange" onclick='$("#region_select").dialog("open");' style='position:absolute;right:5%;top:110px;z-index:99;'>環域分析</a>
 	<div id="map"></div>
 	<div id='region_select' title='環域分析' style='display:none;'>
 		<div id="instruction">
