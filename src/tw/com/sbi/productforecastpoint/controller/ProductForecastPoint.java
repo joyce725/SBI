@@ -25,7 +25,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
-import tw.com.sbi.productforecast.controller.ProductForecast;
+import tw.com.sbi.caseandevaluate.controller.Evaluate.EvaluateService;
+import tw.com.sbi.vo.EvaluateVO;
 
 public class ProductForecastPoint extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -45,6 +46,7 @@ public class ProductForecastPoint extends HttpServlet {
 		ProductForecastPointService productForecastPointService = null;
 		
 		String action = request.getParameter("action");
+		logger.debug("action: " + action);
 		
 		if ("insert".equals(action)) {
 			try {
@@ -58,7 +60,6 @@ public class ProductForecastPoint extends HttpServlet {
 				String service_point = request.getParameter("service_point");
 				String score_seq = request.getParameter("score_seq");
 				
-				logger.debug("action: Insert");
 				logger.debug("forecast_id:" + forecast_id);
 				logger.debug("user_id:" + user_id);
 				logger.debug("weight:" + weight);
@@ -95,7 +96,6 @@ public class ProductForecastPoint extends HttpServlet {
 				String nfunction_point = request.getParameter("nfunction_point");
 				String service_point = request.getParameter("service_point");
 				
-				logger.debug("action: Update");
 				logger.debug("forecast_id:" + forecast_id);
 				logger.debug("user_id:" + user_id);
 				logger.debug("function_point:" + function_point);
@@ -123,6 +123,47 @@ public class ProductForecastPoint extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if ("getPoint".equals(action)) {
+			try {
+				String forecastId = request.getParameter("forecast_id");
+				
+				logger.debug("forecast_id:" + forecastId);
+				
+				ProductForecastPointBean paramBean = new ProductForecastPointBean();
+				paramBean.setForecast_id(forecastId);
+				
+				productForecastPointService = new ProductForecastPointService();
+				List<ProductForecastPointBean> list = productForecastPointService.selectPointByForecastId(paramBean);
+				
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				logger.debug(jsonStrList);
+				response.getWriter().write(jsonStrList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("getPointDetail".equals(action)) {
+			try {
+				String forecastId = request.getParameter("forecast_id");
+				String userId = request.getParameter("user_id");
+
+				logger.debug("forecast_id:" + forecastId);
+				logger.debug("user_id:" + userId);
+				
+				ProductForecastPointBean paramBean = new ProductForecastPointBean();
+				paramBean.setForecast_id(forecastId);
+				paramBean.setUser_id(userId);
+				
+				productForecastPointService = new ProductForecastPointService();
+				List<ProductForecastPointBean> list = productForecastPointService.selectPointDetailByForecastId(paramBean);
+				
+				Gson gson = new Gson();
+				String jsonStrList = gson.toJson(list);
+				logger.debug(jsonStrList);
+				response.getWriter().write(jsonStrList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -130,6 +171,7 @@ public class ProductForecastPoint extends HttpServlet {
 	@SuppressWarnings("serial")
 	public class ProductForecastPointBean implements java.io.Serializable {
 
+		private String message;// for set check message
 		private String forecast_point_id;
 		private String forecast_id;
 		private String user_id;
@@ -138,8 +180,20 @@ public class ProductForecastPoint extends HttpServlet {
 		private String nfunction_point;
 		private String service_point;
 		private String score_seq;
-		private String message;// for set check message
+		private String v_user_name;
+		private String v_function_no;
+		private String v_function_name;
+		private String v_nfunction_no;
+		private String v_nfunction_name;
+		private String v_service_no;
+		private String v_service_name;
 		
+		public String getMessage() {
+			return message;
+		}
+		public void setMessage(String message) {
+			this.message = message;
+		}
 		public String getForecast_point_id() {
 			return forecast_point_id;
 		}
@@ -188,11 +242,47 @@ public class ProductForecastPoint extends HttpServlet {
 		public void setScore_seq(String score_seq) {
 			this.score_seq = score_seq;
 		}
-		public String getMessage() {
-			return message;
+		public String getV_user_name() {
+			return v_user_name;
 		}
-		public void setMessage(String message) {
-			this.message = message;
+		public void setV_user_name(String v_user_name) {
+			this.v_user_name = v_user_name;
+		}
+		public String getV_function_no() {
+			return v_function_no;
+		}
+		public void setV_function_no(String v_function_no) {
+			this.v_function_no = v_function_no;
+		}
+		public String getV_function_name() {
+			return v_function_name;
+		}
+		public void setV_function_name(String v_function_name) {
+			this.v_function_name = v_function_name;
+		}
+		public String getV_nfunction_no() {
+			return v_nfunction_no;
+		}
+		public void setV_nfunction_no(String v_nfunction_no) {
+			this.v_nfunction_no = v_nfunction_no;
+		}
+		public String getV_nfunction_name() {
+			return v_nfunction_name;
+		}
+		public void setV_nfunction_name(String v_nfunction_name) {
+			this.v_nfunction_name = v_nfunction_name;
+		}
+		public String getV_service_no() {
+			return v_service_no;
+		}
+		public void setV_service_no(String v_service_no) {
+			this.v_service_no = v_service_no;
+		}
+		public String getV_service_name() {
+			return v_service_name;
+		}
+		public void setV_service_name(String v_service_name) {
+			this.v_service_name = v_service_name;
 		}
 		
 	}
@@ -203,6 +293,8 @@ public class ProductForecastPoint extends HttpServlet {
 		public void insertDB(ProductForecastPointBean productForecastBean);
 		public void updateDB(ProductForecastPointBean productForecastBean);
 		public void countByForecastIdDB(String forecast_id);
+		public List<ProductForecastPointBean> selectPointByForecastId(ProductForecastPointBean productForecastBean);
+		public List<ProductForecastPointBean> selectPointDetailByForecastId(ProductForecastPointBean productForecastBean);
 
 	}
 	
@@ -249,6 +341,15 @@ public class ProductForecastPoint extends HttpServlet {
 		public void countProductForecastPoint(String forecast_id) {
 			dao.countByForecastIdDB(forecast_id);
 		}
+		
+		public List<ProductForecastPointBean> selectPointByForecastId(ProductForecastPointBean paramBean) {
+			return dao.selectPointByForecastId(paramBean);
+		}
+		
+		public List<ProductForecastPointBean> selectPointDetailByForecastId(ProductForecastPointBean paramBean) {
+			return dao.selectPointDetailByForecastId(paramBean);
+		}
+		
 	}
 
 	
@@ -264,12 +365,15 @@ public class ProductForecastPoint extends HttpServlet {
 		private static final String sp_update_product_forecast_point = "call sp_update_product_forecast_point(?,?,?,?,?)";
 		private static final String sp_count_product_forecast_point = "call sp_count_product_forecast_point(?)";
 		private static final String sp_select_product_forecast_by_forecast_id = "call sp_select_product_forecast_by_forecast_id(?)";
+		private static final String sp_get_point_by_forecast_id = "call sp_get_point_by_forecast_id(?)";
+		private static final String sp_get_point_detail_by_forecast_id = "call sp_get_point_detail_by_forecast_id(?,?)";
 		
 		@Override
 		public void insertDB(ProductForecastPointBean productForecastPointBean) {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			try {
+				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				
 				CallableStatement cs = null;
@@ -288,6 +392,8 @@ public class ProductForecastPoint extends HttpServlet {
 			} catch (SQLException se) {
 				// Handle any SQL errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
 			} finally {
 				// Clean up JDBC resources
 				if (pstmt != null) {
@@ -312,6 +418,7 @@ public class ProductForecastPoint extends HttpServlet {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			try {
+				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				
 				CallableStatement cs = null;
@@ -328,6 +435,8 @@ public class ProductForecastPoint extends HttpServlet {
 			} catch (SQLException se) {
 				// Handle any SQL errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
 			} finally {
 				// Clean up JDBC resources
 				if (pstmt != null) {
@@ -352,6 +461,7 @@ public class ProductForecastPoint extends HttpServlet {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			try {
+				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				
 				CallableStatement cs = null;
@@ -414,6 +524,8 @@ public class ProductForecastPoint extends HttpServlet {
 				throw new RuntimeException("A database error occured. " + se.getMessage());
 			} catch (UnsupportedEncodingException e1) {
 				throw new RuntimeException("A database error occured. " + e1.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
 			} finally {
 				// Clean up JDBC resources
 				if (pstmt != null) {
@@ -431,6 +543,125 @@ public class ProductForecastPoint extends HttpServlet {
 					}
 				}
 			}
+		}
+		
+		@Override 
+		public List<ProductForecastPointBean> selectPointByForecastId(ProductForecastPointBean productForecastBean){
+			List<ProductForecastPointBean> list = new ArrayList<ProductForecastPointBean>();
+			ProductForecastPointBean pointBean = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				
+				CallableStatement cs = null;
+				cs = con.prepareCall(sp_get_point_by_forecast_id);
+
+				cs.setString(1, productForecastBean.getForecast_id());
+				
+				rs = cs.executeQuery();
+				while (rs.next()) {
+					pointBean = new ProductForecastPointBean();
+					
+					pointBean.setForecast_id(rs.getString("forecast_id") == null?"":rs.getString("forecast_id"));
+					pointBean.setV_user_name(rs.getString("user_name") == null?"":rs.getString("user_name"));
+					pointBean.setUser_id(rs.getString("user_id") == null?"":rs.getString("user_id"));
+					pointBean.setWeight(rs.getInt("weight"));
+					
+					list.add(pointBean); // Store the row in the list
+				}
+			} catch (SQLException se) {
+				// Handle any SQL errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}
+		
+		@Override 
+		public List<ProductForecastPointBean> selectPointDetailByForecastId(ProductForecastPointBean productForecastBean){
+			List<ProductForecastPointBean> list = new ArrayList<ProductForecastPointBean>();
+			ProductForecastPointBean pointBean = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				
+				CallableStatement cs = null;
+				cs = con.prepareCall(sp_get_point_detail_by_forecast_id);
+
+				cs.setString(1, productForecastBean.getForecast_id());
+				cs.setString(2, productForecastBean.getUser_id());
+				
+				Integer cnt = 0;
+				rs = cs.executeQuery();
+				while (rs.next()) {
+					pointBean = new ProductForecastPointBean();
+					
+					pointBean.setForecast_id(rs.getString("forecast_id") == null?"":rs.getString("forecast_id"));
+					pointBean.setWeight(rs.getInt("weight"));
+					pointBean.setScore_seq(rs.getString("score_seq") == null?"":rs.getString("score_seq"));
+					pointBean.setFunction_point(rs.getString("function_point") == null?"":rs.getString("function_point"));
+					pointBean.setNfunction_point(rs.getString("nfunction_point") == null?"":rs.getString("nfunction_point"));
+					pointBean.setService_point(rs.getString("service_point") == null?"":rs.getString("service_point"));
+					pointBean.setV_user_name(rs.getString("user_name") == null?"":rs.getString("user_name"));
+					pointBean.setV_function_no(rs.getString("function_no") == null?"":rs.getString("function_no"));
+					pointBean.setV_nfunction_name(rs.getString("nfunction_name") == null?"":rs.getString("nfunction_name"));
+					pointBean.setV_nfunction_no(rs.getString("nfunction_no") == null?"":rs.getString("nfunction_no"));
+					pointBean.setV_function_name(rs.getString("function_name") == null?"":rs.getString("function_name"));
+					pointBean.setV_service_no(rs.getString("service_no") == null?"":rs.getString("service_no"));
+					pointBean.setV_service_name(rs.getString("service_name") == null?"":rs.getString("service_name"));
+					
+					list.add(pointBean); // Store the row in the list
+				}
+			} catch (SQLException se) {
+				// Handle any SQL errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
 		}
 	}
 

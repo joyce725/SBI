@@ -20,9 +20,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.client.HttpClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -52,7 +52,7 @@ public class ProductForecast extends HttpServlet {
 		if ("insert".equals(action)) {
 			try {
 				
-				/*************************** 1.��隢�� **************************************/
+				/*************************** 1.接收請求參數 **************************************/
 				String group_id = request.getParameter("group_id");
 				String product_name = request.getParameter("product_name");
 				Float cost = Float.valueOf( request.getParameter("cost") );
@@ -91,15 +91,15 @@ public class ProductForecast extends HttpServlet {
 				logger.debug("isfinish:" + isfinish);
 				logger.debug("ref_prod:" + ref_prod);
 				
-				/*************************** 2.���憓��� ***************************************/
+				/*************************** 2.開始新增資料 ***************************************/
 				productForecastService = new ProductForecastService();
 				
 				ProductForecastBean productForecastBean = new ProductForecastBean();
 				
 				productForecastBean = productForecastService.addProductForecast(group_id, product_name, cost, function_no, function_name, function_score, nfunction_no, nfunction_name, nfunction_score, service_no, service_name, service_score, score_time, result, isfinish, ref_prod);
 
-				/*************************** 3.�憓���,皞��漱(Send the Success view) ***********/
-				productForecastBean.setMessage("�憓���");
+				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
+				productForecastBean.setMessage("新增成功");
 				
 				List<ProductForecastBean> list = new ArrayList<ProductForecastBean>();
 				Gson gson = new Gson();
@@ -107,59 +107,59 @@ public class ProductForecast extends HttpServlet {
 				String jsonStrList = gson.toJson(list);
 				response.getWriter().write(jsonStrList);
 				
-				/*************************** �隞���隤方��� **********************************/
+				/*************************** 其他可能的錯誤處理 **********************************/
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else if ("selectByGroupId".equals(action)) {
 			try {
 				
-				/*************************** 1.��隢�� **************************************/
+				/*************************** 1.接收請求參數 **************************************/
 				String group_id = request.getParameter("group_id");
 				
 				logger.debug("action: selectByGroupId");
 				logger.debug("group_id:" + group_id);
 				
-				/*************************** 2.���憓��� ***************************************/
+				/*************************** 2.開始新增資料 ***************************************/
 				productForecastService = new ProductForecastService();
 				
 				List<ProductForecastBean> productForecastBeanList = new ArrayList<ProductForecastBean>();
 				
 				productForecastBeanList = productForecastService.selectByGroupId(group_id);
 
-				/*************************** 3.�憓���,皞��漱(Send the Success view) ***********/
+				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(productForecastBeanList);
 				response.getWriter().write(jsonStrList);
 				logger.debug("productForecastBeanList:" + jsonStrList);
 				
-				/*************************** �隞���隤方��� **********************************/
+				/*************************** 其他可能的錯誤處理 **********************************/
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else if ("selectByForecastId".equals(action)) {
 			try {
 				
-				/*************************** 1.��隢�� **************************************/
+				/*************************** 1.接收請求參數 **************************************/
 				String forecast_id = request.getParameter("forecast_id");
 				
 				logger.debug("action: selectByForecastId");
 				logger.debug("forecast_id:" + forecast_id);
 				
-				/*************************** 2.���憓��� ***************************************/
+				/*************************** 2.開始新增資料 ***************************************/
 				productForecastService = new ProductForecastService();
 				
 				List<ProductForecastBean> productForecastBeanList = new ArrayList<ProductForecastBean>();
 				
 				productForecastBeanList = productForecastService.selectByForecastId(forecast_id);
 
-				/*************************** 3.�憓���,皞��漱(Send the Success view) ***********/
+				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(productForecastBeanList);
 				response.getWriter().write(jsonStrList);
 				logger.debug("productForecastBeanList:" + jsonStrList);
 				
-				/*************************** �隞���隤方��� **********************************/
+				/*************************** 其他可能的錯誤處理 **********************************/
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -204,7 +204,7 @@ public class ProductForecast extends HttpServlet {
 		}
 	}
 	
-	/************************* 撠���澈銵冽�撘� **************************************/
+	/************************* 對應資料庫表格格式 **************************************/
 	@SuppressWarnings("serial")
 	public class ProductForecastBean implements java.io.Serializable {
 
@@ -338,7 +338,7 @@ public class ProductForecast extends HttpServlet {
 		
 	}
 
-	/*************************** �摰��瘜� ****************************************/
+	/*************************** 制定規章方法 ****************************************/
 	interface productForecast_interface {
 		public String insertDB(ProductForecastBean productForecastBean);
 
@@ -352,7 +352,7 @@ public class ProductForecast extends HttpServlet {
 		
 	}
 
-	/*************************** ���平���摩 ****************************************/
+	/*************************** 處理業務邏輯 ****************************************/
 	public class ProductForecastService {
 		private productForecast_interface dao;
 
@@ -402,14 +402,14 @@ public class ProductForecast extends HttpServlet {
 				
 	}
 	
-	/*************************** �����澈 ****************************************/
+	/*************************** 操作資料庫 ****************************************/
 	class ProductForecastDAO implements productForecast_interface {
 		private final String dbURL = getServletConfig().getServletContext().getInitParameter("dbURL")
 				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 
-		// ��蝙����tored procedure
+		// 會使用到的Stored procedure
 		private static final String sp_insert_product_forecast = "call sp_insert_product_forecast(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		private static final String sp_select_product_forecast_by_group_id = "call sp_select_product_forecast_by_group_id(?)";
 		private static final String sp_select_product_forecast_by_forecast_id = "call sp_select_product_forecast_by_forecast_id(?)";
@@ -419,6 +419,7 @@ public class ProductForecast extends HttpServlet {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			try {
+				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				
 				CallableStatement cs = null;
@@ -450,6 +451,8 @@ public class ProductForecast extends HttpServlet {
 			} catch (SQLException se) {
 				// Handle any SQL errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("ClassNotFoundException: " + cnfe.getMessage());
 			} finally {
 				// Clean up JDBC resources
 				if (pstmt != null) {
@@ -490,6 +493,7 @@ public class ProductForecast extends HttpServlet {
 			ResultSet rs = null;
 
 			try {
+				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				pstmt = con.prepareStatement(sp_select_product_forecast_by_group_id);
 				pstmt.setString(1, group_id);
@@ -522,7 +526,8 @@ public class ProductForecast extends HttpServlet {
 			} catch (SQLException se) {
 				// Handle any driver errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
-				
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("ClassNotFoundException: " + cnfe.getMessage());
 			} finally {
 				// Clean up JDBC resources
 				if (rs != null) {
@@ -560,6 +565,7 @@ public class ProductForecast extends HttpServlet {
 			ResultSet rs = null;
 
 			try {
+				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				pstmt = con.prepareStatement(sp_select_product_forecast_by_forecast_id);
 				pstmt.setString(1, forecast_id);
@@ -592,7 +598,8 @@ public class ProductForecast extends HttpServlet {
 			} catch (SQLException se) {
 				// Handle any driver errors
 				throw new RuntimeException("A database error occured. " + se.getMessage());
-				
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("ClassNotFoundException: " + cnfe.getMessage());
 			} finally {
 				// Clean up JDBC resources
 				if (rs != null) {

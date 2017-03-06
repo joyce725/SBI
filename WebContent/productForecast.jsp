@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 <%
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
@@ -47,8 +48,6 @@
 		    $("#div1").show();
 			$("#div3").hide();
 			$("#divTest").hide();
-			
-// 			$("#addRow").click();
 		});
 		
 		$("[id^=back2List-a]").click(function() {
@@ -69,7 +68,6 @@
 			$("#div3").hide();
 			$("#divTest").hide();
 		});
-		
 		
 		$("#next1").click(function(event) {
 			event.preventDefault();
@@ -387,8 +385,8 @@
 					'</td><td>成本比例(%)</td><td><input type="text" id="text4-r' + rowCount + '" name="text4-r' + rowCount + '"></td></tr>');
 						
 			$("[id^=cmb-1-r" + rowCount + "]")
-				.append($('<option></option>').val("func").html("功能性項目"))
-				.append($('<option></option>').val("nfunc").html("非功能性項目"))
+				.append($('<option></option>').val("func").html("功能或產品性項目"))
+				.append($('<option></option>').val("nfunc").html("非功能或產品性項目"))
 				.append($('<option></option>').val("service").html("服務性項目"));
 			
 			$( "[id^=text4-r" + rowCount + "]" ).blur(function() {
@@ -453,21 +451,7 @@
 			
 			//========== validate rules (dynamic) ==========
 			$( ".customDiv1" ).validate();
-			
-// 			$("[name^=text3-r" + rowCount + "]").rules("add", {
-// 			  	required: true,
-// 			    messages: {
-// 			        required: "必填"
-// 		      	}
-// 			});
-			
-// 			$("[name^=text4-r" + rowCount + "]").rules("add", {
-// 			  	required: true,
-// 			    messages: {
-// 			        required: "必填"
-// 		      	}
-// 			});
-			
+
 			$("[id^=text4-r" + rowCount + "]").rules("add", {
 			  	required: true,
 			    messages: {
@@ -490,6 +474,10 @@
 			for (var i = 0; i < user_count; i++) {
 				user = $("#user-" + i).val();
 				weight = $("input[name^=rdoweight-" + i + "]:checked").val();
+				
+				if (weight === "0") {
+					continue;
+				}
 				
 				$.ajax({
 					type : "POST",
@@ -541,12 +529,14 @@
 			
 			if ('<%=role%>' == '0') {
 				$('#create').hide();
+				$('#btn_main_view').hide();
 				$('#create2').show();
 				h_str_checkbox = '<th><label>選擇</label></th>';
 			} else if ('<%=role%>' == '1') {
 				$('#create').show();
+				$('#btn_main_view').show();
 				$('#create2').hide();
-				h_str_checkbox = '<label></label>';
+				h_str_checkbox = '<th><label>選擇</label></th>';
 			}
 			
 			$("#main").html(
@@ -573,7 +563,7 @@
 						if ('<%=role%>' == '0') {
 							str_checkbox = '<td><input type="checkbox" class="maincheck" id="checkbox-r' + i + '"/><label for="checkbox-r' + i + '"><span class="form-label">選取</span></label></td>';
 						} else if ('<%=role%>' == '1') {
-							str_checkbox = '';
+							str_checkbox = '<td><input type="checkbox" class="maincheck" id="checkbox-r' + i + '"/><label for="checkbox-r' + i + '"><span class="form-label"></span></label></td>';
 						}
 						
 						if (json_obj[i].isfinish === 1) {
@@ -605,7 +595,7 @@
 						var $this = $(this);
 						var row = $this.closest("tr");
 						var column_num = parseInt( $(this).index() ) + 1;
-						var test_column_index = "${sessionScope.role}" == "1"? 3:4;
+						var test_column_index = "${sessionScope.role}" == "1"? 4:4;
 						
 						if ( column_num == test_column_index && row.find('u').val() == '' ) {
 							var forecast_id = row.find('.forecast_id_main').html();
@@ -661,10 +651,8 @@
 									
 								}
 							});
-				            
 				        }
 					});
-					
 				}
 			});
 		}
@@ -733,12 +721,6 @@
 			}
 		});
 		
-		
-		////////////////////////////
-		$("#my").click(function(e) {
-			alert("hello");
-		});
-		
 		$("#logout").click(function(e) {
 			$.ajax({
 				type : "POST",
@@ -752,6 +734,26 @@
 			});
 		});
 		
+		$("#btn_main_view").click(function(e){
+			e.preventDefault();
+			
+			var chk = false;
+			
+			$('#main').find('tr').each(function () {
+				var row = $(this);
+
+				if ( row.find('input[type="checkbox"]').is(':checked') ) {
+					var forecast_id = row.find('.forecast_id_main').html();
+					window.open('productForecastUserDetail.jsp?forecast_id=' + forecast_id, '', 'width=700,height=500,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no,left=250,top=150,screenX=0,screenY=0');
+					chk = true;
+				}
+			});
+			
+			if (!chk) {
+				warningMsg("提醒", "請選擇一筆資料");
+			}
+		});
+		
 		$("#back").click(function(e) {
 			top.location.href = "main.jsp";
 		});
@@ -760,7 +762,8 @@
 </script>
 </head>
 <body>
-
+	<div id="msgAlert"></div>
+	
 	<div class="page-wrapper" >
 	
 		<div class="header">
@@ -793,6 +796,7 @@
 						
 						<div class="btn-row">
 							<button id="create" class="btn btn-exec btn-wide" hidden="true">建立量表</button>
+							<button id="btn_main_view" class="btn btn-exec btn-wide" >查看結果</button>
 							<button id="create2" class="btn btn-exec btn-wide" hidden="true">開始評分</button>
 						</div>
 					</div>
@@ -869,7 +873,7 @@
 						
 						<table id="function-test" class="result-table">
 							<div class="form-row">
-								<h2>功能性項目</h2>
+								<h2>功能或產品性項目</h2>
 							</div>
 							<tr>
 								<th>名稱</th>
@@ -878,7 +882,7 @@
 						</table>
 			
 						<div class="form-row">
-							<h2>非功能性項目</h2>
+							<h2>非功能或產品性項目</h2>
 						</div>
 			
 						<table id="nfunction-test" class="result-table">
@@ -903,8 +907,6 @@
 							<button id="confirmTest" class="btn btn-exec btn-wide">完成</button>
 						</div>
 					</div>
-					
-					
 				</form>
 			</div>
 		</div>
