@@ -20,6 +20,8 @@
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
 	Integer role = (Integer) session.getAttribute("role");
+	String menu = (String) request.getSession().getAttribute("menu"); 
+	String privilege = (String) request.getSession().getAttribute("privilege"); 
 %>
 <title>決策管理</title>
 <style>
@@ -386,11 +388,6 @@
 				return;
 			}
 			
-			console.log($('#country').val());
-			console.log($('#city').val());
-			console.log($('#bcircle_id_list').html());
-			console.log($('#bcircle_list').html());
-			
 			var temp = "", temp2 = "", temp3 = "";
 			var eval1_text_list = "", eval1_select_list = "";
 			var eval2_text_list = "";
@@ -409,10 +406,6 @@
 			eval1_select_list = temp2.substring(0, temp2.length - 1);
 			eval2_text_list = temp3.substring(0, temp3.length - 1);
 			
-			console.log("eval1_text_list:" + eval1_text_list);
-			console.log("eval1_select_list:" + eval1_select_list);
-			console.log("eval2_text_list:" + eval2_text_list);
-			
 			temp = "";
 			for (var i = 0; i < pref_count; i++) {
 				temp += $('input[name="pref_' + i + '"]:checked').val() + ',';
@@ -428,9 +421,6 @@
 			}
 			eval_3_text_list = temp.substring(0, temp.length - 1);
 			rdo_user_list = temp2.substring(0, temp.length - 1);
-			
-			console.log("eval_3_text_list:" + eval_3_text_list);
-			console.log("rdo_user_list:" + rdo_user_list);
 			
 			$.ajax({
 				type : "POST",
@@ -658,11 +648,6 @@
 				weight = $("input[name^=eval_3_text_" + i + "]").val();
 				auth = $("input[name^=user_" + i + "]:checked").val();
 				
-				console.log('evaluate:' + i);
-				console.log('user id:' + user);
-				console.log('weight:' + weight);
-				console.log('auth:' + auth);
-				
 				$.ajax({
 					type : "POST",
 					url : "evaluate.do",
@@ -720,6 +705,8 @@
 </script>
 </head>
 <body>
+<input type="hidden" id="glb_menu" value='<%= menu %>' />
+<input type="hidden" id="glb_privilege" value="<%= privilege %>" />
 
 	<div class="page-wrapper" >
 	
@@ -925,6 +912,7 @@
 		</div>
 		<!-- content-wrap -->
 		
+		<script src="js/sbi/menu.js"></script>
 		<footer class="footer">
 			財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
 		</footer>

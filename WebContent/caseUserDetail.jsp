@@ -99,7 +99,6 @@
 				},
 				success : function(result) {
 					var json_obj = $.parseJSON(result);
-					console.log(json_obj);
 					
 					$.each(json_obj, function(i, item) {
 
@@ -149,7 +148,7 @@
 						var city_id = row.find('[id^=city_id_]').val();
 						
 						var decision_proposal = row.find('[id^=decision_proposal_]').val();
-						console.log(decision_proposal);
+						
 						if (decision_proposal != undefined) {
 							$('#div_main .btn-row').prepend('<a href="' + decision_proposal + '" class="btn btn-exec btn-wide" id="detailspdfDoc" target="_blank">' + 
 								'決策建議' +
@@ -170,9 +169,6 @@
 		}
 		
 		function User() {
-			
-			console.log('user');
-			
 			$("#div_detail > form > div > div:first").find('h4').remove();
 			
 			$("#tbl_user").find('tbody').remove();
@@ -196,7 +192,6 @@
 				},
 				success : function(result) {
 					var json_obj = $.parseJSON(result);
-					console.log(json_obj);
 					
 					user_count = json_obj.length;
 
@@ -226,9 +221,6 @@
 		}
 		
 		function showEvaluate(eval_id, user_id) {
-			console.log("eval_id:" + eval_id);
-			console.log("user_id:" + user_id);
-			
 			$("#div_detail > form > div > div:first").find('div').remove();
 			$("#div_detail > form > div > div:first").find('h4').remove();
 			
@@ -242,8 +234,6 @@
 				},
 				success : function(result) {
 					var json_obj = $.parseJSON(result);
-					console.log('detail');
-					console.log(json_obj);
 					
 					var level1_count = 0;
 					var level2_count_arr = [];
@@ -266,7 +256,7 @@
 						for (var j = 0; j < temp.length; j++){
 							level2_point_arr.push(temp[j].split(','));
 						}
-						console.log(level2_point_arr);
+						
 						user_name = item.v_user_name;
 					});
 					
@@ -299,7 +289,6 @@
 					
 					for (var i = 1; i <= level1_count; i++) {
 						for (var j = 0; j < level2_count_arr[i-1]; j++) {
-							console.log(level2_point_arr[i-1][j]);
 							var temp = level2_point_arr[i-1][j];
 							$('#rdo_eval_' + i + '_' + j + '_' + temp).prop('checked', true);
 						}

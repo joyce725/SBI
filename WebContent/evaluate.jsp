@@ -20,6 +20,8 @@
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
 	Integer role = (Integer) session.getAttribute("role");
+	String menu = (String) request.getSession().getAttribute("menu"); 
+	String privilege = (String) request.getSession().getAttribute("privilege"); 
 %>
 <title>決策評估</title>
 
@@ -468,6 +470,8 @@
 </script>
 </head>
 <body>
+<input type="hidden" id="glb_menu" value='<%= menu %>' />
+<input type="hidden" id="glb_privilege" value="<%= privilege %>" />
 
 	<div class="page-wrapper" >
 	
@@ -562,6 +566,7 @@
 		</div>
 		<!-- content-wrap -->
 		
+		<script src="js/sbi/menu.js"></script>
 		<footer class="footer">
 			財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
 		</footer>

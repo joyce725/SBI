@@ -18,9 +18,13 @@
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <%
 	String user_name = (String) session.getAttribute("user_name");
+	String menu = (String) request.getSession().getAttribute("menu"); 
+	String privilege = (String) request.getSession().getAttribute("privilege"); 
 %>
 </head>
 <body>
+<input type="hidden" id="glb_menu" value='<%= menu %>' />
+<input type="hidden" id="glb_privilege" value="<%= privilege %>" />
 	<script>
 
 	$(function() {
@@ -94,6 +98,7 @@
 
 		<div class="content-wrap" style="display: none"></div>
 
+		<script src="js/sbi/menu.js"></script>
 		<footer class="footer">
 			財團法人商業發展研究院 <span>電話(02)7707-4800 | 傳真(02)7713-3366</span>
 		</footer>

@@ -1,5 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<% 
+String menu = (String) request.getSession().getAttribute("menu"); 
+String privilege = (String) request.getSession().getAttribute("privilege"); 
+%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -72,6 +76,8 @@
 	});
 	
 </script>
+<input type="hidden" id="glb_menu" value='<%= menu %>' />
+<input type="hidden" id="glb_privilege" value="<%= privilege %>" />
 
 	<div class="page-wrapper" >
 	
@@ -89,6 +95,7 @@
 		<div class="content-wrap" style="display:none">
 		</div>
 		
+		<script src="js/sbi/menu.js"></script>
 		<footer class="footer">
 			財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
 		</footer>
