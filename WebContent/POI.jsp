@@ -72,7 +72,7 @@ var item_marker = function (speed, time, marker, circle) {
 		$.ajax({
 			type : "POST",
 			url : "realMap.do",
-			async : false,
+			//async : false,
 			data : {
 				action : "select_menu", type : "POI"
 			},
@@ -125,13 +125,17 @@ var item_marker = function (speed, time, marker, circle) {
 						if($(node.span.childNodes[1]).hasClass('loading')) {
 							return false; 
 						}
-					}
+					},init: function(event, data, flag) {
+						$("#panel").fadeIn();
+				    }
+
 				}).on("mouseover", ".fancytree-title", function(event){
 				    var pdf_layer=["19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","35","42","44","46","48"];
 				    var node = $.ui.fancytree.getNode(event);
 				    if(pdf_layer.indexOf(node.key)!=-1){
-				    	$('#pdf_layer').children().html('<div onclick=\'window.open(\"http://61.218.8.51/SBI/pdf/'+$("#ftal_"+node.key).text().replace('商圈','')+'.pdf\", \"_blank\");\'> '+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
-				    	//$('#pdf_layer').children().html('<div onclick=\'window.open(\"./refer_data/pdf/'+$("#ftal_"+node.key).text().replace('商圈','')+'.pdf\", \"_blank\");\'> '+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
+				    	//$('#pdf_layer').children().html('<div onclick=\'window.open(\"http://61.218.8.51/SBI/pdf/'+$("#ftal_"+node.key).text().replace('商圈','')+'.pdf\", \"_blank\");\'> '+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
+				    	
+				    	$('#pdf_layer').children().html('<div onclick=\'window.open(\"./uploaddoc.do?action=download_ebook&ebook_name='+$("#ftal_"+node.key).text().replace('商圈','')+'\", \"_blank\");\'> '+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
 				    	$('#pdf_layer').css({
 				    		"display": "inline",
 				    		"top":($("#ftal_"+node.key).offset().top-120),
@@ -289,7 +293,7 @@ var item_marker = function (speed, time, marker, circle) {
 
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
-	<div id='panel' 
+	<div id='panel' style="display:none;"
 	onmouseover="$('#panel').css('left','150px');clearTimeout($('#panel').val());" 
 	onmouseout="$('#panel').val(setTimeout(function () { $('#panel').css('left','0px'); }, 800));">
 		<div id='tree' >

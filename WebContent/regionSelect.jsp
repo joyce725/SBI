@@ -56,38 +56,33 @@
 
 
 
-	.bentable {
-		margin: 0px 20px 0px 20px;
-		width:400px;
+/* 	.bentable { */
+/* 		margin: 0px 20px 0px 20px; */
+/* 		width:400px; */
+/* 	} */
+	.bentable2 {
+		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
 	}
-	.bentable tr{
-		padding:5px;
-		height: 30px;
-	}
-	.bentable td:nth-child(2n+1){
-		word-break: keep-all;
-	}
-	.bentable img:hover{
+	.bentable2 img:hover{
 		background: #d8d8d8;
 		box-shadow:1px 1px 2px #999;
 	}
 	
 	.bentable2 td:nth-child(2n+1){
 		text-align:right;
+		word-break: keep-all;
 	}
 	.bentable2 td{
 		padding-left:20px;
+		padding:3px 5px;
 	}
-	.bentable2 tr{
- 		height:50px; 
-	}
-	.bentable th{
+	.bentable2 th{
 		word-break: keep-all;
 		padding:16px 0px 2px 0px;
 	/* 	padding-bottom:4px; */
 		
 		text-align:left;
-		font-size:28px;
+		font-size:22px;
 		font-weight: bold;
 		color:#444;
 	/* 	border:2px solid #f33; */
@@ -151,12 +146,11 @@ var item_marker = function (speed, time, marker, circle) {
 
 
 	<div id='regionselect' title='區位選擇' style='display:none;'>
-		<div id='QA' style='height:460px;width:900px;margin:20px;'>
+		<div id='QA' style='height:50%;width:70%;margin:5px 10px;'>
 			<form id='QA_form'>
-				<div style='font-size:28px;'>商圈選擇評估問卷</div>
-				<br>　　您好！請輸入基本資料
-				<table class='bentable bentable2'>
-					<tr><th colspan='3'>一、基本資料：</th></tr>
+<!-- 				<div style='font-size:28px;'>商圈選擇評估問卷</div> -->
+				<table class='bentable2'>
+					<tr><th colspan='4'>一、基本資料：<span style='position:relative;top:-20px;margin-left:20px; font-size:28px;'>商圈選擇評估問卷</span></th></tr>
 					<tr>
 						<td>姓名：</td><td><input type="text" name='QA_name'></td>
 						<td>職稱：</td><td><input type="text" name='QA_propost'></td>
@@ -229,8 +223,8 @@ var item_marker = function (speed, time, marker, circle) {
 					<tr>
 						<td>預計投資金額：</td>
 						<td colspan='3'>
-							<input type="radio" name='QA_invest_amount' value='1'>＜100萬元&nbsp;<input type="radio" name='QA_invest_amount' value='2'>100-500萬元&nbsp;<input type="radio" name='QA_invest_amount' value='3'>500-1,000萬元&nbsp;<input type="radio" name='QA_invest_amount' value='4'>1,000-1,500萬元<br>
-							<input type="radio" name='QA_invest_amount' value='5'>1,500-2,000萬元&nbsp;<input type="radio" name='QA_invest_amount' value='6'>＞2,000萬元
+							<input type="radio" name='QA_invest_amount' value='1'>＜100萬元&nbsp;<input type="radio" name='QA_invest_amount' value='2'>100-500萬元&nbsp;<input type="radio" name='QA_invest_amount' value='3'>500-1,000萬元&nbsp;<br>
+							<input type="radio" name='QA_invest_amount' value='4'>1,000-1,500萬元&nbsp;<input type="radio" name='QA_invest_amount' value='5'>1,500-2,000萬元&nbsp;<input type="radio" name='QA_invest_amount' value='6'>＞2,000萬元
 						</td>
 					</tr>
 				</table>

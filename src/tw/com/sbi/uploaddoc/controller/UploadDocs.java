@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,7 +43,39 @@ public class UploadDocs extends HttpServlet {
 		GetData getdata = new GetData();
 		String action = request.getParameter("action");
 		logger.debug("action: "+action);
-		if ("download_doc".equals(action)) {
+		if ("download_ebook".equals(action)) {
+			String ori = "";
+			try {
+				ori = request.getParameter("ebook_name");
+				logger.debug("ebook_name: "+ori);
+				
+				String ebook_name = ori+".pdf";
+				String file_path = getServletConfig().getServletContext()
+									.getInitParameter("ebookpath")+"/"+ebook_name;
+				
+				response.setContentType("APPLICATION/PDF");
+				String disHeader = "inline;Filename=\"" + ori + ".pdf" + "\"";
+				response.setHeader("Content-Disposition", disHeader);
+
+				File file = new File(file_path);
+				FileInputStream fileIn = new FileInputStream(file);
+				ServletOutputStream out = response.getOutputStream();
+				byte[] outputByte = new byte[4096];
+				while (fileIn.read(outputByte, 0, 4096) != -1) {
+					out.write(outputByte, 0, 4096);
+				}
+
+				fileIn.close();
+				out.flush();
+				out.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write("<html><head><title>NOT FOUND</title><meta charset='UTF-8'></head>"
+										+"<body style='text-align:center;font-size:48px;color:red;'><br>找不到檔案:<br> '"
+										+ori+"' 的電子書</body></html>");
+			}
+		}else if("download_doc".equals(action)) {
 			String ori = "";
 			try {
 				
