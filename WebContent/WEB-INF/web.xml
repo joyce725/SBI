@@ -49,6 +49,10 @@
 <!--     <param-value>D:/data/cdriqrcode</param-value> -->
   </context-param>
   <context-param>
+    <param-name>ebookpath</param-name>
+    <param-value>/data/cdridoc</param-value>
+  </context-param>
+  <context-param>
     <param-name>pythonwebservice</param-name>
 <!--     <param-value>http://61.218.8.55:8099</param-value> -->
     <param-value>http://192.168.112.164:8070</param-value>
