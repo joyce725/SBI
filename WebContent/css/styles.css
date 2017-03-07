@@ -486,7 +486,8 @@ h1.sys-title a {
     position: relative;
 }
 .sidenav > ul > li img {
-    /*height: 42px;*/
+    height: 60px;
+    width: 60px;
     display: block;
     margin: 0 auto;
     padding: 12px 0 12px;
