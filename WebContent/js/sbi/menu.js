@@ -46,7 +46,7 @@ $(function(){
 						.attr('href', k_item.url)
 						.text( k_item.menuName );
 					
-					if (k_item.id >= 33 && k_item.id <= 52) {
+					if ((k_item.id >= 33 && k_item.id <= 52) || k_item.id == 76) {
 						a.attr("target", "_blank");
 					}
 					

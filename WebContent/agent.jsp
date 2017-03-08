@@ -1,91 +1,118 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="import.jsp" flush="true"/>
+<link rel="stylesheet" href="css/jquery.dataTables.min.css" />
 <script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <script>
 $(function(){
 	
-	var p_agent_id = ""; 
-	var p_row = "";
-	
 	var validator_insert = $("#insert-dialog-form-post").validate({
 		rules : {
-// 			f_date : {
-// 				required : true,
-// 				dateISO : true
-// 			},
-// 			amount : {
-// 				number : true
-// 			}
+			agent_name : {
+				required : true
+			}
 		}
 	});
 	var validator_update = $("#update-dialog-form-post").validate({
 		rules : {
-// 			f_date : {
-// 				required : true,
-// 				dateISO : true
-// 			},
-// 			amount : {
-// 				number : true
-// 			}
+			agent_name : {
+				required : true
+			}
 		}
 	});	
 	
-	// 查詢通路商 事件聆聽
 	$("#btn_query").click(function(e) {
-		$.ajax({
-			type : "POST",
-			url : "agent.do",
-			data : {
-				action : "search",
-				agent_name : $("#search_agent_name").val()
-			},
-			success : function(result) {
-				var json_obj = $.parseJSON(result);
-				var result_table = "";
-				
-				$.each(json_obj,function(i, item) {
-					result_table 
-						+= "<tr>"
-						+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
-						+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
-						+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-						+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
-						+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
-						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-						+ "<div class='table-function-list'>"
-						+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-						+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-						+ "</div></div></td></tr>";							
-				});
-				
-				//判斷查詢結果
-				var resultRunTime = 0;
-				$.each (json_obj, function (i) {
-					resultRunTime+=1;
-				});
-				
-				if(resultRunTime!=0){
-					$("#table_agent tbody").html(result_table);
-				}else{
-					// todo
+		
+		$("#table_agent").dataTable().fnDestroy();
+		$("#table_agent").show();
+		 
+		table = $("#table_agent").DataTable({
+			dom: 'lfrB<t>ip',
+			paging: true,
+			ordering: false,
+			info: false,
+			language: {"url": "js/dataTables_zh-tw.txt"},
+			ajax: {
+				url : "agent.do",
+				dataSrc: "",
+				type : "POST",
+				data : {
+					action : "search",
+					agent_name : $("#search_agent_name").val()
 				}
-			}
+			},
+			columnDefs: [	        					
+				{
+				   targets: -1,
+				   searchable: false,
+				   orderable: false,
+				   render: function ( data, type, row ) {
+					   var ch =
+							"<div class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"+
+							"	<div class='table-function-list' >"+
+							"		<button class='btn-update btn-in-table btn-green' title='修改' id = '" + row.agent_id + "'>" +
+									"<i class='fa fa-pencil'></i></button>"+
+							"		<button class='btn-delete btn-in-table btn-orange' title='刪除' id = '" + row.agent_id + "'>" +
+							"<i class='fa fa-trash'></i></button>"+
+							"	</div>"+
+							"</div>";
+					   
+					   return ch;
+				   }
+				}				        
+			],
+			columns: [
+				{"data": "agent_name" ,"defaultContent":""},
+				{"data": "web_site" ,"defaultContent":""},
+				{"data": "region_code" ,"defaultContent":""},
+				{"data": "contact_mail" ,"defaultContent":""},
+				{"data": "contact_phone" ,"defaultContent":""},
+				{"data": "seed" ,"defaultContent":""},
+				{"data": null ,"defaultContent":""}
+			]				      	      
 		});
 		
+		$("#table_agent").delegate(".btn-update", "click", function(e) {
+			e.preventDefault();
+			
+			var row = jQuery(this).closest('tr');
+			var data = $("#table_agent").dataTable().fnGetData(row);
+		    
+			$("#dialog-form-update input[name='agent_name']").val( data.agent_name );
+			$("#dialog-form-update input[name='web_site']").val( data.web_site );
+			$("#dialog-form-update input[name='region_code']").val( data.region_code );
+			$("#dialog-form-update input[name='contact_mail']").val( data.contact_mail );
+			$("#dialog-form-update input[name='contact_phone']").val( data.contact_phone );
+			$("#dialog-form-update input[name='seed']").val( data.seed );
+			
+			update_dialog
+				.data("agent_id", data.agent_id)
+				.dialog("open");
+		});
+		
+		$("#table_agent").delegate(".btn-delete", "click", function(e) {
+			e.preventDefault();
+			
+			var row = jQuery(this).closest('tr');
+			var data = $("#table_agent").dataTable().fnGetData(row);
+			
+			$("#delete_agent_name").html( data.agent_name );
+			
+			del_dialog
+				.data("agent_id", data.agent_id)
+				.dialog("open");
+		});
 	});
 	
-	// 新增通路商 事件聆聽
 	$("#btn_insert_agent").click(function(e) {
 		e.preventDefault();		
 		insert_dialog.dialog("open");
 	});
 	
-	// "新增通路商" Dialog相關設定
 	insert_dialog = $("#dialog-form-insert").dialog({
 		draggable : false,//防止拖曳
 		resizable : false,//防止縮放
@@ -119,32 +146,7 @@ $(function(){
 						},
 						success : function(result) {
 							var json_obj = $.parseJSON(result);
-							var result_table = "";
-							$.each(json_obj,function(i, item) {
-								result_table 
-									+= "<tr>"
-									+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
-									+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
-									+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-									+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
-									+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
-									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td></tr>";							
-							});		
-							//判斷查詢結果
-							var resultRunTime = 0;
-							$.each (json_obj, function (i) {
-								resultRunTime+=1;
-							});
-							if(resultRunTime!=0){
-								$("#table_agent tbody").html(result_table);
-							}else{
-								// todo
-							}
+							$("#btn_query").trigger('click');
 						}
 					});
 					insert_dialog.dialog("close");
@@ -165,21 +167,6 @@ $(function(){
 		}
 	});
 	
-	// 修改 事件聆聽
-	$("#table_agent").delegate(".btn-update", "click", function(e) {
-		e.preventDefault();
-		p_agent_id = $(this).val();
-		p_row = $(this).attr('name');
-		$("#dialog-form-update input[name='agent_name']").val($('#agent_name_' + p_row).html());
-		$("#dialog-form-update input[name='web_site']").val($('#web_site_' + p_row).html());
-		$("#dialog-form-update input[name='region_code']").val($('#region_code_' + p_row).html());
-		$("#dialog-form-update input[name='contact_mail']").val($('#contact_mail_' + p_row).html());
-		$("#dialog-form-update input[name='contact_phone']").val($('#contact_phone_' + p_row).html());
-		$("#dialog-form-update input[name='seed']").val($('#seed_' + p_row).html());
-		update_dialog.dialog("open");
-	});
-	
-	// "修改" Dialog相關設定
 	update_dialog = $("#dialog-form-update").dialog({
 		draggable : false,//防止拖曳
 		resizable : false,//防止縮放
@@ -198,13 +185,13 @@ $(function(){
 			id : "update",
 			text : "修改",
 			click : function() {
-// 				if ($('#update-dialog-form-post').valid()) {
+				if ($('#update-dialog-form-post').valid()) {
 					$.ajax({
 						type : "POST",
 						url : "agent.do",
 						data : {
  							action : "update",
- 							agent_id: p_agent_id,
+ 							agent_id: $(this).data("agent_id"),
  							agent_name: $("#update_agent_name").val(),
  							web_site : $("#update_web_site").val(),
  							region_code: $("#update_region_code").val(),
@@ -214,36 +201,11 @@ $(function(){
 						},
 						success : function(result) {
 							var json_obj = $.parseJSON(result);
-							var result_table = "";
-							$.each(json_obj,function(i, item) {
-								result_table 
-									+= "<tr>"
-									+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
-									+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
-									+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-									+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
-									+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
-									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td></tr>";							
-							});			
-							//判斷查詢結果
-							var resultRunTime = 0;
-							$.each (json_obj, function (i) {
-								resultRunTime+=1;
-							});
-							if(resultRunTime!=0){
-								$("#table_agent tbody").html(result_table);
-							}else{
-								// todo
-							}
+							$("#btn_query").trigger('click');
 						}
 					});
 					update_dialog.dialog("close");
-// 				}
+				}
 			}
 		}, {
 			text : "取消",
@@ -260,14 +222,6 @@ $(function(){
 		}
 	});
 	
-// 	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
-	$("#table_agent").delegate(".btn-delete", "click", function(e) {
-		e.preventDefault();
-		p_agent_id = $(this).val();
-		$("#delete_agent_name").html($(this).attr('name'));
-		del_dialog.dialog("open");
-	});
-// 	// "刪除" Dialog相關設定
 	del_dialog = $("#dialog-form-delete").dialog({
 		draggable : false,//防止拖曳
 		resizable : false,//防止縮放
@@ -291,32 +245,11 @@ $(function(){
 					url : "agent.do",
 					data : {
 						action: "delete",
-						agent_id: p_agent_id
+						agent_id: $(this).data("agent_id")
 					},
 					success : function(result) {
 						var json_obj = $.parseJSON(result);
-						var result_table = "";
-						$.each(json_obj,function(i, item) {
-							result_table 
-								+= "<tr>"
-								+ "<td id='agent_name_"+i+"'>" + item.agent_name + "</td>"
-								+ "<td id='web_site_"+i+"'>"+ item.web_site + "</td>"
-								+ "<td id='region_code_"+i+"'>"+ item.region_code + "</td>"
-								+ "<td id='contact_mail_"+i+"'>"+ item.contact_mail + "</td>"
-								+ "<td id='contact_phone_"+i+"'>"+ item.contact_phone + "</td>"
-								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-								+ "<div class='table-function-list'>"
-								+ "<button href='#' name='"+i+"' value='" + item.agent_id + "' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-								+ "<button href='#' name='" + item.agent_name + "' value='" + item.agent_id + "' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-								+ "</div></div></td></tr>";							
-						});		
-						//判斷查詢結果
-						var resultRunTime = 0;
-						$.each (json_obj, function (i) {
-							resultRunTime+=1;
-						});
-						$("#table_agent tbody").html(result_table);
+						$("#btn_query").trigger('click');
 					}
 				});
 				$(this).dialog("close");
@@ -332,7 +265,6 @@ $(function(){
 		}
 	});
 	
-	//處理 agent name 的autocomplete查詢
 	$("#search_agent_name").autocomplete({
 	     minLength: 1,
 	     source: function (request, response) {
@@ -361,13 +293,11 @@ $(function(){
 	     },
 	     change: function(e, ui) {
 	     	 if (!ui.item) {
-// 	     		 $(this).val("");
 	             $(this).attr("placeholder","請輸入查詢通路商名稱");
 	          }
 	     },
 	     response: function(e, ui) {
 	         if (ui.content.length == 0) {
-// 	             $(this).val("");
 	             $(this).attr("placeholder","請輸入查詢通路商名稱");
 	         }
 	     }           

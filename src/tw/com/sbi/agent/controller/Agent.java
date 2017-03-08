@@ -40,6 +40,7 @@ public class Agent extends HttpServlet {
 
 		String groupId = request.getSession().getAttribute("group_id").toString();
 		String action = request.getParameter("action");
+		logger.debug("Action:" + action);
 		
 		if ("selectAll".equals(action)) {
 			try {								
@@ -56,6 +57,9 @@ public class Agent extends HttpServlet {
 		} else if ("search".equals(action)) {
 			try {			
 				String agentName = request.getParameter("agent_name");
+				
+				logger.debug("agentName:" + agentName);
+				
 				agentService = new AgentService();
 				List<AgentVO> list = agentService.getAgentByAgentName(groupId, agentName);
 				
@@ -67,7 +71,6 @@ public class Agent extends HttpServlet {
 				e.printStackTrace();
 			}
 		} else if ("insert".equals(action)) {
-			logger.debug("enter agent insert method");
 			try {
 				String agentName = request.getParameter("agent_name");
 				String website = request.getParameter("web_site");
@@ -75,6 +78,13 @@ public class Agent extends HttpServlet {
 				String email = request.getParameter("contact_mail");
 				String phone = request.getParameter("contact_phone");
 				String seed = request.getParameter("seed");
+				
+				logger.debug("agentName:" + agentName);
+				logger.debug("website:" + website);
+				logger.debug("regionCode:" + regionCode);
+				logger.debug("email:" + email);
+				logger.debug("phone:" + phone);
+				logger.debug("seed:" + seed);
 								
 				agentService = new AgentService();
 				List<AgentVO> list = agentService.addAgent(groupId, agentName, website, regionCode, email, phone, seed);
@@ -87,7 +97,6 @@ public class Agent extends HttpServlet {
 				e.printStackTrace();
 			}
 		} else if ("update".equals(action)) {
-			logger.debug("enter agent update method");
 			try {				
 				String agentId = request.getParameter("agent_id");
 				String agentName = request.getParameter("agent_name");
@@ -96,6 +105,14 @@ public class Agent extends HttpServlet {
 				String email = request.getParameter("contact_mail");
 				String phone = request.getParameter("contact_phone");
 				String seed = request.getParameter("seed");
+				
+				logger.debug("agentId:" + agentId);
+				logger.debug("agentName:" + agentName);
+				logger.debug("website:" + website);
+				logger.debug("regionCode:" + regionCode);
+				logger.debug("email:" + email);
+				logger.debug("phone:" + phone);
+				logger.debug("seed:" + seed);
 				
 				agentService = new AgentService();
 				
@@ -112,6 +129,8 @@ public class Agent extends HttpServlet {
 			try {
 				String agentId = request.getParameter("agent_id");
 				
+				logger.debug("agentId:" + agentId);
+				
 				agentService = new AgentService();
 				
 				List<AgentVO> list = agentService.deleteAgent(groupId, agentId);
@@ -126,6 +145,8 @@ public class Agent extends HttpServlet {
 		} else if ("autocomplete_name".equals(action)) {
 			try {
 				String term = request.getParameter("term");
+				
+				logger.debug("term:" + term);
 				
 				agentService = new AgentService();
 				List<AgentVO> list = agentService.getAgentByAgentName(groupId, term);
