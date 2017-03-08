@@ -19,6 +19,15 @@ $(function(){
 				.attr("src", item.photoPath)
 				.attr("alt", "");
 			
+			if (item.id == 1) {
+				var a = $('<a>')
+					.attr('href', item.url)
+					.attr("target", "_blank")
+					.append( img );
+				
+				img = a;
+			}
+			
 			var ul = $("<ul></ul>");
 			var li = $("<li></li>")
 				.attr("menu_id", item.id)
