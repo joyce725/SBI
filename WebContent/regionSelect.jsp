@@ -6,7 +6,6 @@
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
-<!--  css for d3js -->
 <style>
 	.topnav {
 		z-index: 2;
@@ -15,8 +14,6 @@
 		top: 0px;
 	}
 	.page-wrapper {
-	/*     background: #194A6B; */
-/* 	    background-color: #EEF3F9; */
 	}
 	.content-wrap{
 	    background: #fff;
@@ -41,11 +38,8 @@
 	}
 	#map{
 		height: 100%;
-/* 		width: 1000px; */
  	}
     #map > div {
-/*      	height: 90% !important;  */
- 	/*	width:80% !important; */
     }
 	input[type=checkbox] {
 	    position: static;
@@ -54,12 +48,6 @@
 	    position: static;
 	}
 
-
-
-/* 	.bentable { */
-/* 		margin: 0px 20px 0px 20px; */
-/* 		width:400px; */
-/* 	} */
 	.bentable2 {
 		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
 	}
@@ -67,25 +55,21 @@
 		background: #d8d8d8;
 		box-shadow:1px 1px 2px #999;
 	}
-	
 	.bentable2 td:nth-child(2n+1){
-		text-align:right;
+		text-align:left;
 		word-break: keep-all;
 	}
 	.bentable2 td{
-		padding-left:20px;
+		padding-left:5px;
 		padding:3px 5px;
 	}
 	.bentable2 th{
 		word-break: keep-all;
 		padding:16px 0px 2px 0px;
-	/* 	padding-bottom:4px; */
-		
 		text-align:left;
 		font-size:22px;
 		font-weight: bold;
 		color:#444;
-	/* 	border:2px solid #f33; */
 	}
 </style>
 	
@@ -95,50 +79,34 @@ h2.ui-list-title {
 	color: #307CB0;
 }
 </style>	
-<!-- /**************************************  以下管理者JS區塊    *********************************************/		-->
 <script>
-// var businessdistrict = {
-// 		BD_1: {n:1,name: "北車商圈",center: {lat: 25.045982, lng: 121.514999}},BD_2: {n:2,name: "新板特區商圈",center: {lat: 25.013372, lng: 121.465019}},BD_3: {n:3,name: "信義商圈",center: {lat: 25.035910, lng: 121.565300}},BD_4: {n:4,name: "西門商圈",center: {lat: 25.044571, lng: 121.506409}},BD_5: {n:5,name: "公館商圈",center: {lat: 25.014906, lng: 121.533882}},BD_6: {n:6,name: "忠孝商圈",center: {lat: 25.041836, lng: 121.545212}},BD_7: {n:7,name: "南西商圈",center: {lat: 25.056343, lng: 121.524147}},BD_8: {n:8,name: "天母商圈",center: {lat: 25.112495, lng: 121.531334}},BD_9: {n:9,name: "士林商圈",center: {lat: 25.088177, lng: 121.525116}},BD_10: {n:10,name: "淡水商圈",center: {lat: 25.169636, lng: 121.441689}},BD_11: {n:11,name: "府中商圈",center: {lat: 25.008665, lng: 121.460594}},BD_12: {n:12,name: "三和夜市商圈",center: {lat: 25.065723, lng: 121.500481}},BD_13: {n:13,name: "頂溪商圈",center: {lat: 25.012350, lng: 121.517319}},BD_14: {n:14,name: "大園竹圍漁港魅力商圈",center: {lat: 25.015139, lng: 121.298866}},BD_15: {n:15,name: "中壢火車站前商圈",center: {lat: 24.954807, lng: 121.223114}},BD_16: {n:16,name: "龍元宮商圈",center: {lat: 24.865213, lng: 121.213867}},BD_17: {n:17,name: "復興區角板山商圈",center: {lat: 24.822550, lng: 121.353409}},BD_18: {n:18,name: "中壢觀光夜市",center: {lat: 24.960838, lng: 121.215279}},BD_19: {n:19,name: "中原夜市商圈",center: {lat: 24.955498, lng: 121.240547}},BD_20: {n:20,name: "桃園區火車站前商圈",center: {lat: 24.992674, lng: 121.312767}},BD_21: {n:21,name: "桃園觀光夜市",center: {lat: 25.001781, lng: 121.307854}},BD_22: {n:22,name: "中壢區六和商圈",center: {lat: 24.962227, lng: 121.223885}},BD_23: {n:23,name: "桃園中正藝文特區商圈",center: {lat: 25.017681, lng: 121.297813}},BD_24: {n:24,name: "大溪老街商圈",center: {lat: 24.884075, lng: 121.287758}},BD_25: {n:25,name: "逢甲商圈",center: {lat: 24.177917, lng: 120.645721}},BD_26: {n:26,name: "一中商圈",center: {lat: 24.148779, lng: 120.685211}},BD_27: {n:27,name: "精明一街",center: {lat: 24.156441, lng: 120.655380}},BD_28: {n:28,name: "美術園道商圈",center: {lat: 24.139286, lng: 120.663506}},BD_29: {n:29,name: "自由路商圈",center: {lat: 24.142656, lng: 120.684937}},BD_30: {n:30,name: "市政商圈",center: {lat: 24.161242, lng: 120.644402}},BD_31: {n:31,name: "東海商圈",center: {lat: 24.182249, lng: 120.591202}},BD_32: {n:32,name: "成大商圈",center: {lat: 22.994476, lng: 120.218056}},BD_33: {n:33,name: "海安商圈",center: {lat: 22.992544, lng: 120.197235}},BD_34: {n:34,name: "中正銀座商圈",center: {lat: 22.992867, lng: 120.197701}},BD_35: {n:35,name: "國華友愛新商圈",center: {lat: 22.992512, lng: 120.197197}},BD_36: {n:36,name: "孔廟形象商圈",center: {lat: 22.990108, lng: 120.205772}},BD_37: {n:37,name: "新化商圈",center: {lat: 23.035398, lng: 120.308151}},BD_38: {n:38,name: "安平商圈",center: {lat: 23.000124, lng: 120.163048}},BD_39: {n:39,name: "新營商圈",center: {lat: 23.304497, lng: 120.316727}},BD_40: {n:40,name: "關子嶺商圈",center: {lat: 23.337807, lng: 120.505386}},BD_41: {n:41,name: "東山商圈",center: {lat: 23.290840, lng: 120.500504}},BD_42: {n:42,name: "善化商圈",center: {lat: 23.128122, lng: 120.297371}},BD_43: {n:43,name: "玉井商圈",center: {lat: 23.124012, lng: 120.460495}},BD_44: {n:44,name: "三多商圈",center: {lat: 22.613955, lng: 120.304558}},BD_45: {n:45,name: "新崛江商圈",center: {lat: 22.622780, lng: 120.302757}},BD_46: {n:46,name: "後驛商圈",center: {lat: 22.640680, lng: 120.299347}},BD_47: {n:47,name: "巨蛋商圈",center: {lat: 22.666962, lng: 120.304108}},BD_48: {n:48,name: "夢時代商圈",center: {lat: 22.594856, lng: 120.307228}}
-// }
-var businessdistrict ;
+var businessdistrict;
 var map;
 	
-function analysis(){
-// 	$("#pac-input").focus();
-// 	$("#pac-input").val("ATM");
-// 	$("#pac-input").trigght();
-// 	searchBox.getPlaces();
-	
-	//map.panTo(new google.maps.LatLng(map.getCenter().lat()+0.01,map.getCenter().lng()+0.01));
-// 	map.setCenter( new google.maps.LatLng(map.getCenter().lat(),map.getCenter().lng()+0.01), 10);
-// 	google.maps.smoothZoom(map, 17, map.getZoom());
-// 	map.setZoom(17);
-	return;
-}
-function checkboxstr(selector){
-	var str='';
-	$( '#'+selector).each( function(i){
-		if(i!=0)str+=",";
-		str+=$( this ).val();
-	});
-	return str;
-}
 
-var item_marker = function (speed, time, marker, circle) {
-	this.speed = speed;
-	this.time = time;
-	this.marker = marker;
-	this.circle = circle;
-}
+	function checkboxstr(selector) {
+		var str = '';
+		$('#' + selector).each(function(i) {
+			if (i != 0)
+				str += ",";
+			str += $(this).val();
+		});
+		return str;
+	}
+
+	var item_marker = function(speed, time, marker, circle) {
+		this.speed = speed;
+		this.time = time;
+		this.marker = marker;
+		this.circle = circle;
+	}
 </script>
-<!-- /**************************************  以上使用者JS區塊    *********************************************/	-->
 
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
 <h2 class="page-title">區位選擇</h2>
 	<div class="search-result-wrap">
 
-<!-- 	<button onclick='$("#regionselect").dialog("open");' style='position:absolute;left:50%;top:100px;z-index:99;'>打開</button> -->
 	<a class="btn btn-orange" onclick='$("#regionselect").dialog("open");' style='position:absolute;left:15%;top:110px;z-index:99;'>區位選擇</a>
 	<a class="btn btn-orange" onclick='$("#env_analyse").dialog("open");' style='position:absolute;left:23%;top:110px;z-index:99;'>環域分析</a>
 
@@ -148,7 +116,6 @@ var item_marker = function (speed, time, marker, circle) {
 	<div id='regionselect' title='區位選擇' style='display:none;'>
 		<div id='QA' style='height:50%;width:70%;margin:5px 10px;'>
 			<form id='QA_form'>
-<!-- 				<div style='font-size:28px;'>商圈選擇評估問卷</div> -->
 				<table class='bentable2'>
 					<tr><th colspan='4'>一、基本資料：<span style='position:relative;top:-20px;margin-left:20px; font-size:28px;'>商圈選擇評估問卷</span></th></tr>
 					<tr>
@@ -229,14 +196,13 @@ var item_marker = function (speed, time, marker, circle) {
 					</tr>
 				</table>
 				<br><br>
-<!-- 		   <embed id='pdf' src='http://61.218.8.51/SBI/func/formview/QA.html' style='width:99%;height:400px;'> -->
 			</form>
 		</div>
 		<div id='over' style='display:none;'>
 			<div style='padding:20px 40px;'>完成分析！請於地圖檢視結果。<br><br>請參考本系統<span id='insert'></span>提供之「決策建議」。<br><br>按下「確認」關閉視窗，或按「上一步」重新分析！</div>
 		</div>
 		<div id='choose' style='display:none;padding:0 20px;background-color:#fafafa;'>
-			<table class='bentable'>
+			<table class='bentable2'>
 				<tr><th>一、請選擇欲觀察城市商圈範圍：</th></tr>
 				<tr>
 					<td>
@@ -262,23 +228,23 @@ var item_marker = function (speed, time, marker, circle) {
 				</tr>
 				<tr>
 					<td style="height:40px;vertical-align:bottom;">
-						<br>&nbsp;&nbsp;　權重：<div id="slider" style='position:relative;top:-19px;left:110px;'></div>
+						<br>權重：<div id="slider" style='position:relative;top:-19px;left:110px;'></div>
 					</td>
 				</tr>
 			</table>
 			
-			<table style='width:720px;font-size:22px'>
+			<table style='width:720px;font-size:16px'>
 				<tr>
 					<td>
-						未來潛力<input type='text' id='rs1' style='width:40px' value='33.56'/>%<br>
+						未來潛力<input type='text' id='rs1' style='width:60px' value='33.56'/>%<br>
 						　├<input type="checkbox" name='check1' checked>未來區域規劃<br>　└<input type="checkbox" name='check2' checked>消費發展潛力
 					</td>
 					<td>
-						<td>現況發展<input type='text' id='rs2' style='width:40px' value='39.74'/>%<br>
+						<td>現況發展<input type='text' id='rs2' style='width:60px' value='39.74'/>%<br>
 						　├<input type="checkbox" name='check3' checked>市場消費規模<br>　└<input type="checkbox" name='check4' checked>消費發展潛力
 					</td>
 					<td>
-						<td>競爭強度<input type='text' id='rs3' style='width:40px' value='26.70'/>%<br>
+						<td>競爭強度<input type='text' id='rs3' style='width:60px' value='26.70'/>%<br>
 						　├<input type="checkbox" name='check5' checked>業種業態組成<br>　└<input type="checkbox" name='check6' checked>商圈競爭狀況
 					</td>
 				</tr>
@@ -291,7 +257,6 @@ var item_marker = function (speed, time, marker, circle) {
 			</table>
 		</div>
 	</div>
-	
 	
 	<div id='env_analyse' title='環域分析' style='display:none;'>
 		<div id="instruction">
@@ -355,6 +320,7 @@ var item_marker = function (speed, time, marker, circle) {
 		</div>
 	</div>
 	
+	<div id="msgAlert"></div>
 	
     <script type="text/javascript">
 	    var markers = [];
@@ -369,12 +335,14 @@ var item_marker = function (speed, time, marker, circle) {
 				center: {lat: 23.900, lng: 121.000},
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
-    	  
 			
 			google.maps.event.addListener(map, 'click', function(event) {
 				if($("#env_analyse").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
-					//alert(map.getCenter()+"  "+map.getZoom());
-					if(rs_markers.length>=5){alert("最多五個點");return;}
+					
+					if(rs_markers.length>=5){
+						warningMsg('警告', "最多五個點");
+						return;
+					}
 					var order=(rs_markers.length+1)+"";
 					var rs_marker = new google.maps.Marker({
 					    position: event.latLng,
@@ -452,11 +420,9 @@ var item_marker = function (speed, time, marker, circle) {
    		}
 	    
 	    function draw_BDS(BDs,n){
-// 	    	alert(businessdistrict[BDs].name);
 	    	var marker = new google.maps.Marker({
 			    position: businessdistrict[BDs].center,
-//				    animation: google.maps.Animation.DROP,
-				label : n,//words[n],
+				label : n,
 			    title: businessdistrict[BDs].name,
 			    map: map
 			});
@@ -485,8 +451,6 @@ var item_marker = function (speed, time, marker, circle) {
 	    }
 	    
 	    $(function(){
-	    	
-	    	
 	    	$.ajax({
 				type : "POST",
 				url : "regionselect.do",
@@ -552,8 +516,9 @@ var item_marker = function (speed, time, marker, circle) {
 								businessdistrict[json_obj[i].name].center.lng=parseFloat(json_obj[i].lng);
 								midlat+=parseFloat(json_obj[i].lat);
 								midlng+=parseFloat(json_obj[i].lng);
-// 								draw_BDS(json_obj[i].name,i+"");
-								if(i!=0)result_table+= "、";
+								if(i!=0) {
+									result_table+= "、";
+								}
 								result_table += json_obj[i].name;
 							});
 							
@@ -567,14 +532,9 @@ var item_marker = function (speed, time, marker, circle) {
 						}else{
 							$("#BD").html("請選擇國家、城市。");
 						}
-// 						$.each(businessdistrict,function(i, item) {
-// 							alert(i+" @@ "+businessdistrict[i].center.lat+" XX "+ item.name);
-// 						});
 					}
 		    	});
-	    		
 	    	});
-	    	
 	    	
 			$("#slider").slider({
 				range: true,
@@ -595,16 +555,18 @@ var item_marker = function (speed, time, marker, circle) {
 			});
 			$("#regionselect").dialog({
 				draggable : true, resizable : false, autoOpen : false,
-//	 			height : 525, width : 830, modal : true,
 				height : "auto", width : "auto", modal : true,
 				show : {effect : "blind",duration : 300},
 				hide : {effect : "fade",duration : 300},
-				open : function(event, ui) {$(this).parent().children().children('.ui-dialog-titlebar-close').hide();},
+				open : function(event, ui) {
+					$(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+				},
 				buttons : [{
 					text : "重新輸入",
 					id : "rewrite",
 					click : function() {
-						if($("#gointo").html().length==4){// stage2 取消
+						if($("#gointo").html().length==4){
+							// stage2 取消
 							$("#regionselect").dialog("close");
 							setTimeout(function () { 
 								$("#QA").show();
@@ -614,7 +576,8 @@ var item_marker = function (speed, time, marker, circle) {
 								$("#gointo").html('進入商圈評估');
 								$("#jump").css('display','inline');
 							}, 200);
-						}else if($("#gointo").html().length==2){// stage3 上一步
+						}else if($("#gointo").html().length==2){
+							// stage3 上一步
 							$("#choose").show();
 							$("#over").hide();
 							$('div[aria-describedby="regionselect"]').animate({left: '-=100px',});
@@ -644,13 +607,22 @@ var item_marker = function (speed, time, marker, circle) {
 					text : "進入商圈評估",
 					id : "gointo",
 					click : function() {
-						if($("#gointo").html().length==4){// stage2 執行分析
+						if($("#gointo").html().length==4){
+							// stage2 執行分析
 							var warning = "";
-							if($("#selectcountry").val()==0)warning+="請選擇國家\n";
-							if($("#selectRegion").val()==0)warning+="請選擇城市\n";
-							if($('#choose input[name="hee"]:checked').length==0)warning+="請選擇產業\n";
-							if(warning.length>0){alert(warning); return;}
-							
+							if($("#selectcountry").val()==0) {
+								warning+="請選擇國家<br/>";
+							}
+							if($("#selectRegion").val()==0) {
+								warning+="請選擇城市<br/>";
+							}
+							if($('#choose input[name="hee"]:checked').length==0) {
+								warning+="請選擇產業<br/>";
+							}
+							if(warning.length>0){
+								warningMsg('警告', warning);
+								return;
+							}
 							
 							var scoreSTR = "";
 							$.ajax({
@@ -685,11 +657,8 @@ var item_marker = function (speed, time, marker, circle) {
 										$("#insert").html("對這"+json_obj.length+"個商圈")
 										map.panTo(new google.maps.LatLng(businessdistrict[json_obj[0].City].center.lat,businessdistrict[json_obj[0].City].center.lng));
 									}else{
-										alert("此分析有點困難，你安靜點讓我好好想想。\n半個小時後給你答案。");
-									}
-// 									map.panTo(new google.maps.LatLng(25.044571, 121.506409));
-// 		 							map.setZoom(15);
-									
+										warningMsg('警告', "此分析有點困難，你安靜點讓我好好想想。<br/>半個小時後給你答案。");
+									}									
 								}
 							});
 							
@@ -723,14 +692,12 @@ var item_marker = function (speed, time, marker, circle) {
 										$("#jump").html("決策建議");
 										$("#jump").css('display','inline');
 					    			}else{
-					    				alert("產生異常問題，請重整");
+					    				warningMsg('警告', "產生異常問題，請重整");
 					    			}
 								}
 					    	});
-						}else if($("#gointo").html().length==2){// stage3 確認
-							//###########################################################
-// 							map.panTo(new google.maps.LatLng(25.044571, 121.506409));
-// 							map.setZoom(15);
+						}else if($("#gointo").html().length==2){
+							// stage3 確認
 							$("#regionselect").dialog("close");
 							setTimeout(function () { 
 								$("#QA").show();
@@ -741,23 +708,56 @@ var item_marker = function (speed, time, marker, circle) {
 								$("#gointo").html('進入商圈評估');
 								$("#jump").css('display','inline');
 							}, 200);
-						}else if($("#gointo").html().length==6){ // stage1 進入商圈評估
+						}else if($("#gointo").html().length==6){ 
+							// stage1 進入商圈評估
 							var warning="";
-							//alert(checkboxstr('QA input[name="QA_industry_item"]:checked')+checkboxstr('QA input[name="QA_industry_item2"]:checked'));
-							if($('#QA input[name="QA_name"]').val().length==0)warning+="請填寫姓名\n";
-							if($('#QA input[name="QA_propost"]').val().length==0)warning+="請填寫職稱\n";
-							if($('#QA input[name="QA_taxid"]').val().length==0)warning+="請填寫公司統編\n";
-							if($('#QA input[name="QA_email"]').val().length==0)warning+="請填寫email\n";
-							if($('#QA input[name="QA_investcountry"]').val().length==0)warning+="請填寫預計投資國家\n";
-							if($('#QA input[name="QA_industry"]:checked').length==0)warning+="請填寫現在所屬產業\n";
-							if(($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_industry_item"]:checked'):checkboxstr('QA input[name="QA_industry_item2"]:checked')).length==0)warning+="請填寫主要營業項目\n";
-							if($('#QA input[name="QA_invest_industry"]:checked').length==0)warning+="請填寫預計投資產業\n";
-							if($('#QA input[name="QA_invest_industry"]:checked').val()==2&&($('#QA input[name="QA_invest_industry"]:checked').val()==1?"":($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_invest_industry_item2"]:checked'):checkboxstr('QA input[name="QA_invest_industry_item"]:checked'))).length==0)warning+="請填寫預計投資項目\n";
-							if($('#QA input[name="QA_invest_brand"]:checked').length==0)warning+="請填寫預計投資品牌\n";
-							if(checkboxstr('QA input[name="QA_invest_pattern"]:checked').length==0)warning+="請填寫預計投資型態\n";
-							if($('#QA input[name="QA_invest_type"]:checked').length==0)warning+="請填寫預計投資型式\n";
-							if($('#QA input[name="QA_invest_amount"]:checked').length==0)warning+="請填寫預計投資金額\n";
-							if(warning.length!=0){alert(warning);return;}
+							if($('#QA input[name="QA_name"]').val().length==0) {
+								warning+="請填寫姓名<br/>";
+							}
+							if($('#QA input[name="QA_propost"]').val().length==0) {
+								warning+="請填寫職稱<br/>";
+							}
+							if($('#QA input[name="QA_taxid"]').val().length==0) {
+								warning+="請填寫公司統編<br/>";
+							}
+							if($('#QA input[name="QA_email"]').val().length==0) {
+								warning+="請填寫email<br/>";
+							}
+							if($('#QA input[name="QA_investcountry"]').val().length==0) {
+								warning+="請填寫預計投資國家<br/>";
+							}
+							if($('#QA input[name="QA_industry"]:checked').length==0) {
+								warning+="請填寫現在所屬產業<br/>";
+							}
+							if(($('#QA input[name="QA_industry"]:checked').val()==1?
+									checkboxstr('QA input[name="QA_industry_item"]:checked'):checkboxstr('QA input[name="QA_industry_item2"]:checked')).length==0) {
+								warning+="請填寫主要營業項目<br/>";
+							}
+							if($('#QA input[name="QA_invest_industry"]:checked').length==0) {
+								warning+="請填寫預計投資產業<br/>";
+							}
+							if($('#QA input[name="QA_invest_industry"]:checked').val()==2
+									&& ($('#QA input[name="QA_invest_industry"]:checked').val()==1?"":($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_invest_industry_item2"]:checked'):checkboxstr('QA input[name="QA_invest_industry_item"]:checked'))).length==0) {
+								warning+="請填寫預計投資項目<br/>";
+							}
+							if($('#QA input[name="QA_invest_brand"]:checked').length==0) {
+								warning+="請填寫預計投資品牌<br/>";
+							}
+							if(checkboxstr('QA input[name="QA_invest_pattern"]:checked').length==0) {
+								warning+="請填寫預計投資型態<br/>";
+							}
+							if($('#QA input[name="QA_invest_type"]:checked').length==0) {
+								warning+="請填寫預計投資型式<br/>";
+							}
+							if($('#QA input[name="QA_invest_amount"]:checked').length==0) {
+								warning+="請填寫預計投資金額<br/>";
+							}
+							
+							if(warning.length!=0){
+								warningMsg('警告', warning);
+								return;
+							}
+							
 							$.ajax({
 								type : "POST",
 								url : "regionselect.do",
@@ -794,7 +794,7 @@ var item_marker = function (speed, time, marker, circle) {
 											});
 										});
 					    			}else{
-					    				alert("產生異常問題，請重整");
+					    				warningMsg('警告', "產生異常問題，請重整");
 					    			}
 								}
 					    	});
@@ -805,7 +805,8 @@ var item_marker = function (speed, time, marker, circle) {
 					"class": 'floatleft',
 					id : "jump",
 					click : function() {
-						if($("#gointo").html().length==6){// stage1 跳過
+						if($("#gointo").html().length==6){
+							// stage1 跳過
 							$("#regionselect").css("background","none");
 							$("#selectcountry").val('0');
 							$("#selectRegion").val('0');
@@ -820,15 +821,14 @@ var item_marker = function (speed, time, marker, circle) {
 								    left: '+=100px',
 								});
 							});
-						}else if($("#gointo").html().length==2){ // stage3 兩張圖
+						}else if($("#gointo").html().length==2){ 
+							// stage3 兩張圖
 							if($('#choose input[name="hee"]:checked').val()=="零售業"){
-// 								window.open("http://61.218.8.51/CDRI_data/region/區位選擇決策建議_零售業_s.jpg", "_blank", "", false);
 								window.open("./images/區位選擇決策建議_零售業_s.jpg", "_blank", "", false);
 							}else if($('#choose input[name="hee"]:checked').val()=="餐飲業"){
-// 								window.open("http://61.218.8.51/CDRI_data/region/餐飲業決策建議_s.jpg", "_blank", "", false);
 								window.open("./images/餐飲業決策建議_s.jpg", "_blank", "", false);
 							}else{
-								alert("沒有選擇行業類別");
+								warningMsg('警告', "沒有選擇行業類別");
 							}
 						}
 					}
@@ -838,44 +838,56 @@ var item_marker = function (speed, time, marker, circle) {
 				}
 			});
 			$("#regionselect").show();
-// 			$("#selectcountry").change(function(){
-// 				if($(this).val()=="Taiwan"){
-// 					$("#selectRegion").html('<option value="">請選擇</option><option value="Taipei">台北</option><option value="Taoyuan">桃園</option><option value="Taichung">台中</option><option value="Tainan">台南</option><option value="Kaohsiung">高雄</option>');
-// 				}
-// 			});
 			$("#selectRegion").change(function(){
 				return;
-				//###############################################
-				//###############  還沒做啦!!!或者被上面取代   ###########
-				//###############################################
 				var selecttable="商圈：<div style='max-width:400px;min-height:60px;float:right;'>";
 				for (var BD in businessdistrict) {
 					if($(this).val()=="Taipei"&& businessdistrict[BD].n<14){ 
-						if(businessdistrict[BD].n==1){}else{selecttable+="、";}
+						if(businessdistrict[BD].n==1){
+							
+						}else{
+							selecttable+="、";
+						}
 						selecttable+= businessdistrict[BD].name;
 						map.panTo(new google.maps.LatLng(25.034,121.524));
 						map.setZoom(14);
 					}
 					if($(this).val()=="Taoyuan"&& businessdistrict[BD].n>13&& businessdistrict[BD].n<25){ 
-						if(businessdistrict[BD].n==14){}else{selecttable+="、";}
+						if(businessdistrict[BD].n==14){
+							
+						}else{
+							selecttable+="、";
+						}
 						selecttable+= businessdistrict[BD].name;
 						map.panTo(new google.maps.LatLng(24.995, 121.298));
 						map.setZoom(12);
 					}
 					if($(this).val()=="Taichung"&& businessdistrict[BD].n>24&& businessdistrict[BD].n<32){ 
-						if(businessdistrict[BD].n==25){}else{selecttable+="、";}
+						if(businessdistrict[BD].n==25){
+							
+						}else{
+							selecttable+="、";
+						}
 						selecttable+= businessdistrict[BD].name;
 						map.panTo(new google.maps.LatLng(24.148, 120.685));
 						map.setZoom(12);
 					}
 					if($(this).val()=="Tainan"&& businessdistrict[BD].n>31&& businessdistrict[BD].n<44){ 
-						if(businessdistrict[BD].n==32){}else{selecttable+="、";}
+						if(businessdistrict[BD].n==32){
+							
+						}else{
+							selecttable+="、";
+						}
 						selecttable+=businessdistrict[BD].name;
 						map.panTo(new google.maps.LatLng(22.994, 120.218));
 						map.setZoom(12);
 					}
 					if($(this).val()=="Kaohsiung"&& businessdistrict[BD].n>43){ 
-						if(businessdistrict[BD].n==44){}else{selecttable+="、";}
+						if(businessdistrict[BD].n==44){
+							
+						}else{
+							selecttable+="、";
+						}
 						selecttable+=businessdistrict[BD].name;
 						map.panTo(new google.maps.LatLng(22.624, 120.307));
 						map.setZoom(12);
@@ -885,8 +897,7 @@ var item_marker = function (speed, time, marker, circle) {
 				selecttable+="</div>";
 				$("#BD").html(selecttable);
 			});
-			
-			
+
 			//環域分析
 			$("#env_analyse").dialog({
 				draggable : true,resizable : false,autoOpen : false,
@@ -907,7 +918,7 @@ var item_marker = function (speed, time, marker, circle) {
 			
 			$("#env_analyse_next").click(function(){
 		    	if(rs_markers.length==0){
-		    		alert("請放置分析點。");
+		    		warningMsg('警告', "請放置分析點。");
 		    	}else{
 		    		map.setOptions({draggableCursor:null});
 		    		$("#instruction").hide();
@@ -915,7 +926,6 @@ var item_marker = function (speed, time, marker, circle) {
 		    		$.each(rs_markers,function(i, item) {
 		    			rs_markers[i].circle.setRadius(rs_markers[i].speed* rs_markers[i].time *1000 * 0.016667);
 		    		});
-//	 	    		alert($('div[aria-describedby="env_analyse"]').html());
 		    		$("div[aria-describedby='env_analyse']").animate({"left": "-=180px"});
 		    	}
 		    });

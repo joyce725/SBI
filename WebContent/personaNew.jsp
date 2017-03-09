@@ -149,32 +149,32 @@ function checkboxcheck(name){
 			var warning_msg="";
 			
 			if(!radiocheck("px1")) {
-				warning_msg+="--請選擇品類--\n";
+				warning_msg+="請選擇品類<br/>";
 			}
 			if($("#product").val().length==0) {
-				warning_msg+="--請填寫產品--\n";
+				warning_msg+="請填寫產品<br/>";
 			}
 			if(!checkboxcheck("age")) {
-				warning_msg+="--請選擇性別--\n";
+				warning_msg+="請選擇性別<br/>";
 			}
 			if(!checkboxcheck("sex")) {
-				warning_msg+="--請選擇年齡--\n";
+				warning_msg+="請選擇年齡<br/>";
 			}
 			if(!radiocheck("px3")) {
-				warning_msg+="--請選擇產品購物決策思考週期--\n";
+				warning_msg+="請選擇產品購物決策思考週期<br/>";
 			}
 			if((!radiocheck("px4"))||(!radiocheck("px5"))||(!radiocheck("px6"))||(!radiocheck("px7"))) {
-				warning_msg+="--請完整填寫品牌性格分數--\n";
+				warning_msg+="請完整填寫品牌性格分數<br/>";
 			}
 			if(!radiocheck("px8")) {
-				warning_msg+="--請選擇市場價格定位--\n";
+				warning_msg+="請選擇市場價格定位<br/>";
 			}
 			if(!radiocheck("px9")) {
-				warning_msg+="--請選擇主力市場分數--\n";
+				warning_msg+="請選擇主力市場分數<br/>";
 			}
 			
 			if(warning_msg.length>3){
-				alert(warning_msg);
+				warningMsg('警告', warning_msg);
 			} else {
 				$.ajax({
 					type : "POST",
@@ -383,5 +383,7 @@ function checkboxcheck(name){
 		</div>
 	</div>
 </div>
+
+<div id="msgAlert"></div>
 
 <jsp:include page="footer.jsp" flush="true"/>

@@ -10,15 +10,14 @@ function warningMsg(title, msg) {
 		title: title,
 		draggable : true,
 		resizable : false,
-		autoOpen : false,
+		autoOpen : true,
 		height : "auto",
 		modal : true,
-		buttons : {
-			"確認" : function() {
+		buttons : [{
+			text: "確認", 
+			click: function() { 
 				$(this).dialog("close");
 			}
-		}
+		}]
 	});
-		
-	$("#msgAlert").dialog("open");
 }
