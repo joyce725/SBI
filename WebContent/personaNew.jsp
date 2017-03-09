@@ -142,10 +142,12 @@ function checkboxcheck(name){
 			if (event.which == 13) {
 				$("#send").trigger("click");
 			}
-	     }); 
+		}); 
+		
 		$("#send").click(function(){
 			var wrong=0, i=0;
 			var warning_msg="";
+			
 			if(!radiocheck("px1")) {
 				warning_msg+="--請選擇品類--\n";
 			}
@@ -196,15 +198,74 @@ function checkboxcheck(name){
 							var result_html="<div style='font-size:20px;'>完成分析！<br><br>";
 							var json_obj = $.parseJSON(result);
 							
-							if(json_obj.length>0){
-								result_html+="　　&nbsp;以下結果是我精心為您分析的「目標客戶特質」!"
-									+"<div align='center'><table class='bentable2'><tr><th>目標客戶特質</th></tr>";//<th>分數</th></tr>";
-								$.each(json_obj,function(i, item) {
-									result_html+="<tr><td><a href='http://61.218.8.51/SBI/persona/img/"+json_obj[i].PersonaCode+".png' target='_blank'>"+json_obj[i].PersonaCode+"</a></td></tr>";//"<td>"+json_obj[i].Score+"</td></tr>"
+							if(json_obj.Persona.length>0){
+								result_html+="　　&nbsp;以下結果是我精心為您分析的「目標客戶特質」及「商圈性格消費熱度矩陣」!"
+									+"<div align='center'><table class='bentable2'><tr><th>目標客戶特質</th></tr>";
+								
+								$.each(json_obj.Persona,function(i, item) {
+									result_html+="<tr><td><a href='http://61.218.8.51/SBI/persona/img/"+item.PersonaCode+".png' target='_blank'>"+item.PersonaCode+"</a></td></tr>";
 								});
-								result_html+="</table></div>";
+								
+								var result_2nd_header = '<tr><th colspan="2" rowspan="2">Persona</th><th colspan="3">商圈性格消費喜愛熱度矩陣</th></tr><tr><th>一</th><th>二</th><th>三</th></tr>'
+								var result_2nd = "<table class='bentable2'><tr>" + result_2nd_header + "</tr>";
+								$.each(json_obj.Matrix,function(i, item) {
+									mx1 = item.Martix1.split(',');
+									mx2 = item.Martix2.split(',');
+									mx3 = item.Martix3.split(',');
+									
+									var img1='', img2='', img3='';
+									
+									$.each(mx1, function( index, value ) {
+								  		if (value) {
+								  			var img = "<img src=images/persona_bd_" + value + ".png alt='" + value + "' height='80px' width='80px'><br/>";
+									  		img1 += img;
+										}
+									});
+									$.each(mx2, function( index, value ) {
+								  		if (value) {
+								  			var img = "<img src=images/persona_bd_" + value + ".png alt='" + value + "' height='80px' width='80px'><br/>";
+									  		img2 += img;
+										}
+									});
+									$.each(mx3, function( index, value ) {
+								  		if (value) {
+								  			var img = "<img src=images/persona_bd_" + value + ".png alt='" + value + "' height='80px' width='80px'><br/>";
+									  		img3 += img;
+										}
+									});
+									
+									var p_name = '';
+									if (item.Persona == 'A') {
+										p_name = '精算管家型';
+									} else if (item.Persona == 'B') {
+										p_name = '享樂翻糖型';
+									} else if (item.Persona == 'C') {
+										p_name = '知性陀飛輪型';
+									} else if (item.Persona == 'D') {
+										p_name = '神秘暹羅貓型';
+									} else if (item.Persona == 'E') {
+										p_name = '刻苦力爭型';
+									} else if (item.Persona == 'F') {
+										p_name = '積極開創者型';
+									} else if (item.Persona == 'G') {
+										p_name = '決策苦手型';
+									} else if (item.Persona == 'H') {
+										p_name = '生活從眾型';
+									}  
+									
+									result_2nd += "<tr>" + 
+									"<td>" + item.Persona + "</td>" + 
+									"<td>" + p_name + "</td>" + 
+									"<td>" + img1 + "</td>" + 
+									"<td>" + img2 + "</td>" + 
+									"<td>" + img3 + "</td>" + 
+									"</tr>";
+								});
+								result_2nd += "</table>";
+								
+								result_html+="</table>" + result_2nd + "</div>";
 							} else {
-								result_html += "很抱歉，經我精心的計算後找不到符合與您客群相符的「目標客戶特質」";
+								result_html += "很抱歉，經我精心的計算後找不到符合與您客群相符的「目標客戶特質」及「商圈性格消費熱度矩陣」";
 							}
 							result_html+="</div>"
 							$("#view").html(result_html);
@@ -213,6 +274,28 @@ function checkboxcheck(name){
 					}
 				});
 			}
+		});
+		
+		$("#simu").click(function(e){
+			e.preventDefault();
+			
+			$('#product').val('特調紅茶');
+			
+			$("#view input[name^=sex][value='1']").each(function() {
+				$(this).prop( "checked", true );
+		    });
+			
+			$("#view input[name^=age][value='1']").each(function() {
+				$(this).prop( "checked", true );
+		    });
+			
+			$("#view input[name^=px][value='3']").each(function() {
+				$(this).attr( "checked", true );
+		    });
+			
+			$("#view input[name=px4][value='2'],[name=px5][value='2'],[name=px7][value='2']").each(function() {
+				$(this).attr( "checked", true );
+		    });
 		});
 	});
 </script>
@@ -292,7 +375,8 @@ function checkboxcheck(name){
 				<tr>
 					<td align='center'>
 						　<br>
-						<a id='send' class='btn btn-darkblue'>送出分析</a>　　　　
+						<a id='send' class='btn btn-darkblue'>送出分析</a>
+						<a id='simu' class='btn btn-darkblue'>模擬資料</a>
 					</td>
 				</tr>
 			</table>
