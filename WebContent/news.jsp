@@ -28,21 +28,35 @@
 				action : "onload"
 			},
 			success : function(result) {
-				var news_list = "";
-				var jsonObejct = $.parseJSON(result);
-				news_list += "<section><ul>";
 
-				$.each(jsonObejct,function(index, value) {
-					var source = value.source;
-					$.each(value.data,function(i, item) {
-						var jsonItem = $.parseJSON(item);
-						if(jsonItem.title != '') {
-							news_list += "<li><a style='float:right;'>(" + source + ")</a><a href='" + jsonItem.link + "' target='_blank'>" + jsonItem.title + "   </a></li>";
-						}
-					});
+				var head = "";
+				var rows = "";
+				var data = "";
+				var json_obj = $.parseJSON(result);
+				
+				head = 	"<tr>" +
+							"<td align='center'><h4>類別</h4></td>" + 
+							"<td align='center'><h4>標題</h4></td>" + 
+							"<td align='center'><h4>來源</h4></td>"+
+						"</tr>";
+
+				$.each(json_obj, function(i, item) {
+					
+					var source = item.source;
+					var url = item.Url;
+					var title = item.Title;
+					var type = item.Type;
+					
+					rows += "<tr>" +
+								"<td align='left'><a>『" + type + "』</a></td>" + 
+								"<td align='left'><a href='" + url + "' target='_blank'>《" + title + "》</a></td>" + 
+								"<td align='left'><a>【" + source + "】</a></td>"+
+	 						"</tr>";
+					
 				});
-				news_list += "</ul></section>";
-				$("#news-area").html(news_list);
+				
+				data = head + rows;
+				$("#news-area").find('#news-table').html('').html(data);
 			}
 		});
 		
@@ -60,7 +74,9 @@
 			<div class="tab_container">
 				<ul class="tab_content">
 					<li>
-						<div id="news-area" style='max-height:800px;'></div>
+						<div id="news-area" style='max-height:800px;'>
+							<table id="news-table"></table>
+						</div>
 					</li>
 					<li>
 						<table id="group-backstage-table" class="result-table2 smoothbottom" style='display:none;'>
