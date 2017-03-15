@@ -132,7 +132,9 @@ public class ScenarioJob extends HttpServlet {
 			String scenario_job_page = request.getParameter("scenario_job_page");
 			session.setAttribute("scenario_job_id", scenario_job_id);
 			session.setAttribute("scenario_job_page", scenario_job_page);
-			
+			System.out.println("session: "+scenario_job_id+" ### "+scenario_job_page);
+			response.getWriter().write("");
+			return;
 		}else if("set_scenario_result".equals(action)){
 			String group_id = request.getSession().getAttribute("group_id").toString();
 			String job_id = request.getParameter("job_id");
@@ -249,6 +251,7 @@ public class ScenarioJob extends HttpServlet {
 					scenarioJob.setFlow_id(null2Str(rs.getString("flow_id")));
 					scenarioJob.setFlow_name(null2Str(rs.getString("this.flow_name")));
 					scenarioJob.setFlow_function(null2Str(rs.getString("this.flow_function")));
+					
 					scenarioJob.setScenario_id(null2Str(rs.getString("this.scenario_id")));
 					scenarioJob.setScenario_name(null2Str(rs.getString("scenario_name")));
 					scenarioJob.setPage(null2Str(rs.getString("this.page")));
@@ -260,6 +263,9 @@ public class ScenarioJob extends HttpServlet {
 					scenarioJob.setNext_flow_id(null2Str(rs.getString("next.flow_id")));
 					scenarioJob.setNext_flow_name(null2Str(rs.getString("next.flow_name")));
 					scenarioJob.setNext_flow_page(null2Str(rs.getString("next.page")));
+					scenarioJob.setNext_flow_explanation(null2Str(rs.getString("next.explanation")));
+					scenarioJob.setNext_flow_guide(null2Str(rs.getString("next.guide")));
+					
 					scenarioJob.setMax_flow_seq(
 							get_max_seq(scenarioJob.getScenario_id())
 					);
