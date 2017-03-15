@@ -50,6 +50,8 @@ public class Product extends HttpServlet {
 		String groupId = request.getSession().getAttribute("group_id").toString();
 		String action = request.getParameter("action");
 		
+		logger.debug("Action:" + action);
+		
 		if ("selectAll".equals(action)) {
 			try {								
 				productService = new ProductService();
@@ -65,6 +67,7 @@ public class Product extends HttpServlet {
 		} else if ("search".equals(action)) {
 			try {			
 				String productSpec = request.getParameter("product_spec");
+				logger.debug("productSpec:" + productSpec);
 				productService = new ProductService();
 				List<ProductVO> list = productService.getProductBySpec(groupId, productSpec);
 				
@@ -80,7 +83,11 @@ public class Product extends HttpServlet {
 				String productSpec = request.getParameter("product_spec");
 				String photo = request.getParameter("photo");
 				String seed = request.getParameter("seed");
-								
+
+				logger.debug("productSpec:" + productSpec);
+				logger.debug("photo:" + photo);
+				logger.debug("seed:" + seed);
+				
 				productService = new ProductService();
 				List<ProductVO> list = productService.addProduct(groupId, productSpec, photo, seed);
 			
@@ -99,6 +106,11 @@ public class Product extends HttpServlet {
 				String photo = request.getParameter("photo");
 				String seed = request.getParameter("seed");
 				
+				logger.debug("productId:" + productId);
+				logger.debug("productSpec:" + productSpec);
+				logger.debug("photo:" + photo);
+				logger.debug("seed:" + seed);
+				
 				productService = new ProductService();
 				
 				List<ProductVO> list = productService.updateProduct(groupId, productId, productSpec, photo, seed);
@@ -115,6 +127,8 @@ public class Product extends HttpServlet {
 			try {
 				String productId = request.getParameter("product_id");
 				
+				logger.debug("productId:" + productId);
+				
 				productService = new ProductService();
 				
 				List<ProductVO> list = productService.deleteProduct(groupId, productId);
@@ -130,6 +144,8 @@ public class Product extends HttpServlet {
 			try {
 				String productId = request.getParameter("product_id");
 				
+				logger.debug("productId:" + productId);
+				
 				productService = new ProductService();
 				
 				List<ProductVO> list = productService.genIdentityID(groupId, productId);
@@ -144,6 +160,8 @@ public class Product extends HttpServlet {
 		} else if ("autocomplete_spec".equals(action)) {
 			try {
 				String term = request.getParameter("term");
+				
+				logger.debug("term:" + term);
 				
 				productService = new ProductService();
 				List<ProductVO> list = productService.getProductBySpec(groupId, term);
@@ -188,12 +206,6 @@ public class Product extends HttpServlet {
 			productVO.setProduct_spec(productSpec);
 			productVO.setPhoto(photo);
 			productVO.setSeed(seed);
-			
-			logger.debug("groupId: " + productVO.getGroup_id());
-			logger.debug("productId: " + productVO.getProduct_id());
-			logger.debug("productSpec: " + productVO.getProduct_spec());
-			logger.debug("photo: " + productVO.getPhoto());
-			logger.debug("seed: " + productVO.getSeed());
 			
 			dao.updateDB(productVO);
 			return dao.selectByGroupId(groupId);

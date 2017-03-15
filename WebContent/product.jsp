@@ -108,6 +108,15 @@ $(function(){
 			},
 			columnDefs: [
 				{
+					targets: 1,
+					searchable: false,
+					orderable: false,
+					render: function ( data, type, row ) {
+						var ch = "<img src=./image.do?picname="+row.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+						return ch;
+					} 
+				},
+				{
 					targets: -4,
 					searchable: false,
 					orderable: false,
@@ -137,9 +146,7 @@ $(function(){
 					searchable: false,
 					orderable: false,
 					render: function ( data, type, row ) {
-						var ch = 
-							"<button value='"+ row.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button>";
-						  
+						var ch = "<button value='"+ row.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button>";
 						return ch;
 					} 
 				},
@@ -148,16 +155,12 @@ $(function(){
 					searchable: false,
 					orderable: false,
 					render: function ( data, type, row ) {
-						var ch = 
-							"<button value='"+ row.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button>";
-						   
+						var ch = "<button value='"+ row.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button>";
 						return ch;
 					} 
 				}				        
 			],
 			columns: [
-	
-				
 				{"data": "product_spec" ,"defaultContent":""},
 				{"data": "photo" ,"defaultContent":""},
 				{"data": "seed" ,"defaultContent":""},
@@ -210,36 +213,7 @@ $(function(){
 						},
 						success : function(result) {
 							var json_obj = $.parseJSON(result);
-							var result_table = "";
-							$.each(json_obj,function(i, item) {
-								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-								
-								result_table 
-									+= "<tr>"
-									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-									+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
-//			 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
-									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-									+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
-									+ "<td>"+ tmp2 + "</td>"
-									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td>"
-									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
-									+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
-							});		
-							//判斷查詢結果
-							var resultRunTime = 0;
-							$.each (json_obj, function (i) {
-								resultRunTime+=1;
-							});
-							
-							if(resultRunTime!=0){
-								$("#table_product tbody").html(result_table);
-							}
+							$("#btn_query").trigger('click');
 						}
 					});
 					insert_dialog.dialog("close");
@@ -263,13 +237,20 @@ $(function(){
 	// 修改 事件聆聽
 	$("#table_product").delegate(".btn-update", "click", function(e) {
 		e.preventDefault();
+		
 		$("#files-update").html('');
 		$("#photo0-update").val('');
-		p_product_id = $(this).val();
-		p_row = $(this).attr('name');
-		$("#dialog-form-update input[name='product_spec']").val($('#product_spec_' + p_row).html());
-		$("#dialog-form-update input[name='seed']").val($('#seed_' + p_row).html());
-		update_dialog.dialog("open");
+		
+		var row = jQuery(this).closest('tr');
+		var data = $("#table_product").dataTable().fnGetData(row);
+		
+		$("#dialog-form-update input[name='product_spec']").val( data.product_spec );
+		$("#dialog-form-update input[name='seed']").val( data.seed );
+		
+		update_dialog
+			.data("product_id", data.product_id)
+			.data("photo", data.photo)
+			.dialog("open");
 	});
 	
 	// "修改" Dialog相關設定
@@ -292,7 +273,7 @@ $(function(){
 			text : "修改",
 			click : function() {
 				if($("#photo0-update").val()==""){
-					$("#photo0-update").val($('#photo_' + p_row).attr("name"));					
+					$("#photo0-update").val( $(this).data("photo") );					
 				}
 // 				if ($('#update-dialog-form-post').valid()) {
 					$.ajax({
@@ -300,46 +281,14 @@ $(function(){
 						url : "product.do",
 						data : {
  							action : "update",
- 							product_id: p_product_id,
+ 							product_id: $(this).data("product_id"),
  							product_spec: $("#update_product_spec").val(),
  							photo : $("#photo0-update").val(),
  							seed : $("#update_seed").val()
 						},
 						success : function(result) {
 							var json_obj = $.parseJSON(result);
-							var result_table = "";
-							$.each(json_obj,function(i, item) {
-// 								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-
-								result_table 
-									+= "<tr>"
-									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-									+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
-//			 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
-									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-									+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
-									+ "<td>"+ tmp2 + "</td>"
-									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td>"
-									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
-									+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
-							});			
-							//判斷查詢結果
-							var resultRunTime = 0;
-							$.each (json_obj, function (i) {
-								resultRunTime+=1;
-							});
-							if(resultRunTime!=0){
-// 								console.log('"新增商品資料" Dialog相關設定");
-								$("#table_product tbody").html(result_table);
-							}else{
-								// todo
-							}
+							$("#btn_query").trigger('click');
 						}
 					});
 					update_dialog.dialog("close");
@@ -364,9 +313,14 @@ $(function(){
 	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
 	$("#table_product").delegate(".btn-delete", "click", function(e) {
 		e.preventDefault();
-		p_product_id = $(this).val();
-		$("#delete_product_spec").html($(this).attr('name'));
-		del_dialog.dialog("open");
+		
+		var row = jQuery(this).closest('tr');
+		var data = $("#table_product").dataTable().fnGetData(row);
+		
+		$("#delete_product_spec").html( data.product_spec );
+		del_dialog
+			.data("product_id", data.product_id)
+			.dialog("open");
 	});
 	// "刪除" Dialog相關設定
 	del_dialog = $("#dialog-form-delete").dialog({
@@ -392,34 +346,11 @@ $(function(){
 					url : "product.do",
 					data : {
 						action: "delete",
-						product_id: p_product_id
+						product_id: $(this).data("product_id")
 					},
 					success : function(result) {
 						var json_obj = $.parseJSON(result);
-						var result_table = "";
-						$.each(json_obj,function(i, item) {
-// 							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-							var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-							var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-
-							result_table 
-								+= "<tr>"
-								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-								+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
-//		 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
-								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-								+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
-								+ "<td>"+ tmp2 + "</td>"
-								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-								+ "<div class='table-function-list'>"
-								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-								+ "</div></div></td>"
-								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
-								+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
-						});		
-// 						console.log('"刪除" Dialog相關設定');
-						$("#table_product tbody").html(result_table);
+						$("#btn_query").trigger('click');
 					}
 				});
 				$(this).dialog("close");
@@ -438,9 +369,15 @@ $(function(){
  	// 取得商品識別碼 事件聆聽 
 	$("#table_product").delegate(".btn-iden", "click", function(e) {
 		e.preventDefault();
-		p_product_id = $(this).val();
-		identitiy_dialog.dialog("open");
+		
+		var row = jQuery(this).closest('tr');
+		var data = $("#table_product").dataTable().fnGetData(row);
+		
+		identitiy_dialog
+			.data("product_id", data.product_id)
+			.dialog("open");
 	});
+ 	
 	// "取得商品識別碼" Dialog相關設定
 	identitiy_dialog = $("#dialog-form-identity").dialog({
 		draggable : false,//防止拖曳
@@ -465,33 +402,11 @@ $(function(){
 					url : "product.do",
 					data : {
 						action: "gen_identity",
-						product_id: p_product_id
+						product_id: $(this).data("product_id")
 					},
 					success : function(result) {
 						var json_obj = $.parseJSON(result);
-						var result_table = "";
-						$.each(json_obj,function(i, item) {
-// 							var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-							var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-							var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-
-							result_table 
-							+= "<tr>"
-								+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-								+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+ tmp + "</td>"
-								+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-								+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
-								+ "<td>"+ tmp2 + "</td>"
-								+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-								+ "<div class='table-function-list'>"
-								+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-								+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-								+ "</div></div></td>"
-								+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
-								+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
-						});
-// 						console.log('"取得商品識別碼" Dialog相關設定');
-						$("#table_product tbody").html(result_table);
+						$("#btn_query").trigger('click');
 					}
 				});
 				$(this).dialog("close");
@@ -513,15 +428,15 @@ $(function(){
 		
 		$("#files-update").html('');
 		$("#photo0-update").val('');
-		p_product_id = $(this).val();
-		p_row = $(this).attr('name');
 		
-		console.log("this value" + $(this).val());
-		console.log("name: " + $(this).attr('name'));
+		var row = jQuery(this).closest('tr');
+		var data = $("#table_product").dataTable().fnGetData(row);
 		
-		$("#dialog-form-genService input[name='product_spec']").val($('#product_spec_' + p_row).html());
+		$("#dialog-form-genService input[name='product_spec']").val( data.product_spec );
 		
-		genService_dialog.dialog("open");
+		genService_dialog
+			.data("product_id", data.product_id)
+			.dialog("open");
 	});
 	
 	// "產生服務識別碼" Dialog相關設定
@@ -552,44 +467,12 @@ $(function(){
 						url : "productService.do",
 						data : {
  							action : "genService",
- 							product_id: p_product_id,
+ 							product_id: $(this).data("product_id"),
  							quantity: $("#genServcie_quantity").val()
 						},
 						success : function(result) {
 							var json_obj = $.parseJSON(result);
-							var result_table = "";
-							$.each(json_obj,function(i, item) {
-// 								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-
-								result_table 
-									+= "<tr>"
-									+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-									+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
-//			 						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
-									+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-									+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
-									+ "<td>"+ tmp2 + "</td>"
-									+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-									+ "<div class='table-function-list'>"
-									+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-									+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-									+ "</div></div></td>"
-									+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
-									+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
-							});			
-							//判斷查詢結果
-							var resultRunTime = 0;
-							$.each (json_obj, function (i) {
-								resultRunTime+=1;
-							});
-							if(resultRunTime!=0){
-// 								console.log('"新增商品資料" Dialog相關設定");
-								$("#table_product tbody").html(result_table);
-							}else{
-								// todo
-							}
+							$("#btn_query").trigger('click');
 						}
 					});
 					genService_dialog.dialog("close");
