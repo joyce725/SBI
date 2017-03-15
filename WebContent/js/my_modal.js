@@ -96,6 +96,15 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 				eval(cache_modal.shift());
 			}
 		}, 800);
-		
+	});
+	modal_explanation.click(function(){
+		if(click_to_over==1){
+			$("#platform").remove();
+		}
+		setTimeout(function(){
+			if(cache_modal.length>0){
+				eval(cache_modal.shift());
+			}
+		}, 800);
 	});
 }

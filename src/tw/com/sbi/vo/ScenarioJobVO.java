@@ -12,6 +12,7 @@ public class ScenarioJobVO implements Serializable {
 	private String flow_id;
 	private String flow_name;
 	private String flow_function;
+
 	private String scenario_id;
 	private String scenario_name;
 	private String page;
@@ -24,6 +25,8 @@ public class ScenarioJobVO implements Serializable {
 	private String next_flow_id;
 	private String next_flow_name;
 	private String next_flow_page;
+	private String next_flow_explanation;
+	private String next_flow_guide;
 	
 	private String max_flow_seq;
 	
@@ -68,6 +71,18 @@ public class ScenarioJobVO implements Serializable {
 	}
 	public void setFlow_function(String flow_function) {
 		this.flow_function = flow_function;
+	}
+	public String getNext_flow_explanation() {
+		return next_flow_explanation;
+	}
+	public void setNext_flow_explanation(String next_flow_explanation) {
+		this.next_flow_explanation = next_flow_explanation;
+	}
+	public String getNext_flow_guide() {
+		return next_flow_guide;
+	}
+	public void setNext_flow_guide(String next_flow_guide) {
+		this.next_flow_guide = next_flow_guide;
 	}
 	public String getScenario_id() {
 		return scenario_id;
