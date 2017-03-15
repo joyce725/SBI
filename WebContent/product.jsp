@@ -2,8 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page="import.jsp" flush="true"/>
 <link rel="stylesheet" href="css/photo/jquery.fileupload.css">
+<link rel="stylesheet" href="css/jquery.dataTables.min.css" />
 <script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 
@@ -43,76 +45,130 @@ $(function(){
 	
 	var validator_insert = $("#insert-dialog-form-post").validate({
 		rules : {
-// 			f_date : {
-// 				required : true,
-// 				dateISO : true
-// 			},
-// 			amount : {
-// 				number : true
-// 			}
 		}
 	});
 	var validator_update = $("#update-dialog-form-post").validate({
 		rules : {
-// 			f_date : {
-// 				required : true,
-// 				dateISO : true
-// 			},
-// 			amount : {
-// 				number : true
-// 			}
 		}
 	});	
 	
 	// 查詢商品資料 事件聆聽
 	$("#btn_query").click(function(e) {
-		$.ajax({
-			type : "POST",
-			url : "product.do",
-			data : {
-				action : "search",
-				product_spec : $("#search_product_spec").val()
-			},
-			success : function(result) {
-				var json_obj = $.parseJSON(result);
-				var result_table = "";
+// 		$.ajax({
+// 			type : "POST",
+// 			url : "product.do",
+// 			data : {
+// 				action : "search",
+// 				product_spec : $("#search_product_spec").val()
+// 			},
+// 			success : function(result) {
+// 				var json_obj = $.parseJSON(result);
+// 				var result_table = "";
 				
-				$.each(json_obj,function(i, item) {
-					//var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-					var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
-					var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+// 				$.each(json_obj,function(i, item) {
+// 					var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+// 					var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 					
-					result_table 
-						+= "<tr>"
-						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-						+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
-						//+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
-						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
-						+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
-						+ "<td>"+ tmp2 + "</td>"
-						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
-						+ "<div class='table-function-list'>"
-						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
-						+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
-						+ "</div></div></td>"
-						+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
-						+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
-				});	
-				
-				//判斷查詢結果
-				var resultRunTime = 0;
-				$.each (json_obj, function (i) {
-					resultRunTime+=1;
-				});
-				
-				if(resultRunTime!=0){
-					//console.log('查詢商品資料 事件聆聽');
-					$("#table_product tbody").html(result_table);
-				}else{
-					// todo
+// 					result_table 
+// 						+= "<tr>"
+// 						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
+// 						+ "<td id='photo_"+i+"' name='"+ item.photo+"'>"+tmp+"</td>"
+// 						//+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+// 						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
+// 						+ "<td id='identity_id_"+i+"'>"+ item.identity_id + "</td>"
+// 						+ "<td>"+ tmp2 + "</td>"
+// 						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
+// 						+ "<div class='table-function-list'>"
+// 						+ "<button href='#' name='"+i+"' value='" + item.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+// 						+ "<button href='#' name='" + item.product_spec + "' value='" + item.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+// 						+ "</div></div></td>"
+// 						+ "<td><button value='"+ item.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button></td>"
+// 						+ "<td><button name='" + i + "' value='"+ item.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button></td></tr>";										
+// 				});
+// 			}
+// 		});
+		
+		$("#table_product").dataTable().fnDestroy();
+		$("#table_product").show();
+		 
+		table = $("#table_product").DataTable({
+			dom: 'lfrB<t>ip',
+			paging: true,
+			ordering: false,
+			info: false,
+			language: {"url": "js/dataTables_zh-tw.txt"},
+			ajax: {
+				url : "product.do",
+				dataSrc: "",
+				type : "POST",
+				data : {
+					action : "search",
+					product_spec : $("#search_product_spec").val()
 				}
-			}
+			},
+			columnDefs: [
+				{
+					targets: -4,
+					searchable: false,
+					orderable: false,
+					render: function ( data, type, row ) {
+						var ch = "<img src=./image.do?action=qrcode&picname="+row.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+						return ch;
+					} 
+				},
+				{
+					targets: -3,
+					searchable: false,
+					orderable: false,
+					render: function ( data, type, row ) {
+						var ch = 
+							"<div href='#' class='table-row-func btn-in-table btn-gray'>"
+								+ "<i class='fa fa-ellipsis-h'></i>"
+								+ "<div class='table-function-list'>"
+								+ "<button href='#' name='"+ row.product_id +"' value='" + row.product_id + "' title='修改' class='btn-update btn-in-table btn-green'><i class='fa fa-pencil'></i></button>"
+								+ "<button href='#' name='" + row.product_spec + "' value='" + row.product_id + "' title='刪除' class='btn-delete btn-in-table btn-orange'><i class='fa fa-trash'></i></button>"
+								+ "</div>"
+							+ "</div>";
+						return ch;
+					} 
+				},
+				{
+					targets: -2,
+					searchable: false,
+					orderable: false,
+					render: function ( data, type, row ) {
+						var ch = 
+							"<button value='"+ row.product_id+"' class='btn-iden btn btn-wide btn-primary'>產生</button>";
+						  
+						return ch;
+					} 
+				},
+				{
+					targets: -1,
+					searchable: false,
+					orderable: false,
+					render: function ( data, type, row ) {
+						var ch = 
+							"<button value='"+ row.product_id+"' class='btn-genService btn btn-wide btn-primary'>產生</button>";
+						   
+						return ch;
+					} 
+				}				        
+			],
+			columns: [
+	
+				
+				{"data": "product_spec" ,"defaultContent":""},
+				{"data": "photo" ,"defaultContent":""},
+				{"data": "seed" ,"defaultContent":""},
+				{"data": "identity_id" ,"defaultContent":""},
+				{"data": null ,"defaultContent":""},
+				{"data": null ,"defaultContent":""},
+				{"data": null ,"defaultContent":""},
+				{"data": null ,"defaultContent":""}
+			]				      	      
 		});
+
 	});
 	
 	// 新增商品資料 事件聆聽
@@ -156,7 +212,6 @@ $(function(){
 							var json_obj = $.parseJSON(result);
 							var result_table = "";
 							$.each(json_obj,function(i, item) {
-// 								var tmp=(item.photo.length<1)?"無圖片":"<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 								var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 								var tmp2 = "<img src=./image.do?action=qrcode&picname="+item.identity_id+".png onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
 								
@@ -181,11 +236,9 @@ $(function(){
 							$.each (json_obj, function (i) {
 								resultRunTime+=1;
 							});
+							
 							if(resultRunTime!=0){
-// 								console.log('"新增商品資料" Dialog相關設定');
 								$("#table_product tbody").html(result_table);
-							}else{
-								// todo
 							}
 						}
 					});
@@ -206,105 +259,6 @@ $(function(){
 			insert_dialog.dialog("close");
 		}
 	});
-	
-	//<!-- photo section jquery begin by Melvin -->
-	'use strict';
-    var url = '/sbi/photo.do',
-        uploadButton = $('<button/>')
-            .addClass('btn btn-primary')
-            .prop('disabled', true)
-            .text('處理中...')
-            .on('click', function (e) {
-            	e.preventDefault();
-            	
-            	var $this = $(this),
-                    data = $this.data();
-                $this
-                    .off('click')
-                    .text('Abort')
-                    .on('click', function () {
-                        $this.remove();
-                        data.abort();
-                    });
-                data.submit().always(function () {
-                    $this.remove();
-                });
-            });
-                
-    $('#fileupload').fileupload({
-        url: url,
-        dataType: 'json',
-        autoUpload: false,
-        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-        maxFileSize: 600000,
-        disableImageResize: /Android(?!.*Chrome)|Opera/
-            .test(window.navigator.userAgent),
-        previewMaxWidth: 200,
-        previewMaxHeight: 200,
-        previewCrop: true
-    }).on('fileuploadadd', function (e, data) {
-        data.context = $('<div/>').appendTo('#files');
-        $.each(data.files, function (index, file) {
-            var node = $('<p/>')
-                    .append($('<span/>').text(file.name));
-            if (!index) {
-                node
-                    .append('<br>')
-                    .append(uploadButton.clone(true).data(data));
-            }
-            node.appendTo(data.context);
-            //$("#photo0").val(file.name);
-        });
-    }).on('fileuploadprocessalways', function (e, data) {
-        var index = data.index,
-            file = data.files[index],
-            node = $(data.context.children()[index]);
-        if (file.preview) {
-            node
-                .prepend('<br>')
-                .prepend(file.preview);
-        }
-        if (file.error) {
-            node
-                .append('<br>')
-                .append($('<span class="text-danger"/>').text(file.error));
-        }
-        if (index + 1 === data.files.length) {
-            data.context.find('button')
-                .text('上傳')
-                .prop('disabled', !!data.files.error);
-        }
-    }).on('fileuploadprogressall', function (e, data) {
-        var progress = parseInt(data.loaded / data.total * 100, 10);
-        $('#progress .progress-bar').css(
-            'width',
-            progress + '%'
-        );
-    }).on('fileuploaddone', function (e, data) {
-        $.each(data.result.files, function (index, file) {
-        	$("#photo0").val(file.name);/////////////////////////////////////
-            if (file.url) {
-                var link = $('<a>')
-                    .attr('target', '_blank')
-                    .prop('href', file.url);
-                $(data.context.children()[index])
-                    .wrap(link);
-            } else if (file.error) {
-                var error = $('<span class="text-danger"/>').text(file.error);
-                $(data.context.children()[index])
-                    .append('<br>')
-                    .append(error);
-            }
-        });
-    }).on('fileuploadfail', function (e, data) {
-    	$.each(data.files, function (index) {
-            var error = $('<span class="text-danger"/>').text('File upload failed.');
-            $(data.context.children()[index])
-                .append('<br>')
-                .append(error);
-        });
-    }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
 	
 	// 修改 事件聆聽
 	$("#table_product").delegate(".btn-update", "click", function(e) {
@@ -405,81 +359,7 @@ $(function(){
 			update_dialog.dialog("close");
 		}
 	});
-	
-	$('#fileupload-update').fileupload({
-        url: url,
-        dataType: 'json',
-        autoUpload: false,
-        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-        maxFileSize: 600000,
-        disableImageResize: /Android(?!.*Chrome)|Opera/
-            .test(window.navigator.userAgent),
-        previewMaxWidth: 200,
-        previewMaxHeight: 200,
-        previewCrop: true
-    }).on('fileuploadadd', function (e, data) {
-        data.context = $('<div/>').appendTo('#files-update');
-        $.each(data.files, function (index, file) {
-            var node = $('<p/>')
-                    .append($('<span/>').text(file.name));
-            if (!index) {
-                node
-                    .append('<br>')
-                    .append(uploadButton.clone(true).data(data));
-            }
-            node.appendTo(data.context);
-            $("#photo-update").val(file.name);
-        });
-    }).on('fileuploadprocessalways', function (e, data) {
-        var index = data.index,
-            file = data.files[index],
-            node = $(data.context.children()[index]);
-        if (file.preview) {
-            node
-                .prepend('<br>')
-                .prepend(file.preview);
-        }
-        if (file.error) {
-            node
-                .append('<br>')
-                .append($('<span class="text-danger"/>').text(file.error));
-        }
-        if (index + 1 === data.files.length) {
-            data.context.find('button')
-                .text('上傳')
-                .prop('disabled', !!data.files.error);
-        }
-    }).on('fileuploadprogressall', function (e, data) {
-        var progress = parseInt(data.loaded / data.total * 100, 10);
-        $('#progress .progress-bar').css(
-            'width',
-            progress + '%'
-        );
-    }).on('fileuploaddone', function (e, data) {
-    	$.each(data.result.files, function (index, file) {
-        	$("#photo0-update").val(file.name);///////////////////////////////////////
-            if (file.url) {
-                var link = $('<a>')
-                    .attr('target', '_blank')
-                    .prop('href', file.url);
-                $(data.context.children()[index])
-                    .wrap(link);
-            } else if (file.error) {
-                var error = $('<span class="text-danger"/>').text(file.error);
-                $(data.context.children()[index])
-                    .append('<br>')
-                    .append(error);
-            }
-        });
-    }).on('fileuploadfail', function (e, data) {
-    	$.each(data.files, function (index) {
-            var error = $('<span class="text-danger"/>').text('File upload failed.');
-            $(data.context.children()[index])
-                .append('<br>')
-                .append(error);
-        });
-    }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');  
+
 	
 	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
 	$("#table_product").delegate(".btn-delete", "click", function(e) {
@@ -771,6 +651,183 @@ $(function(){
 	         }
 	     }           
 	 });
+	
+	
+	
+	//<!-- photo section jquery begin by Melvin -->
+	'use strict';
+    var url = '/sbi/photo.do',
+        uploadButton = $('<button/>')
+            .addClass('btn btn-primary')
+            .prop('disabled', true)
+            .text('處理中...')
+            .on('click', function (e) {
+            	e.preventDefault();
+            	
+            	var $this = $(this),
+                    data = $this.data();
+                $this
+                    .off('click')
+                    .text('Abort')
+                    .on('click', function () {
+                        $this.remove();
+                        data.abort();
+                    });
+                data.submit().always(function () {
+                    $this.remove();
+                });
+            });
+                
+    $('#fileupload').fileupload({
+        url: url,
+        dataType: 'json',
+        autoUpload: false,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        maxFileSize: 600000,
+        disableImageResize: /Android(?!.*Chrome)|Opera/
+            .test(window.navigator.userAgent),
+        previewMaxWidth: 200,
+        previewMaxHeight: 200,
+        previewCrop: true
+    }).on('fileuploadadd', function (e, data) {
+        data.context = $('<div/>').appendTo('#files');
+        $.each(data.files, function (index, file) {
+            var node = $('<p/>')
+                    .append($('<span/>').text(file.name));
+            if (!index) {
+                node
+                    .append('<br>')
+                    .append(uploadButton.clone(true).data(data));
+            }
+            node.appendTo(data.context);
+            //$("#photo0").val(file.name);
+        });
+    }).on('fileuploadprocessalways', function (e, data) {
+        var index = data.index,
+            file = data.files[index],
+            node = $(data.context.children()[index]);
+        if (file.preview) {
+            node
+                .prepend('<br>')
+                .prepend(file.preview);
+        }
+        if (file.error) {
+            node
+                .append('<br>')
+                .append($('<span class="text-danger"/>').text(file.error));
+        }
+        if (index + 1 === data.files.length) {
+            data.context.find('button')
+                .text('上傳')
+                .prop('disabled', !!data.files.error);
+        }
+    }).on('fileuploadprogressall', function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css(
+            'width',
+            progress + '%'
+        );
+    }).on('fileuploaddone', function (e, data) {
+        $.each(data.result.files, function (index, file) {
+        	$("#photo0").val(file.name);/////////////////////////////////////
+            if (file.url) {
+                var link = $('<a>')
+                    .attr('target', '_blank')
+                    .prop('href', file.url);
+                $(data.context.children()[index])
+                    .wrap(link);
+            } else if (file.error) {
+                var error = $('<span class="text-danger"/>').text(file.error);
+                $(data.context.children()[index])
+                    .append('<br>')
+                    .append(error);
+            }
+        });
+    }).on('fileuploadfail', function (e, data) {
+    	$.each(data.files, function (index) {
+            var error = $('<span class="text-danger"/>').text('File upload failed.');
+            $(data.context.children()[index])
+                .append('<br>')
+                .append(error);
+        });
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+	$('#fileupload-update').fileupload({
+        url: url,
+        dataType: 'json',
+        autoUpload: false,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        maxFileSize: 600000,
+        disableImageResize: /Android(?!.*Chrome)|Opera/
+            .test(window.navigator.userAgent),
+        previewMaxWidth: 200,
+        previewMaxHeight: 200,
+        previewCrop: true
+    }).on('fileuploadadd', function (e, data) {
+        data.context = $('<div/>').appendTo('#files-update');
+        $.each(data.files, function (index, file) {
+            var node = $('<p/>')
+                    .append($('<span/>').text(file.name));
+            if (!index) {
+                node
+                    .append('<br>')
+                    .append(uploadButton.clone(true).data(data));
+            }
+            node.appendTo(data.context);
+            $("#photo-update").val(file.name);
+        });
+    }).on('fileuploadprocessalways', function (e, data) {
+        var index = data.index,
+            file = data.files[index],
+            node = $(data.context.children()[index]);
+        if (file.preview) {
+            node
+                .prepend('<br>')
+                .prepend(file.preview);
+        }
+        if (file.error) {
+            node
+                .append('<br>')
+                .append($('<span class="text-danger"/>').text(file.error));
+        }
+        if (index + 1 === data.files.length) {
+            data.context.find('button')
+                .text('上傳')
+                .prop('disabled', !!data.files.error);
+        }
+    }).on('fileuploadprogressall', function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css(
+            'width',
+            progress + '%'
+        );
+    }).on('fileuploaddone', function (e, data) {
+    	$.each(data.result.files, function (index, file) {
+        	$("#photo0-update").val(file.name);///////////////////////////////////////
+            if (file.url) {
+                var link = $('<a>')
+                    .attr('target', '_blank')
+                    .prop('href', file.url);
+                $(data.context.children()[index])
+                    .wrap(link);
+            } else if (file.error) {
+                var error = $('<span class="text-danger"/>').text(file.error);
+                $(data.context.children()[index])
+                    .append('<br>')
+                    .append(error);
+            }
+        });
+    }).on('fileuploadfail', function (e, data) {
+    	$.each(data.files, function (index) {
+            var error = $('<span class="text-danger"/>').text('File upload failed.');
+            $(data.context.children()[index])
+                .append('<br>')
+                .append(error);
+        });
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');  
+
 })
 </script>
 <jsp:include page="header.jsp" flush="true"/>
