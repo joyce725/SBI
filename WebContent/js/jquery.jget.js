@@ -79,7 +79,26 @@ $(function(){
 		$tab_content = $block.find('.tab_content'), 
 		$tab_contentLi = $tab_content.find('li'), 
 		_width = $tab_content.width();
+
+	$tabsLi.bind('cssClassChanged', function(){ 
+		var title = $(this).find("span").text();
+		
+		$('.data_source').empty();
+		if (title === "每日產業重點訊息") {
+			var obj_a = $("<a></a>")
+				.attr("href", "http://www.dataa.com.tw/")
+				.attr("target", "_blank")
+				.text("Dataa大數據研究中心");
+			var obj_h6 = $("<h6></h6>")
+				.attr("style", "margin:5px;")
+				.append("<span>資料來源: <span>")
+				.append(obj_a);
+
+			$('.data_source').append(obj_h6);
+		}
+	});
 	
+	$tabsLi.trigger("cssClassChanged");
 	// 當滑鼠移到 .tabs li 上時要套用 .hover 樣式
 	// 移出時要移除 .hover 樣式
 	$tabsLi.hover(function(){
@@ -97,6 +116,8 @@ $(function(){
 			$this = $(this).addClass('active').removeClass('hover'), 
 			_index = $this.index(), 
 			isNext = _index > _activeIndex;
+		
+		$this.trigger("cssClassChanged");
 		
 		// 如果被點擊的頁籤就是目前已顯示的頁籤, 則不做任何動作
 		if(_activeIndex == _index) return;

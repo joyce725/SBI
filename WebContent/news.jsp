@@ -60,6 +60,17 @@
 			}
 		});
 		
+		//init data_source
+		var obj_a = $("<a></a>")
+			.attr("href", "http://www.dataa.com.tw/")
+			.attr("target", "_blank")
+			.text("Dataa大數據研究中心");
+		var obj_h6 = $("<h6></h6>")
+			.attr("style", "margin:5px;")
+			.append("<span>資料來源: <span>")
+			.append(obj_a);
+		
+		$('.data_source').append(obj_h6);
 	});
 </script>
 <jsp:include page="header.jsp" flush="true"/>
@@ -73,6 +84,7 @@
 			</ul>
 			<div class="tab_container">
 				<ul class="tab_content">
+					<div class="data_source"></div>
 					<li>
 						<div id="news-area" style='max-height:800px;'>
 							<table id="news-table"></table>
