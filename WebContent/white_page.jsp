@@ -16,14 +16,50 @@
 </style>
 <script>
 	$(function(){
+		//#####################################################
+		//######################要拆出去的#####################
+	
 		var scenario_job_id = "<%=(String)((request.getSession().getAttribute("scenario_job_id")==null)?"":request.getSession().getAttribute("scenario_job_id"))%>";
 		var scenario_job_page = "<%=(String)((request.getSession().getAttribute("scenario_job_page")==null)?"":request.getSession().getAttribute("scenario_job_page"))%>";
 		
+		var current_page = location.pathname.split("/").pop();
 		
-		alert(scenario_job_id);
-		if(scenario_job_id.length>2){
+		if( scenario_job_id.length > 2 && $("#scenario_controller").length==0){
+			$.ajax({
+				type : "POST",
+				url : "scenarioJob.do",
+				data : { 
+					action : "get_current_job_info",
+					job_id : scenario_job_id
+				},success : function(result) {
+					var json_obj = $.parseJSON(result);
+					
+					$("html").append("<div id='scenario_controller' class='scenario_controller' ondblclick='job_explanation(\""+json_obj.job_id+"\")' style=''>"+json_obj.job_name+" <img style='float:right;height:22px;margin-left:10px;'src='./refer_data/next_step.png'><img style='float:right;height:22px;margin-left:10px;'src='./refer_data/check.png'></div>");
+				}
+			});
+		}
+		
+		if( scenario_job_id.length > 2 && current_page == scenario_job_page){
+			
+			$.ajax({
+				type : "POST",
+				url : "scenarioJob.do",
+				data : { 
+					action : "get_current_job_info",
+					job_id : scenario_job_id,
+				},success : function(result) {
+					var json_obj = $.parseJSON(result);
+// 					$.each(json_obj,function(i, item) {
+						eval(json_obj.next_flow_guide);
+// 					});
+				}
+			});
+			
 			$("html").append("<div style='height:40px;width:200px;background-color:gray;position:fixed;bottom:3px;left:16px;'>123</div>");
 		}
+		//######################要拆出去的#####################		
+		//#####################################################			
+		
 		//div0: 左下角顯示狀態 和簡易操作介面 #job_status
 		//div1: guide 偵測session 給出指示訊息 及提醒要跳下一步可按右下角 #job_guide
 		//div2: 某些jsp上的按鈕代表紀錄後跳出下一步 #job
@@ -42,13 +78,13 @@
 // 		var element_name = "download";
 		setTimeout(function(){
 // 			alert("###"+$("#info").css("background-color")+"###");
-			cache_modal.push('run_modal("info","這邊寫的是時間文章時間",1);');
-			cache_modal.push('run_modal("f_name","這裡寫的是檔案名稱",1);');
-			cache_modal.push('run_modal("summary","這裡寫內文簡介",1);');
-			cache_modal.push('run_modal("title","觀測站文章標題",1);');
-			cache_modal.push('run_modal("return","點這個回到首頁",1,1);');
-			cache_modal.push('run_modal("download","guide 偵測session 給出指示訊息 及提醒要跳下一步可按右下角 #job_guide",1,1);');
-			do_modal();
+// 			cache_modal.push('run_modal("info","這邊寫的是時間文章時間",1);');
+// 			cache_modal.push('run_modal("f_name","這裡寫的是檔案名稱",1);');
+// 			cache_modal.push('run_modal("summary","這裡寫內文簡介",1);');
+// 			cache_modal.push('run_modal("title","觀測站文章標題",1);');
+// 			cache_modal.push('run_modal("return","點這個回到首頁",1,1);');
+// 			cache_modal.push('run_modal("download","guide 偵測session 給出指示訊息 及提醒要跳下一步可按右下角 #job_guide",1,1);');
+// 			do_modal();
 			//run_modal(element_name,"guide 偵測session 給出指示訊息 及提醒要跳下一步可按右下角 #job_guide",1);
 		},1000);
 		

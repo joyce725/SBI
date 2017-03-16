@@ -5,6 +5,23 @@ function do_modal(){
 		eval(cache_modal.shift());
 	}
 }
+
+function run_no_modal(this_eval_str){
+	eval(this_eval_str);
+	if(cache_modal.length>0){
+		var eval_str = cache_modal.shift();
+		var delay_time=0;
+		
+		while(eval_str.length<2 && eval_str!=null){
+			delay_time += 500;
+			eval_str = cache_modal.shift();
+		}
+		setTimeout(function(){
+			eval(eval_str);
+		},delay_time);
+	}
+}
+
 function run_modal(element_name,message,click_to_over,pervent_trigger){
 	if($("#"+element_name+"_tmp").length!=0){return;}
 	
@@ -21,14 +38,23 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 	$("#platform").append("<div id='modal_explanation' class='my_modal my_modal_explanation' style=''>"+message+"</div>");
 	var modal_explanation = $("#modal_explanation");
 	if($('html').width()-$("#"+element_name).offset().left>120){
-		modal_explanation.css("top",parseInt($("#"+element_name).offset().top)-parseInt($("#modal_explanation").css("height"))*0.5+18);
+		if(parseInt($("#"+element_name).offset().top)>$('html').height()*0.8){
+			modal_explanation.css("bottom",20);
+		}else{
+			modal_explanation.css("top",parseInt($("#"+element_name).offset().top)-parseInt($("#modal_explanation").css("height"))*0.5+18);
+		}
 		modal_explanation.css("left",(parseInt($("#"+element_name).offset().left)+20+(parseInt($("#"+element_name).css("width"))>$('html').width()*0.5?300:parseInt($("#"+element_name).css("width")))));
 		//alert((parseInt($("#"+element_name).offset().left)+20+parseInt($("#"+element_name).css("width"))));
 		if(parseInt($("#"+element_name).css("width"))>$('html').width()*0.5){
 			modal_explanation.css("background-color","indianred");
 		}
+		
 	}else{
-		modal_explanation.css("top",parseInt($("#"+element_name).offset().top)-parseInt($("#modal_explanation").css("height"))*0.5+18);
+		if(parseInt($("#"+element_name).offset().top)>$('html').height()*0.8){
+			modal_explanation.css("bottom",16);
+		}else{
+			modal_explanation.css("top",parseInt($("#"+element_name).offset().top)-parseInt($("#modal_explanation").css("height"))*0.5+18);
+		}
 		modal_explanation.css("left",$("#"+element_name).offset().left-200);
 	}
 	//這邊是美工 先放棄
@@ -87,13 +113,31 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 	}else{
 		clone_element.attr('onclick','');
 	}
+	console.log("length:" + cache_modal.length);
 	clone_element.click(function(){
 		if(click_to_over==1){
 			$("#platform").remove();
 		}
 		setTimeout(function(){
+			console.log("123");
+			console.log("length2:" + cache_modal);
 			if(cache_modal.length>0){
-				eval(cache_modal.shift());
+				console.log("456");
+				var eval_str = cache_modal.shift();
+				console.log("length2:" + cache_modal);
+				var delay_time=0;
+				console.log(eval_str);
+				
+				while(eval_str.length<2 && eval_str!=null){
+					delay_time += 1000;
+					eval_str = cache_modal.shift();
+					console.log("789");
+					console.log("length:" + cache_modal.length);
+				}
+				console.log("012");
+				setTimeout(function(){
+					eval(eval_str);
+				},delay_time);
 			}
 		}, 800);
 	});
@@ -103,8 +147,53 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 		}
 		setTimeout(function(){
 			if(cache_modal.length>0){
-				eval(cache_modal.shift());
+				var eval_str = cache_modal.shift();
+				var delay_time=0;
+				while(eval_str.length<2 && eval_str!=null){
+					delay_time += 1000;
+					eval_str = cache_modal.shift();
+				}
+				setTimeout(function(){
+					eval(eval_str);
+				},delay_time);
 			}
 		}, 800);
 	});
 }
+
+
+
+
+function job_explanation(job_id){
+	if($("#current_job_detail").length==0){
+		$.ajax({
+			type : "POST",
+			url : "scenarioJob.do",
+			data : { 
+				action : "get_current_job_info",
+				job_id : job_id
+			},success : function(result) {
+				var json_obj = $.parseJSON(result);
+				$("html").append("<div id='current_job_detail' title='情境流程說明'>"+json_obj.next_flow_explanation+"</div>");				
+				
+				$("#current_job_detail").dialog({
+					draggable : true, resizable : false, autoOpen : true,
+					width : "auto" ,height : "auto", modal : false,
+					show : {effect : "blind", duration : 300 },
+					hide : { effect : "fade", duration : 300 },
+					buttons : [{
+						text : "確定",
+						click : function() {$(this).dialog("close");}
+					}]
+				});
+			}
+		});
+	}else{
+		$("#current_job_detail").dialog("open");
+	}
+	
+	
+	
+}
+
+

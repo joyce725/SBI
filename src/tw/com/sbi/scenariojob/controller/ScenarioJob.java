@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -59,7 +60,7 @@ public class ScenarioJob extends HttpServlet {
 				
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(list);
-				logger.debug(jsonStrList);
+				logger.debug("[Output]: "+jsonStrList);
 				response.getWriter().write(jsonStrList);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -69,7 +70,7 @@ public class ScenarioJob extends HttpServlet {
 				caseService = new ScenarioService();
 				List<ScenarioJobVO> list = caseService.select_all_scenario();
 				String jsonStrList = new Gson().toJson(list);
-				logger.debug(jsonStrList);
+				logger.debug("[Output]: "+jsonStrList);
 				response.getWriter().write(jsonStrList);
 				return;
 			} catch (Exception e) {
@@ -87,6 +88,7 @@ public class ScenarioJob extends HttpServlet {
 				caseService.insert_job(group_id,scenario_id,job_name);
 				List<ScenarioJobVO> list = caseService.get_all_job(group_id);
 				String jsonStrList = new Gson().toJson(list);
+				logger.debug("[Output]: "+jsonStrList);
 				response.getWriter().write(jsonStrList);
 				return;
 			} catch (Exception e) {
@@ -102,7 +104,7 @@ public class ScenarioJob extends HttpServlet {
 				caseService.delete_job(job_id);
 				List<ScenarioJobVO> list = caseService.get_all_job(group_id);
 				String jsonStrList = new Gson().toJson(list);
-				
+				logger.debug("[Output]: "+jsonStrList);
 				response.getWriter().write(jsonStrList);
 				return;
 			} catch (Exception e) {
@@ -121,6 +123,7 @@ public class ScenarioJob extends HttpServlet {
 				
 				List<ScenarioJobVO> list = caseService.get_all_job(group_id);
 				String jsonStrList = new Gson().toJson(list);
+				logger.debug("[Output]: "+jsonStrList);
 				response.getWriter().write(jsonStrList);
 				return;
 			} catch (Exception e) {
@@ -132,8 +135,10 @@ public class ScenarioJob extends HttpServlet {
 			String scenario_job_page = request.getParameter("scenario_job_page");
 			session.setAttribute("scenario_job_id", scenario_job_id);
 			session.setAttribute("scenario_job_page", scenario_job_page);
-			System.out.println("session: "+scenario_job_id+" ### "+scenario_job_page);
-			response.getWriter().write("");
+			logger.debug("[Session]job_id: "+scenario_job_id);
+			logger.debug("[Session]job_page: "+scenario_job_page);
+			logger.debug("[Output]: success");
+			response.getWriter().write("success");
 			return;
 		}else if("set_scenario_result".equals(action)){
 			String group_id = request.getSession().getAttribute("group_id").toString();
@@ -148,6 +153,31 @@ public class ScenarioJob extends HttpServlet {
 			//ScenarioResultVO a = new ScenarioResultVO(result, result, result, result, result, result);
 			//result_list.add(e);
 			caseService.dealing_job_save_result(group_id,job_id,category,result);
+			logger.debug("[Output]: success");
+			response.getWriter().write("success");
+			return;
+		}else if("get_current_job_info".equals(action)){
+			try {
+				String group_id = request.getSession().getAttribute("group_id").toString();
+				String job_id = request.getParameter("job_id");
+//				String job_page = request.getParameter("scenario_job_page");
+				String jsonStrList="";
+				logger.debug("job_id: " + job_id);
+//				logger.debug("scenario_job_page: " + scenario_job_page);
+				
+				caseService = new ScenarioService();
+				List<ScenarioJobVO> list = caseService.get_all_job(group_id);
+				for(int i = 0;i < list.size(); i ++){
+					if(job_id.equals(list.get(i).getJob_id())){
+						jsonStrList = new Gson().toJson(list.get(i));
+					}
+		        }
+				logger.debug("[Output]: "+jsonStrList);
+				response.getWriter().write(jsonStrList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else if("over_a_step".equals(action)){
 			
 		}
 	
@@ -172,7 +202,6 @@ public class ScenarioJob extends HttpServlet {
 		public void delete_job(String job_id) {
 			dao.delete_job(job_id);
 		}
-		
 		public List<ScenarioJobVO> select_all_scenario(){
 			return dao.select_all_scenario();
 		}
@@ -580,15 +609,15 @@ public class ScenarioJob extends HttpServlet {
 					}
 				}
 			}
-			System.out.print("1: "+new Gson().toJson(old_result));
+			logger.debug("1: "+new Gson().toJson(old_result));
 			
 			//#########################################################
 			//String json_result="";
 			List<ScenarioResultVO> old_json_result = new Gson().fromJson(old_result, new TypeToken<List<ScenarioResultVO>>() {}.getType());
 			
-			System.out.print("2: "+new Gson().toJson(old_json_result));
+			logger.debug("2: "+new Gson().toJson(old_json_result));
 			old_json_result.add(new_one);
-			System.out.print("3: "+new Gson().toJson(new_one));
+			logger.debug("3: "+new Gson().toJson(new_one));
 			Gson gson = new Gson();
 			String jsonStrList = gson.toJson(old_json_result);
 			this.dealing_job_update_result(job_id,jsonStrList);
@@ -601,8 +630,6 @@ public class ScenarioJob extends HttpServlet {
 			
 		}
 		public void dealing_job_update_result(String job_id,String json_result){
-//			List<ScenarioResultVO> list = new ArrayList<ScenarioResultVO>();
-//			ScenarioJobVO ScenarioResultVO = null;
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
