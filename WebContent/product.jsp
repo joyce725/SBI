@@ -40,9 +40,6 @@ table.form-table {
 <script>
 $(function(){
 	
-	var p_product_id = ""; 
-	var p_row = "";
-	
 	var validator_insert = $("#insert-dialog-form-post").validate({
 		rules : {
 		}
@@ -241,7 +238,7 @@ $(function(){
 		$("#files-update").html('');
 		$("#photo0-update").val('');
 		
-		var row = jQuery(this).closest('tr');
+		var row = $(this).closest('tr');
 		var data = $("#table_product").dataTable().fnGetData(row);
 		
 		$("#dialog-form-update input[name='product_spec']").val( data.product_spec );
@@ -308,13 +305,12 @@ $(function(){
 			update_dialog.dialog("close");
 		}
 	});
-
 	
 	//刪除事件聆聽 : 因為聆聽事件動態產生，所以採用delegate來批量處理，節省資源
 	$("#table_product").delegate(".btn-delete", "click", function(e) {
 		e.preventDefault();
 		
-		var row = jQuery(this).closest('tr');
+		var row = $(this).closest('tr');
 		var data = $("#table_product").dataTable().fnGetData(row);
 		
 		$("#delete_product_spec").html( data.product_spec );
@@ -322,6 +318,7 @@ $(function(){
 			.data("product_id", data.product_id)
 			.dialog("open");
 	});
+	
 	// "刪除" Dialog相關設定
 	del_dialog = $("#dialog-form-delete").dialog({
 		draggable : false,//防止拖曳
@@ -370,7 +367,7 @@ $(function(){
 	$("#table_product").delegate(".btn-iden", "click", function(e) {
 		e.preventDefault();
 		
-		var row = jQuery(this).closest('tr');
+		var row = $(this).closest('tr');
 		var data = $("#table_product").dataTable().fnGetData(row);
 		
 		identitiy_dialog
@@ -429,13 +426,14 @@ $(function(){
 		$("#files-update").html('');
 		$("#photo0-update").val('');
 		
-		var row = jQuery(this).closest('tr');
+		var row = $(this).closest('tr');
 		var data = $("#table_product").dataTable().fnGetData(row);
 		
 		$("#dialog-form-genService input[name='product_spec']").val( data.product_spec );
 		
 		genService_dialog
 			.data("product_id", data.product_id)
+			.data("photo", data.photo)
 			.dialog("open");
 	});
 	
@@ -458,9 +456,6 @@ $(function(){
 			id : "update",
 			text : "產生",
 			click : function() {
-				if($("#photo0-update").val()==""){
-					$("#photo0-update").val($('#photo_' + p_row).attr("name"));					
-				}
 // 				if ($('#genService-dialog-form-post').valid()) {
 					$.ajax({
 						type : "POST",
@@ -492,7 +487,6 @@ $(function(){
 			genService_dialog.dialog("close");
 		}
 	});
-
 	
 	//處理 product spec 的autocomplete查詢
 	$("#search_product_spec").autocomplete({
@@ -533,9 +527,7 @@ $(function(){
 	             $(this).attr("placeholder","請輸入查詢商品名稱");
 	         }
 	     }           
-	 });
-	
-	
+	});
 	
 	//<!-- photo section jquery begin by Melvin -->
 	'use strict';
@@ -687,7 +679,7 @@ $(function(){
         );
     }).on('fileuploaddone', function (e, data) {
     	$.each(data.result.files, function (index, file) {
-        	$("#photo0-update").val(file.name);///////////////////////////////////////
+        	$("#photo0-update").val(file.name);
             if (file.url) {
                 var link = $('<a>')
                     .attr('target', '_blank')
@@ -714,143 +706,152 @@ $(function(){
 })
 </script>
 <jsp:include page="header.jsp" flush="true"/>
-	<div class="content-wrap">
-		<h2 class="page-title">商品管理</h2>
-		<div class="input-field-wrap">
-			<div class="form-wrap">
-				<div class="form-row">
-					<label for="">
-						<span class="block-label">商品名稱查詢</span>
-						<input type="text" id="search_product_spec" placeholder="請輸入查詢商品名稱">
-					</label>
-					<a href="#" id="btn_query" class="btn btn-darkblue">查詢</a>
-				</div>
-				<div class="btn-row">
-					<a href="#" id="btn_insert_product" class="btn btn-exec btn-wide">新增商品資料</a>
-				</div>
-			</div><!-- /.form-wrap -->
-		</div><!-- /.input-field-wrap -->
-		
-		<div class="search-result-wrap">
-			<div class="result-table-wrap">
-				<table id="table_product" class="result-table">
-					<thead>
-						<tr>
-							<th>商品規格</th>
-							<th>商品圖片名稱</th>
-							<th>加密因子</th>
-							<th>商品識別碼</th>
-							<th>商品識別碼QR code</th>
-							<th>功能</th>
-							<th>取得商品識別碼</th>
-							<th>取得服務識別碼</th>
-						</tr>
-					</thead>
-					<tbody style="text-align:center">
-					</tbody>
-				</table>
+<div class="content-wrap">
+	<h2 class="page-title">商品管理</h2>
+	<div class="input-field-wrap">
+		<div class="form-wrap">
+			<div class="form-row">
+				<label for=""> <span class="block-label">商品名稱查詢</span> 
+				<input type="text" id="search_product_spec" placeholder="請輸入查詢商品名稱">
+				</label> <a href="#" id="btn_query" class="btn btn-darkblue">查詢</a>
+			</div>
+			<div class="btn-row">
+				<a href="#" id="btn_insert_product" class="btn btn-exec btn-wide">新增商品資料</a>
 			</div>
 		</div>
-		
-		<!--對話窗樣式-新增 -->
-		<div id="dialog-form-insert" title="新增資料" style="display:none">
-			<form name="insert-dialog-form-post" id="insert-dialog-form-post" style="display:inline">
-				<table style="border-collapse: separate;border-spacing: 10px 20px;">
-					<tbody>
-						<tr>
-							<td><p>商品規格：</p></td>
-							<td><input type="text" id="insert_product_spec" name="product_spec" ></td>
-							<td><p>加密因子：</p></td>
-							<td><input type="text" id="insert_seed" name="seed" ></td>
-						</tr>
-					</tbody>
-				</table>
-				<!-- photo section begin by Melvin -->
-				<table class='form-table'>
-					<tbody>
-						<tr>
-							<td>商品圖片：</td>
-							<td>
-								<span class="btn btn-success fileinput-button btn-primary" style="padding: 6px 12px;border-radius: 5px;">
-								<span><font color="white">+&nbsp;</font>瀏覽<font color="red">(最大500K)</font></span>
-								<input id="fileupload" type="file" name="files[]">
-								<br>
-								</span>
-								<div id="files" class="files" ></div>
-	               			</td>
-	               		</tr>	
-               	  		</tbody>
-               	  </table>		
-               	<!-- photo section end by Melvin -->	
-			</form>
-		</div>	
-			
-		<!--對話窗樣式-修改 -->
-		<div id="dialog-form-update" title="修改資料" style="display:none">
-			<form name="update-dialog-form-post" id="update-dialog-form-post">
-				<table style="border-collapse: separate;border-spacing: 10px 20px;">
-					<tbody>
-						<tr>
-							<td><p>商品規格：</p></td>
-							<td><input type="text" id="update_product_spec" name="product_spec" ></td>
-							<td><p>加密因子：</p></td>
-							<td><input type="text" id="update_seed" name="seed" ></td>
-						</tr>
-					</tbody>
-				</table>	
-				<!-- photo section begin by Melvin -->
-				<table class="form-table">
-					<tbody>
-						<tr>
-							<td>商品圖片：</td>
-							<td>
-								<span class="btn btn-success fileinput-button btn-primary" style="padding: 6px 12px;border-radius: 5px;">
-								<span><font color="white">+&nbsp;</font>瀏覽<font color="red">(最大500K)</font></span>
-								<input id="fileupload-update" type="file" name="files-update[]">
-							<br>
-								</span>
-								<div id="files-update" class="files" ></div>
-	               			</td>
-               		 	</tr>	
-           	  		</tbody>
-              	</table>		
-               	<!-- photo section end by Melvin -->
-			</form>
-		</div>	
-		
-		<!--對話窗樣式-產生服務識別碼 -->
-		<div id="dialog-form-genService" title="產生服務識別碼" style="display:none">
-			<form name="genService-dialog-form-post" id="genService-dialog-form-post">
-				<table style="border-collapse: separate;border-spacing: 10px 20px;">
-					<tbody>
-						<tr>
-							<td><p>商品規格：</p></td>
-							<td><input type="text" id="genServcie_product_spec" name="product_spec" ></td>
-							<td><p>數量：</p></td>
-							<td><input type="text" id="genServcie_quantity" name="seed" value="0" ></td>
-						</tr>
-					</tbody>
-				</table>
-			</form>
-		</div>	
-		
-		<!--對話窗樣式-刪除 -->
-		<div id="dialog-form-delete" title="確認刪除資料嗎?" style="display:none">
-			<form name="delete-dialog-form-post" id="delete-dialog-form-post" style="display:inline">
-				<p>是否確認刪除:</p>
-				<div style="text-align:center">
-					<label id="delete_product_spec"></label>
-				</div>
-			</form>
-		</div>	
-		
-		<!--對話窗樣式-產生商品識別碼 -->
-		<div id="dialog-form-identity" title="確認產生商品識別碼?" style="display:none">
-			<form name="identity-dialog-form-post" id="identity-dialog-form-post" style="display:inline">
-				<p>確認是否產生?:</p>
-			</form>
-		</div>	
+		<!-- /.form-wrap -->
 	</div>
-	<input type="text" id="photo0" style="display:none"/>
+	<!-- /.input-field-wrap -->
+
+	<div class="search-result-wrap">
+		<div class="result-table-wrap">
+			<table id="table_product" class="result-table">
+				<thead>
+					<tr>
+						<th>商品規格</th>
+						<th>商品圖片名稱</th>
+						<th>加密因子</th>
+						<th>商品識別碼</th>
+						<th>商品識別碼QR code</th>
+						<th>功能</th>
+						<th>取得商品識別碼</th>
+						<th>取得服務識別碼</th>
+					</tr>
+				</thead>
+				<tbody style="text-align: center">
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!--對話窗樣式-新增 -->
+	<div id="dialog-form-insert" title="新增資料" style="display: none">
+		<form name="insert-dialog-form-post" id="insert-dialog-form-post"
+			style="display: inline">
+			<table style="border-collapse: separate; border-spacing: 10px 20px;">
+				<tbody>
+					<tr>
+						<td><p>商品規格：</p></td>
+						<td><input type="text" id="insert_product_spec" name="product_spec"></td>
+						<td><p>加密因子：</p></td>
+						<td><input type="text" id="insert_seed" name="seed"></td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- photo section begin by Melvin -->
+			<table class='form-table'>
+				<tbody>
+					<tr>
+						<td>商品圖片：</td>
+						<td>
+						<span
+							class="btn btn-success fileinput-button btn-primary"
+							style="padding: 6px 12px; border-radius: 5px;"> 
+							<span>
+								<font color="white">+&nbsp;</font>瀏覽<font color="red">(最大500K)</font>
+							</span>
+							<input id="fileupload" type="file" name="files[]"> <br>
+						</span>
+							<div id="files" class="files"></div></td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- photo section end by Melvin -->
+		</form>
+	</div>
+
+	<!--對話窗樣式-修改 -->
+	<div id="dialog-form-update" title="修改資料" style="display: none">
+		<form name="update-dialog-form-post" id="update-dialog-form-post">
+			<table style="border-collapse: separate; border-spacing: 10px 20px;">
+				<tbody>
+					<tr>
+						<td><p>商品規格：</p></td>
+						<td><input type="text" id="update_product_spec" name="product_spec"></td>
+						<td><p>加密因子：</p></td>
+						<td><input type="text" id="update_seed" name="seed"></td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<!-- photo section begin by Melvin -->
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<td>商品圖片：</td>
+						<td><span
+							class="btn btn-success fileinput-button btn-primary"
+							style="padding: 6px 12px; border-radius: 5px;"> <span><font
+									color="white">+&nbsp;</font>瀏覽<font color="red">(最大500K)</font></span>
+								<input id="fileupload-update" type="file" name="files-update[]">
+								<br>
+						</span>
+							<div id="files-update" class="files"></div></td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- photo section end by Melvin -->
+		</form>
+	</div>
+
+	<!--對話窗樣式-產生服務識別碼 -->
+	<div id="dialog-form-genService" title="產生服務識別碼" style="display: none">
+		<form name="genService-dialog-form-post"
+			id="genService-dialog-form-post">
+			<table style="border-collapse: separate; border-spacing: 10px 20px;">
+				<tbody>
+					<tr>
+						<td><p>商品規格：</p></td>
+						<td><input type="text" id="genServcie_product_spec"
+							name="product_spec"></td>
+						<td><p>數量：</p></td>
+						<td><input type="text" id="genServcie_quantity" name="seed"
+							value="0"></td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+
+	<!--對話窗樣式-刪除 -->
+	<div id="dialog-form-delete" title="確認刪除資料嗎?" style="display: none">
+		<form name="delete-dialog-form-post" id="delete-dialog-form-post"
+			style="display: inline">
+			<p>是否確認刪除:</p>
+			<div style="text-align: center">
+				<label id="delete_product_spec"></label>
+			</div>
+		</form>
+	</div>
+
+	<!--對話窗樣式-產生商品識別碼 -->
+	<div id="dialog-form-identity" title="確認產生商品識別碼?" style="display: none">
+		<form name="identity-dialog-form-post" id="identity-dialog-form-post"
+			style="display: inline">
+			<p>確認是否產生?:</p>
+		</form>
+	</div>
+</div>
+<input type="text" id="photo0" style="display:none"/>
 	<input type="text" id="photo0-update" style="display:none"/>
 <jsp:include page="footer.jsp" flush="true"/>
