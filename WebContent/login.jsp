@@ -9,19 +9,8 @@
 	<script src="js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript">
 	
-	
-	
-	
-	<% session.setAttribute("user_id", "026ea277-9c14-11e6-922d-005056af760c"); %>
-	<% session.setAttribute("group_id", "6ec1fbf4-6c9c-11e5-ab77-000c29c1d067"); %>
-	<% session.setAttribute("user_name", "Avery"); %>
-	<% session.setAttribute("role", 0); %>
-	<% session.setAttribute("privilege", "1,2,3,4,5,28,29,30,31,32,27,24,22,57,23,7,6,25,11,10,17,9,33,34,35,36,37,38,39,40,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,59,61,63,12,13,14,15,16,18,19,20,21,76"); %>
-	
-
-	
 	<%if(request.getSession().getAttribute("user_name")!=null){%>
-		top.location.href="scenarioJob.jsp";
+		top.location.href="news.jsp";
 	<%}%>
 		
 	    function changeImg(){
