@@ -9,13 +9,14 @@
 	<link rel="stylesheet" href="css/jquery-ui.min.css">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/styles.css">
-
+	<link rel="stylesheet" href="./css/my_modal.css" type="text/css" media="screen" />
 	<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="js/additional-methods.min.js"></script>
 	<script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 	<script type="text/javascript" src="js/common.js"></script>
+	<script src="./js/my_modal.js" type="text/javascript"></script>
 <%
 	String group_id = (String) session.getAttribute("group_id");
 	String user_id = (String) session.getAttribute("user_id");
@@ -83,7 +84,8 @@ var page_comparison={
 		"groupBackstage.jsp": "公司後台管理",
 		"uploaddocsManager.jsp": "商機觀測站後臺"
 	}
-
+	cache_modal.push('run_modal("btn_main_view","就查看嘛",1,1);');
+	do_modal();
 
 	var explane_txt_arr=["餐飲設址7步驟【如下說明】<br>(1)檢視環境：確認是否有開店的商機【現況發展、未來潛力及競爭強度】<br>(2)選擇區位：人流決定餐廳成功【鎖定客流量最高，選擇商圈區位】<br>(3)人潮分布：辦公大樓、居民社區等機構分布狀況【人潮來源地】<br>(4)環域分析：在既有店面位址【步行5~15分鐘所涵蓋的辦公、社區與機構設施】<br>(5)停車設施：顧客開車來用餐，附近停車方便性【步行10分鐘內所涵蓋的停車場】<br>(6)競爭分布：商圈內餐飲業分佈狀況【投資競爭缺口】<br>(7)消費特性：了解當地消費者對於產品與服務需求缺口【以缺口當作商機】<br><br>","零售設址7步驟【如下說明】<br>(1)評估城市：避開對手已經進入城市，並評估人口／所得是否合適【比較西安／武漢／重慶】<br>(2)評估商圈：評估重慶商圈人流量／消費結構，搭配電子書【了解商圈消費規模及功能定位】<br>(3)檢視環境：檢視競爭分布及效應／交通狀況及工具／人潮分布【深入了解，以利選點】<br>(4)區位選擇：確認是否有擴點商機【未來潛力好及發展現況好，競爭強度】<br>(5)消費特性：了解該商圈消費者偏好到購物環境好的商場的分數？受商場商品促銷吸引分數？【消費偏好】<br>(6)評估成本：經營成本可找到最符合自身進駐的租金成本區塊。【了解投入租金／人事成本】<br>(7)環域分析：步行5～15分鐘內所涵蓋的寫字樓、文教設施及居民社區【進行服務範圍模擬】<br><br>","鎖定目標客群，再點出哪個市場符合，最後為選擇市場，進行評估（SBI全包處理）<br>醫美產業新品進入6步驟【如下說明】<br><br>(1)目標客戶：找出新產品合適的目標客群【個性屬性、消費態度/偏好/特色】<br>(2)評估城市：找出有潛力的亞洲城市【依此頁評估項目進行人品/GDP/消費支出】<br>(3)評估商圈：馬來西亞適合進入的商圈【可搭配地圖/電子書進行了解】<br>(4)空間決策：目標市場→決定主要商圈/競爭分析→了解競爭商分布/銷售通路→評估優先序<br>(5)區位選擇：藉由交通便利性找到最符合進駐的物流及人流區塊【選地點】<br>(6)環域分析：進行服務範圍模擬【步行10分／單車5分所涵蓋的超巿、藥妝及購物百貨】<br><br>","先點出佈局的地點；再點出布局需考慮且評估的項目（SBI全包處理）<br>長照海外布局6步驟【如下說明】<br><br>(1)檢視適合城市：找出適合國際化的亞洲城巿建議的優先序。以電子書依序了解城巿規格及各業態競爭概況。<br>(2)檢視區位環境：確認是否Q有擴點的商機【現況發展、未來潛力及競爭強度】<br>(3)評估消費市場：找出適應的城巿及目標客群／建康產業消費統計指標／家戶結構<br>(4)評估投資成本：馬來西亞各城巿的生活費用來評估可能的投資成本<br>(5)評估競爭分布：了解武吉免登圈內醫院、居民社區、停車場及藥妝店分布。<br>(6)環域分析5min：在既有店面位址【步行5分鐘所涵蓋的範圍】<br>"];
 	function draw_scenario(parameter){
