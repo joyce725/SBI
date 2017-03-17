@@ -84,7 +84,6 @@
 			</ul>
 			<div class="tab_container">
 				<ul class="tab_content">
-					<div class="data_source"></div>
 					<li>
 						<div id="news-area" style='max-height:800px;'>
 							<table id="news-table"></table>
@@ -103,6 +102,7 @@
 							<tbody>
 							</tbody>
 						</table>
+						<div class="data_source"></div>
 					</li>
 				</ul>
 			</div>

@@ -84,7 +84,7 @@ $(function(){
 		var title = $(this).find("span").text();
 		
 		$('.data_source').empty();
-		if (title === "每日產業重點訊息") {
+		if (title === "商機觀測站") {
 			var obj_a = $("<a></a>")
 				.attr("href", "http://www.dataa.com.tw/")
 				.attr("target", "_blank")
