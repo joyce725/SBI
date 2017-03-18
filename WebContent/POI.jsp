@@ -288,17 +288,6 @@ var item_marker = function (speed, time, marker, circle) {
 		});
 	    $("#warning").show();
         $("#pdf_layer").menu();
-        
-//     		JSON.stringify(obj, function(key, val) {
-//     		   if (val != null && typeof val == "object") {
-//     		        if (seen.indexOf(val) >= 0) {
-//     		            return;
-//     		        }
-//     		        seen.push(val);
-//     		    }
-//     		    return val;
-//     		});
-		    	
 			$("#end").click(function(){
 				var result_str="[經度,緯度,半徑,時速,時間]=>";
 				$.each(rs_markers, function(i, node){
@@ -473,12 +462,6 @@ var item_marker = function (speed, time, marker, circle) {
 				center: {lat: 23.598321171324468, lng: 120.97802734375}
 			});
 			google.maps.event.addListener(map, 'click', function(event) {
-// 				event={}
-// 				event["latlng"] = new google.maps.LatLng("22.994", "120.218");
-// 				console.log(event);
-// 				console.log(event.latLng);
-				//console.log(JSON.stringify(event));
-
 				if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
 					if(rs_markers.length>=5){alert("最多五個點");return;}
 					var order=(rs_markers.length+1)+"";
