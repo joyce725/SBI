@@ -1,18 +1,15 @@
 package tw.com.sbi.scenariojob.controller;
 
 import java.io.IOException;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -27,9 +24,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import tw.com.sbi.productforecast.controller.ProductForecast.ProductForecastBean;
-import tw.com.sbi.productforecastpoint.controller.ProductForecastPoint.ProductForecastPointBean;
-import tw.com.sbi.productforecastpoint.controller.ProductForecastPoint.ProductForecastPointService;
 import tw.com.sbi.vo.ScenarioJobVO;
 import tw.com.sbi.vo.ScenarioResultVO;
 
@@ -163,9 +157,6 @@ public class ScenarioJob extends HttpServlet {
 			logger.debug("category:" + category);
 			logger.debug("result:" + result);
 			caseService = new ScenarioService();
-			//List<ScenarioResultVO> result_list =  caseScenarioService.dealing_job_load_result(job_id);
-			//ScenarioResultVO a = new ScenarioResultVO(result, result, result, result, result, result);
-			//result_list.add(e);
 			if(current_page.equals(scenario_job_page)){
 				caseService.dealing_job_save_result(group_id,scenario_job_id,category,result);
 				logger.debug("[Output]: success");
@@ -180,10 +171,8 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				String group_id = request.getSession().getAttribute("group_id").toString();
 				String job_id = request.getParameter("job_id");
-//				String job_page = request.getParameter("scenario_job_page");
 				String jsonStrList="";
 				logger.debug("job_id: " + job_id);
-//				logger.debug("scenario_job_page: " + scenario_job_page);
 				
 				caseService = new ScenarioService();
 				List<ScenarioJobVO> list = caseService.get_all_job(group_id);
@@ -273,10 +262,6 @@ public class ScenarioJob extends HttpServlet {
 		public List<ScenarioJobVO> get_scenario_child(String scenario_id){
 			return dao.get_scenario_child(scenario_id);
 		}
-		//######################################
-		//######################################
-		//######################################
-		
 	}
 
 	/*************************** 制定規章方法 ****************************************/
@@ -288,15 +273,7 @@ public class ScenarioJob extends HttpServlet {
 		public List<ScenarioJobVO> select_all_scenario();
 		public void dealing_job_save_result(String group_id,String job_id, String category, String result);
 		public void over_step(String job_id,String flow_id,String flow_seq,String finished,String finish_time);
-		//######################################
-		//######################################
-		//######################################
 		public List<ScenarioJobVO> get_scenario_child(String scenario_id);
-		
-//		public List<ScenarioJobVO> selectCity(String country);
-//		public List<ScenarioJobVO> selectBD(String city);
-//		
-//		public String insertCase(ScenarioJobVO caseVO);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -306,7 +283,6 @@ public class ScenarioJob extends HttpServlet {
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 		
-		// 會使用到的Stored procedure
 		private static final String select_job_info = "SELECT * FROM tb_scenario_job "
 				+ " LEFT JOIN tb_scenario_flow this ON tb_scenario_job.flow_id = this.flow_id "
 				+ " LEFT JOIN tb_scenario ON this.scenario_id = tb_scenario.scenario_id "
@@ -409,7 +385,6 @@ public class ScenarioJob extends HttpServlet {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				pstmt = con.prepareStatement(scenario_job_insert);
-//				System.out.println(group_id+"####"+scenario_id+"####"+job_name);
 				pstmt.setString(1, group_id);
 				pstmt.setString(2, scenario_id);
 				pstmt.setString(3, job_name);
@@ -639,7 +614,6 @@ public class ScenarioJob extends HttpServlet {
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					if(job_id.equals(null2Str(rs.getString("job_id")))){
-//						logger.debug(job_id+" "+rs.getString("job_id")+" "+rs.getString("next.flow_name"));
 						new_one.setScenario_name(null2Str(rs.getString("scenario_name")));
 						new_one.setStep(       (Integer.parseInt(null2Str(rs.getString("flow_seq")))+1)+""          );
 						new_one.setFlow_name(null2Str(rs.getString("next.flow_name")));
@@ -678,25 +652,10 @@ public class ScenarioJob extends HttpServlet {
 					}
 				}
 			}
-//			logger.debug("1: "+new Gson().toJson(old_result));
-			
-			//#########################################################
-			//String json_result="";
 			List<ScenarioResultVO> old_json_result = new Gson().fromJson(old_result, new TypeToken<List<ScenarioResultVO>>() {}.getType());
-			
-//			logger.debug("2: "+new Gson().toJson(old_json_result));
 			old_json_result.add(new_one);
-//			logger.debug("3: "+new Gson().toJson(new_one));
-//			Gson gson = ;
 			String jsonStrList = new Gson().toJson(old_json_result);
 			this.dealing_job_update_result(job_id,jsonStrList);
-			
-			//###########################################
-			//###########################################
-			//##############檢查使用起來的樣子#################
-			//###########################################
-			//###########################################
-			
 		}
 		public void dealing_job_update_result(String job_id,String json_result){
 			Connection con = null;
@@ -850,10 +809,5 @@ public class ScenarioJob extends HttpServlet {
 		if (object instanceof Timestamp)
 			return object == null ? "" : new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(object);
 		return object == null ? "" : object.toString().trim();
-	}
-
-	private Integer null2Int(Object object) {
-		String s = object == null ? "0" : String.valueOf(object);
-		return object == null ? 0 : Integer.valueOf(s);
 	}
 }

@@ -6,8 +6,6 @@
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
-  <script src="./js/my_modal.js" type="text/javascript"></script>
-  <link rel="stylesheet" href="./css/my_modal.css" type="text/css" media="screen" />
 <style>
 	.topnav {
 		z-index: 2;

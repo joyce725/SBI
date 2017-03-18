@@ -8,7 +8,6 @@
   box-sizing: border-box;
   background-color: rgb(0,0,0);
   background-color: rgba(0,0,0,0.5);
-/*   text-align: center; */
 }
 .my_blocker:before{
   content: "";
@@ -32,28 +31,8 @@
 }
 .my_modal {
   display: inline-block;
-/*   vertical-align: middle; */
   position: absolute;
   z-index: 101;
-/*   max-width: 500px; */
-/*   box-sizing: border-box; */
-/*    width: auto; */
-/*    height: auto; */
-/*   background: #fff; */
-/*   padding: 15px 30px; */
-/*   -webkit-border-radius: 8px; */
-/*   -moz-border-radius: 8px; */
-/*   -o-border-radius: 8px; */
-/*   -ms-border-radius: 8px; */
-/*    border-radius: 0px;  */
-/*   -webkit-box-shadow: 0 0 10px #000; */
-/*   -moz-box-shadow: 0 0 10px #000; */
-/*   -o-box-shadow: 0 0 10px #000; */
-/*   -ms-box-shadow: 0 0 10px #000; */
-/*   box-shadow: 0 0 10px #000; */
-/*   text-align: left; */
-/*   top: 0px; */
-/*   left:0px; */
 }
 
 .scenario_controller{
@@ -67,16 +46,10 @@
 	bottom:3px;
 	left:24px;
 }
-.scenario_controller:hover{
-/* 	background-color:#33FFFF; */
-}
-/* ###################### */
-/* 以下是不屬於這裡的code */
 #tooltip{
         position:absolute;
         border:1px solid #333;
         background:#f7f5d1;
-/* 		background:red; */
         padding:3px;
         color:#333;
         display:none;
@@ -88,7 +61,6 @@
 .focus{
 	background: none;
 	padding:3px 3px 0px 7px;
-/* 	border-bottom: 1px solid #fff; */
 }
 .focus:hover{
 	background-image: linear-gradient(#ccc,#ddd);
@@ -96,7 +68,6 @@
 	border: 1px solid #bbb;
 	border-bottom: 0px solid #ddds;
 }
-
 .bentable-style1 td{
 	padding:5px 8px;
 }

@@ -74,7 +74,6 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 	$("#platform").html(clone_element);
 	$("#platform").append("<div id='modal_explanation' class='my_modal my_modal_explanation' style=''>"+message+"</div>");
 	var modal_explanation = $("#modal_explanation");
-	//console.log($('html').width()-$("#"+element_name).offset().left);
 	if($('html').width()-$("#"+element_name).offset().left>400){
 		if(parseInt($("#"+element_name).offset().top)>$('html').height()*0.8){
 			modal_explanation.css("bottom",20);
@@ -82,7 +81,6 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 			modal_explanation.css("top",parseInt($("#"+element_name).offset().top)-parseInt($("#modal_explanation").css("height"))*0.5+18);
 		}
 		modal_explanation.css("left",(parseInt($("#"+element_name).offset().left)+20+(parseInt($("#"+element_name).css("width"))>$('html').width()*0.5?300:parseInt($("#"+element_name).css("width")))));
-		//alert((parseInt($("#"+element_name).offset().left)+20+parseInt($("#"+element_name).css("width"))));
 		if(parseInt($("#"+element_name).css("width"))>$('html').width()*0.5){
 			modal_explanation.css("background-color","indianred");
 		}
@@ -95,29 +93,6 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 		}
 		modal_explanation.css("left",$("#"+element_name).offset().left-modal_explanation.width()-50);
 	}
-	//這邊是美工 時間不夠先放棄
-// 	if( Math.abs($('html').width()-$("#"+element_name).offset().left*2)
-// 			<Math.abs($('html').height()-$("#"+element_name).offset().top*2) ){
-// 		//高取向
-// 		if($('html').height()>$("#"+element_name).offset().top*2){
-// 			modal_explanation.css("top",$("#"+element_name).offset().top+$('html').height()*0.5);
-// 			modal_explanation.css("left",$('html').width()*0.5);
-// 		}else{
-// 			modal_explanation.css("top",$("#"+element_name).offset().top-$('html').height()*0.5);
-// 			modal_explanation.css("left",$('html').width()*0.5);
-// 		}
-// 	}else{
-// 		//寬取向
-// 		if($('html').width()>$("#"+element_name).offset().left*2){
-// 			modal_explanation.css("top",$('html').height()*0.5);
-// 			modal_explanation.css("left",$("#"+element_name).offset().left+$('html').width()*0.5);
-// 		}else{
-// 			modal_explanation.css("top",$('html').height()*0.5);
-// 			modal_explanation.css("left",$("#"+element_name).offset().left-$('html').width()*0.5);
-// 		}
-// 	}
-	
-	
  	clone_element.attr('class',(clone_element.attr('class')==null?"":clone_element.attr('class'))+' my_modal');
 	if($("#"+element_name).css("background-color")=="transparent" || $("#"+element_name).css("background-color") == "rgba(0, 0, 0, 0)"){
 		clone_element.css("background-color","white");
@@ -129,8 +104,8 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 	clone_element.css("position","absolute");
 	clone_element.css("top",$("#"+element_name).offset().top);
 	clone_element.css("left",$("#"+element_name).offset().left);
-	
 	clone_element.css("margin","0px");
+	
 	if(pervent_trigger!=1){
 		clone_element.attr('onclick','setTimeout(function(){$( "#"+"'+element_name+'" ).trigger( "click" );},100);');
 	}else{
@@ -143,18 +118,12 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 		setTimeout(function(){
 
 			if(cache_modal.length>0){
-
 				var eval_str = cache_modal.shift();
 				var delay_time=0;
-				//console.log(eval_str);
-				
 				while(eval_str.length<2 && eval_str!=null){
 					delay_time += 1000;
 					eval_str = cache_modal.shift();
-//					console.log("789");
-//					console.log("length:" + cache_modal.length);
 				}
-//				console.log("012");
 				setTimeout(function(){
 					eval(eval_str);
 				},delay_time);
@@ -198,7 +167,6 @@ function job_explanation(job_id){
 						+"<tr><td>所屬情境:</td><td>"+json_obj.scenario_name+"</td></tr>"
 						+"<tr><td>項目:</td><td>"+json_obj.next_flow_name+"</td></tr>"
 						+"<tr><td>說明:</td><td>"+json_obj.next_flow_explanation+"</td></tr>"
-//						+json_obj.next_flow_explanation
 						+"</table>"
 						+"</div>");				
 				
@@ -238,8 +206,6 @@ function scenario_record(category,result){
 
 function finish_step(){
 	if($("#current_job_finish").length==0){
-		
-		//#########################################
 		var step_name="";
 		$.ajax({
 			type : "POST",
@@ -279,10 +245,6 @@ function finish_step(){
 						data : { 
 							action : "over_a_step"
 						},success : function(result) {
-							//跳轉頁面
-							//1.完結 跳 scenarioJob
-							//2.跳下一頁
-							//3.錯誤
 							if(result.indexOf(".jsp")!=-1){
 								alert("下一步。將跳至"+(page_comparison[result]==null?"":page_comparison[result])+"介面");
 								window.location.href =  result ;
@@ -317,16 +279,12 @@ $(function(){
 		async : false,
 		data : { action : "get_session" },
 		success : function(result) {
-//			console.log(result);
 			var json_obj = $.parseJSON(result);
 			scenario_job_id = json_obj.scenario_job_id;
 			scenario_job_page = json_obj.scenario_job_page;
 		}
 	});
 	var current_page = location.pathname.split("/").pop();
-//	console.log(current_page);
-//	console.log(scenario_job_page);
-//	console.log(scenario_job_id.length > 2 && current_page == scenario_job_page);
 	if( scenario_job_id.length > 2 && $("#scenario_controller").length==0){
 		$.ajax({
 			type : "POST",
@@ -358,22 +316,14 @@ $(function(){
 				action : "get_current_job_info",
 				job_id : scenario_job_id,
 			},success : function(result) {
-//				alert(json_obj.next_flow_guide);
 				var json_obj = $.parseJSON(result);
-//				if(cache_modal.length==0){
-					//alert(json_obj.next_flow_guide +" "+cache_modal.length);
 					setTimeout(function(){
 						eval(json_obj.next_flow_guide);
 					},3000);
-//				}
 			}
 		});
 	}
 });
-
-
-//#######################
-//以下是不屬於這裡的雜code
 function tooltip(clas){
 	$("."+clas).mouseover(function(e){
 		 this.newTitle = this.title;
@@ -390,7 +340,6 @@ function tooltip(clas){
 }
 
 function run_modal_s(element_name,message,click_to_over,pervent_trigger){
-	//因為Selector不用ID 如果使用不謹慎 怕選到多個item 會有很大問題 要用each去做 能別用盡量別用
 	if($("#"+$(element_name).attr("id")+"_tmp").length!=0){alert("發生未知錯誤!!!");return;}
 	var clone_element = $(element_name).clone();
 	clone_element.attr('id', $(element_name).attr("id")+"_tmp");
@@ -440,13 +389,9 @@ function run_modal_s(element_name,message,click_to_over,pervent_trigger){
 	clone_element.click(function(){
 		$("#platform").remove();
 		setTimeout(function(){
-
 			if(cache_modal.length>0){
-
 				var eval_str = cache_modal.shift();
 				var delay_time=0;
-				//console.log(eval_str);
-				
 				while(eval_str.length<2 && eval_str!=null){
 					delay_time += 1000;
 					eval_str = cache_modal.shift();
@@ -457,6 +402,7 @@ function run_modal_s(element_name,message,click_to_over,pervent_trigger){
 			}
 		}, 800);
 	});
+	
 	modal_explanation.click(function(){
 		if(click_to_over==1){
 			$("#platform").remove();
