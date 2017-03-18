@@ -6,6 +6,8 @@
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+  <script src="./js/my_modal.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="./css/my_modal.css" type="text/css" media="screen" />
 <style>
 	.topnav {
 		z-index: 2;
@@ -107,8 +109,8 @@ var map;
 <h2 class="page-title">區位選擇</h2>
 	<div class="search-result-wrap">
 
-	<a class="btn btn-orange" onclick='$("#regionselect").dialog("open");' style='position:absolute;left:15%;top:110px;z-index:99;'>區位選擇</a>
-	<a class="btn btn-orange" onclick='$("#env_analyse").dialog("open");' style='position:absolute;left:23%;top:110px;z-index:99;'>環域分析</a>
+	<a class="btn btn-orange" id='region_btn' onclick='$("#regionselect").dialog("open");' style='position:absolute;left:15%;top:110px;z-index:1;'>區位選擇</a>
+	<a class="btn btn-orange" id='env_btn'onclick='$("#env_analyse").dialog("open");' style='position:absolute;left:23%;top:110px;z-index:1;'>環域分析</a>
 
 	<div id="map"></div>
 
@@ -223,7 +225,7 @@ var map;
 				<tr><th>二、城市商圈選擇評估試算：</th></tr>
 				<tr>
 					<td>
-						<input type="radio" name='hee' value='零售業'>零售業&nbsp;<input type="radio" name='hee' value='餐飲業'>餐飲業
+						<input type="radio" id='retail_radio' name='hee' value='零售業'>零售業&nbsp;<input type="radio" name='hee' value='餐飲業'>餐飲業
 					</td>
 				</tr>
 				<tr>
@@ -315,7 +317,7 @@ var map;
 			<hr style='height:1px;border:none;border-top:1px solid #ddd;'>
 			<div style="margin:0px 20px;float:right;">
 				<button class='ui-button' id='env_analyse_last'>上一步</button>
-				　<button class='ui-button' onclick='$("#env_analyse").dialog("close");'>結束</button>
+				　<button class='ui-button' id='end' onclick='$("#env_analyse").dialog("close");'>結束</button>
 			</div>
 		</div>
 	</div>
@@ -624,6 +626,7 @@ var map;
 								return;
 							}
 							
+							
 							var scoreSTR = "";
 							$.ajax({
 								type : "POST",
@@ -648,7 +651,7 @@ var map;
 								success : function(result) {
 									var json_obj = $.parseJSON(result);
 									var result_table = "";
-									
+									if(window.scenario_record){scenario_record("區位選擇","["+$("#selectcountry").val()+","+$("#selectRegion").val()+","+$('#choose input[name="hee"]:checked').val()+","+$('#choose input[name="check1"]:checked').length+","+$('#choose input[name="check2"]:checked').length+","+$('#choose input[name="check3"]:checked').length+","+$('#choose input[name="check4"]:checked').length+","+$('#choose input[name="check5"]:checked').length+","+$('#choose input[name="check6"]:checked').length+","+$('#rs1').val()+","+$('#rs2').val()+","+$('#rs3').val()+", "+result.replace(/"([^"]*)"/g, "'$1'")+"]");}
 									$.each(json_obj,function(i, item) {
 										scoreSTR += json_obj[i].City+ "," +json_obj[i].Score+";" ;
 										draw_BDS(json_obj[i].City,(i+1)+"");
@@ -996,7 +999,14 @@ var map;
 		        }
 			});
 
-			
+			$("#end").click(function(){
+				var result_str="[經度,緯度,半徑,時速,時間]=>";
+				$.each(rs_markers, function(i, node){
+					result_str+="點"+(i+1);
+					result_str+="["+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
+				});
+				if(window.scenario_record){scenario_record("環域分析",result_str);}
+			});
 		});
     </script>
     

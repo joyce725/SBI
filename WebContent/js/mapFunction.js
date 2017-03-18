@@ -112,6 +112,7 @@ function select_poi(poi_name){
 		all_markers[poi_name]=null;
 		return;
 	}
+	if(window.scenario_record){scenario_record("查詢POI",poi_name);} 
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
@@ -171,7 +172,7 @@ function select_poi_2(poi_name){
 		all_markers[poi_name]=null;
 		return;
 	}
-	
+	if(window.scenario_record){scenario_record("查詢POI",poi_name);} 
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
@@ -228,6 +229,7 @@ function select_BD(BD_name){
 		all_BDs[BD_name]=null;
 		return;
 	}
+	if(window.scenario_record){scenario_record("查詢商圈",BD_name);} 
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
@@ -469,7 +471,7 @@ function country_economy(node,type){//country_economy
     var ddl_year = document.getElementById('ddl_year');
     var _select = document.createElement('select');
     ddl_year.appendChild(_select);
-	
+    if(window.scenario_record){scenario_record("參閱CountryEconomy資料",type);} 
 	$.ajax({
 		type : "POST",
 		url : "countryEconomy.do",
@@ -631,7 +633,7 @@ function countryData(node,type){//country_economy
     var ddl_year = document.getElementById('ddl_year');
     var _select = document.createElement('select');
     ddl_year.appendChild(_select);
-	
+    if(window.scenario_record){scenario_record("參閱國家資料",type);} 
 	$.ajax({
 		type : "POST",
 		url : "countryData.do",
@@ -755,7 +757,7 @@ function country_POLY_for_chinaCity (type){//country_polygen
     });
 }
 
-function chinaCity(node,type){//country_economy
+function chinaCity(node,type){//chinaCity
 	if(!node.isSelected()){
 	 	var polygen = country_polygen.pop();
 	 	while(polygen != null){
@@ -786,7 +788,7 @@ function chinaCity(node,type){//country_economy
 		}
 	});
 	node.setSelected(true);
-	
+	if(window.scenario_record){scenario_record("參閱城市資料",type);} 
 	$(node.span.childNodes[1]).addClass('loading');
 	$('#span_legend').text(node.title);
     $('#tr_year').hide();
@@ -933,6 +935,7 @@ function heatMap(node,type){//heatMap
 	$(node.span.childNodes[1]).addClass('loading');
 	$('#span_legend').text(node.title);
 	$('#tr_year').hide();
+	if(window.scenario_record){scenario_record("參閱熱力圖資料",type);} 
 	$.ajax({
 		type : "POST",
 		url : "heatMap.do",
@@ -978,6 +981,7 @@ function country_POLY_for_city (node,city_name){
 	 	return;
 	}
 	$(node.span.childNodes[1]).addClass('loading');
+	if(window.scenario_record){scenario_record("參閱中國省份資料",city_name);} 
 	$.ajax({
 		type : "POST",
 		url : "chinaprovincial.do",
@@ -1074,6 +1078,7 @@ function draw_population_data(node,type){
         }
         population_Markers.length = 0;
     }
+	if(window.scenario_record){scenario_record("人口資料",type);} 
 	if(type=="Gender"){
 		$.ajax({
 			type : "POST",
@@ -1222,7 +1227,7 @@ function country_POLY_for_chinaProvincial(node){
 		}
 		return ;
 	}
-	
+	if(window.scenario_record){scenario_record("中國行政區劃分","畫");} 
 	$(node.span.childNodes[1]).addClass('loading');
 	$.ajax({
 		type : "POST",
@@ -1294,7 +1299,7 @@ function bigmac(node){
 	node.setSelected(true);
 	$(node.span.childNodes[1]).addClass('loading');
 	//######################################################3
-	
+	if(window.scenario_record){scenario_record("大麥克指數","");} 
 	$.ajax({
 		type : "POST",
 		url : "countryData.do",

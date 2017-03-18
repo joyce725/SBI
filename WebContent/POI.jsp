@@ -288,7 +288,27 @@ var item_marker = function (speed, time, marker, circle) {
 		});
 	    $("#warning").show();
         $("#pdf_layer").menu();
+        
+//     		JSON.stringify(obj, function(key, val) {
+//     		   if (val != null && typeof val == "object") {
+//     		        if (seen.indexOf(val) >= 0) {
+//     		            return;
+//     		        }
+//     		        seen.push(val);
+//     		    }
+//     		    return val;
+//     		});
+		    	
+			$("#end").click(function(){
+				var result_str="[經度,緯度,半徑,時速,時間]=>";
+				$.each(rs_markers, function(i, node){
+					result_str+="點"+(i+1);
+					result_str+="["+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
+				});
+				if(window.scenario_record){scenario_record("環域分析",result_str);}
+			});
 	});
+	
 </script>
 
 <jsp:include page="header.jsp" flush="true"/>
@@ -375,7 +395,7 @@ var item_marker = function (speed, time, marker, circle) {
 			<hr style='height:1px;border:none;border-top:1px solid #ddd;'>
 			<div style="margin:0px 20px;float:right;">
 				<button class='ui-button' id='region_select_last'>上一步</button>
-				　<button class='ui-button' onclick='$("#region_select").dialog("close");'>結束</button>
+				　<button class='ui-button' id='end' onclick='$("#region_select").dialog("close");'>結束</button>
 			</div>
 		</div>
 	</div>
@@ -453,7 +473,12 @@ var item_marker = function (speed, time, marker, circle) {
 				center: {lat: 23.598321171324468, lng: 120.97802734375}
 			});
 			google.maps.event.addListener(map, 'click', function(event) {
-				
+// 				event={}
+// 				event["latlng"] = new google.maps.LatLng("22.994", "120.218");
+// 				console.log(event);
+// 				console.log(event.latLng);
+				//console.log(JSON.stringify(event));
+
 				if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
 					if(rs_markers.length>=5){alert("最多五個點");return;}
 					var order=(rs_markers.length+1)+"";

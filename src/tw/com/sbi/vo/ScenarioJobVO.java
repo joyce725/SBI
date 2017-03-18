@@ -1,6 +1,7 @@
 package tw.com.sbi.vo;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ScenarioJobVO implements Serializable {
 
@@ -29,6 +30,8 @@ public class ScenarioJobVO implements Serializable {
 	private String next_flow_guide;
 	
 	private String max_flow_seq;
+	
+	private List<ScenarioJobVO> child;
 	
 	public String getId() {
 		return id;
@@ -156,6 +159,12 @@ public class ScenarioJobVO implements Serializable {
 	}
 	public void setMax_flow_seq(String max_flow_seq) {
 		this.max_flow_seq = max_flow_seq;
+	}
+	public List<ScenarioJobVO> getChild() {
+		return child;
+	}
+	public void setChild(List<ScenarioJobVO> child) {
+		this.child = child;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;

@@ -12,6 +12,7 @@
 	
 <script>
 	function setV(){
+		
 		if($("#file").val()<1){
 			alert("請選擇檔案");
 			return false;
@@ -21,6 +22,7 @@
 			i++;
 		}
 		document.getElementById("form1").action+="?db_name="+document.getElementsByName("db_name")[i].value;
+		if(window.scenario_record){scenario_record("上傳資料表-產業分析資料庫","上傳 '"+$("#file").val()+"' 至"+$(document.getElementsByName("db_name")[i]).parent().text());} 
 		return true;
 	};
 	$(function(){

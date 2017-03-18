@@ -140,6 +140,9 @@
 // 	        	duration: 1000
 // 	     	}
 // 		});	    
+	    $("#divAdminTable a").click(function(){
+	    	if(window.scenario_record){scenario_record("台灣人口社經",$(this).closest("tr").text().replace(/\s+/g, " ")+"欄 > "+$(this).text());} 
+	    });
 	});	
 
 	function downloadInJson(url, filename){		    

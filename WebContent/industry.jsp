@@ -448,7 +448,7 @@ table.accessHide {
 	function show_chart(chartOptions, isChart) {
 		var categories_list = get_categories_list();
 		var categories_year_list = get_categories_year_list();
-
+		if(window.scenario_record){scenario_record("動態統計-目標產業","[ "+$("#country").val()+", "+$("#industry_type").val()+", "+$("#source").val()+", "+$("#subsource").val()+", "+categories_list+", "+categories_year_list+"]");}
 		$.ajax({
 			type : "POST",
 			url : "industry.do",

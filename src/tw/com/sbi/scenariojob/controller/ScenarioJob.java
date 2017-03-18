@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -69,6 +70,10 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				caseService = new ScenarioService();
 				List<ScenarioJobVO> list = caseService.select_all_scenario();
+				int i=0;
+				for(i=0;i<list.size();i++){
+					list.get(i).setChild(caseService.get_scenario_child(list.get(i).getScenario_id()));
+				}
 				String jsonStrList = new Gson().toJson(list);
 				logger.debug("[Output]: "+jsonStrList);
 				response.getWriter().write(jsonStrList);
@@ -140,21 +145,36 @@ public class ScenarioJob extends HttpServlet {
 			logger.debug("[Output]: success");
 			response.getWriter().write("success");
 			return;
+		}else if("get_session".equals(action)){
+			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
+			String scenario_job_page=null2Str(request.getSession().getAttribute("scenario_job_page"));
+			logger.debug("[Output]: scenario_job_id: " +scenario_job_id);
+			logger.debug("[Output]: scenario_job_page: " +scenario_job_page);
+			response.getWriter().write("{\"scenario_job_id\":\""+scenario_job_id+"\",\"scenario_job_page\":\""+scenario_job_page+"\"}");
+			return;
 		}else if("set_scenario_result".equals(action)){
 			String group_id = request.getSession().getAttribute("group_id").toString();
-			String job_id = request.getParameter("job_id");
+			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
+			String scenario_job_page=null2Str(request.getSession().getAttribute("scenario_job_page"));
+			String current_page = null2Str(request.getParameter("current_page"));
 			String category = request.getParameter("category");
 			String result = request.getParameter("result");
-			logger.debug("job_id:" + job_id);
+			logger.debug("job_id:" + current_page);
 			logger.debug("category:" + category);
 			logger.debug("result:" + result);
 			caseService = new ScenarioService();
 			//List<ScenarioResultVO> result_list =  caseScenarioService.dealing_job_load_result(job_id);
 			//ScenarioResultVO a = new ScenarioResultVO(result, result, result, result, result, result);
 			//result_list.add(e);
-			caseService.dealing_job_save_result(group_id,job_id,category,result);
-			logger.debug("[Output]: success");
-			response.getWriter().write("success");
+			if(current_page.equals(scenario_job_page)){
+				caseService.dealing_job_save_result(group_id,scenario_job_id,category,result);
+				logger.debug("[Output]: success");
+				response.getWriter().write("success");
+			}else{
+				logger.debug("[Output]: not_in_scenario");
+				response.getWriter().write("not_in_scenario");
+			}
+			
 			return;
 		}else if("get_current_job_info".equals(action)){
 			try {
@@ -178,7 +198,46 @@ public class ScenarioJob extends HttpServlet {
 				e.printStackTrace();
 			}
 		}else if("over_a_step".equals(action)){
-			
+			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
+			String group_id = request.getSession().getAttribute("group_id").toString();
+
+			caseService = new ScenarioService();
+			ScenarioJobVO current_job = null;
+			List<ScenarioJobVO> list = caseService.get_all_job(group_id);
+			for(int i = 0;i < list.size(); i ++){
+				if(scenario_job_id.equals(list.get(i).getJob_id())){
+					current_job = list.get(i);
+				}
+	        }
+			if(current_job.getFlow_seq() == null){
+				current_job.setFlow_seq("0");
+			}
+			if(Integer.parseInt(current_job.getFlow_seq())+1 ==Integer.parseInt(current_job.getMax_flow_seq())){
+				caseService.over_step(scenario_job_id,current_job.getNext_flow_id(),((Integer.parseInt(current_job.getFlow_seq())+1)+""),(1+""),new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(new Date()));
+				logger.debug("[Output]: "+"finished");
+				response.getWriter().write("finished");
+				
+				logger.debug("Clear session: scenario_job_id");
+				logger.debug("Clear session: scenario_job_page");
+				
+				request.getSession().setAttribute("scenario_job_id","");
+				request.getSession().setAttribute("scenario_job_page","");
+			}else{
+				caseService.over_step(scenario_job_id, current_job.getNext_flow_id(),((Integer.parseInt(current_job.getFlow_seq())+1)+""),(0+""), null);
+				
+				
+				current_job = null;
+				List<ScenarioJobVO> list2 = caseService.get_all_job(group_id);
+				for(int i = 0;i < list2.size(); i ++){
+					if(scenario_job_id.equals(list2.get(i).getJob_id())){
+						current_job = list2.get(i);
+					}
+		        }
+				logger.debug("[Output]: "+current_job.getNext_flow_page());
+				logger.debug("Set session: scenario_job_id : "+current_job.getNext_flow_page());
+				response.getWriter().write(current_job.getNext_flow_page());
+				request.getSession().setAttribute("scenario_job_page",current_job.getNext_flow_page());
+			}
 		}
 	
 	}
@@ -208,7 +267,12 @@ public class ScenarioJob extends HttpServlet {
 		public void dealing_job_save_result(String group_id,String job_id, String category, String result){
 			dao.dealing_job_save_result(group_id,job_id,category,result);
 		}
-		
+		public void over_step(String job_id,String flow_id,String flow_seq,String finished,String finish_time) {
+			dao.over_step(job_id,flow_id,flow_seq,finished,finish_time);
+		}
+		public List<ScenarioJobVO> get_scenario_child(String scenario_id){
+			return dao.get_scenario_child(scenario_id);
+		}
 		//######################################
 		//######################################
 		//######################################
@@ -223,10 +287,11 @@ public class ScenarioJob extends HttpServlet {
 		public void delete_job(String job_id);
 		public List<ScenarioJobVO> select_all_scenario();
 		public void dealing_job_save_result(String group_id,String job_id, String category, String result);
+		public void over_step(String job_id,String flow_id,String flow_seq,String finished,String finish_time);
 		//######################################
 		//######################################
 		//######################################
-		
+		public List<ScenarioJobVO> get_scenario_child(String scenario_id);
 		
 //		public List<ScenarioJobVO> selectCity(String country);
 //		public List<ScenarioJobVO> selectBD(String city);
@@ -254,6 +319,9 @@ public class ScenarioJob extends HttpServlet {
 		
 		private static final String update_result ="update tb_scenario_job set result = ? where job_id = ?";
 		private static final String select_all_scenario = "select * from tb_scenario";
+		private static final String next_step_update = "update tb_scenario_job set flow_id = ? , flow_seq = ? , finished = ? , finish_time = ? where job_id = ?";
+		
+		private static final String get_scenario_child_q = "select * from tb_scenario_flow where scenario_id = ? ORDER BY flow_seq";
 		
 		@Override
 		public List<ScenarioJobVO> get_all_job(String group_id){
@@ -294,7 +362,6 @@ public class ScenarioJob extends HttpServlet {
 					scenarioJob.setNext_flow_page(null2Str(rs.getString("next.page")));
 					scenarioJob.setNext_flow_explanation(null2Str(rs.getString("next.explanation")));
 					scenarioJob.setNext_flow_guide(null2Str(rs.getString("next.guide")));
-					
 					scenarioJob.setMax_flow_seq(
 							get_max_seq(scenarioJob.getScenario_id())
 					);
@@ -523,6 +590,7 @@ public class ScenarioJob extends HttpServlet {
 					scenarioJobVO = new ScenarioJobVO();
 					scenarioJobVO.setScenario_id(null2Str(rs.getString("scenario_id")));
 					scenarioJobVO.setScenario_name(null2Str(rs.getString("scenario_name")));
+					scenarioJobVO.setResult(null2Str(rs.getString("explanation")));
 					list.add(scenarioJobVO);
 				}
 			} catch (SQLException se) {
@@ -571,10 +639,11 @@ public class ScenarioJob extends HttpServlet {
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					if(job_id.equals(null2Str(rs.getString("job_id")))){
+//						logger.debug(job_id+" "+rs.getString("job_id")+" "+rs.getString("next.flow_name"));
 						new_one.setScenario_name(null2Str(rs.getString("scenario_name")));
-						new_one.setStep(null2Str(rs.getString("flow_seq")));
-						new_one.setFlow_name(null2Str(rs.getString("this.flow_name")));
-						new_one.setPage(null2Str(rs.getString("this.page")));
+						new_one.setStep(       (Integer.parseInt(null2Str(rs.getString("flow_seq")))+1)+""          );
+						new_one.setFlow_name(null2Str(rs.getString("next.flow_name")));
+						new_one.setPage(null2Str(rs.getString("next.page")));
 						new_one.setCategory(category);
 						new_one.setResult(result);
 						old_result=null2Str(rs.getString("result"));
@@ -609,17 +678,17 @@ public class ScenarioJob extends HttpServlet {
 					}
 				}
 			}
-			logger.debug("1: "+new Gson().toJson(old_result));
+//			logger.debug("1: "+new Gson().toJson(old_result));
 			
 			//#########################################################
 			//String json_result="";
 			List<ScenarioResultVO> old_json_result = new Gson().fromJson(old_result, new TypeToken<List<ScenarioResultVO>>() {}.getType());
 			
-			logger.debug("2: "+new Gson().toJson(old_json_result));
+//			logger.debug("2: "+new Gson().toJson(old_json_result));
 			old_json_result.add(new_one);
-			logger.debug("3: "+new Gson().toJson(new_one));
-			Gson gson = new Gson();
-			String jsonStrList = gson.toJson(old_json_result);
+//			logger.debug("3: "+new Gson().toJson(new_one));
+//			Gson gson = ;
+			String jsonStrList = new Gson().toJson(old_json_result);
 			this.dealing_job_update_result(job_id,jsonStrList);
 			
 			//###########################################
@@ -672,7 +741,111 @@ public class ScenarioJob extends HttpServlet {
 				}
 			}
 		}
+		public void over_step(String job_id,String flow_id,String flow_seq,String finished,String finish_time){
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(next_step_update);
+				
+				pstmt.setString(1, flow_id);
+				pstmt.setString(2, flow_seq);
+				pstmt.setString(3, finished);
+				pstmt.setString(4, finish_time);
+				pstmt.setString(5, job_id);
+				pstmt.executeUpdate();
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+		}
+		public List<ScenarioJobVO> get_scenario_child(String scenario_id){
+			List<ScenarioJobVO> list = new ArrayList<ScenarioJobVO>();
+			ScenarioJobVO scenarioJob = null;
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(get_scenario_child_q);
+				pstmt.setString(1, scenario_id);
+				rs = pstmt.executeQuery();
+				
+				while (rs.next()) {
+					scenarioJob = new ScenarioJobVO();
+					scenarioJob.setFlow_id(null2Str(rs.getString("flow_id")));
+					scenarioJob.setScenario_id(null2Str(rs.getString("scenario_id")));
+					scenarioJob.setFlow_seq(null2Str(rs.getString("flow_seq")));
+					scenarioJob.setFlow_function(null2Str(rs.getString("flow_function")));
+					scenarioJob.setPage(null2Str(rs.getString("page")));
+					scenarioJob.setNext_flow_explanation(null2Str(rs.getString("explanation")));
+					scenarioJob.setNext_flow_guide(null2Str(rs.getString("guide")));
+					list.add(scenarioJob);
+				}
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}
 	}
+	
 	private String null2Str(Object object) {
 		if (object instanceof Timestamp)
 			return object == null ? "" : new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(object);

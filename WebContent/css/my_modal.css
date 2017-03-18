@@ -3,7 +3,7 @@
   top: 0; right: 0; bottom: 0; left: 0;
   width: 100%; height: 100%;
   overflow: auto;
-  z-index: 1;
+  z-index: 100;
   padding: 20px;
   box-sizing: border-box;
   background-color: rgb(0,0,0);
@@ -34,7 +34,7 @@
   display: inline-block;
 /*   vertical-align: middle; */
   position: absolute;
-  z-index: 2;
+  z-index: 101;
 /*   max-width: 500px; */
 /*   box-sizing: border-box; */
 /*    width: auto; */
@@ -62,8 +62,41 @@
 	min-width:200px;
 	background-color:rgba(255, 255, 255, 0.9);
 	border-radius: 8px;
-	padding:10px 20px;
+	padding:10px 10px 10px 20px;
 	position:fixed;
 	bottom:3px;
 	left:24px;
+}
+.scenario_controller:hover{
+/* 	background-color:#33FFFF; */
+}
+/* ###################### */
+/* 以下是不屬於這裡的code */
+#tooltip{
+        position:absolute;
+        border:1px solid #333;
+        background:#f7f5d1;
+/* 		background:red; */
+        padding:3px;
+        color:#333;
+        display:none;
+        z-index:20;
+}
+.func:hover{
+	background: #BBB;
+}
+.focus{
+	background: none;
+	padding:3px 3px 0px 7px;
+/* 	border-bottom: 1px solid #fff; */
+}
+.focus:hover{
+	background-image: linear-gradient(#ccc,#ddd);
+	padding:1px 5px 4px 4px;
+	border: 1px solid #bbb;
+	border-bottom: 0px solid #ddds;
+}
+
+.bentable-style1 td{
+	padding:5px 8px;
 }

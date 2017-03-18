@@ -171,7 +171,7 @@ h2.ui-list-title {
 		}
 		
 		url+=".htm";
-		
+		if(window.scenario_record){scenario_record("台灣人口社會經濟資料-"$("#selectSearchYear").val()+"年:"+$("ul.tabs > li.active").text(),url);} 
 		$.ajax({
 			url: url,
 			dataType: 'jsonp', 
@@ -296,7 +296,7 @@ h2.ui-list-title {
 	                htmlStr += "_" + $('#selectSearchMarriage').val() + ".htm";
 	            }
 	        }
-	        
+	        if(window.scenario_record){scenario_record("台灣人口社會經濟資料-"$("#selectSearchYear").val()+"年:"+$("ul.tabs > li.active").text(),htmlStr);} 
 	        $.ajax({
 				url: htmlStr,
 				dataType: 'jsonp', 

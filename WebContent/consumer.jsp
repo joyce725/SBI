@@ -601,6 +601,7 @@ table.accessHide {
 		var city_list = get_city_list();
 		var variable_name_list = get_variable_name_list();
 		
+		if(window.scenario_record){scenario_record("動態統計-中國主要城市消費力","["+city_list+", "+$("#layer").val()+", "+$("#type").val()+", "+$("#item").val()+", "+$("#subitem").val()+", "+variable_name_list+", "+$("#year").val()+"]");}
 		$.ajax({
 			type : "POST",
 			url : "consumer.do",

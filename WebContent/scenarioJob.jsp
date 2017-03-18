@@ -29,9 +29,13 @@
 #tbl_main a.btn{
 	word-break: keep-all;
 }
+.bentable th{
+	text-align:center;
+}
 .bentable td{
 	padding:5px 15px;
 	word-break: keep-all;
+	text-align:left;
 	font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
 }
 .bentable td:nth-child(1){
@@ -39,14 +43,19 @@
 }
 .bentable td:nth-child(2){
 	font-size:16px;
+	word-break: normal;
 	text-align:left;
 	color: red;
 }
-
+.bentable td:nth-child(4){
+	word-break: break-all;
+	max-width:600px;
+}
 </style>
 
 <script>
-var explane_txt_arr=["餐飲設址7步驟【如下說明】<br>(1)檢視環境：確認是否有開店的商機【現況發展、未來潛力及競爭強度】<br>(2)選擇區位：人流決定餐廳成功【鎖定客流量最高，選擇商圈區位】<br>(3)人潮分布：辦公大樓、居民社區等機構分布狀況【人潮來源地】<br>(4)環域分析：在既有店面位址【步行5~15分鐘所涵蓋的辦公、社區與機構設施】<br>(5)停車設施：顧客開車來用餐，附近停車方便性【步行10分鐘內所涵蓋的停車場】<br>(6)競爭分布：商圈內餐飲業分佈狀況【投資競爭缺口】<br>(7)消費特性：了解當地消費者對於產品與服務需求缺口【以缺口當作商機】<br><br>","零售設址7步驟【如下說明】<br>(1)評估城市：避開對手已經進入城市，並評估人口／所得是否合適【比較西安／武漢／重慶】<br>(2)評估商圈：評估重慶商圈人流量／消費結構，搭配電子書【了解商圈消費規模及功能定位】<br>(3)檢視環境：檢視競爭分布及效應／交通狀況及工具／人潮分布【深入了解，以利選點】<br>(4)區位選擇：確認是否有擴點商機【未來潛力好及發展現況好，競爭強度】<br>(5)消費特性：了解該商圈消費者偏好到購物環境好的商場的分數？受商場商品促銷吸引分數？【消費偏好】<br>(6)評估成本：經營成本可找到最符合自身進駐的租金成本區塊。【了解投入租金／人事成本】<br>(7)環域分析：步行5～15分鐘內所涵蓋的寫字樓、文教設施及居民社區【進行服務範圍模擬】<br><br>","鎖定目標客群，再點出哪個市場符合，最後為選擇市場，進行評估（SBI全包處理）<br>醫美產業新品進入6步驟【如下說明】<br><br>(1)目標客戶：找出新產品合適的目標客群【個性屬性、消費態度/偏好/特色】<br>(2)評估城市：找出有潛力的亞洲城市【依此頁評估項目進行人品/GDP/消費支出】<br>(3)評估商圈：馬來西亞適合進入的商圈【可搭配地圖/電子書進行了解】<br>(4)空間決策：目標市場→決定主要商圈/競爭分析→了解競爭商分布/銷售通路→評估優先序<br>(5)區位選擇：藉由交通便利性找到最符合進駐的物流及人流區塊【選地點】<br>(6)環域分析：進行服務範圍模擬【步行10分／單車5分所涵蓋的超巿、藥妝及購物百貨】<br><br>","先點出佈局的地點；再點出布局需考慮且評估的項目（SBI全包處理）<br>長照海外布局6步驟【如下說明】<br><br>(1)檢視適合城市：找出適合國際化的亞洲城巿建議的優先序。以電子書依序了解城巿規格及各業態競爭概況。<br>(2)檢視區位環境：確認是否Q有擴點的商機【現況發展、未來潛力及競爭強度】<br>(3)評估消費市場：找出適應的城巿及目標客群／建康產業消費統計指標／家戶結構<br>(4)評估投資成本：馬來西亞各城巿的生活費用來評估可能的投資成本<br>(5)評估競爭分布：了解武吉免登圈內醫院、居民社區、停車場及藥妝店分布。<br>(6)環域分析5min：在既有店面位址【步行5分鐘所涵蓋的範圍】<br>"];
+
+var explane_txt_arr={};//["餐飲設址7步驟【如下說明】<br>(1)檢視環境：確認是否有開店的商機【現況發展、未來潛力及競爭強度】<br>(2)選擇區位：人流決定餐廳成功【鎖定客流量最高，選擇商圈區位】<br>(3)人潮分布：辦公大樓、居民社區等機構分布狀況【人潮來源地】<br>(4)環域分析：在既有店面位址【步行5~15分鐘所涵蓋的辦公、社區與機構設施】<br>(5)停車設施：顧客開車來用餐，附近停車方便性【步行10分鐘內所涵蓋的停車場】<br>(6)競爭分布：商圈內餐飲業分佈狀況【投資競爭缺口】<br>(7)消費特性：了解當地消費者對於產品與服務需求缺口【以缺口當作商機】<br><br>","零售設址7步驟【如下說明】<br>(1)評估城市：避開對手已經進入城市，並評估人口／所得是否合適【比較西安／武漢／重慶】<br>(2)評估商圈：評估重慶商圈人流量／消費結構，搭配電子書【了解商圈消費規模及功能定位】<br>(3)檢視環境：檢視競爭分布及效應／交通狀況及工具／人潮分布【深入了解，以利選點】<br>(4)區位選擇：確認是否有擴點商機【未來潛力好及發展現況好，競爭強度】<br>(5)消費特性：了解該商圈消費者偏好到購物環境好的商場的分數？受商場商品促銷吸引分數？【消費偏好】<br>(6)評估成本：經營成本可找到最符合自身進駐的租金成本區塊。【了解投入租金／人事成本】<br>(7)環域分析：步行5～15分鐘內所涵蓋的寫字樓、文教設施及居民社區【進行服務範圍模擬】<br><br>","鎖定目標客群，再點出哪個市場符合，最後為選擇市場，進行評估（SBI全包處理）<br>醫美產業新品進入6步驟【如下說明】<br><br>(1)目標客戶：找出新產品合適的目標客群【個性屬性、消費態度/偏好/特色】<br>(2)評估城市：找出有潛力的亞洲城市【依此頁評估項目進行人品/GDP/消費支出】<br>(3)評估商圈：馬來西亞適合進入的商圈【可搭配地圖/電子書進行了解】<br>(4)空間決策：目標市場→決定主要商圈/競爭分析→了解競爭商分布/銷售通路→評估優先序<br>(5)區位選擇：藉由交通便利性找到最符合進駐的物流及人流區塊【選地點】<br>(6)環域分析：進行服務範圍模擬【步行10分／單車5分所涵蓋的超巿、藥妝及購物百貨】<br><br>","先點出佈局的地點；再點出布局需考慮且評估的項目（SBI全包處理）<br>長照海外布局6步驟【如下說明】<br><br>(1)檢視適合城市：找出適合國際化的亞洲城巿建議的優先序。以電子書依序了解城巿規格及各業態競爭概況。<br>(2)檢視區位環境：確認是否Q有擴點的商機【現況發展、未來潛力及競爭強度】<br>(3)評估消費市場：找出適應的城巿及目標客群／建康產業消費統計指標／家戶結構<br>(4)評估投資成本：馬來西亞各城巿的生活費用來評估可能的投資成本<br>(5)評估競爭分布：了解武吉免登圈內醫院、居民社區、停車場及藥妝店分布。<br>(6)環域分析5min：在既有店面位址【步行5分鐘所涵蓋的範圍】<br>"];
 var page_comparison={
 		"realMap.jsp": "商圈資訊",
 		"POI.jsp": "商圈POI",
@@ -83,11 +92,13 @@ var page_comparison={
 		"uploaddocs.jsp": "商機觀測站",
 		"groupBackstage.jsp": "公司後台管理",
 		"uploaddocsManager.jsp": "商機觀測站後臺",
-		"white_page.jsp" : "測試頁面"
+		"white_page.jsp" : "測試頁面",
+		
+		"pdf.jsp" : "電子書"
 	}
 	
 
-	var explane_txt_arr=["餐飲設址7步驟【如下說明】<br>(1)檢視環境：確認是否有開店的商機【現況發展、未來潛力及競爭強度】<br>(2)選擇區位：人流決定餐廳成功【鎖定客流量最高，選擇商圈區位】<br>(3)人潮分布：辦公大樓、居民社區等機構分布狀況【人潮來源地】<br>(4)環域分析：在既有店面位址【步行5~15分鐘所涵蓋的辦公、社區與機構設施】<br>(5)停車設施：顧客開車來用餐，附近停車方便性【步行10分鐘內所涵蓋的停車場】<br>(6)競爭分布：商圈內餐飲業分佈狀況【投資競爭缺口】<br>(7)消費特性：了解當地消費者對於產品與服務需求缺口【以缺口當作商機】<br><br>","零售設址7步驟【如下說明】<br>(1)評估城市：避開對手已經進入城市，並評估人口／所得是否合適【比較西安／武漢／重慶】<br>(2)評估商圈：評估重慶商圈人流量／消費結構，搭配電子書【了解商圈消費規模及功能定位】<br>(3)檢視環境：檢視競爭分布及效應／交通狀況及工具／人潮分布【深入了解，以利選點】<br>(4)區位選擇：確認是否有擴點商機【未來潛力好及發展現況好，競爭強度】<br>(5)消費特性：了解該商圈消費者偏好到購物環境好的商場的分數？受商場商品促銷吸引分數？【消費偏好】<br>(6)評估成本：經營成本可找到最符合自身進駐的租金成本區塊。【了解投入租金／人事成本】<br>(7)環域分析：步行5～15分鐘內所涵蓋的寫字樓、文教設施及居民社區【進行服務範圍模擬】<br><br>","鎖定目標客群，再點出哪個市場符合，最後為選擇市場，進行評估（SBI全包處理）<br>醫美產業新品進入6步驟【如下說明】<br><br>(1)目標客戶：找出新產品合適的目標客群【個性屬性、消費態度/偏好/特色】<br>(2)評估城市：找出有潛力的亞洲城市【依此頁評估項目進行人品/GDP/消費支出】<br>(3)評估商圈：馬來西亞適合進入的商圈【可搭配地圖/電子書進行了解】<br>(4)空間決策：目標市場→決定主要商圈/競爭分析→了解競爭商分布/銷售通路→評估優先序<br>(5)區位選擇：藉由交通便利性找到最符合進駐的物流及人流區塊【選地點】<br>(6)環域分析：進行服務範圍模擬【步行10分／單車5分所涵蓋的超巿、藥妝及購物百貨】<br><br>","先點出佈局的地點；再點出布局需考慮且評估的項目（SBI全包處理）<br>長照海外布局6步驟【如下說明】<br><br>(1)檢視適合城市：找出適合國際化的亞洲城巿建議的優先序。以電子書依序了解城巿規格及各業態競爭概況。<br>(2)檢視區位環境：確認是否Q有擴點的商機【現況發展、未來潛力及競爭強度】<br>(3)評估消費市場：找出適應的城巿及目標客群／建康產業消費統計指標／家戶結構<br>(4)評估投資成本：馬來西亞各城巿的生活費用來評估可能的投資成本<br>(5)評估競爭分布：了解武吉免登圈內醫院、居民社區、停車場及藥妝店分布。<br>(6)環域分析5min：在既有店面位址【步行5分鐘所涵蓋的範圍】<br>"];
+	//var explane_txt_arr=["餐飲設址7步驟【如下說明】<br>(1)檢視環境：確認是否有開店的商機【現況發展、未來潛力及競爭強度】<br>(2)選擇區位：人流決定餐廳成功【鎖定客流量最高，選擇商圈區位】<br>(3)人潮分布：辦公大樓、居民社區等機構分布狀況【人潮來源地】<br>(4)環域分析：在既有店面位址【步行5~15分鐘所涵蓋的辦公、社區與機構設施】<br>(5)停車設施：顧客開車來用餐，附近停車方便性【步行10分鐘內所涵蓋的停車場】<br>(6)競爭分布：商圈內餐飲業分佈狀況【投資競爭缺口】<br>(7)消費特性：了解當地消費者對於產品與服務需求缺口【以缺口當作商機】<br><br>","零售設址7步驟【如下說明】<br>(1)評估城市：避開對手已經進入城市，並評估人口／所得是否合適【比較西安／武漢／重慶】<br>(2)評估商圈：評估重慶商圈人流量／消費結構，搭配電子書【了解商圈消費規模及功能定位】<br>(3)檢視環境：檢視競爭分布及效應／交通狀況及工具／人潮分布【深入了解，以利選點】<br>(4)區位選擇：確認是否有擴點商機【未來潛力好及發展現況好，競爭強度】<br>(5)消費特性：了解該商圈消費者偏好到購物環境好的商場的分數？受商場商品促銷吸引分數？【消費偏好】<br>(6)評估成本：經營成本可找到最符合自身進駐的租金成本區塊。【了解投入租金／人事成本】<br>(7)環域分析：步行5～15分鐘內所涵蓋的寫字樓、文教設施及居民社區【進行服務範圍模擬】<br><br>","鎖定目標客群，再點出哪個市場符合，最後為選擇市場，進行評估（SBI全包處理）<br>醫美產業新品進入6步驟【如下說明】<br><br>(1)目標客戶：找出新產品合適的目標客群【個性屬性、消費態度/偏好/特色】<br>(2)評估城市：找出有潛力的亞洲城市【依此頁評估項目進行人品/GDP/消費支出】<br>(3)評估商圈：馬來西亞適合進入的商圈【可搭配地圖/電子書進行了解】<br>(4)空間決策：目標市場→決定主要商圈/競爭分析→了解競爭商分布/銷售通路→評估優先序<br>(5)區位選擇：藉由交通便利性找到最符合進駐的物流及人流區塊【選地點】<br>(6)環域分析：進行服務範圍模擬【步行10分／單車5分所涵蓋的超巿、藥妝及購物百貨】<br><br>","先點出佈局的地點；再點出布局需考慮且評估的項目（SBI全包處理）<br>長照海外布局6步驟【如下說明】<br><br>(1)檢視適合城市：找出適合國際化的亞洲城巿建議的優先序。以電子書依序了解城巿規格及各業態競爭概況。<br>(2)檢視區位環境：確認是否Q有擴點的商機【現況發展、未來潛力及競爭強度】<br>(3)評估消費市場：找出適應的城巿及目標客群／建康產業消費統計指標／家戶結構<br>(4)評估投資成本：馬來西亞各城巿的生活費用來評估可能的投資成本<br>(5)評估競爭分布：了解武吉免登圈內醫院、居民社區、停車場及藥妝店分布。<br>(6)環域分析5min：在既有店面位址【步行5分鐘所涵蓋的範圍】<br>"];
 	function draw_scenario(parameter){
 		$.ajax({
 			type : "POST",
@@ -97,31 +108,32 @@ var page_comparison={
 				var json_obj = $.parseJSON(result);
 					var result_table = "";
 					$.each(json_obj, function(i, item) {
+						
 						var print_table="";
 						var result_obj = $.parseJSON(json_obj[i].result);
 						var job_content_title="";
 						$.each(result_obj, function(i, item) {
 							job_content_title="工作歷程:";
-							print_table+="<tr><td>"+result_obj[i].step+"</td><td>"+result_obj[i].flow_name+"</td><td>"+result_obj[i].category+"</td><td>"+result_obj[i].result+"</td></tr>";
+							print_table+="<tr><td>"+result_obj[i].step+"</td><td><div style='max-width:200px'>"+result_obj[i].flow_name+"</div></td><td>"+result_obj[i].category+"</td><td><div style='max-width:400px'>"+result_obj[i].result+"</div></td></tr>";
 						});
-						result_table+= '<tr job_id="'+json_obj[i].job_id+'" job_name="'+json_obj[i].job_name+'">' 
+						result_table+= '<tr job_id="'+json_obj[i].job_id+'" job_name="'+json_obj[i].job_name+'" job_pro="'+json_obj[i].flow_seq+'/'+ json_obj[i].max_flow_seq+'">' 
 							+ '<td><b style="font-size:16px;">' +json_obj[i].job_name+ '</b></td>' 
 							+ '<td>' +json_obj[i].scenario_name+"<br>"+item.job_time+ '</td>'
 							+ '<td style="text-align:center;">' +json_obj[i].flow_seq+'/'+ json_obj[i].max_flow_seq+ '</td>'
-							+ '<td>' +json_obj[i].flow_name + '</td>'
-							+ '<td>' +json_obj[i].next_flow_name + '</td>'
+							+ '<td><div style="max-width:200px">' +json_obj[i].flow_name + '</div></td>'
+							+ '<td><div style="max-width:200px">' +json_obj[i].next_flow_name + '</div></td>'
 							+((item.finished == "1")?
-								('<td colspan="3" style="font-size:18px;text-align:center;">已於 '+item.finish_time+' 完成<br>'+
-								"<a class='btn btn-exec btn_delete' style='margin-top:5px;' value='"+item.finish_time+"' job_name='"+item.job_name+"' scenario_name='"+item.scenario_name+"'>刪除</a>" + '</td>'+
-								'</tr>')	
+								('<td colspan="3" style="font-size:18px;text-align:center;">已於 '+item.finish_time+' 完成<br>'
+								+ '<a class="btn btn-darkblue btn-update" job_content_title="'+job_content_title+'" result=\"'+print_table+'\" scenario_name="'+json_obj[i].scenario_name+'">內容</a>&nbsp;&nbsp;&nbsp;&nbsp;'
+								+"<a class='btn btn-exec btn-delete' style='margin-top:5px;' value='"+item.finish_time+"' job_name='"+item.job_name+"' scenario_name='"+item.scenario_name+"'>刪除</a>" + '</td>'+
+								'</tr>')
 										
-							:('<td style="text-align:center;">' + '<a class="btn btn-darkblue btn-update" job_content_title="'+job_content_title+'" result="'+print_table+'" scenario_name="'+json_obj[i].scenario_name+'">內容</a>'+ '</td>'
+							:('<td style="text-align:center;">' + '<a class="btn btn-darkblue btn-update" job_content_title="'+job_content_title+'" result=\"'+print_table+'\" scenario_name="'+json_obj[i].scenario_name+'">內容</a>'+ '</td>'
 							+ '<td style="text-align:center;">' + '<a class="btn btn-exec btn-delete" scenario_name="'+json_obj[i].scenario_name+'">刪除</a>'+ '</td>'
 							+ '<td style="text-align:center;">' + '<a class="btn btn-darkblue btn-next" value="'+json_obj[i].next_flow_page+'" next_flow_name="'+json_obj[i].next_flow_name +'" next_flow_explanation="'+json_obj[i].next_flow_explanation+'">下一步</a>'+ '</td>'
 							+'</tr>'));
 							
 						$("#tbl_main tbody").html(result_table);
-						
 					});
 			}
 		});				
@@ -181,13 +193,38 @@ var page_comparison={
 			$("#job_next").attr("scenario_job_id",$(this).closest( "tr" ).attr("job_id"));
 			$("#job_next").attr("scenario_job_page",$(this).attr("value"));
 			var tmp = $(this).closest( "tr" ).attr("job_id");
-			$("html").append("<div id='scenario_controller' class='scenario_controller' ondblclick='job_explanation(\""+tmp+"\")' style=''>"+$(this).attr("next_flow_name")+" <img style='float:right;height:22px;margin-left:10px;'src='./refer_data/next_step.png'><img style='float:right;height:22px;margin-left:10px;'src='./refer_data/check.png'></div>");
-// 			$("#job_next").dialog("open");
-			cache_modal.push('run_modal("scenario_controller","歡迎使用本系統的情境流程，當您進入特定工作流後，將於左下角為您顯示現在的<a style=\'color:red;font-size:22px;\'>工作進度</a>，雙擊進度可瀏覽詳細敘述，若為開放式情境，評估完後可於此點選跳轉至下一步。",1);');
+			$("html").append("<div id='scenario_controller' class='scenario_controller' style=''>"
+					+ "    <span id = 'job_title' class='focus' onclick='job_explanation(\""+tmp+"\")'>"+$(this).closest( "tr" ).attr("job_name")+" "+$(this).closest( "tr" ).attr("job_pro")+"</span>"
+					+ "    <a id='next_step_btn' style='float:right;margin-left:10px;' href='./"+$(this).attr("value")+"'><img class='func' style='height:22px;' title='跳至將執行頁面' src='./refer_data/next_step.png'></a>"
+					+ "    <img id='check_btn' onclick='finish_step()' class='func' style='float:right;height:22px;margin-left:20px;' title='完成此步驟' src='./refer_data/check.png'>"
+					+ "</div>");
+			tooltip("func");
+			$.ajax({
+			    type : "POST",
+			    url : "scenarioJob.do",
+			    data : {
+			    	action :"click_next_step",
+			    	scenario_job_id : $("#job_next").attr("scenario_job_id"),
+			    	scenario_job_page : $("#job_next").attr("scenario_job_page")
+			    },success : function(result) {
+			    	if(result!="success"){
+			    		alert("系統異常，並未進入情境");
+			    	}
+			    }
+			});
+			
+			if($("#checkbox-t").prop("checked")){
+				cache_modal.push('run_modal("scenario_controller","歡迎使用本系統的情境流程，當您進入特定工作流後，將於左下角為您顯示現在的<b style=\'color:#33FFFF;font-size:22px;\'>工作進度</b>若為開放式情境，評估完後可於此點選跳轉至下一步。",1);');
+				cache_modal.push('run_modal("next_step_btn","此按鈕可以讓您跳至欲執行頁面，進入下一步",1,1);');
+				cache_modal.push('run_modal("check_btn","此按鈕可以讓您在任何時間完成此階段，進入下一步",1,1);');
+				cache_modal.push('run_modal("job_title","點擊工作名稱瀏覽詳細敘述",1,1);');
+			}
 			cache_modal.push('run_no_modal("$(\'#job_next\').dialog(\'open\');");');
 			cache_modal.push(' ');
 // 			cache_modal.push(' ');
-			cache_modal.push('run_modal("job_next_enter","點擊此，可跳轉至目前進度頁面",1,1);');
+			if($("#checkbox-t").prop("checked")){
+				cache_modal.push('run_modal("job_next_enter","點擊此，可跳轉至目前進度頁面",1,1);');
+			}
 			do_modal();
 		});
 		
@@ -200,18 +237,18 @@ var page_comparison={
 				id : "job_next_enter",
 				text : "確定跳轉",
 				click : function() {
-					$.ajax({
-					    type : "POST",
-					    url : "scenarioJob.do",
-					    data : {
-					    	action :"click_next_step",
-					    	scenario_job_id : $("#job_next").attr("scenario_job_id"),
-					    	scenario_job_page : $("#job_next").attr("scenario_job_page")
-					    },success : function(result) {
+// 					$.ajax({
+// 					    type : "POST",
+// 					    url : "scenarioJob.do",
+// 					    data : {
+// 					    	action :"click_next_step",
+// 					    	scenario_job_id : $("#job_next").attr("scenario_job_id"),
+// 					    	scenario_job_page : $("#job_next").attr("scenario_job_page")
+// 					    },success : function(result) {
 					    	window.location.href = $("#job_next").attr("next_page") ;
 					    	$("#job_next").dialog("close");
-					    }
-					});
+// 					    }
+// 					});
 				}
 			},{
 				text : "取消",
@@ -316,10 +353,25 @@ var page_comparison={
 		    success : function(result) {
 		        var json_obj = $.parseJSON(result);
 		        var option_str='<option value="0">請選擇</option>';
+		        
 		        $.each (json_obj, function (i) {
-		        	option_str+="<option value='"+json_obj[i].scenario_id+"'>"+json_obj[i].scenario_name+"</option>"
+		        	option_str+="<option value='"+json_obj[i].scenario_id+"'>"+json_obj[i].scenario_name+"</option>";
+		        	var explane_txt = "<div style='text-align:center;font-size:30px;'>"+json_obj[i].scenario_name + "</div><div style='max-width:500px;margin:10px auto;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+json_obj[i].result+"</div>";
+// 		        	alert(json_obj.child);
+		        	$.each (json_obj[i].child, function (j) {
+		        		if(json_obj[i].child[j].flow_seq!=0){
+		        			explane_txt += "步驟 " +json_obj[i].child[j].flow_seq+": "+json_obj[i].child[j].next_flow_explanation + "<br>";
+		        		}
+		        	});
+		        	
+		        	explane_txt_arr[json_obj[i].scenario_id] = explane_txt;
+
 		        });
+		        $("#explane_select").html(option_str);
 		        $("#all_scenario_name").html(option_str);
+		        $("#explane_txt").html("<div style='height:240px;width:calc(60vw);text-align:center;line-height:200px;font-size:40px;'>請選擇情境</div>");
+		        
+		        ;
 		    }
 		});
 		
@@ -395,6 +447,7 @@ var page_comparison={
 					<div class="btn-row">
 						<a id="btn_main_create" class="btn btn-exec btn-wide" >建立工作</a>
 						<a id="btn_main_view" class="btn btn-exec btn-wide" onclick='$("#explane").dialog("open");'>查看情境流程</a>
+						<input id="checkbox-t" type="checkbox" style='top:-99999px;left:0px;' checked><label for="checkbox-t" style='float:right;'><span class="form-label">解說</span></label>
 					</div>
 				</div>
 			</div>
@@ -432,7 +485,7 @@ var page_comparison={
 										<th>步驟</th>
 										<th>流程名稱</th>
 										<th>項目</th>
-										<th>結果</th>
+										<th style='max-width:400px;'>結果</th>
 									</tr>
 								</thead>
 								<tbody>

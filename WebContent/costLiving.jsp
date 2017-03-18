@@ -389,7 +389,8 @@ table.accessHide {
 	}
 	
 	function show_chart(product_list, chartOptions, isChart) {
-
+		
+		if(window.scenario_record){scenario_record("生活費用","[ "+$("#country").val()+", "+$("#city").val()+", "+$("#business_type").val()+", "+$("#sub_type").val()+", "+$('input[name="field_name"]:checked').val()+", "+product_list+"]");}
 		$.ajax({
 			type : "POST",
 			url : "costliving.do",

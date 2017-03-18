@@ -442,9 +442,11 @@ table.accessHide {
 	}
 	
 	function show_chart(chartOptions, isChart) {
+		
 		var second_target_list = get_second_target_list();
 		var type_list = get_type_list();
-
+		if(window.scenario_record){scenario_record("動態統計-國家","[ "+$("#country").val()+", "+$("#structure").val()+", "+$("#dimensions").val()+", "+$("#target").val()+", "+second_target_list+", "+type_list+"]");} 
+		
 		$.ajax({
 			type : "POST",
 			url : "country.do",

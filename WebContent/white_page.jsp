@@ -16,47 +16,67 @@
 </style>
 <script>
 	$(function(){
+		scenario_record("1","2");
 		//#####################################################
 		//######################要拆出去的#####################
 	
-		var scenario_job_id = "<%=(String)((request.getSession().getAttribute("scenario_job_id")==null)?"":request.getSession().getAttribute("scenario_job_id"))%>";
-		var scenario_job_page = "<%=(String)((request.getSession().getAttribute("scenario_job_page")==null)?"":request.getSession().getAttribute("scenario_job_page"))%>";
+// 		var scenario_job_id = "";
+// 		var scenario_job_page ="";
+
+// 		$.ajax({
+// 			type : "POST",
+// 			url : "scenarioJob.do",
+// 			async : false,
+// 			data : { action : "get_session" },
+// 			success : function(result) {
+// 				alert(result);
+// 				var json_obj = $.parseJSON(result);
+// 				scenario_job_id = json_obj.scenario_job_id;
+// 				scenario_job_page = json_obj.scenario_job_page;
+// 			}
+// 		});
+// 		var current_page = location.pathname.split("/").pop();
 		
-		var current_page = location.pathname.split("/").pop();
-		
-		if( scenario_job_id.length > 2 && $("#scenario_controller").length==0){
-			$.ajax({
-				type : "POST",
-				url : "scenarioJob.do",
-				data : { 
-					action : "get_current_job_info",
-					job_id : scenario_job_id
-				},success : function(result) {
-					var json_obj = $.parseJSON(result);
+// 		if( scenario_job_id.length > 2 && $("#scenario_controller").length==0){
+// 			$.ajax({
+// 				type : "POST",
+// 				url : "scenarioJob.do",
+// 				data : { 
+// 					action : "get_current_job_info",
+// 					job_id : scenario_job_id
+// 				},success : function(result) {
 					
-					$("html").append("<div id='scenario_controller' class='scenario_controller' ondblclick='job_explanation(\""+json_obj.job_id+"\")' style=''>"+json_obj.job_name+" <img style='float:right;height:22px;margin-left:10px;'src='./refer_data/next_step.png'><img style='float:right;height:22px;margin-left:10px;'src='./refer_data/check.png'></div>");
-				}
-			});
-		}
+// 					var json_obj = $.parseJSON(result);
+					
+// 					$("html").append("<div id='scenario_controller' class='scenario_controller' ondblclick='job_explanation(\""+json_obj.job_id+"\")' style=''>"
+// 							+      json_obj.job_name
+// 							+ "    <img id='next_step_btn' class='func' style='float:right;height:22px;margin-left:10px;' title='跳至將執行頁面' src='./refer_data/next_step.png'>"
+// 							+ "    <img id='check_btn' class='func' style='float:right;height:22px;margin-left:20px;' title='完成此步驟' src='./refer_data/check.png'>"
+// 							+ "</div>");
+					
+// 					tooltip("func");
+// 				}
+// 			});
+// 		}
 		
-		if( scenario_job_id.length > 2 && current_page == scenario_job_page){
+// 		if( scenario_job_id.length > 2 && current_page == scenario_job_page){
 			
-			$.ajax({
-				type : "POST",
-				url : "scenarioJob.do",
-				data : { 
-					action : "get_current_job_info",
-					job_id : scenario_job_id,
-				},success : function(result) {
-					var json_obj = $.parseJSON(result);
-// 					$.each(json_obj,function(i, item) {
-						eval(json_obj.next_flow_guide);
-// 					});
-				}
-			});
+// 			$.ajax({
+// 				type : "POST",
+// 				url : "scenarioJob.do",
+// 				data : { 
+// 					action : "get_current_job_info",
+// 					job_id : scenario_job_id,
+// 				},success : function(result) {
+// 					var json_obj = $.parseJSON(result);
+// // 					$.each(json_obj,function(i, item) {
+// 						eval(json_obj.next_flow_guide);
+// // 					});
+// 				}
+// 			});
 			
-			$("html").append("<div style='height:40px;width:200px;background-color:gray;position:fixed;bottom:3px;left:16px;'>123</div>");
-		}
+// 			//$("html").append("<div style='height:40px;width:200px;background-color:gray;position:fixed;bottom:3px;left:16px;'>123</div>");
+// 		}
 		//######################要拆出去的#####################		
 		//#####################################################			
 		

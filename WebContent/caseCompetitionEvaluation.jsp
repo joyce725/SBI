@@ -428,7 +428,7 @@
 			console.log("eval_reason:" + eval_reason);
 			console.log("eval_1_point:" + eval_1_point);
 			console.log("eval_ratio:" + eval_ratio);
-			
+			if(window.scenario_record){scenario_record("競爭力決策評估","["+$('#competition_id').val()+","+eval_point+","+eval_reason+","+eval_1_point+","+eval_ratio+"]");}
 			$.ajax({
 				type : "POST",
 				url : "caseCompetitionEvaluation.do",

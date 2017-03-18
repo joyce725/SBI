@@ -176,6 +176,7 @@ function checkboxcheck(name){
 			if(warning_msg.length>3){
 				warningMsg('警告', warning_msg);
 			} else {
+				if(window.scenario_record){scenario_record("目標客群定位","["+checkboxcheck("px1")+","+$("#product").val()+","+checkboxcheck("age")+","+checkboxcheck("sex")+","+radiocheck("px3")+","+radiocheck("px4")+","+radiocheck("px5")+","+radiocheck("px6")+","+radiocheck("px7")+","+radiocheck("px8")+","+radiocheck("px9")+"]");} 
 				$.ajax({
 					type : "POST",
 					url : "persona.do",
