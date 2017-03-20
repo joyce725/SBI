@@ -146,6 +146,12 @@ public class ScenarioJob extends HttpServlet {
 			logger.debug("[Output]: scenario_job_page: " +scenario_job_page);
 			response.getWriter().write("{\"scenario_job_id\":\""+scenario_job_id+"\",\"scenario_job_page\":\""+scenario_job_page+"\"}");
 			return;
+		}else if("clear_session".equals(action)){
+			request.getSession().setAttribute("scenario_job_id","");
+			request.getSession().setAttribute("scenario_job_page","");
+			logger.debug("[Output]: clear_scenario_session ");
+			response.getWriter().write("success");
+			return;
 		}else if("set_scenario_result".equals(action)){
 			String group_id = request.getSession().getAttribute("group_id").toString();
 			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
@@ -298,7 +304,9 @@ public class ScenarioJob extends HttpServlet {
 		private static final String next_step_update = "update tb_scenario_job set flow_id = ? , flow_seq = ? , finished = ? , finish_time = ? where job_id = ?";
 		
 		private static final String get_scenario_child_q = "select * from tb_scenario_flow where scenario_id = ? ORDER BY flow_seq";
-		
+		private static final String get_last_step = "SELECT * FROM tb_scenario_job "
+				+ " LEFT JOIN tb_scenario_flow last ON tb_scenario_job.scenario_id = last.scenario_id AND last.flow_seq +1 = tb_scenario_job.flow_seq  ";
+				
 		@Override
 		public List<ScenarioJobVO> get_all_job(String group_id){
 			List<ScenarioJobVO> list = new ArrayList<ScenarioJobVO>();

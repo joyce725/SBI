@@ -149,9 +149,15 @@ function select_poi(poi_name){
 				'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>'+
 				'</table>';
 				var infowindow = new google.maps.InfoWindow({content:tmp_table});
-				google.maps.event.addListener(marker, "mouseover", function(event) { 
-		        	infowindow.open(marker.get('map'), marker);
-		        });
+				if(json_obj.length<30){
+					google.maps.event.addListener(marker, "mouseover", function(event) { 
+			        	infowindow.open(marker.get('map'), marker);
+			        });
+				}else{
+					google.maps.event.addListener(marker, "click", function(event) { 
+			        	infowindow.open(marker.get('map'), marker);
+			        });
+				}
 				google.maps.event.addListener(marker, "mouseout", function(event) { 
 		        	setTimeout(function () { infowindow.close(); }, 2000);
 		        });
@@ -207,10 +213,18 @@ function select_poi_2(poi_name){
 				'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>'+
 				'</table>';
 				var infowindow = new google.maps.InfoWindow({content:tmp_table});
-				google.maps.event.addListener(marker, "mouseover", function(event) { 
-		        	infowindow.open(marker.get('map'), marker);
+				if(json_obj.length<30){
+					google.maps.event.addListener(marker, "mouseover", function(event) { 
+			        	infowindow.open(marker.get('map'), marker);
+			        });
+				}else{
+					google.maps.event.addListener(marker, "click", function(event) { 
+			        	infowindow.open(marker.get('map'), marker);
+			        });
+				}
+				google.maps.event.addListener(marker, "mouseout", function(event) { 
 		        	setTimeout(function () { infowindow.close(); }, 2000);
-		        }); 
+		        });
 				all_markers[poi_name].push(marker);
 			});
 		}
@@ -326,7 +340,7 @@ function select_BD(BD_name){
 		            map: map
 		        });
 		        
-		        var dbl_timeout = null;
+		        var update_timeout = null;
 				google.maps.event.addListener(bermudaTriangle, "click", function(event) { 
 					 update_timeout = setTimeout(function(){
 						if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
@@ -383,6 +397,7 @@ function country_POLY_for_country_economy (year,type){//country_polygen
 		},
 		success : function(result) {
 			var json_obj = $.parseJSON(result);
+			var timer;
 			$.each(json_obj,function(i, item) {
 				var wkt = new Wkt.Wkt();
 				wkt.read(json_obj[i].geom);
@@ -395,27 +410,39 @@ function country_POLY_for_country_economy (year,type){//country_polygen
 	            }
 	            var _data = json_obj[i].economy_detail_statistic;
                 switch (true) {
-                    case _data <= TILE[0]:
+                    case +_data <= +TILE[0]:
                         config.fillColor = "#41A85F";
                         break;
-                    case _data > TILE[0] && _data <= TILE[1]:
+                    case +_data > +TILE[0] && +_data <= +TILE[1]:
                         config.fillColor = "#8db444";
                         break;
-                    case _data > TILE[1] && _data <= TILE[2]:
+                    case +_data > +TILE[1] && +_data <= +TILE[2]:
                         config.fillColor = "#FAC51C";
                         break;
-                    case _data > TILE[2] && _data <= TILE[3]:
+                    case +_data > +TILE[2] && +_data <= +TILE[3]:
                         config.fillColor = "#d87926";
                         break;
-                    case _data > TILE[3]:
+                    case +_data > +TILE[3]:
                         config.fillColor = "#B8312F";
                         break;
                 }
+                var msg = "<table>"
+                + "<tr><td align='center'>國家：</td><td align='center'>" + json_obj[i].country_name + "</td></tr>"
+                + "<tr><td align='center'>" + $('#span_legend').text() + "：</td><td align='center'>" + json_obj[i].economy_detail_statistic + "</td></tr>"
+                +"</table>";
+                
 	            var polygen = wkt.toObject(config);
 	            if (Wkt.isArray(polygen)) {
 	                for (i in polygen) {
 	                    if (polygen.hasOwnProperty(i) && !Wkt.isArray(polygen[i])) {
 	                    	polygen[i].setMap(map);
+	                    	google.maps.event.addListener(polygen[i], 'mouseover', function () {
+	                    		clearTimeout(timer);
+	                    		detail_1.innerHTML = '<div style="width: 380px; height: 230px;">' + msg + '</div>';
+	                    	});
+	                    	google.maps.event.addListener(polygen[i], 'mouseout', function () {
+	                    		timer = setTimeout(function(){ detail_1.innerHTML = ''; }, 1500);
+	                    	});
 	                    }
 	                }
 	            } else {
@@ -545,6 +572,7 @@ function country_POLY_for_countryData (year,type){//country_polygen
 		},
 		success : function(result) {
 			var json_obj = $.parseJSON(result);
+			var timer;
 			$.each(json_obj,function(i, item) {
 				var wkt = new Wkt.Wkt();
 				wkt.read(json_obj[i].geom);
@@ -556,28 +584,41 @@ function country_POLY_for_countryData (year,type){//country_polygen
 	                strokeWeight: 1,
 	            }
 	            var _data = json_obj[i].economy_detail_statistic;
+	            
                 switch (true) {
-                    case _data <= TILE[0]:
+                    case +_data <= +TILE[0]:
                         config.fillColor = "#41A85F";
                         break;
-                    case _data > TILE[0] && _data <= TILE[1]:
+                    case +_data > +TILE[0] && +_data <= +TILE[1]:
                         config.fillColor = "#8db444";
                         break;
-                    case _data > TILE[1] && _data <= TILE[2]:
+                    case +_data > +TILE[1] && +_data <= +TILE[2]:
                         config.fillColor = "#FAC51C";
                         break;
-                    case _data > TILE[2] && _data <= TILE[3]:
+                    case +_data > +TILE[2] && +_data <= +TILE[3]:
                         config.fillColor = "#d87926";
                         break;
-                    case _data > TILE[3]:
+                    case +_data > +TILE[3]:
                         config.fillColor = "#B8312F";
                         break;
                 }
+                var msg = "<table>"
+                + "<tr><td align='center'>國家：</td><td align='center'>" + json_obj[i].country_name + "</td></tr>"
+                + "<tr><td align='center'>"+ $('#span_legend').text() +"：</td><td align='center'>" + json_obj[i].economy_detail_statistic + "</td></tr>"
+                +"</table>";
 	            var polygen = wkt.toObject(config);
 	            if (Wkt.isArray(polygen)) {
 	                for (i in polygen) {
 	                    if (polygen.hasOwnProperty(i) && !Wkt.isArray(polygen[i])) {
 	                    	polygen[i].setMap(map);
+	                    	google.maps.event.addListener(polygen[i], 'mouseover', function () {
+	                    		clearTimeout(timer);
+	                    		detail_1.innerHTML = '<div style="width: 380px; height: 230px;">' + msg + '</div>';
+	                    	});
+	                    	google.maps.event.addListener(polygen[i], 'mouseout', function () {
+	                    		
+	                    		timer = setTimeout(function(){ detail_1.innerHTML = ''; }, 1500);
+	                    	});
 	                    }
 	                }
 	            } else {
@@ -595,7 +636,7 @@ function country_POLY_for_countryData (year,type){//country_polygen
     });
 }
 
-function countryData(node,type){//country_economy
+function countryData(node,type){//country_data
 	if(!node.isSelected()){
 	 	var polygen = country_polygen.pop();
 	 	while(polygen != null){
@@ -706,6 +747,7 @@ function country_POLY_for_chinaCity (type){//country_polygen
 		},
 		success : function(result) {
 			var json_obj = $.parseJSON(result);
+			var timer;
 			$.each(json_obj,function(i, item) {
 				var wkt = new Wkt.Wkt();
 				wkt.read(json_obj[i].geom);
@@ -718,22 +760,26 @@ function country_POLY_for_chinaCity (type){//country_polygen
 	            }
 	            var _data = json_obj[i].data;
                 switch (true) {
-                    case _data <= TILE[0]:
+                    case +_data <= +TILE[0]:
                         config.fillColor = "#41A85F";
                         break;
-                    case _data > TILE[0] && _data <= TILE[1]:
+                    case +_data > +TILE[0] && +_data <= +TILE[1]:
                         config.fillColor = "#8db444";
                         break;
-                    case _data > TILE[1] && _data <= TILE[2]:
+                    case +_data > +TILE[1] && +_data <= +TILE[2]:
                         config.fillColor = "#FAC51C";
                         break;
-                    case _data > TILE[2] && _data <= TILE[3]:
+                    case +_data > +TILE[2] && +_data <= +TILE[3]:
                         config.fillColor = "#d87926";
                         break;
-                    case _data > TILE[3]:
+                    case +_data > +TILE[3]:
                         config.fillColor = "#B8312F";
                         break;
                 }
+                var msg = "<table>"
+                	+ "<tr><td align='center'>國家：</td><td align='center'>" + json_obj[i].country_name + "</td></tr>"
+                	+ "<tr><td align='center'>"+ $('#span_legend').text() +"：</td><td align='center'>" + json_obj[i].data + "</td></tr>"
+                	+"</table>";
 	            var polygen = wkt.toObject(config);
 	            if (Wkt.isArray(polygen)) {
 	                for (i in polygen) {
@@ -743,6 +789,14 @@ function country_POLY_for_chinaCity (type){//country_polygen
 	                }
 	            } else {
 	            	polygen.setMap(map);
+	            	google.maps.event.addListener(polygen, 'mouseover', function () {
+                		clearTimeout(timer);
+                		detail_1.innerHTML = '<div style="width: 380px; height: 230px;">' + msg + '</div>';
+                	});
+                	google.maps.event.addListener(polygen, 'mouseout', function () {
+                		
+                		timer = setTimeout(function(){ detail_1.innerHTML = ''; }, 1500);
+                	});
 	            }
 				
 	            country_polygen.push(polygen);
@@ -863,19 +917,19 @@ function country_POLY_for_heatMap (type){//heatMap
 	            }
 	            var _data = json_obj[i].data;
               switch (true) {
-                  case _data <= TILE[1]:
+                  case +_data <= +TILE[1]:
                       config.fillColor = "#41A85F";
                       break;
-                  case _data > TILE[1] && _data <= TILE[2]:
+                  case +_data > +TILE[1] && +_data <= +TILE[2]:
                       config.fillColor = "#8db444";
                       break;
-                  case _data > TILE[2] && _data <= TILE[3]:
+                  case +_data > +TILE[2] && +_data <= +TILE[3]:
                       config.fillColor = "#FAC51C";
                       break;
-                  case _data > TILE[3] && _data <= TILE[4]:
+                  case +_data > +TILE[3] && +_data <= +TILE[4]:
                       config.fillColor = "#d87926";
                       break;
-                  case _data > TILE[4]:
+                  case +_data > +TILE[4]:
                       config.fillColor = "#B8312F";
                       break;
               }
@@ -1268,6 +1322,7 @@ function country_POLY_for_chinaProvincial(node){
 //#######################  11大麥克  ############################
 //############################################################
 function bigmac(node){
+	
 	if(!node.isSelected()){
 	 	var polygen = country_polygen.pop();
 	 	while(polygen != null){
@@ -1285,6 +1340,24 @@ function bigmac(node){
 	 	$("#shpLegend").hide();
 	 	return;
 	}
+	
+	panTo( 28.0, 130.0);
+	smoothZoom(map, 2, map.getZoom());
+ 	var polygen = country_polygen.pop();
+ 	while(polygen != null){
+ 		if (Wkt.isArray(polygen)) {
+ 		       for (i in polygen) {
+ 		           if (polygen.hasOwnProperty(i) && !Wkt.isArray(polygen[i])) {
+ 		           	polygen[i].setMap(null);
+ 		       }
+ 		    }
+ 		} else {
+ 		   	polygen.setMap(null);
+ 		}
+ 		polygen = country_polygen.pop();
+ 	}
+ 	$("#shpLegend").hide();
+	
 	if(!$(node.span.childNodes[1]).hasClass('diagrammap')){
 		$(node.span.childNodes[1]).addClass('diagrammap');
 	}
@@ -1298,7 +1371,7 @@ function bigmac(node){
 	});
 	node.setSelected(true);
 	$(node.span.childNodes[1]).addClass('loading');
-	//######################################################3
+	//######################################################
 	if(window.scenario_record){scenario_record("大麥克指數","");} 
 	$.ajax({
 		type : "POST",
@@ -1309,6 +1382,25 @@ function bigmac(node){
 		},
 		success : function(result) {
 			var json_obj = $.parseJSON(result);
+			var TILE = [];
+			var mac_price_array=[];
+			var timer;
+			$.each(json_obj,function(i, item) {
+				mac_price_array.push(+json_obj[i].price);
+			});
+			mac_price_array.sort();
+			for(var i=0;i<4;i++){
+				TILE[i]=+mac_price_array[Math.round(mac_price_array.length/5)*(i+1)];
+			}
+			 $('#span_level1').text(' ~ ' + TILE[0]);
+             for (var i = 0; i < 4; i++) {
+                 $('#span_level' + (i + 2)).text(TILE[i] + ' ~ ' + TILE[i + 1]);
+             }
+             $('#span_level5').text(TILE[3] + ' ~ ');
+             $('#span_legend').text("大麥克指數");
+             $('#span_unit').text("大麥克售價比");
+             $('#tr_year').hide();
+             
 			$.each(json_obj,function(i, item) {
 				var wkt = new Wkt.Wkt();
 				wkt.read(json_obj[i].geom);
@@ -1319,6 +1411,26 @@ function bigmac(node){
 	                strokeOpacity: 1,
 	                strokeWeight: 1,
 	            }
+	            var _data = json_obj[i].price;
+	            switch (true) {
+	                case +_data <= +TILE[0]:
+	                    config.fillColor = "#41A85F";
+	                    break;
+	                case +_data > +TILE[0] && +_data <= +TILE[1]:
+	                    config.fillColor = "#8db444";
+	                    break;
+	                case +_data > +TILE[1] && +_data <= +TILE[2]:
+	                    config.fillColor = "#FAC51C";
+	                    break;
+	                case +_data > +TILE[2] && +_data <= +TILE[3]:
+	                    config.fillColor = "#d87926";
+	                    break;
+	                case +_data > +TILE[3]:
+	                    config.fillColor = "#B8312F";
+	                    break;
+	            }
+	            
+	            
 	            var msg = "<table><caption>大麥克指數 (" + json_obj[i].country_name + ")</caption>"
 	            + "<tr><td align='center'>大麥克售價：</td><td align='center'>" + json_obj[i].price + "</td></tr>"
 	            + "<tr><td align='center'>高/低估比率：</td><td align='center'>" + json_obj[i].rawIndex + "</td></tr>"
@@ -1330,11 +1442,14 @@ function bigmac(node){
 	                for (i in polygen) {
 	                    if (polygen.hasOwnProperty(i) && !Wkt.isArray(polygen[i])) {
 	                    	polygen[i].setMap(map);
+	                    	
 	                    	google.maps.event.addListener(polygen[i], 'mouseover', function () {
+	                    		clearTimeout(timer);
 	        	                detail_1.innerHTML = '<div style="width: 320px; height: 230px;">' + msg + '</div>';
 	        	            });
 	        	            google.maps.event.addListener(polygen[i], 'mouseout', function () {
-	        	                detail_1.innerHTML = '';
+	        	                
+	        	            	timer = setTimeout(function(){ detail_1.innerHTML = ''; }, 1500);
 	        	            });
 	                    }
 	                }
@@ -1349,6 +1464,7 @@ function bigmac(node){
 	            }
 	            country_polygen.push(polygen);
 			});
+			$("#shpLegend").show();
 	        $(node.span.childNodes[1]).removeClass('loading');
 		}
 	});

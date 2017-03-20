@@ -6,6 +6,7 @@
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
+<link rel="stylesheet" href="css/styles_map.css"/>
 <style>
 	.topnav {
 		z-index: 2;
@@ -82,7 +83,7 @@ h2.ui-list-title {
 <script>
 var businessdistrict;
 var map;
-	
+var all_BDs={};
 
 	function checkboxstr(selector) {
 		var str = '';
@@ -287,7 +288,7 @@ var map;
 						<img src='./refer_data/bike.png' title="單車" val="15" onclick='$("#speed").val(15);$("#speed").change();'>
 					</td>
 					<td>
-						　時速：<input id='speed' style='width:40px;height:14px;' value='10'>　公里
+						　時速：<input id='speed' style='padding:0px;width:40px;height:14px;' value='10'>　公里
 					</td>
 				</tr>
 				<tr>
@@ -298,7 +299,7 @@ var map;
 						<div id='env_slider'></div>
 					</td>
 					<td>
-						　需時：<input id='time' style='width:40px;height:14px;' value='30'>　分鐘
+						　需時：<input id='time' style='padding:0px;width:40px;height:14px;' value='30'>　分鐘
 					</td>
 				</tr>
 				<tr style='height:50px;'>
@@ -324,8 +325,6 @@ var map;
 	
     <script type="text/javascript">
 	    var markers = [];
-	    var words=['4','2','3','1','5','7','6','8','9','10','11','12','13','14','15'];
-	    
 	    var rs_markers=[];
 	    
 	    function initMap() {
@@ -362,7 +361,7 @@ var map;
 						  center: event.latLng,
 						  radius: 0 
 					});
-					var marker_obj = new item_marker( 10, 30, rs_marker, rs_circle);
+					var marker_obj = new item_marker( 10, 20, rs_marker, rs_circle);
 					
 					$("#rr_pt").html(order);
 					$("#rr_pt").val(marker_obj);
@@ -386,7 +385,6 @@ var map;
 						$('#val_time').html("花費"+marker_obj.time+"分鐘");
 						$('#val_speed').html("時速"+marker_obj.speed+"公里");
 						$('#env_slider').slider('option', 'value', marker_obj.time);
-						rs_marker.setAnimation(google.maps.Animation.BOUNCE);
 			        }); 
 			        
 				    google.maps.event.addListener(rs_marker, 'drag', function(marker){
@@ -408,10 +406,6 @@ var map;
 						$("#time").val(marker_obj.time);
 						$('#env_slider').slider('option', 'value', marker_obj.time);
 				    });
-
-				    google.maps.event.addListener(rs_marker, 'dragend', function(marker){
-				    	rs_marker.setAnimation(google.maps.Animation.BOUNCE);
-				    });
 				}
 			});
 			trafficLayer = new google.maps.TrafficLayer();
@@ -420,6 +414,67 @@ var map;
    		}
 	    
 	    function draw_BDS(BDs,n){
+	    	var BD_name=BDs.replace("商圈","")+"商圈";
+	    	if(BDs=="新板"){BD_name="新板特區商圈";}
+	    	
+	    	if(all_BDs[BD_name]!=null){
+	    		for (var i = 0; i < all_BDs[BD_name].length; i++) {   
+	    			all_BDs[BD_name][i].setMap(null);   
+	            }   
+	    		all_BDs[BD_name]=null;
+	    		return;
+	    	}
+	    	$.ajax({
+	    		type : "POST",
+	    		url : "realMap.do",
+	    		data : {
+	    			action : "select_BD",
+	    			name : BD_name
+	    		},
+	    		success : function(result) {
+	    			var json_obj = $.parseJSON(result);
+	    			all_BDs[BD_name]=[];
+	    			$.each(json_obj,function(i, item) {
+		    			var bermudaTriangle = new google.maps.Polygon({
+							paths: json_obj[i].center,
+							strokeColor: '#FF0000',
+							strokeOpacity: 0.8,
+							strokeWeight: 2,
+							fillColor: '#FF0000',
+							fillOpacity: 0.1
+						});
+						bermudaTriangle.setMap(map);
+						var marker = new google.maps.Marker({
+						    position: businessdistrict[BDs].center,
+							label : n,
+						    title: businessdistrict[BDs].name,
+						    map: map
+						});
+						var timer;
+						var infowindow = new google.maps.InfoWindow({content: businessdistrict[BDs].name});
+						google.maps.event.addListener(marker, "mouseover", function(event) { 
+				        	infowindow.open(marker.get('map'), marker);
+				        	clearTimeout(timer);
+				        }); 
+						google.maps.event.addListener(marker, "mouseout", function(event) { 
+				        	timer = setTimeout(function () { infowindow.close(); }, 3000);
+				        });
+						google.maps.event.addListener(infowindow, "closeclick", function(event) { 
+				            bermudaTriangle.setMap(null);
+				            infowindow.setMap(null);
+				            marker.setMap(null);
+				        });
+						all_BDs[BD_name].push(bermudaTriangle);
+						google.maps.event.addListener(bermudaTriangle, "click", function(event) { 
+							if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+								google.maps.event.trigger(map, 'click',event);
+							}
+				        });
+	    			});
+	    		}
+	    	});
+			
+	    	return;
 	    	var marker = new google.maps.Marker({
 			    position: businessdistrict[BDs].center,
 				label : n,
@@ -580,7 +635,7 @@ var map;
 							// stage3 上一步
 							$("#choose").show();
 							$("#over").hide();
-							$('div[aria-describedby="regionselect"]').animate({left: '-=100px',});
+							$('div[aria-describedby="regionselect"]').animate({left: '-=150px',});
 							$("#jump").html('跳過');
 							$("#rewrite").html('取消');
 							$("#gointo").html('執行分析');
@@ -684,7 +739,7 @@ var map;
 								},
 								success : function(result) {
 					    			if("success"==result){
-					    				$('div[aria-describedby="regionselect"]').animate({left: '+=100px',});
+					    				$('div[aria-describedby="regionselect"]').animate({left: '+=150px',});
 										$('div[aria-describedby="regionselect"]').css("top","20%");
 										$("#choose").hide();
 										$('#over').show();
@@ -758,7 +813,7 @@ var map;
 								warningMsg('警告', warning);
 								return;
 							}
-							
+							if(window.scenario_record){scenario_record("區位選擇問卷","["+$('#QA input[name="QA_name"]').val()+","+$('#QA input[name="QA_propost"]').val()+","+$('#QA input[name="QA_taxid"]').val()+","+$('#QA input[name="QA_email"]').val()+","+$('#QA input[name="QA_investcountry"]').val()+","+$('#QA input[name="QA_industry"]:checked').val()+",("+($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_industry_item"]:checked'):checkboxstr('QA input[name="QA_industry_item2"]:checked'))+"),"+$('#QA input[name="QA_invest_industry"]:checked').val()+",("+($('#QA input[name="QA_invest_industry"]:checked').val()==1?"":($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_invest_industry_item2"]:checked'):checkboxstr('QA input[name="QA_invest_industry_item"]:checked')))+"),"+$('#QA input[name="QA_invest_brand"]:checked').val()+",("+checkboxstr('QA input[name="QA_invest_pattern"]:checked')+"),"+$('#QA input[name="QA_invest_type"]:checked').val()+","+$('#QA input[name="QA_invest_amount"]:checked').val()+"]");}
 							$.ajax({
 								type : "POST",
 								url : "regionselect.do",
@@ -779,6 +834,7 @@ var map;
 									QA_invest_amount : $('#QA input[name="QA_invest_amount"]:checked').val()
 								},
 								success : function(result) {
+									
 					    			if("success"==result){
 					    				$("#selectcountry").val('0');
 										$("#selectRegion").val('0');
@@ -791,7 +847,7 @@ var map;
 											$("#rewrite").html("取消");
 											$("#gointo").html("執行分析");
 											$('div[aria-describedby="regionselect"]').animate({
-											    left: '+=100px',
+											    left: '-=100px',
 											});
 										});
 					    			}else{
@@ -819,7 +875,7 @@ var map;
 								$("#rewrite").html("取消");
 								$("#gointo").html("執行分析");
 								$('div[aria-describedby="regionselect"]').animate({
-								    left: '+=100px',
+								    left: '-=100px',
 								});
 							});
 						}else if($("#gointo").html().length==2){ 
@@ -1010,7 +1066,6 @@ var map;
     
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap">
 	</script> 
-
 	</div>
 </div>
 

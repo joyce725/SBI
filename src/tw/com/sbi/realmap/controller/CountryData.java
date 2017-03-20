@@ -14,8 +14,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import com.google.gson.Gson;
+
+import tw.com.sbi.scenariojob.controller.ScenarioJob;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 @SuppressWarnings("serial")
 public class CountryData extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LogManager.getLogger(CountryData.class);
+	
 	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
@@ -196,7 +204,7 @@ public class CountryData extends HttpServlet {
 	        Collections.sort(list,
 	        new Comparator<String>() {
 	            public int compare(String o1, String o2) {
-	            	return (int) (Float.parseFloat(o1) - Float.parseFloat(o2));
+	            	return  (Float.parseFloat(o1) - Float.parseFloat(o2)>0?1:-1);
 	            }
 	        });
 	        if(count==0 || list.size() == 0)return null;

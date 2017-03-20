@@ -15,7 +15,7 @@ var page_comparison={
 		"evaluate.jsp": "目標市場決策評估",
 		"caseCompetitionEvaluation.jsp": "競爭力決策評估",
 		"caseChannelEvaluation.jsp": "通路決策評估",
-		"regionSelect.jsp": "區位選擇",
+		"regionSelect.jsp": "區位選擇、環域分析",
 		"finModel.jsp": "新創公司財務損益平衡評估工具",
 		"productForecast.jsp": "新產品風向評估",
 		
@@ -166,7 +166,7 @@ function job_explanation(job_id){
 						+"<tr><td>工作名稱:</td><td>"+json_obj.job_name+"</td></tr>"
 						+"<tr><td>所屬情境:</td><td>"+json_obj.scenario_name+"</td></tr>"
 						+"<tr><td>項目:</td><td>"+json_obj.next_flow_name+"</td></tr>"
-						+"<tr><td>說明:</td><td>"+json_obj.next_flow_explanation+"</td></tr>"
+						+"<tr><td>說明:</td><td style='max-width:calc(50vw);'>"+json_obj.next_flow_explanation+"</td></tr>"
 						+"</table>"
 						+"</div>");				
 				
@@ -178,6 +178,22 @@ function job_explanation(job_id){
 					buttons : [{
 						text : "確定",
 						click : function() {$(this).dialog("close");}
+					},{
+						text : "結束情境流程",
+						click : function() {
+							$.ajax({
+								type : "POST",
+								url : "scenarioJob.do",
+								data : { 
+									action : "clear_session",
+								},success : function(result) {
+									if(result=="success"){
+										location.replace(location);	
+									}
+								}
+							});
+							$(this).dialog("close");
+						}
 					}]
 				});
 			}
@@ -203,7 +219,9 @@ function scenario_record(category,result){
 		}
 	});
 }
-
+function reverse_step(){
+	alert("確定要跳到上一步?");
+}
 function finish_step(){
 	if($("#current_job_finish").length==0){
 		var step_name="";
@@ -299,7 +317,8 @@ $(function(){
 				$("html").append("<div id='scenario_controller' class='scenario_controller' style=''>"
 						+ "    <span id = 'job_title' class='focus'  onclick='job_explanation(\""+json_obj.job_id+"\")'>"+json_obj.job_name+" "+json_obj.flow_seq+'/'+ json_obj.max_flow_seq+"</span>"
 						+ "    <a id='next_step_btn' style='float:right;margin-left:10px;'href='./"+json_obj.next_flow_page+"'><img class='func' style='height:22px;' title='跳至將執行頁面' src='./refer_data/next_step.png'></a>"
-						+ "    <img id='check_btn' class='func' onclick='finish_step()' style='float:right;height:22px;margin-left:20px;' title='完成此步驟' src='./refer_data/check.png'>"
+						+ "    <img id='check_btn' class='func' onclick='finish_step()' style='float:right;height:22px;margin-left:10px;' title='完成此步驟' src='./refer_data/check.png'>"
+						+ "    <img id='reverse_btn' onclick='reverse_step()' class='func' style='float:right;height:22px;margin-left:20px;' title='退回上一個步驟' src='./refer_data/reverse.png'>"
 						+ "</div>");
 				
 				tooltip("func");
@@ -341,6 +360,7 @@ function tooltip(clas){
 
 function run_modal_s(element_name,message,click_to_over,pervent_trigger){
 	if($("#"+$(element_name).attr("id")+"_tmp").length!=0){alert("發生未知錯誤!!!");return;}
+	if($(element_name).length>1){return;}
 	var clone_element = $(element_name).clone();
 	clone_element.attr('id', $(element_name).attr("id")+"_tmp");
 	$(element_name).after('<div class="jquery-modal my_blocker current" id="platform"></div>');

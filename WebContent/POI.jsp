@@ -506,7 +506,7 @@ var item_marker = function (speed, time, marker, circle) {
 						$('#val_time').html("花費"+marker_obj.time+"分鐘");
 						$('#val_speed').html("時速"+marker_obj.speed+"公里");
 						$('#slider').slider('option', 'value', marker_obj.time);
-						rs_marker.setAnimation(google.maps.Animation.BOUNCE);
+// 						rs_marker.setAnimation(google.maps.Animation.BOUNCE);
 			        }); 
 			        
 				    google.maps.event.addListener(rs_marker, 'drag', function(marker){
@@ -528,7 +528,7 @@ var item_marker = function (speed, time, marker, circle) {
 						$('#slider').slider('option', 'value', marker_obj.time);
 				    });
 				    google.maps.event.addListener(rs_marker, 'dragend', function(marker){
-				    	rs_marker.setAnimation(google.maps.Animation.BOUNCE);
+// 				    	rs_marker.setAnimation(google.maps.Animation.BOUNCE);
 				    });
 				}
 			});

@@ -189,7 +189,7 @@ public class CountryEconomy extends HttpServlet {
 	        Collections.sort(list,
 	        new Comparator<String>() {
 	            public int compare(String o1, String o2) {
-	            	return (int) (Float.parseFloat(o1) - Float.parseFloat(o2));
+	            	return (Float.parseFloat(o1) - Float.parseFloat(o2)>0?1:-1);
 	            }
 	        });
 	        if(count==0 || list.size() == 0)return null;

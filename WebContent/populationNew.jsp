@@ -6,28 +6,20 @@
 <script type="text/javascript" src="js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
-<!--  css for d3js -->
 <style>
 .header {
 	top: 0px;
 }
 .page-wrapper {
-/*     background: #194A6B; */
     background-color: #EEF3F9;
 }
 .content-wrap{
-/* 	height: calc(100vh - 84px); */
-/* 	width: calc(100% - 136px); */
-/* 	margin: 56px 0 28px 136px; */
-	
     background: #fff;
     float: left;
     margin-left: 0px;
     margin-top: 100px;
     padding-bottom: 130px;
-    height: 100%;
     overflow-y: scroll;
-    width: 100%;
 	background-color: #EEF3F9;
 }
 .search-result-wrap{
@@ -51,21 +43,16 @@ ul, li {
 ul.tabs {
 	width: 100%;
 	height: 68px;
-	/*	border-bottom: 1px solid #999; */
-	/*	border-left: 1px solid #999; */
 }
 ul.tabs li {
-	/* 	border-radius: 15px 15px 0 0; */
 	float: left;
 	height: 67px;
 	line-height: 24px;
 	overflow: hidden;
 	position: relative;
 	margin-bottom: -1px;	/* 讓 li 往下移來遮住 ul 的部份 border-bottom */
-	/*	border: 1px solid #999; */
 	border:0px solid #fff;
 	border-left: none;
-	/*	background: #e1e1e1; */
 	background:#85b9fF;
 }
 ul.tabs li a {
@@ -84,21 +71,17 @@ ul.tabs li a:hover {
 	background: #5599FF;
 }
 ul.tabs li.active  {
-	
 	background: #194A6B;
-	/*	#fff; */
-	/*	border-bottom: 1px solid #fff; */
 }
 ul.tabs li.active a:hover {
-	/*	background: #cEd3d9; */
 	background: #192A4B;
 }
 div.tab_container {
 	clear: left;
 	width: 885px;
 	height:250px;
-		border: 3px solid #192A4B; 
-		border:0px solid #fff; 
+	border: 3px solid #192A4B; 
+	border:0px solid #fff; 
 	border-top: none;
 	background: #EEF3F9;
 }
@@ -110,7 +93,6 @@ select{
 	background:#eee url('./images/dropdown.svg') no-repeat 99% 2px;
 }
 .ben-table{
- 	/*	border:1px solid #000;  */
 	height:180px;
 	margin: 10px 120px;
 	width:70%;
@@ -119,8 +101,8 @@ select{
 	padding-right:12px;
 	text-align:right;
 	font-size:20px;
-		font-weight:bold;
-		width:160px;
+	font-weight:bold;
+	width:160px;
 }
 .ben-table td{
 	padding:12px;
@@ -171,7 +153,7 @@ h2.ui-list-title {
 		}
 		
 		url+=".htm";
-		if(window.scenario_record){scenario_record("台灣人口社會經濟資料-"$("#selectSearchYear").val()+"年:"+$("ul.tabs > li.active").text(),url);} 
+		if(window.scenario_record){scenario_record(("台灣人口社會經濟資料-"+$("#selectSearchYear").val()+"年:"+$("ul.tabs > li.active").text()),url);} 
 		$.ajax({
 			url: url,
 			dataType: 'jsonp', 
@@ -195,11 +177,6 @@ h2.ui-list-title {
 	        $('#selectSearchYear').focus();
 	    } else {
 	        if (x == 1) {
-	            //if ($('#selectSearchYear').val() == "106") {
-	            //    alert("此搜尋條件尚無104年資料，請更改搜尋日期");
-	            //    $('#selectSearchYear').focus();
-	            //    return;
-	            //} else 
 	           	if ($('#selectSearchSex1').val() == "") {
 	                alert("請選擇性別");
 	                $('#selectSearchSex1').focus();
@@ -228,11 +205,6 @@ h2.ui-list-title {
 	               htmlStr += "_" + $('#selectSearchAge2').val() + ".htm";
 	            }
 	        } else if (x == 3) {
-	            //if ($('#selectSearchYear').val() == "104") {
-	            //    alert("此搜尋條件尚無104年資料，請更改搜尋日期");
-	            //    $('#selectSearchYear').focus();
-	            //    return;
-	            //} else 
 	       		if ($('#selectSearchSex3').val() == "") {
 	                alert("請選擇性別");
 	                $('#selectSearchSex3').focus();
@@ -277,11 +249,6 @@ h2.ui-list-title {
 	                }
 	            }
 	        } else if (x == 4) {
-	            //if ($('#selectSearchYear').val() == "104") {
-	            //    alert("此搜尋條件尚無104年資料，請更改搜尋日期");
-	            //    $('#selectSearchYear').focus();
-	            //    return;
-	            //} else 
 	           	if ($('#selectSearchSex4').val() == "") {
 	                alert("請選擇性別");
 	                $('#selectSearchSex4').focus();
@@ -296,7 +263,7 @@ h2.ui-list-title {
 	                htmlStr += "_" + $('#selectSearchMarriage').val() + ".htm";
 	            }
 	        }
-	        if(window.scenario_record){scenario_record("台灣人口社會經濟資料-"$("#selectSearchYear").val()+"年:"+$("ul.tabs > li.active").text(),htmlStr);} 
+	        if(window.scenario_record){scenario_record("台灣人口社會經濟資料-"+$("#selectSearchYear").val()+"年:"+$("ul.tabs > li.active").text(),htmlStr);} 
 	        $.ajax({
 				url: htmlStr,
 				dataType: 'jsonp', 
@@ -386,9 +353,6 @@ h2.ui-list-title {
 		var $defaultLi = $('ul.tabs li').eq(_showTab).addClass('active');
 		
 		$($defaultLi.find('a').attr('href')).siblings().hide();
-		
-		// 當 li 頁籤被點擊時...
-		// 若要改成滑鼠移到 li 頁籤就切換時, 把 click 改成 mouseover
 		$('ul.tabs li').click(function() {
 			//reset all selections
 			myreset();

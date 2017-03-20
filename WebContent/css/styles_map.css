@@ -7,7 +7,7 @@
 	    display: block;
 	    z-index: 9999;
 	    height: 183.5px;
-	    max-width: 360px;
+	    width: 345px;
 	}
     .shpLegend tbody tr.even td {
         background: none;
@@ -159,11 +159,17 @@
 		background: #FFFFFF;
 	}
 	#detail_1 caption{ 
-		background: rgb(236,236,236);
+		background: #dee8f3;
+	}
+	#detail_1 td:nth-child(1){ 
+		border-right:1px solid rgb(236,236,236);
 	}
 	#detail_1 tr:nth-child(2n+2){ 
 		
 		background: rgb(236,236,236);
+	}
+	#detail_1 tr:nth-child(2n+2) td:nth-child(1){ 
+		border-right:1px solid #fff;
 	}
 	#detail_1 * { 
 		padding: 10px 20px;
