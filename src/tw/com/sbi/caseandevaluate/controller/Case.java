@@ -39,7 +39,10 @@ public class Case extends HttpServlet {
 
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-
+		
+		String groupId = request.getSession().getAttribute("group_id").toString();
+		logger.debug("group_id:" + groupId);
+		
 		CaseService caseService = null;
 
 		String action = request.getParameter("action");
@@ -49,7 +52,7 @@ public class Case extends HttpServlet {
 		if ("getCase".equals(action)) {
 			try {								
 				caseService = new CaseService();
-				List<CaseVO> list = caseService.selectCase();
+				List<CaseVO> list = caseService.selectCase(groupId);
 				
 				Gson gson = new Gson();
 				String jsonStrList = gson.toJson(list);
@@ -125,8 +128,6 @@ public class Case extends HttpServlet {
 			}
 		} else if ("insert".equals(action)) {
 			try {
-				String groupId = request.getSession().getAttribute("group_id").toString();
-
 				/*************************** 1.接收請求參數 **************************************/
 				String cityId = request.getParameter("city_id");
 				String bcircleId = request.getParameter("bcircle_id");
@@ -136,7 +137,6 @@ public class Case extends HttpServlet {
 				String evaluate1No = request.getParameter("evaluate_1_no");
 				String evaluate1 = request.getParameter("evaluate_1");
 				
-				logger.debug("group_id:" + groupId);
 				logger.debug("city_id:" + cityId);
 				logger.debug("bcircle_id" + bcircleId);
 				logger.debug("preference:" + preference);
@@ -178,8 +178,8 @@ public class Case extends HttpServlet {
 			dao = new CaseDAO();
 		}
 
-		public List<CaseVO> selectCase() {
-			return dao.selectCase();
+		public List<CaseVO> selectCase(String groupId) {
+			return dao.selectCase(groupId);
 		}
 
 		public List<CaseVO> selectCaseById(String caseId) {
@@ -226,7 +226,7 @@ public class Case extends HttpServlet {
 
 	/*************************** 制定規章方法 ****************************************/
 	interface case_interface {
-		public List<CaseVO> selectCase();
+		public List<CaseVO> selectCase(String groupId);
 		public List<CaseVO> selectCaseByCaseId(String caseId);
 		public List<CaseVO> selectCaseNotFinish();
 		public List<CaseVO> selectCountry();
@@ -245,7 +245,7 @@ public class Case extends HttpServlet {
 		private final String wsPath = getServletConfig().getServletContext().getInitParameter("pythonwebservice");
 
 		// 會使用到的Stored procedure
-		private static final String sp_get_decision_case = "call sp_get_decision_case()";
+		private static final String sp_get_decision_case = "call sp_get_decision_case(?)";
 		private static final String sp_get_decision_case_by_case_id = "call sp_get_decision_case_by_case_id(?)";
 		private static final String sp_get_decision_case_notfinish = "call sp_get_decision_case_notfinish()";
 		private static final String sp_get_decision_country = "call sp_get_decision_country()";
@@ -254,7 +254,7 @@ public class Case extends HttpServlet {
 		private static final String sp_insert_case = "call sp_insert_case(?,?,?,?,?,?,?,?,?)";
 		
 		@Override
-		public List<CaseVO> selectCase() {
+		public List<CaseVO> selectCase(String groupId) {
 			List<CaseVO> list = new ArrayList<CaseVO>();
 			CaseVO caseVO = null;
 			
@@ -266,6 +266,9 @@ public class Case extends HttpServlet {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				pstmt = con.prepareStatement(sp_get_decision_case);
+				
+				pstmt.setString(1, groupId);
+				
 				rs = pstmt.executeQuery();
 				
 				while (rs.next()) {

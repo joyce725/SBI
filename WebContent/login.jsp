@@ -21,7 +21,7 @@
 
 	
 	<%if(request.getSession().getAttribute("user_name")!=null){%>
-		top.location.href="scenarioJob.jsp";
+		top.location.href="news.jsp";
 	<%}%>
 		
 	    function changeImg(){

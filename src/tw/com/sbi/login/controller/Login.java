@@ -76,6 +76,14 @@ public class Login extends HttpServlet {
 					session.setAttribute("role", list.get(0).getRole());
 					session.setAttribute("privilege", list.get(0).getPrivilege());
 
+					
+					logger.debug("sessionID:"+ session.getId());
+					logger.debug("user_id:"+ list.get(0).getUser_id());
+					logger.debug("group_id:"+ list.get(0).getGroup_id());
+					logger.debug("user_name:"+ list.get(0).getUser_name());
+					logger.debug("role:"+ list.get(0).getRole());
+					logger.debug("privilege:"+ list.get(0).getPrivilege());
+										
 					String menuListStr = loginService.getMenuListToString();
 					session.setAttribute("menu", menuListStr);
 					message = new LoginVO();

@@ -34,10 +34,12 @@ $(function(){
 				var result_table = "";
 				
 				$.each(json_obj,function(i, item) {
+					var tmp = "<img src=./image.do?picname="+item.photo+" onerror=\"this.src='images/blank.png'\" style='max-width:100px;max-height:100px'>";
+					
 					result_table 
 						+= "<tr>"
 						+ "<td id='product_spec_"+i+"'>" + item.product_spec + "</td>"
-						+ "<td id='photo_"+i+"'>"+ item.photo + "</td>"
+						+ "<td id='photo_"+i+"'>"+ tmp + "</td>"
 						+ "<td id='seed_"+i+"'>"+ item.seed + "</td>"
 						+ "<td><div href='#' class='table-row-func btn-in-table btn-gray'><i class='fa fa-ellipsis-h'></i>"
 						+ "<div class='table-function-list'>"
@@ -90,6 +92,5 @@ $(function(){
 				</table>
 			</div>
 		</div>
-		
 	</div>
 <jsp:include page="footer.jsp" flush="true"/>
