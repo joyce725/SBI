@@ -7,6 +7,7 @@
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <link rel="stylesheet" href="css/styles_map.css"/>
+
 <style>
 	.topnav {
 		z-index: 2;
@@ -506,6 +507,11 @@ var all_BDs={};
 	    }
 	    
 	    $(function(){
+// 	    	setTimeout(function(){
+// 	    		select_BD("北車商圈");
+// 	    	},5000);
+	    	
+	    	
 	    	$.ajax({
 				type : "POST",
 				url : "regionselect.do",
@@ -704,7 +710,7 @@ var all_BDs={};
 								success : function(result) {
 									var json_obj = $.parseJSON(result);
 									var result_table = "";
-									if(window.scenario_record){scenario_record("區位選擇","["+$("#selectcountry").val()+","+$("#selectRegion").val()+","+$('#choose input[name="hee"]:checked').val()+","+$('#choose input[name="check1"]:checked').length+","+$('#choose input[name="check2"]:checked').length+","+$('#choose input[name="check3"]:checked').length+","+$('#choose input[name="check4"]:checked').length+","+$('#choose input[name="check5"]:checked').length+","+$('#choose input[name="check6"]:checked').length+","+$('#rs1').val()+","+$('#rs2').val()+","+$('#rs3').val()+", "+result.replace(/"([^"]*)"/g, "'$1'")+"]");}
+									if(window.scenario_record){scenario_record("區位選擇","['"+$("#selectcountry").val()+"','"+$("#selectRegion").val()+"','"+$('#choose input[name="hee"]:checked').val()+"',"+$('#choose input[name="check1"]:checked').length+","+$('#choose input[name="check2"]:checked').length+","+$('#choose input[name="check3"]:checked').length+","+$('#choose input[name="check4"]:checked').length+","+$('#choose input[name="check5"]:checked').length+","+$('#choose input[name="check6"]:checked').length+","+$('#rs1').val()+","+$('#rs2').val()+","+$('#rs3').val()+", "+result.replace(/"([^"]*)"/g, "'$1'")+"]");}
 									$.each(json_obj,function(i, item) {
 										scoreSTR += json_obj[i].City+ "," +json_obj[i].Score+";" ;
 										draw_BDS(json_obj[i].City,(i+1)+"");
@@ -813,7 +819,7 @@ var all_BDs={};
 								warningMsg('警告', warning);
 								return;
 							}
-							if(window.scenario_record){scenario_record("區位選擇問卷","["+$('#QA input[name="QA_name"]').val()+","+$('#QA input[name="QA_propost"]').val()+","+$('#QA input[name="QA_taxid"]').val()+","+$('#QA input[name="QA_email"]').val()+","+$('#QA input[name="QA_investcountry"]').val()+","+$('#QA input[name="QA_industry"]:checked').val()+",("+($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_industry_item"]:checked'):checkboxstr('QA input[name="QA_industry_item2"]:checked'))+"),"+$('#QA input[name="QA_invest_industry"]:checked').val()+",("+($('#QA input[name="QA_invest_industry"]:checked').val()==1?"":($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_invest_industry_item2"]:checked'):checkboxstr('QA input[name="QA_invest_industry_item"]:checked')))+"),"+$('#QA input[name="QA_invest_brand"]:checked').val()+",("+checkboxstr('QA input[name="QA_invest_pattern"]:checked')+"),"+$('#QA input[name="QA_invest_type"]:checked').val()+","+$('#QA input[name="QA_invest_amount"]:checked').val()+"]");}
+							if(window.scenario_record){scenario_record("區位選擇問卷","['"+$('#QA input[name="QA_name"]').val()+"','"+$('#QA input[name="QA_propost"]').val()+"','"+$('#QA input[name="QA_taxid"]').val()+"','"+$('#QA input[name="QA_email"]').val()+"','"+$('#QA input[name="QA_investcountry"]').val()+"',"+$('#QA input[name="QA_industry"]:checked').val()+",["+($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_industry_item"]:checked'):checkboxstr('QA input[name="QA_industry_item2"]:checked'))+"],"+$('#QA input[name="QA_invest_industry"]:checked').val()+",["+($('#QA input[name="QA_invest_industry"]:checked').val()==1?"":($('#QA input[name="QA_industry"]:checked').val()==1?checkboxstr('QA input[name="QA_invest_industry_item2"]:checked'):checkboxstr('QA input[name="QA_invest_industry_item"]:checked')))+"],"+$('#QA input[name="QA_invest_brand"]:checked').val()+",["+checkboxstr('QA input[name="QA_invest_pattern"]:checked')+"],"+$('#QA input[name="QA_invest_type"]:checked').val()+","+$('#QA input[name="QA_invest_amount"]:checked').val()+"]");}
 							$.ajax({
 								type : "POST",
 								url : "regionselect.do",
@@ -1054,10 +1060,11 @@ var all_BDs={};
 			});
 
 			$("#end").click(function(){
-				var result_str="[經度,緯度,半徑,時速,時間]=>";
+				var result_str="['名稱','經度','緯度','半徑','時速','時間']";
 				$.each(rs_markers, function(i, node){
-					result_str+="點"+(i+1);
-					result_str+="["+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
+// 					result_str+="點"+(i+1);
+					result_str+=",['點"+(i+1)+"', '"+new Number(node.marker.position.lat()).toFixed(4)+"', '"+new Number(node.marker.position.lng()).toFixed(4)+"', '"+new Number(node.circle.radius).toFixed(4)+"m', '"+node.speed+"km/hr', '"+node.time+"mins']";
+// 					result_str+="['點"+(i+1)+"', "+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
 				});
 				if(window.scenario_record){scenario_record("環域分析",result_str);}
 			});
@@ -1066,6 +1073,7 @@ var all_BDs={};
     
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap">
 	</script> 
+	<script src="js/mapFunction.js"></script>
 	</div>
 </div>
 

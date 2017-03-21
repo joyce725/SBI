@@ -71,3 +71,7 @@
 .bentable-style1 td{
 	padding:5px 8px;
 }
+.bentable-style1.nobreak td{
+	word-break:keep-all;
+}
+

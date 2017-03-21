@@ -57,7 +57,6 @@
 </style>
 
 <script>
-
 var explane_txt_arr={"0":"<div style='height:340px;width:calc(70vw);text-align:center;line-height:290px;font-size:40px;'>請選擇情境</div>"};
 var page_comparison={
 		"realMap.jsp": "商圈資訊",
@@ -97,7 +96,8 @@ var page_comparison={
 		"uploaddocsManager.jsp": "商機觀測站後臺",
 		"white_page.jsp" : "測試頁面",
 		
-		"pdf.jsp" : "電子書"
+		"pdf.jsp" : "電子書",
+		"scenarioJob.jsp" : "情境流程"
 	}
 	
 	function draw_scenario(parameter){
@@ -113,9 +113,9 @@ var page_comparison={
 					var print_table="";
 					var result_obj = $.parseJSON(json_obj[i].result);
 					var job_content_title="";
-					$.each(result_obj, function(i, item) {
+					$.each(result_obj, function(j, item) {
 						job_content_title="工作歷程:";
-						print_table+="<tr><td>"+result_obj[i].step+"</td><td><div style='max-width:200px'>"+result_obj[i].flow_name+"</div></td><td>"+result_obj[i].category+"</td><td><div style='max-width:400px'>"+result_obj[i].result+"</div></td></tr>";
+						print_table+="<tr><td>"+result_obj[j].step+"</td><td><div style='max-width:200px'>"+result_obj[j].flow_name+"</div></td><td>"+result_obj[j].category+"</td><td><div style='max-width:400px'>"+result_obj[j].result+"</div></td></tr>";
 					});
 					result_table+= '<tr job_id="'+json_obj[i].job_id+'" job_name="'+json_obj[i].job_name+'" job_pro="'+json_obj[i].flow_seq+'/'+ json_obj[i].max_flow_seq+'">' 
 						+ '<td><b style="font-size:16px;">' +json_obj[i].job_name+ '</b></td>' 
@@ -148,7 +148,6 @@ var page_comparison={
 		});
 
 		draw_scenario({action : "getJobInfo"});
-		
 		$("#tbl_main").delegate(".btn-update", "click", function(e) {
 			e.preventDefault();
 			$("#job_name_update").val($(this).closest("tr").attr("job_name"));
@@ -156,6 +155,7 @@ var page_comparison={
 			$("#job_update").val($(this).closest("tr").attr("job_id"));
 			$("#job_content_title").html($(this).attr("job_content_title"));
 			$("#job_content_update tbody").html($(this).attr("result"));
+			
 			
 			if($(this).attr("result").length>2){
 				$("#job_content_update").show();
@@ -333,6 +333,42 @@ var page_comparison={
 			}]
 		});
 		$("#job_delete").show();
+		$("#job_delete_detail").dialog({
+			draggable : true, resizable : false, autoOpen : false,
+			height : "auto", width : "auto", modal : true,
+			show : {effect : "blind", duration : 300},
+			hide : {effect : "fade", duration : 300},
+			buttons : [{
+				text : "確定刪除",
+				click : function() {
+// 					draw_scenario({
+// 						action : "delete_job",
+// 						job_id : $("#job_delete").val()
+// 					});
+// 					$.ajax({
+// 						type : "POST",
+// 						url : "scenarioJob.do",
+// 						data : { 
+// 							action : "clear_session",
+// 						},success : function(result) {
+// 							if(result=="success"){
+// 								location.replace(location);	
+// 							}
+// 						}
+// 					});
+					$(this).dialog("close");
+				}
+			},{
+				text : "取消",
+				click : function() {
+					$(this).dialog("close");
+				}
+			}]
+		});
+		$("#job_delete_detail").show();
+		
+		
+		
 		
 		$("#logout").click(function(e) {
 			$.ajax({
@@ -496,6 +532,9 @@ var page_comparison={
 				
 			</div>
 			<div id='job_delete' title='是否確認刪除此工作'>
+				
+			</div>
+			<div id='job_delete_detail' title='是否刪除此工作紀錄'>
 				
 			</div>
 			<div id='explane' title='情境流程說明' style='display:none;'>

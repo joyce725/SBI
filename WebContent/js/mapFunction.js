@@ -23,6 +23,10 @@
 var in_smoothZoom=0;
 var in_panTo=0;
 function smoothZoom (map, max, cnt) {
+	//考量能力，取消smooth
+	map.setZoom(max);
+	return;
+	
 	if(in_smoothZoom==1){
 		setTimeout(function(){
 			map.setZoom(max);
@@ -53,6 +57,10 @@ var panPath = [];
 var panQueue = [];  
 var STEPS = 30;
 function panTo(newLat, newLng) {
+	//考量能力，取消smooth
+	map.panTo( new google.maps.LatLng( newLat, newLng) );
+	return;
+	
 	if(in_panTo==1){
 		setTimeout(function(){
 			map.panTo( new google.maps.LatLng( newLat, newLng) );
@@ -178,7 +186,7 @@ function select_poi_2(poi_name){
 		all_markers[poi_name]=null;
 		return;
 	}
-	if(window.scenario_record){scenario_record("查詢POI",poi_name);} 
+	if(window.scenario_record){scenario_record("查詢POI_2",poi_name);} 
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
@@ -1473,3 +1481,34 @@ function bigmac(node){
 //############################################################
 //#######################  12  ###############################
 //############################################################
+function draw_env_analyse(points){
+	
+	var json_obj = eval("[['名稱','經度','緯度','半徑','時速','時間'],['點1', '24.9363', '120.8936', '3333.4000m', '10km/hr', '20mins'],['點2', '25.1652', '121.3220', '3333.4000m', '10km/hr', '20mins'],['點3', '24.8565', '121.2671', '3333.4000m', '10km/hr', '20mins']]"); 
+	
+	var json_obj = $.parseJSON(points);
+	$.each(json_obj,function(i, item) {
+		
+	});
+	return ;
+	
+	//###########################################
+	var rs_marker = new google.maps.Marker({
+	    position: event.latLng,
+	    animation: google.maps.Animation.DROP,
+	    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
+	    map: map,
+	    draggable:true,
+	    title: ("--分析點"+order+"--")
+	});
+	var rs_circle = new google.maps.Circle({
+		  strokeColor: '#FF0000',
+		  strokeOpacity: 0.5,
+		  strokeWeight: 2,
+		  fillColor: '#FF8700',
+		  fillOpacity: 0.2,
+		  map: map,
+		  center: event.latLng,
+		  radius: 0 
+	});
+	var marker_obj = new item_marker( 10, 20, rs_marker, rs_circle);
+}

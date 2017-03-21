@@ -219,8 +219,6 @@ public class ScenarioJob extends HttpServlet {
 				request.getSession().setAttribute("scenario_job_page","");
 			}else{
 				caseService.over_step(scenario_job_id, current_job.getNext_flow_id(),((Integer.parseInt(current_job.getFlow_seq())+1)+""),(0+""), null);
-				
-				
 				current_job = null;
 				List<ScenarioJobVO> list2 = caseService.get_all_job(group_id);
 				for(int i = 0;i < list2.size(); i ++){
@@ -233,6 +231,26 @@ public class ScenarioJob extends HttpServlet {
 				response.getWriter().write(current_job.getNext_flow_page());
 				request.getSession().setAttribute("scenario_job_page",current_job.getNext_flow_page());
 			}
+		}else if("last_step".equals(action)){
+			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
+			String group_id = request.getSession().getAttribute("group_id").toString();
+			ScenarioJobVO current_job = null;
+			caseService = new ScenarioService();
+			caseService.dealing_job_reverse(scenario_job_id);
+			
+			List<ScenarioJobVO> list2 = caseService.get_all_job(group_id);
+			for(int i = 0;i < list2.size(); i ++){
+				if(scenario_job_id.equals(list2.get(i).getJob_id())){
+					current_job = list2.get(i);
+				}
+	        }
+			String reverse_page =current_job.getNext_flow_page().length()>2?current_job.getNext_flow_page():"scenarioJob.jsp";
+			
+			logger.debug("[Output]: "+reverse_page);
+			logger.debug("Set session: scenario_job_page : "+reverse_page);
+			response.getWriter().write(reverse_page);
+			request.getSession().setAttribute("scenario_job_page",reverse_page);
+			return;
 		}
 	
 	}
@@ -268,6 +286,9 @@ public class ScenarioJob extends HttpServlet {
 		public List<ScenarioJobVO> get_scenario_child(String scenario_id){
 			return dao.get_scenario_child(scenario_id);
 		}
+		public void dealing_job_reverse(String job_id){
+			dao.dealing_job_reverse(job_id);
+		}
 	}
 
 	/*************************** 制定規章方法 ****************************************/
@@ -280,6 +301,7 @@ public class ScenarioJob extends HttpServlet {
 		public void dealing_job_save_result(String group_id,String job_id, String category, String result);
 		public void over_step(String job_id,String flow_id,String flow_seq,String finished,String finish_time);
 		public List<ScenarioJobVO> get_scenario_child(String scenario_id);
+		public void dealing_job_reverse(String job_id);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -305,8 +327,10 @@ public class ScenarioJob extends HttpServlet {
 		
 		private static final String get_scenario_child_q = "select * from tb_scenario_flow where scenario_id = ? ORDER BY flow_seq";
 		private static final String get_last_step = "SELECT * FROM tb_scenario_job "
-				+ " LEFT JOIN tb_scenario_flow last ON tb_scenario_job.scenario_id = last.scenario_id AND last.flow_seq +1 = tb_scenario_job.flow_seq  ";
-				
+				+ " LEFT JOIN tb_scenario_flow this ON tb_scenario_job.flow_id = this.flow_id "
+				+ " LEFT JOIN tb_scenario_flow next ON this.scenario_id = next.scenario_id AND next.flow_seq = this.flow_seq +1 "
+				+ " LEFT JOIN tb_scenario_flow last ON this.scenario_id = last.scenario_id AND last.flow_seq +1 = this.flow_seq  "
+				+ " WHERE tb_scenario_job.job_id = ? ";
 		@Override
 		public List<ScenarioJobVO> get_all_job(String group_id){
 			List<ScenarioJobVO> list = new ArrayList<ScenarioJobVO>();
@@ -607,6 +631,70 @@ public class ScenarioJob extends HttpServlet {
 			}
 			return list;
 		}
+		
+		public void dealing_job_reverse(String job_id){
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String old_result = "[]";
+			String last_flow_id ="";
+			String last_flow_seq ="";
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(get_last_step);
+				
+				pstmt.setString(1, job_id);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					last_flow_id = null2Str(rs.getString("last.flow_id"));
+					last_flow_seq = null2Str(rs.getString("last.flow_seq"));
+					old_result=null2Str(rs.getString("result"));
+				}
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			
+			List<ScenarioResultVO> old_json_result = new Gson().fromJson(old_result, new TypeToken<List<ScenarioResultVO>>() {}.getType());
+			for( java.util.Iterator<ScenarioResultVO> result_item = old_json_result.listIterator(); result_item.hasNext(); ){
+				ScenarioResultVO currentElement = result_item.next();
+				if(Integer.parseInt(last_flow_seq)+2==Integer.parseInt(currentElement.getStep())){
+					result_item.remove();
+				}else if(Integer.parseInt(last_flow_seq)+1==Integer.parseInt(currentElement.getStep())){
+					result_item.remove();
+				}
+			}
+			this.over_step(job_id, last_flow_id, last_flow_seq, "0", null);
+			String jsonStrList = new Gson().toJson(old_json_result);
+			this.dealing_job_update_result(job_id,jsonStrList);
+		}
+		
 		public void dealing_job_save_result(String group_id, String job_id, String category, String result){
 			ScenarioResultVO new_one= new ScenarioResultVO();
 			Connection con = null;

@@ -37,7 +37,8 @@ var page_comparison={
 		"uploaddocsManager.jsp": "商機觀測站後臺",
 		"white_page.jsp" : "測試頁面",
 		
-		"pdf.jsp" : "電子書"
+		"pdf.jsp" : "電子書",
+		"scenarioJob.jsp" : "情境流程"
 	}
 function do_modal(){
 	if(cache_modal.length>0){
@@ -219,8 +220,82 @@ function scenario_record(category,result){
 		}
 	});
 }
-function reverse_step(){
-	alert("確定要跳到上一步?");
+function reverse_step(step){
+//	alert("確定要跳到上一步?");
+	if($("#reverse_job").length==0){
+		var step_name="";
+		var step_seq=0;
+		var this_step_name = "";
+		var this_step_name2 = "";
+		$.ajax({
+			type : "POST",
+			url : "scenarioJob.do",
+			async : false,
+			data : { action : "get_session" },
+			success : function(result) {
+				var json_obj = $.parseJSON(result);
+				var scenario_job_id = json_obj.scenario_job_id;
+				$.ajax({
+					type : "POST",
+					async : false,
+					url : "scenarioJob.do",
+					data : { 
+						action : "get_current_job_info",
+						job_id : scenario_job_id
+					},success : function(result) {
+						var json_obj = $.parseJSON(result);
+						this_step_name2 = json_obj.flow_name;
+						this_step_name = json_obj.next_flow_name;
+						step_name = json_obj.flow_name;
+						step_seq = json_obj.flow_seq;
+					}
+				});
+			}
+		});
+		if(step_seq=="0"){
+			alert("已經沒有上一步可以返回。");
+			return;
+		}
+		$("html").append("<div id='reverse_job' title='是否回到上一步' style='margin:10px 20px;'>" +
+				"<table class='bentable-style1 nobreak'>" +
+				"<tr><td>上一步: </td><td><a style='color:red;'>"+step_name+"</a></td></tr>" +
+				"<tr><td>提醒您: </td><td>回到上一步將會放棄所有在<a style='color:red;'>"+this_step_name+"</a>步驟所執行之結果。</td></tr>" +
+				"<tr><td> </td><td>同時歸零之前在<a style='color:red;'>"+this_step_name2+"</a>步驟所執行之結果。</td></tr>" +
+				"</table>" +
+				"</div>");	
+		$("#reverse_job").dialog({
+			draggable : true, resizable : false, autoOpen : true,
+			width : "auto" ,height : "auto", modal : true, minWidth: 300,
+			show : {effect : "blind", duration : 300 },
+			hide : { effect : "fade", duration : 300 },
+			buttons : [{
+				text : "回到上一步",
+				click : function() {
+					$.ajax({
+						type : "POST",
+						url : "scenarioJob.do",
+						async : false,
+						data : { action : "last_step" },
+						success : function(result) {
+							if(result.indexOf(".jsp")!=-1){
+								alert("返回上一步。將跳至 "+(page_comparison[result]==null?"":page_comparison[result])+" 介面");
+								window.location.href =  result ;
+							}else{
+								alert("返回步驟發生異常?\n執行失敗。");
+							}
+						}
+					});
+					$(this).dialog("close");
+				}
+			},{
+				text : "取消",
+				click : function() {$(this).dialog("close");}
+			}]
+		});
+	}else{
+		$("#reverse_job").dialog("open");
+	}
+	
 }
 function finish_step(){
 	if($("#current_job_finish").length==0){
@@ -339,6 +414,25 @@ $(function(){
 					setTimeout(function(){
 						eval(json_obj.next_flow_guide);
 					},3000);
+					
+				var result_obj = $.parseJSON(json_obj.result);
+				
+				$.each(result_obj, function(i, item) {
+					if(!window.map || !window.draw_env_analyse){return;}
+					if(result_obj[i].category=="查詢商圈"){
+						select_BD(result_obj[i].result);
+					}else if(result_obj[i].category=="查詢POI"){
+						select_poi(result_obj[i].result);
+					}else if(result_obj[i].category=="查詢POI2"){
+						select_poi_2(result_obj[i].result);
+					}else if(result_obj[i].category=="區位選擇"){
+						//@_@
+					}else if(result_obj[i].category=="環域分析"){
+						//@_@
+					}
+					
+					
+				});
 			}
 		});
 	}
