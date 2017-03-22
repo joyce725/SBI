@@ -1485,15 +1485,21 @@ function draw_env_analyse(points){
 	
 	var json_obj = eval("[['名稱','經度','緯度','半徑','時速','時間'],['點1', '24.9363', '120.8936', '3333.4000m', '10km/hr', '20mins'],['點2', '25.1652', '121.3220', '3333.4000m', '10km/hr', '20mins'],['點3', '24.8565', '121.2671', '3333.4000m', '10km/hr', '20mins']]"); 
 	
-	var json_obj = $.parseJSON(points);
+//	var json_obj = $.parseJSON(points);
 	$.each(json_obj,function(i, item) {
-		
+		if(i!=0){
+			alert(item[0]+" "+item[1]+" "+item[2]+" "+item[3]+" "+item[4]+" "+item[5])
+		}
 	});
 	return ;
 	
 	//###########################################
+	var order = "1";
+	//p_lat p_lng p_radius p_v p_h
+	google_latlng = new google.maps.LatLng( p_lat, p_lng);
+	var infowindow = new google.maps.InfoWindow({content: ("<div style='padding:10px;'>環域分析-點"+order+"<br>時速："+""+"<br>時間："+""+"</div>")});
 	var rs_marker = new google.maps.Marker({
-	    position: event.latLng,
+	    position: google_latlng,
 	    animation: google.maps.Animation.DROP,
 	    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
 	    map: map,
@@ -1507,8 +1513,20 @@ function draw_env_analyse(points){
 		  fillColor: '#FF8700',
 		  fillOpacity: 0.2,
 		  map: map,
-		  center: event.latLng,
-		  radius: 0 
+		  center: google_latlng,
+		  radius: p_radius 
 	});
-	var marker_obj = new item_marker( 10, 20, rs_marker, rs_circle);
+	google.maps.event.addListener(marker, "click", function(event) { 
+    	infowindow.open(map, marker);
+//    	clearTimeout(timer);
+    }); 
+//	google.maps.event.addListener(marker, "mouseout", function(event) { 
+//    	timer = setTimeout(function () { infowindow.close(); }, 3000);
+//    });
+	google.maps.event.addListener(infowindow, "closeclick", function(event) { 
+		rs_marker.setMap(null);
+		rs_circle.setMap(null);
+		infowindow.setMap(null);
+    });
+//	var marker_obj = new item_marker( 10, 20, rs_marker, rs_circle);
 }
