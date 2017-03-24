@@ -53,7 +53,7 @@ function run_no_modal(this_eval_str){
 		var eval_str = cache_modal.shift();
 		var delay_time=0;
 		
-		while(eval_str.length<2 && eval_str!=null){
+		while(eval_str!=null && eval_str.length<2){
 			delay_time += 500;
 			eval_str = cache_modal.shift();
 		}
@@ -180,13 +180,29 @@ function job_explanation(job_id){
 						text : "確定",
 						click : function() {$(this).dialog("close");}
 					},{
-						text : "結束情境流程",
+						text : "暫停情境流程",
 						click : function() {
 							$.ajax({
 								type : "POST",
 								url : "scenarioJob.do",
 								data : { 
 									action : "clear_session",
+								},success : function(result) {
+									if(result=="success"){
+										location.replace(location);	
+									}
+								}
+							});
+							$(this).dialog("close");
+						}
+					},{
+						text : "結束情境流程",
+						click : function() {
+							$.ajax({
+								type : "POST",
+								url : "scenarioJob.do",
+								data : { 
+									action : "over_scenario",
 								},success : function(result) {
 									if(result=="success"){
 										location.replace(location);	
@@ -314,7 +330,8 @@ function finish_step(){
 					url : "scenarioJob.do",
 					data : { 
 						action : "get_current_job_info",
-						job_id : scenario_job_id
+						job_id : scenario_job_id,
+						
 					},success : function(result) {
 						var json_obj = $.parseJSON(result);
 						step_name = json_obj.next_flow_name;
@@ -332,12 +349,44 @@ function finish_step(){
 			buttons : [{
 				text : "確定完成",
 				click : function() {
+					var this_node;
+					if($("#tree").length>0){
+						var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+						sibling_node.forEach(function(sib_node) {
+							if($(sib_node.span.childNodes[1]).hasClass('poi')){
+//								alert("選了POI "+sib_node.title+" lat: "+$(sib_node.span.childNodes[1]).attr('scenario_lat'));
+								if(window.scenario_record){
+									scenario_record("查詢POI","["
+											+$(sib_node.span.childNodes[1]).attr('scenario_lat')+","
+											+$(sib_node.span.childNodes[1]).attr('scenario_lng')+","
+											+$(sib_node.span.childNodes[1]).attr('scenario_zoom')+",'"
+											+sib_node.title+"']");
+								}
+							}else if($(sib_node.span.childNodes[1]).hasClass('poi2')){
+								if(window.scenario_record){
+									scenario_record("查詢POI2","["
+											+$(sib_node.span.childNodes[1]).attr('scenario_lat')+","
+											+$(sib_node.span.childNodes[1]).attr('scenario_lng')+","
+											+$(sib_node.span.childNodes[1]).attr('scenario_zoom')+",'"
+											+sib_node.title+"']");
+								}
+							}else if($(sib_node.span.childNodes[1]).hasClass('BD')){
+								alert("選了 "+sib_node.title);
+								if(window.scenario_record){scenario_record("查詢商圈",sib_node.title);} 
+							}
+						});
+					}
+					
+					
 					$.ajax({
 						type : "POST",
 						url : "scenarioJob.do",
 						data : { 
-							action : "over_a_step"
-						},success : function(result) {
+							action : "over_a_step",
+							scenario_lat : ((window.map)?(map.getCenter().lat()+""):""),
+							scenario_lng : ((window.map)?(map.getCenter().lng()+""):""),
+							scenario_zoom : ((window.map)?(map.getZoom()+""):"") 
+						},success : function(result) {							
 							if(result.indexOf(".jsp")!=-1){
 								alert("下一步。將跳至"+(page_comparison[result]==null?"":page_comparison[result])+"介面");
 								window.location.href =  result ;
@@ -365,7 +414,6 @@ function finish_step(){
 $(function(){
 	var scenario_job_id = "";
 	var scenario_job_page ="";
-
 	$.ajax({
 		type : "POST",
 		url : "scenarioJob.do",
@@ -392,50 +440,70 @@ $(function(){
 				$("html").append("<div id='scenario_controller' class='scenario_controller' style=''>"
 						+ "    <span id = 'job_title' class='focus'  onclick='job_explanation(\""+json_obj.job_id+"\")'>"+json_obj.job_name+" "+json_obj.flow_seq+'/'+ json_obj.max_flow_seq+"</span>"
 						+ "    <a id='next_step_btn' style='float:right;margin-left:10px;'href='./"+json_obj.next_flow_page+"'><img class='func' style='height:22px;' title='跳至將執行頁面' src='./refer_data/next_step.png'></a>"
-						+ "    <img id='check_btn' class='func' onclick='finish_step()' style='float:right;height:22px;margin-left:10px;' title='完成此步驟' src='./refer_data/check.png'>"
-						+ "    <img id='reverse_btn' onclick='reverse_step()' class='func' style='float:right;height:22px;margin-left:20px;' title='退回上一個步驟' src='./refer_data/reverse.png'>"
+						+ "    <img id='check_btn' class='func' onclick='finish_step()' style='float:right;height:22px;margin-left:20px;' title='完成此步驟' src='./refer_data/check.png'>"
+//						+ "    <img id='reverse_btn' onclick='reverse_step()' class='func' style='float:right;height:22px;margin-left:20px;' title='退回上一個步驟' src='./refer_data/reverse.png'>"
 						+ "</div>");
 				
 				tooltip("func");
 			}
 		});
 	}
-	
 	if( scenario_job_id.length > 2 && current_page == scenario_job_page){
-		$.ajax({
-			type : "POST",
-			url : "scenarioJob.do",
-			async : false,
-			data : { 
-				action : "get_current_job_info",
-				job_id : scenario_job_id,
-			},success : function(result) {
-				var json_obj = $.parseJSON(result);
-					setTimeout(function(){
-						eval(json_obj.next_flow_guide);
-					},3000);
-					
-				var result_obj = $.parseJSON(json_obj.result);
-				
-				$.each(result_obj, function(i, item) {
-					if(!window.map || !window.draw_env_analyse){return;}
-					if(result_obj[i].category=="查詢商圈"){
-						select_BD(result_obj[i].result);
-					}else if(result_obj[i].category=="查詢POI"){
-						select_poi(result_obj[i].result);
-					}else if(result_obj[i].category=="查詢POI2"){
-						select_poi_2(result_obj[i].result);
-					}else if(result_obj[i].category=="區位選擇"){
-						//@_@
-					}else if(result_obj[i].category=="環域分析"){
-						//@_@
-					}
-					
-					
+		var prepare_over=0;
+		if(window.map){
+			google.maps.event.addListener(map, 'idle', function(event) {
+				if(prepare_over!=1){
+					prepare_over=1;
+					$.ajax({
+						type : "POST",
+						url : "scenarioJob.do",
+						async : false,
+						data : { 
+							action : "get_current_job_info",
+							job_id : scenario_job_id,
+						},success : function(result) {
+							var json_obj = $.parseJSON(result);
+							eval(json_obj.next_flow_guide);
+							var result_obj = $.parseJSON(json_obj.result);
+							$.each(result_obj, function(i, item) {
+								if(!window.map || !window.draw_env_analyse){return;}
+								if(result_obj[i].category=="查詢商圈"){
+									select_BD(result_obj[i].result,"no_record");
+								}else if(result_obj[i].category=="查詢POI"){
+									var poi_obj = eval(result_obj[i].result);
+									map.setCenter(new google.maps.LatLng(poi_obj[0], poi_obj[1]));
+									map.setZoom(poi_obj[2]);
+									select_poi(poi_obj[3],"no_record");
+								}else if(result_obj[i].category=="查詢POI2"){
+									select_poi_2(result_obj[i].result,"no_record");
+								}else if(result_obj[i].category=="區位選擇"){
+									draw_region_select(result_obj[i].result);
+								}else if(result_obj[i].category=="環域分析"){
+									draw_env_analyse(result_obj[i].result);	
+								}
+							});
+							setTimeout(function(){
+								$.ajax({
+									type : "POST",
+									url : "scenarioJob.do",
+									async : false,
+									data : { 
+										action : "get_session_latlngzoom"
+									},success : function(result) {
+										if(result.length>0){
+											var json_obj = $.parseJSON(result);
+											map.setCenter(new google.maps.LatLng(json_obj.scenario_lat, json_obj.scenario_lng));
+											map.setZoom(parseInt(json_obj.scenario_zoom));
+										}
+									}
+								});
+							},1000);
+						}
+					});
+				}
 				});
 			}
-		});
-	}
+		}
 });
 function tooltip(clas){
 	$("."+clas).mouseover(function(e){

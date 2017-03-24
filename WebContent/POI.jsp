@@ -68,6 +68,7 @@ var item_marker = function (speed, time, marker, circle) {
 }
 
 	$(function(){
+// 		alert(new Date().getDay());
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
 		$.ajax({
 			type : "POST",
@@ -102,7 +103,7 @@ var item_marker = function (speed, time, marker, circle) {
 				    		eval(action[data.node.key]);
 					    	
 					    }else{
-					    	if(have_visited[node.key]==null){
+					    	if(have_visited[node.key]==null && $("#scenario_controller").length==0){
 					    		have_visited[node.key]=true;
 					    		eval(action[node.key]);
 					    	}
@@ -126,7 +127,7 @@ var item_marker = function (speed, time, marker, circle) {
 							return false; 
 						}
 					},init: function(event, data, flag) {
-						$("#panel").fadeIn();
+						$("#panel").show();
 				    }
 
 				}).on("mouseover", ".fancytree-title", function(event){

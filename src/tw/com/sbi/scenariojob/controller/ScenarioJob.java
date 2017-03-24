@@ -142,8 +142,10 @@ public class ScenarioJob extends HttpServlet {
 		}else if("get_session".equals(action)){
 			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
 			String scenario_job_page=null2Str(request.getSession().getAttribute("scenario_job_page"));
-			logger.debug("[Output]: scenario_job_id: " +scenario_job_id);
-			logger.debug("[Output]: scenario_job_page: " +scenario_job_page);
+			if(scenario_job_id.length()>2){
+				logger.debug("[Output]: scenario_job_id: " +scenario_job_id);
+				logger.debug("[Output]: scenario_job_page: " +scenario_job_page);
+			}
 			response.getWriter().write("{\"scenario_job_id\":\""+scenario_job_id+"\",\"scenario_job_page\":\""+scenario_job_page+"\"}");
 			return;
 		}else if("clear_session".equals(action)){
@@ -151,6 +153,29 @@ public class ScenarioJob extends HttpServlet {
 			request.getSession().setAttribute("scenario_job_page","");
 			logger.debug("[Output]: clear_scenario_session ");
 			response.getWriter().write("success");
+			return;
+		}else if("over_scenario".equals(action)){
+			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
+			String group_id = request.getSession().getAttribute("group_id").toString();
+
+			caseService = new ScenarioService();
+			ScenarioJobVO current_job = null;
+			List<ScenarioJobVO> list = caseService.get_all_job(group_id);
+			for(int i = 0;i < list.size(); i ++){
+				if(scenario_job_id.equals(list.get(i).getJob_id())){
+					current_job = list.get(i);
+				}
+	        }
+			
+			caseService.over_step(scenario_job_id,current_job.getNext_flow_id(),current_job.getFlow_seq(),"1",new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(new Date()));
+			logger.debug("[Output]: over_it");
+			response.getWriter().write("success");
+			
+			logger.debug("Clear session: scenario_job_id");
+			logger.debug("Clear session: scenario_job_page");
+			
+			request.getSession().setAttribute("scenario_job_id","");
+			request.getSession().setAttribute("scenario_job_page","");
 			return;
 		}else if("set_scenario_result".equals(action)){
 			String group_id = request.getSession().getAttribute("group_id").toString();
@@ -192,10 +217,31 @@ public class ScenarioJob extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}else if("get_session_latlngzoom".equals(action)){
+			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
+			caseService = new ScenarioService();
+			String lat_lng_zoom = caseService.get_memo(scenario_job_id);
+			//caseService.set_memo(scenario_job_id,"");
+			logger.debug("[Output]: "+lat_lng_zoom);
+			response.getWriter().write(lat_lng_zoom);
+			return;
 		}else if("over_a_step".equals(action)){
 			String scenario_job_id=null2Str(request.getSession().getAttribute("scenario_job_id"));
 			String group_id = request.getSession().getAttribute("group_id").toString();
-
+			String scenario_lat = request.getParameter("scenario_lat");
+			String scenario_lng = request.getParameter("scenario_lng");
+			String scenario_zoom = request.getParameter("scenario_zoom");
+			logger.debug("scenario_lat: " + scenario_lat);
+			logger.debug("scenario_lng: " + scenario_lng);
+			logger.debug("scenario_zoom: " + scenario_zoom);
+			if(scenario_lat.length()>2){
+				logger.debug("records_cenario_lat_lng_zoom");
+				caseService = new ScenarioService();
+				caseService.set_memo(scenario_job_id, "{\"scenario_lat\":\""+scenario_lat+"\",\"scenario_lng\":\""+scenario_lng+"\",\"scenario_zoom\":\""+scenario_zoom+"\"}");
+//				request.getSession().setAttribute("scenario_lat",scenario_lat);
+//				request.getSession().setAttribute("scenario_lng",scenario_lng);
+//				request.getSession().setAttribute("scenario_zoom",scenario_zoom);
+			}
 			caseService = new ScenarioService();
 			ScenarioJobVO current_job = null;
 			List<ScenarioJobVO> list = caseService.get_all_job(group_id);
@@ -289,6 +335,12 @@ public class ScenarioJob extends HttpServlet {
 		public void dealing_job_reverse(String job_id){
 			dao.dealing_job_reverse(job_id);
 		}
+		public void set_memo(String job_id,String memo){
+			dao.set_memo(job_id, memo);
+		}
+		public String get_memo(String job_id){
+			return dao.get_memo(job_id);
+		}
 	}
 
 	/*************************** 制定規章方法 ****************************************/
@@ -302,6 +354,8 @@ public class ScenarioJob extends HttpServlet {
 		public void over_step(String job_id,String flow_id,String flow_seq,String finished,String finish_time);
 		public List<ScenarioJobVO> get_scenario_child(String scenario_id);
 		public void dealing_job_reverse(String job_id);
+		public void set_memo(String job_id,String memo);
+		public String get_memo(String job_id);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -331,6 +385,8 @@ public class ScenarioJob extends HttpServlet {
 				+ " LEFT JOIN tb_scenario_flow next ON this.scenario_id = next.scenario_id AND next.flow_seq = this.flow_seq +1 "
 				+ " LEFT JOIN tb_scenario_flow last ON this.scenario_id = last.scenario_id AND last.flow_seq +1 = this.flow_seq  "
 				+ " WHERE tb_scenario_job.job_id = ? ";
+		private static final String get_memo_q = "SELECT * FROM tb_scenario_job where job_id = ?";
+		private static final String set_memo_q = "UPDATE tb_scenario_job SET memo = ? where job_id = ?";
 		@Override
 		public List<ScenarioJobVO> get_all_job(String group_id){
 			List<ScenarioJobVO> list = new ArrayList<ScenarioJobVO>();
@@ -862,6 +918,7 @@ public class ScenarioJob extends HttpServlet {
 					scenarioJob.setFlow_id(null2Str(rs.getString("flow_id")));
 					scenarioJob.setScenario_id(null2Str(rs.getString("scenario_id")));
 					scenarioJob.setFlow_seq(null2Str(rs.getString("flow_seq")));
+					scenarioJob.setFlow_name(null2Str(rs.getString("flow_name")));
 					scenarioJob.setFlow_function(null2Str(rs.getString("flow_function")));
 					scenarioJob.setPage(null2Str(rs.getString("page")));
 					scenarioJob.setNext_flow_explanation(null2Str(rs.getString("explanation")));
@@ -899,6 +956,95 @@ public class ScenarioJob extends HttpServlet {
 			}
 			return list;
 		}
+		public String get_memo(String job_id){
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String memo="";
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(get_memo_q);
+				pstmt.setString(1, job_id);
+				rs = pstmt.executeQuery();
+				
+				while (rs.next()) {
+					memo=null2Str(rs.getString("memo"));
+				}
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return memo;
+		}
+		public void set_memo(String job_id,String memo){
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt = con.prepareStatement(set_memo_q);
+				pstmt.setString(1, memo);
+				pstmt.setString(2, job_id);
+				pstmt.executeUpdate();
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+		}		
 	}
 	
 	private String null2Str(Object object) {

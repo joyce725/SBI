@@ -54,10 +54,13 @@
 	word-break: break-all;
 	max-width:600px;
 }
+.ui-dialog-content{
+	font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
+}
 </style>
 
 <script>
-var explane_txt_arr={"0":"<div style='height:340px;width:calc(70vw);text-align:center;line-height:290px;font-size:40px;'>請選擇情境</div>"};
+var explane_txt_arr={"0":"<div style='height:340px;width:calc(50vw);text-align:center;line-height:290px;font-size:40px;'>請選擇情境</div>"};
 var page_comparison={
 		"realMap.jsp": "商圈資訊",
 		"POI.jsp": "商圈POI",
@@ -124,7 +127,7 @@ var page_comparison={
 						+ '<td><div style="max-width:200px">' +json_obj[i].flow_name + '</div></td>'
 						+ '<td><div style="max-width:200px">' +json_obj[i].next_flow_name + '</div></td>'
 						+((item.finished == "1")?
-							('<td colspan="3" style="font-size:18px;text-align:center;">已於 '+item.finish_time+' 完成<br>'
+							('<td colspan="3" style="font-size:18px;text-align:center;">已於 '+item.finish_time+(json_obj[i].flow_seq==json_obj[i].max_flow_seq?' 完成<br>':' 中止<br>')
 							+ '<a class="btn btn-darkblue btn-update" job_content_title="'+job_content_title+'" result=\"'+print_table+'\" scenario_name="'+json_obj[i].scenario_name+'">內容</a>&nbsp;&nbsp;&nbsp;&nbsp;'
 							+"<a class='btn btn-exec btn-delete' style='margin-top:5px;' value='"+item.finish_time+"' job_name='"+item.job_name+"' scenario_name='"+item.scenario_name+"'>刪除</a>" + '</td>'+
 							'</tr>')
@@ -140,7 +143,6 @@ var page_comparison={
 		});				
 	}
 	$(function() {
-		
 		$(document).keypress(function(e) {
 			if(e.which == 13) {
 		    	e.preventDefault();
@@ -191,8 +193,8 @@ var page_comparison={
 			$("html").append("<div id='scenario_controller' class='scenario_controller' style=''>"
 					+ "    <span id = 'job_title' class='focus' onclick='job_explanation(\""+tmp+"\")'>"+$(this).closest( "tr" ).attr("job_name")+" "+$(this).closest( "tr" ).attr("job_pro")+"</span>"
 					+ "    <a id='next_step_btn' style='float:right;margin-left:10px;' href='./"+$(this).attr("value")+"'><img class='func' style='height:22px;' title='跳至將執行頁面' src='./refer_data/next_step.png'></a>"
-					+ "    <img id='check_btn' onclick='finish_step()' class='func' style='float:right;height:22px;margin-left:10px;' title='完成此步驟' src='./refer_data/check.png'>"
-					+ "    <img id='reverse_btn' onclick='reverse_step()' class='func' style='float:right;height:22px;margin-left:20px;' title='退回上一個步驟' src='./refer_data/reverse.png'>"
+					+ "    <img id='check_btn' onclick='finish_step()' class='func' style='float:right;height:22px;margin-left:20px;' title='完成此步驟' src='./refer_data/check.png'>"
+// 					+ "    <img id='reverse_btn' onclick='reverse_step()' class='func' style='float:right;height:22px;margin-left:20px;' title='退回上一個步驟' src='./refer_data/reverse.png'>"
 					+ "</div>");
 			tooltip("func");
 			$.ajax({
@@ -393,7 +395,7 @@ var page_comparison={
 		        $.each (json_obj, function (i) {
 		        	if(json_obj[i].scenario_name.indexOf('教學')==-1){
 			        	option_str+="<option value='"+json_obj[i].scenario_id+"'>"+json_obj[i].scenario_name+"</option>";
-			        	var explane_txt = "<div style='text-align:center;font-size:30px;'>"+json_obj[i].scenario_name + "</div><div style='max-width:calc(60vw);margin:10px auto;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+json_obj[i].result+"</div><hr><div style='max-width:calc(70vw);'>";
+			        	var explane_txt = "<div style='text-align:center;font-size:30px;'>"+json_obj[i].scenario_name + "</div><div style='max-width:calc(50vw);margin:10px auto;padding:0px 40px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+json_obj[i].result+"</div><hr><div style='max-width:calc(70vw);'>";
 			        	$.each (json_obj[i].child, function (j) {
 			        		if(json_obj[i].child[j].flow_seq!=0){
 			        			explane_txt += "步驟 " +json_obj[i].child[j].flow_seq+": "+json_obj[i].child[j].next_flow_explanation + "<br>";
@@ -405,7 +407,7 @@ var page_comparison={
 		        });
 		        $("#explane_select").html(option_str);
 		        $("#all_scenario_name").html(option_str);
-		        $("#explane_txt").html("<div style='height:340px;width:calc(70vw);text-align:center;line-height:290px;font-size:40px;'>請選擇情境</div>");
+		        $("#explane_txt").html("<div style='height:340px;width:calc(50vw);text-align:center;line-height:290px;font-size:40px;'>請選擇情境</div>");
 		    }
 		});
 		

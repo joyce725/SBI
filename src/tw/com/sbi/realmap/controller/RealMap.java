@@ -1,19 +1,33 @@
 package tw.com.sbi.realmap.controller;
 import javax.servlet.ServletException;
+
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 import com.google.gson.Gson;
+
+import tw.com.sbi.scenariojob.controller.ScenarioJob;
+import tw.com.sbi.vo.ScenarioJobVO;
 @SuppressWarnings("serial")
 public class RealMap extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LogManager.getLogger(RealMap.class);
 	protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
@@ -25,8 +39,8 @@ public class RealMap extends HttpServlet {
 				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
-		String action = request.getParameter("action").toString();
-		String name = ((request.getParameter("name")!=null)?request.getParameter("name").toString():"");
+		String action = null2Str(request.getParameter("action"));
+		String name = null2Str(request.getParameter("name"));
 		Connection con = null;
 		Statement statement = null;
 		ResultSet rs = null;
@@ -299,6 +313,61 @@ public class RealMap extends HttpServlet {
 			response.getWriter().write("fail!!!!!");
 			return;
 		}
+		
+//		logger.debug("act:  "+action);
+		if("select_metro".equals(action)){
+			String station_name = null2Str(request.getParameter("station_name"));
+			String time = null2Str(request.getParameter("time"));
+			String weekend = null2Str(request.getParameter("weekend"));
+			Connection con2 = null;
+			PreparedStatement pstmt2 = null;
+			ResultSet rs2 = null;
+			String query = "SELECT AVG(flow) flow_avg "
+					+" FROM tb_data_metro "
+					+(("weekend".equals(weekend))?" WHERE DAYOFWEEK( tb_data_metro.date ) IN('1','7') ":" WHERE DAYOFWEEK( tb_data_metro.date ) IN('2','3','4','5','6') ")
+					+" AND station_name = ? "
+					+" AND time = ? ";
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				con2 = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
+				pstmt2 = con2.prepareStatement(query);
+				
+				pstmt2.setString(1, station_name);
+				pstmt2.setString(2, time);
+				rs2=pstmt2.executeQuery();
+				while (rs2.next()) {
+					response.getWriter().write(null2Str(rs2.getString("flow_avg")));
+				}
+			} catch (SQLException se) {
+				// Handle any driver errors
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (ClassNotFoundException cnfe) {
+				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
+			} finally {
+				// Clean up JDBC resources
+				if (rs2 != null) {
+					try {
+						rs2.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt2 != null) {
+					try {
+						pstmt2.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con2 != null) {
+					try {
+						con2.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+		}
 		return ;
 	}
 	
@@ -370,5 +439,9 @@ public class RealMap extends HttpServlet {
 	  }
 	  return str.contains(".");
 	 }
-	
+	private String null2Str(Object object) {
+		if (object instanceof Timestamp)
+			return object == null ? "" : new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(object);
+		return object == null ? "" : object.toString().trim();
+	}
 }

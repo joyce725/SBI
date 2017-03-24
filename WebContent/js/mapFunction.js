@@ -112,7 +112,8 @@ function doPan() {
 //############################################################
 //#######################  1  ################################
 //############################################################
-function select_poi(poi_name){
+function select_poi(poi_name,record){
+	
 	if(all_markers[poi_name]!=null){
 		for (var i = 0; i < all_markers[poi_name].length; i++) {   
 			all_markers[poi_name][i].setMap(null);   
@@ -120,10 +121,28 @@ function select_poi(poi_name){
 		all_markers[poi_name]=null;
 		return;
 	}
-	if(window.scenario_record){scenario_record("查詢POI",poi_name);} 
+	if(record!="no_record"){
+		//if(window.scenario_record){scenario_record("查詢POI","["+new Number(map.getCenter().lat()).toFixed(4)+","+new Number(map.getCenter().lng()).toFixed(4)+","+map.getZoom()+",'"+poi_name+"']");}
+		var this_node;
+		var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+		sibling_node.forEach(function(sib_node) {
+			if(sib_node.title==poi_name){
+				this_node=sib_node;
+			}
+		});
+		$(this_node.span.childNodes[1]).addClass('loading');
+		if(!$(this_node.span.childNodes[1]).hasClass('poi')){
+			$(this_node.span.childNodes[1]).addClass('poi');
+			$(this_node.span.childNodes[1]).attr('scenario_lat',new Number(map.getCenter().lat()).toFixed(4));
+			$(this_node.span.childNodes[1]).attr('scenario_lng',new Number(map.getCenter().lng()).toFixed(4));
+			$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
+		}
+	} 
+	
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
+//		async : false,
 		data : {
 			action : "select_poi",
 			name : poi_name,
@@ -135,8 +154,9 @@ function select_poi(poi_name){
 			if(result=="fail!!!!!")return;
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
-			all_markers[poi_name]=[];
-			
+			if(record!="no_record"){
+				all_markers[poi_name]=[];
+			}
 			if(json_obj.length>1000){
 				if(confirm("搜尋資料量達"+json_obj.length+"筆\n是否繼續查詢?","確認繼續","取消")){}else{
 					return;
@@ -150,27 +170,48 @@ function select_poi(poi_name){
 				    map: map,
  				    icon : icon
 				});
+				var poi_flow_str=""
+				if(poi_name=="捷運"){
+					$.ajax({
+						type : "POST",
+						url : "realMap.do",
+						async : false,
+						data : {
+							action : "select_metro",
+							station_name : json_obj[i].name,
+							time : new Date().getHours(),
+							weekend : ((new Date().getDay()==0||new Date().getDay()==6)?"weekend":"")
+						},
+						success : function(result) {
+							if(result.length>0)poi_flow_str+='<tr><td>'+new Date().getHours()+'-'+(new Date().getHours()+1)+'時　<br>平均人流：</td><td>'+new Number(parseInt(result)).toFixed(0)+'人</td></tr>';
+						}
+					});
+				}
 				var tmp_table='<table class="info_window">'+
 				'<tr><th colspan="2">'+json_obj[i].type+'　</th></tr>'+
 				'<tr><td>名稱：</td><td>'+json_obj[i].name+'</td></tr>'+
-				'<tr><td>地址：</td><td>'+json_obj[i].addr+'</td></tr>'+
-				'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>'+
+				((json_obj[i].addr!=null)?'<tr><td>地址：</td><td>'+json_obj[i].addr+'</td></tr>':"")+
+				((json_obj[i].subtype!=null&&json_obj[i].subtype!='NULL')?'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>':"")+
+				poi_flow_str+
 				'</table>';
 				var infowindow = new google.maps.InfoWindow({content:tmp_table});
 				if(json_obj.length<30){
 					google.maps.event.addListener(marker, "mouseover", function(event) { 
 			        	infowindow.open(marker.get('map'), marker);
 			        });
+					google.maps.event.addListener(marker, "mouseout", function(event) { 
+			        	setTimeout(function () { infowindow.close(); }, 2000);
+			        });
 				}else{
 					google.maps.event.addListener(marker, "click", function(event) { 
 			        	infowindow.open(marker.get('map'), marker);
 			        });
 				}
-				google.maps.event.addListener(marker, "mouseout", function(event) { 
-		        	setTimeout(function () { infowindow.close(); }, 2000);
-		        });
-				all_markers[poi_name].push(marker);
+				if(record!="no_record"){
+					all_markers[poi_name].push(marker);
+				}
 			});
+			 $(this_node.span.childNodes[1]).removeClass('loading');
 		}
 	});
 }
@@ -178,7 +219,7 @@ function select_poi(poi_name){
 //############################################################
 //#######################  2  ################################
 //############################################################
-function select_poi_2(poi_name){
+function select_poi_2(poi_name,record){
 	if(all_markers[poi_name]!=null){
 		for (var i = 0; i < all_markers[poi_name].length; i++) {   
 			all_markers[poi_name][i].setMap(null);   
@@ -186,10 +227,27 @@ function select_poi_2(poi_name){
 		all_markers[poi_name]=null;
 		return;
 	}
-	if(window.scenario_record){scenario_record("查詢POI_2",poi_name);} 
+	if(record!="no_record"){
+		//if(window.scenario_record){scenario_record("查詢POI2","["+map.getCenter().lat()+","+map.getCenter().lng()+","+map.getZoom()+",'"+poi_name+"']");}
+		var this_node;
+		var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+		sibling_node.forEach(function(sib_node) {
+			if(sib_node.title==poi_name){
+				this_node=sib_node;
+			}
+		});
+		$(this_node.span.childNodes[1]).addClass('loading');
+		if(!$(this_node.span.childNodes[1]).hasClass('poi2')){
+			$(this_node.span.childNodes[1]).addClass('poi2');
+			$(this_node.span.childNodes[1]).attr('scenario_lat',new Number(map.getCenter().lat()).toFixed(4));
+			$(this_node.span.childNodes[1]).attr('scenario_lng',new Number(map.getCenter().lng()).toFixed(4));
+			$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
+		}
+	} 
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
+		async : false,
 		data : {
 			action : "select_poi_2",
 			name : poi_name,
@@ -201,7 +259,9 @@ function select_poi_2(poi_name){
 			if(result=="fail!!!!!")return;
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
-			all_markers[poi_name]=[];
+			if(record!="no_record"){
+				all_markers[poi_name]=[];
+			}
 			if(json_obj.length>1000){
 				if(confirm("搜尋資料量達"+json_obj.length+"筆\n是否繼續查詢?","確認繼續","取消")){}else{
 					return;
@@ -218,7 +278,7 @@ function select_poi_2(poi_name){
 				'<tr><th colspan="2"># '+json_obj[i].type+'　#</th></tr>'+
 				'<tr><td>名稱：</td><td>'+json_obj[i].name+'</td></tr>'+
 				'<tr><td>地址：</td><td>'+json_obj[i].addr+'</td></tr>'+
-				'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>'+
+				((json_obj[i].subtype!=null&&json_obj[i].subtype!='NULL')?'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>':"")+
 				'</table>';
 				var infowindow = new google.maps.InfoWindow({content:tmp_table});
 				if(json_obj.length<30){
@@ -233,8 +293,11 @@ function select_poi_2(poi_name){
 				google.maps.event.addListener(marker, "mouseout", function(event) { 
 		        	setTimeout(function () { infowindow.close(); }, 2000);
 		        });
-				all_markers[poi_name].push(marker);
+				if(record!="no_record"){
+					all_markers[poi_name].push(marker);
+				}
 			});
+			$(this_node.span.childNodes[1]).removeClass('loading');
 		}
 	});
 }
@@ -242,7 +305,7 @@ function select_poi_2(poi_name){
 //############################################################
 //#######################  3  ################################
 //############################################################
-function select_BD(BD_name){
+function select_BD(BD_name,record){
 	
 	if(all_BDs[BD_name]!=null){
 		for (var i = 0; i < all_BDs[BD_name].length; i++) {   
@@ -251,7 +314,19 @@ function select_BD(BD_name){
 		all_BDs[BD_name]=null;
 		return;
 	}
-	if(window.scenario_record){scenario_record("查詢商圈",BD_name);} 
+	if(record!="no_record"){
+		var this_node;
+		var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+		sibling_node.forEach(function(sib_node) {
+			if(sib_node.title==BD_name){
+				this_node=sib_node;
+			}
+		});
+		$(this_node.span.childNodes[1]).addClass('loading');
+		if(!$(this_node.span.childNodes[1]).hasClass('BD')){
+			$(this_node.span.childNodes[1]).addClass('BD');
+		}
+	}
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
@@ -262,10 +337,15 @@ function select_BD(BD_name){
 		success : function(result) {
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
-			all_BDs[BD_name]=[];
+			if(record!="no_record"){
+				all_BDs[BD_name]=[];
+			}
 			$.each(json_obj,function(i, item) {
-				map.panTo(new google.maps.LatLng(json_obj[i].lat,json_obj[i].lng));
-				smoothZoom(map, 15, map.getZoom());
+				if(record!="no_record"){
+					map.panTo(new google.maps.LatLng(json_obj[i].lat,json_obj[i].lng));
+					smoothZoom(map, 15, map.getZoom());
+					//if(window.scenario_record){scenario_record("查詢商圈",BD_name);} 
+				} 
 				var bermudaTriangle = new google.maps.Polygon({
 					paths: json_obj[i].center,
 					strokeColor: '#FF0000',
@@ -351,6 +431,10 @@ function select_BD(BD_name){
 		        var update_timeout = null;
 				google.maps.event.addListener(bermudaTriangle, "click", function(event) { 
 					 update_timeout = setTimeout(function(){
+						if($("#region_select").length==0){
+							infowindow.open(bermudaTriangle.get('map'), infoMarker);
+							return;
+						} 
 						if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
 							google.maps.event.trigger(map, 'click',event);
 						}else{
@@ -367,8 +451,11 @@ function select_BD(BD_name){
 				google.maps.event.addListener(infowindow, "closeclick", function () {
 		            infoMarker.setMap(null);
 		        });
-				all_BDs[BD_name].push(bermudaTriangle);
+				if(record!="no_record"){
+					all_BDs[BD_name].push(bermudaTriangle);
+				}
 			});
+			$(this_node.span.childNodes[1]).removeClass('loading');
 		}
 	});
 }
@@ -455,6 +542,13 @@ function country_POLY_for_country_economy (year,type){//country_polygen
 	                }
 	            } else {
 	            	polygen.setMap(map);
+	            	google.maps.event.addListener(polygen, 'mouseover', function () {
+                		clearTimeout(timer);
+                		detail_1.innerHTML = '<div style="width: 380px; height: 230px;">' + msg + '</div>';
+                	});
+                	google.maps.event.addListener(polygen, 'mouseout', function () {
+                		timer = setTimeout(function(){ detail_1.innerHTML = ''; }, 1500);
+                	});
 	            }
 	            country_polygen.push(polygen);
 			});
@@ -631,6 +725,14 @@ function country_POLY_for_countryData (year,type){//country_polygen
 	                }
 	            } else {
 	            	polygen.setMap(map);
+	            	google.maps.event.addListener(polygen, 'mouseover', function () {
+                		clearTimeout(timer);
+                		detail_1.innerHTML = '<div style="width: 380px; height: 230px;">' + msg + '</div>';
+                	});
+                	google.maps.event.addListener(polygen, 'mouseout', function () {
+                		
+                		timer = setTimeout(function(){ detail_1.innerHTML = ''; }, 1500);
+                	});
 	            }
 	            country_polygen.push(polygen);
 			});
@@ -1481,41 +1583,122 @@ function bigmac(node){
 //############################################################
 //#######################  12  ###############################
 //############################################################
+function draw_region_select(polydiagram){
+	var json_obj = eval(polydiagram);
+//	var json_obj = eval("['台灣','台北','餐飲業',1,1,1,1,1,1,33.56,39.74,26.70, [{'City':'信義','Score':'32.337824991485334'},{'City':'北車','Score':'30.190953588085332'},{'City':'新板','Score':'25.863118622184004'},{'City':'公館商圈','Score':'20.441420379122665'}]]"); 
+	$.each(json_obj[12],function(i, item) {
+//		alert(item['City']+" "+item['Score']);
+		var BD_name=item['City'].replace("商圈","")+"商圈";
+    	if(item['City']=="新板"){BD_name="新板特區商圈";}
+		
+//		var BD_name = item['City']
+		$.ajax({
+    		type : "POST",
+    		url : "realMap.do",
+    		async : false,
+    		data : {
+    			action : "select_BD",
+    			name : BD_name
+    		},
+    		success : function(result) {
+//    			alert(BD_name+" : "+result);
+//    			return;
+    			var json_obj = $.parseJSON(result);
+//    			all_BDs[BD_name]=[];
+    			var timer;
+    			$.each(json_obj,function(j, item) {
+    				var infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>區位選擇 - 第"+(i+1)+"名<br><a style='font-size:16px;'>"+BD_name+"</a></div>")});
+	    			var bermudaTriangle = new google.maps.Polygon({
+						paths: json_obj[j].center,
+						strokeColor: '#FF0000',
+						strokeOpacity: 0.8,
+						strokeWeight: 2,
+						fillColor: '#FF0000',
+						fillOpacity: 0.1
+					});
+					bermudaTriangle.setMap(map);
+					var marker = new google.maps.Marker({
+					    position: new google.maps.LatLng( json_obj[j].lat, json_obj[j].lng),//; .lat,
+						label : (i+1+""),
+					    title: json_obj[j].BD_name,
+					    map: map
+					});
+					google.maps.event.addListener(marker, "mouseover", function(event) { 
+				    	infowindow.open(map, marker);
+				    	clearTimeout(timer);
+				    });
+					google.maps.event.addListener(marker, "mouseout", function(event) { 
+				    	timer = setTimeout(function () { infowindow.close(); }, 1500);
+				    });
+					google.maps.event.addListener(infowindow, "closeclick", function(event) { 
+						marker.setMap(null);
+						bermudaTriangle.setMap(null);
+						infowindow.setMap(null);
+				    });
+					
+    			});
+    		}
+		});
+		
+		
+		
+	});
+}
+
 function draw_env_analyse(points){
 	
-	var json_obj = eval("[['名稱','經度','緯度','半徑','時速','時間'],['點1', '24.9363', '120.8936', '3333.4000m', '10km/hr', '20mins'],['點2', '25.1652', '121.3220', '3333.4000m', '10km/hr', '20mins'],['點3', '24.8565', '121.2671', '3333.4000m', '10km/hr', '20mins']]"); 
-	
+//	var json_obj = eval("[['名稱','經度','緯度','半徑','時速','時間'],['點1', '25.0709', '121.5115', '3333.4000m', '10km/hr', '20mins'],['點2', '25.0334', '121.4752', '3333.4000m', '10km/hr', '20mins'],['點3', '25.0209', '121.5493', '3333.4000m', '10km/hr', '20mins']]"); 
+	var json_obj = eval(points);
 //	var json_obj = $.parseJSON(points);
 	$.each(json_obj,function(i, item) {
-		if(i!=0){
-			alert(item[0]+" "+item[1]+" "+item[2]+" "+item[3]+" "+item[4]+" "+item[5])
-		}
+//		if(i!=0){
+//			alert(item[0]+" "+item[1]+" "+item[2]+" "+item[3]+" "+item[4]+" "+item[5])
+//		}
+		var order = item[0].replace("點","");
+		var google_latlng = new google.maps.LatLng( item[1], item[2]);
+		var infowindow ;
+		var rs_marker ;
+		var rs_circle ; 
+		var timer ;
+//		infowindow = new google.maps.InfoWindow({content: ("<div style='padding:10px;'><table><tr><td>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</td><td><img src='./refer_data/delete.png' class='func' style='height:22px;' onclick='rs_marker.setMap(null);rs_circle.setMap(null);infowindow.setMap(null);alert();'></td></tr></div>")});
+		infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</div>")});
+		rs_marker = new google.maps.Marker({
+		    position: google_latlng,
+		    animation: google.maps.Animation.DROP,
+		    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
+		    map: map,
+		    draggable:true,
+		    title: ("--分析點"+order+"--")
+		});
+		rs_circle = new google.maps.Circle({
+			  strokeColor: '#FF0000',
+			  strokeOpacity: 0.5,
+			  strokeWeight: 2,
+			  fillColor: '#FF8700',
+			  fillOpacity: 0.2,
+			  map: map,
+			  center: google_latlng,
+			  radius: parseInt(item[3].replace("m",""),10)
+		});
+		google.maps.event.addListener(rs_marker, "mouseover", function(event) { 
+	    	infowindow.open(map, rs_marker);
+	    	clearTimeout(timer);
+	    });
+		google.maps.event.addListener(rs_marker, "mouseout", function(event) { 
+	    	timer = setTimeout(function () { infowindow.close(); }, 1500);
+	    });
+		google.maps.event.addListener(infowindow, "closeclick", function(event) { 
+			rs_marker.setMap(null);
+			rs_circle.setMap(null);
+			infowindow.setMap(null);
+	    });
 	});
 	return ;
 	
 	//###########################################
-	var order = "1";
+//	var order = "1";
 	//p_lat p_lng p_radius p_v p_h
-	google_latlng = new google.maps.LatLng( p_lat, p_lng);
-	var infowindow = new google.maps.InfoWindow({content: ("<div style='padding:10px;'>環域分析-點"+order+"<br>時速："+""+"<br>時間："+""+"</div>")});
-	var rs_marker = new google.maps.Marker({
-	    position: google_latlng,
-	    animation: google.maps.Animation.DROP,
-	    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
-	    map: map,
-	    draggable:true,
-	    title: ("--分析點"+order+"--")
-	});
-	var rs_circle = new google.maps.Circle({
-		  strokeColor: '#FF0000',
-		  strokeOpacity: 0.5,
-		  strokeWeight: 2,
-		  fillColor: '#FF8700',
-		  fillOpacity: 0.2,
-		  map: map,
-		  center: google_latlng,
-		  radius: p_radius 
-	});
+	
 	google.maps.event.addListener(marker, "click", function(event) { 
     	infowindow.open(map, marker);
 //    	clearTimeout(timer);

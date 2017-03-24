@@ -85,7 +85,8 @@ h2.ui-list-title {
 var businessdistrict;
 var map;
 var all_BDs={};
-
+// var all_BDs_region_select={}
+var all_markers={};
 	function checkboxstr(selector) {
 		var str = '';
 		$('#' + selector).each(function(i) {
@@ -335,7 +336,12 @@ var all_BDs={};
 				center: {lat: 23.900, lng: 121.000},
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
-			
+// 			google.maps.event.addListener(map, 'center_changed', function(event) {
+// 				console.log(map.getCenter());
+// 				console.log(map.getZoom());
+// 				//map.setCenter(XXX);
+// 				//map.setZoom(XXX);
+// 			});
 			google.maps.event.addListener(map, 'click', function(event) {
 				if($("#env_analyse").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
 					
@@ -418,13 +424,14 @@ var all_BDs={};
 	    	var BD_name=BDs.replace("商圈","")+"商圈";
 	    	if(BDs=="新板"){BD_name="新板特區商圈";}
 	    	
-	    	if(all_BDs[BD_name]!=null){
-	    		for (var i = 0; i < all_BDs[BD_name].length; i++) {   
-	    			all_BDs[BD_name][i].setMap(null);   
-	            }   
-	    		all_BDs[BD_name]=null;
-	    		return;
-	    	}
+// 	    	if(all_BDs_region_select[BD_name]!=null){
+// 	    		for (var i = 0; i < all_BDs_region_select[BD_name].length; i++) {   
+// 	    			all_BDs_region_select[BD_name][i].setMap(null);   
+// 	            }   
+// 	    		all_BDs_region_select[BD_name]=null;
+// 	    		return;
+// 	    	}
+			
 	    	$.ajax({
 	    		type : "POST",
 	    		url : "realMap.do",
@@ -434,7 +441,7 @@ var all_BDs={};
 	    		},
 	    		success : function(result) {
 	    			var json_obj = $.parseJSON(result);
-	    			all_BDs[BD_name]=[];
+// 	    			all_BDs_region_select[BD_name]=[];
 	    			$.each(json_obj,function(i, item) {
 		    			var bermudaTriangle = new google.maps.Polygon({
 							paths: json_obj[i].center,
@@ -465,7 +472,7 @@ var all_BDs={};
 				            infowindow.setMap(null);
 				            marker.setMap(null);
 				        });
-						all_BDs[BD_name].push(bermudaTriangle);
+// 						all_BDs_region_select[BD_name].push(bermudaTriangle);
 						google.maps.event.addListener(bermudaTriangle, "click", function(event) { 
 							if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
 								google.maps.event.trigger(map, 'click',event);
