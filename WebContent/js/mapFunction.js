@@ -1,25 +1,14 @@
-//############################################################
-//############　　　　　此JS包含　　　　　#############################
-//############　0.google map的pan和zoom　########################
-//############　1.搜POI 比 type 的　##############################
-//############　2.搜POI 比subtype的　############################
-//############　3.Menu商圈中畫商圈　###############################
-//############　4.Menu中開放資源(2)　##############################
-//############　5.Menu中國家(2)　#################################
-//############　6.Menu中城市(2)　#################################
-//############　7.Menu商圈中熱力圖功能(2)　##########################
-//############　8.整體城市概況　###################################
-//############　9.原SBI的四個function　###########################
-//############ 10.中國省份行政分界  #################################
-//#############11.大麥克  #######################################
-//############################################################
-//############################################################
-//############　皆為畫googlemap相關功能　###########################
-//############################################################
+//　此JS包含
+//　0.google map的pan和zoom　
+//　1.搜POI 比 type 的　
+//　2.搜POI 比subtype的　
+//　3.Menu商圈中畫商圈　
+//　4~8,10,11.Menu中[開放資源,國家,城市,熱力圖,整體城市概況,中國省份行政分界 ,大麥克 ]
+//　9.原SBI的四個function　
+// 12,13[畫區位選擇,畫環域分析]
+//　皆為畫googlemap相關功能
 
-//############################################################
-//#######################  0  ################################
-//############################################################
+//googlemap panto zoom
 var in_smoothZoom=0;
 var in_panTo=0;
 function smoothZoom (map, max, cnt) {
@@ -108,12 +97,8 @@ function doPan() {
     }
   }
 }
-
-//############################################################
-//#######################  1  ################################
-//############################################################
+//POI[type]
 function select_poi(poi_name,record){
-	
 	if(all_markers[poi_name]!=null){
 		for (var i = 0; i < all_markers[poi_name].length; i++) {   
 			all_markers[poi_name][i].setMap(null);   
@@ -122,7 +107,6 @@ function select_poi(poi_name,record){
 		return;
 	}
 	if(record!="no_record"){
-		//if(window.scenario_record){scenario_record("查詢POI","["+new Number(map.getCenter().lat()).toFixed(4)+","+new Number(map.getCenter().lng()).toFixed(4)+","+map.getZoom()+",'"+poi_name+"']");}
 		var this_node;
 		var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
 		sibling_node.forEach(function(sib_node) {
@@ -161,8 +145,9 @@ function select_poi(poi_name,record){
 				if(confirm("搜尋資料量達"+json_obj.length+"筆\n是否繼續查詢?","確認繼續","取消")){}else{
 					return;
 			}}
-				
+			var tmp_time= new Date().getTime();
 			$.each(json_obj,function(i, item) {
+				console.log(" time: "+(new Date().getTime()-tmp_time)+"名: "+json_obj[i].name);
 				var  icon = json_obj[i].icon.length>3?json_obj[i].icon:"./refer_data/poi_icon/Q2.png";
 				var marker = new google.maps.Marker({
 				    position: json_obj[i].center,
@@ -204,7 +189,12 @@ function select_poi(poi_name,record){
 			        });
 				}else{
 					google.maps.event.addListener(marker, "click", function(event) { 
-			        	infowindow.open(marker.get('map'), marker);
+						var infowindow_open = infowindow.getMap();
+					    if(infowindow_open !== null && typeof infowindow_open !== "undefined"){
+					    	infowindow.close();					    	
+					    }else{
+					    	infowindow.open(marker.get('map'), marker);
+					    }
 			        });
 				}
 				if(record!="no_record"){
@@ -215,10 +205,7 @@ function select_poi(poi_name,record){
 		}
 	});
 }
-
-//############################################################
-//#######################  2  ################################
-//############################################################
+//POI 所有 [停車場,ATM,圖書館,日式豬排] 這四個使用而已
 function select_poi_2(poi_name,record){
 	if(all_markers[poi_name]!=null){
 		for (var i = 0; i < all_markers[poi_name].length; i++) {   
@@ -228,11 +215,10 @@ function select_poi_2(poi_name,record){
 		return;
 	}
 	if(record!="no_record"){
-		//if(window.scenario_record){scenario_record("查詢POI2","["+map.getCenter().lat()+","+map.getCenter().lng()+","+map.getZoom()+",'"+poi_name+"']");}
 		var this_node;
 		var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
 		sibling_node.forEach(function(sib_node) {
-			if(sib_node.title==poi_name){
+			if(sib_node.title=="所有"+poi_name){
 				this_node=sib_node;
 			}
 		});
@@ -287,7 +273,12 @@ function select_poi_2(poi_name,record){
 			        });
 				}else{
 					google.maps.event.addListener(marker, "click", function(event) { 
-			        	infowindow.open(marker.get('map'), marker);
+					    var infowindow_open = infowindow.getMap();
+					    if(infowindow_open !== null && typeof infowindow_open !== "undefined"){
+					    	infowindow.close();					    	
+					    }else{
+					    	infowindow.open(marker.get('map'), marker);
+					    }
 			        });
 				}
 				google.maps.event.addListener(marker, "mouseout", function(event) { 
@@ -301,10 +292,7 @@ function select_poi_2(poi_name,record){
 		}
 	});
 }
-
-//############################################################
-//#######################  3  ################################
-//############################################################
+//畫BD
 function select_BD(BD_name,record){
 	
 	if(all_BDs[BD_name]!=null){
@@ -344,7 +332,6 @@ function select_BD(BD_name,record){
 				if(record!="no_record"){
 					map.panTo(new google.maps.LatLng(json_obj[i].lat,json_obj[i].lng));
 					smoothZoom(map, 15, map.getZoom());
-					//if(window.scenario_record){scenario_record("查詢商圈",BD_name);} 
 				} 
 				var bermudaTriangle = new google.maps.Polygon({
 					paths: json_obj[i].center,
@@ -460,10 +447,8 @@ function select_BD(BD_name,record){
 	});
 }
 
-//##################################################################
-//##################  4 以下是Menu中開放資源功能   #########################
-//##################################################################
-function country_POLY_for_country_economy (year,type){//country_polygen
+// 4.開放資源功能
+function country_POLY_for_country_economy (year,type){
 	panTo( 8.0, 112.0);
 	smoothZoom(map, 4, map.getZoom());
 	var polygen = country_polygen.pop();
@@ -562,7 +547,7 @@ function country_POLY_for_country_economy (year,type){//country_polygen
     });
 }
 
-function country_economy(node,type){//country_economy
+function country_economy(node,type){
 	if(!node.isSelected()){
 	 	var polygen = country_polygen.pop();
 	 	while(polygen != null){
@@ -643,10 +628,8 @@ function country_economy(node,type){//country_economy
 	});
 }
 
-//##################################################################
-//###################  5 以下是Menu中國家功能   ###########################
-//##################################################################
-function country_POLY_for_countryData (year,type){//country_polygen
+//5.國家功能
+function country_POLY_for_countryData (year,type){
 	panTo( 28.0, 130.0);
 	smoothZoom(map, 2, map.getZoom());
 	var polygen = country_polygen.pop();
@@ -823,13 +806,8 @@ function countryData(node,type){//country_data
 	});
 }
 
-//##################################################################
-//################### 6  以下是Menu中城市功能   ###########################
-//##################################################################
+//6.城市功能 
 function country_POLY_for_chinaCity (type){//country_polygen
-	//清 country_polygen
-	//叫 geom 資料
-	//畫 在地圖上
 	panTo( 35.0, 100.0);
 	smoothZoom(map, 4, map.getZoom());
 	var polygen = country_polygen.pop();
@@ -985,10 +963,8 @@ function chinaCity(node,type){//chinaCity
 	});
 	
 }
-//##################################################################
-//###################   以下是Menu商圈中熱力圖   ###########################
-//##################################################################
-function country_POLY_for_heatMap (type){//heatMap
+//7.商圈中熱力圖  
+function country_POLY_for_heatMap (type){
 	var polygen = country_polygen.pop();
 	while(polygen != null){
 		if (Wkt.isArray(polygen)) {
@@ -1066,7 +1042,7 @@ function country_POLY_for_heatMap (type){//heatMap
   });
 }
 
-function heatMap(node,type){//heatMap
+function heatMap(node,type){
 	if(!node.isSelected()){
 	 	var polygen = country_polygen.pop();
 	 	while(polygen != null){
@@ -1123,10 +1099,8 @@ function heatMap(node,type){//heatMap
 	});
 	
 }
-//##################################################################
-//###################   8以下是Menu中商圈裡中國的城市整體概況  #################
-//##################################################################
 
+//8.城市整體概況[那11個城市各別用到而已]
 function country_POLY_for_city (node,city_name){
 	if(!node.isSelected()){
 		var polygen = chinaCities[city_name].pop();
@@ -1209,9 +1183,7 @@ function country_POLY_for_city (node,city_name){
     });
 }
 
-//############################################################
-//#######################  9-0  ##############################
-//############################################################
+//9. 人口結構資料*3 + 畫圓餅圖
 function draw_population_data(node,type){
 	if(!node.isSelected()){
 		if (population_Markers) {
@@ -1288,9 +1260,6 @@ function draw_population_data(node,type){
 	}
 }
 
-//############################################################
-//#######################  9-1  ##############################
-//############################################################
 function SetPieTwoMarker(country, lat, lng, data1, data2, data1_desc, data2_desc, type) {
     var LatLng = new google.maps.LatLng(lat, lng);
 
@@ -1340,9 +1309,7 @@ function SetMarkerAttribute(marker, city, LatLng, msg) {
         detail_1.innerHTML = '';
     });
 }
-//############################################################
-//#######################  9-2  ##############################
-//############################################################
+
 function SetAgeMarker(country, lat, lng, under14, between1564, up65) {
     var LatLng = new google.maps.LatLng(lat, lng);
 
@@ -1371,9 +1338,7 @@ function SetAgeMarker(country, lat, lng, under14, between1564, up65) {
     population_Markers.push(marker);
 }
 
-//############################################################
-//#######################  10 中國省份行政分界 #####################
-//############################################################
+//10.中國省份行政分界 
 function country_POLY_for_chinaProvincial(node){
 	if(!node.isSelected()){
 		var polygen = chinaProvincial.pop();
@@ -1428,9 +1393,7 @@ function country_POLY_for_chinaProvincial(node){
 		}
 	});
 }
-//############################################################
-//#######################  11大麥克  ############################
-//############################################################
+//11大麥克 
 function bigmac(node){
 	
 	if(!node.isSelected()){
@@ -1481,7 +1444,6 @@ function bigmac(node){
 	});
 	node.setSelected(true);
 	$(node.span.childNodes[1]).addClass('loading');
-	//######################################################
 	if(window.scenario_record){scenario_record("大麥克指數","");} 
 	$.ajax({
 		type : "POST",
@@ -1580,19 +1542,12 @@ function bigmac(node){
 	});
 }
 
-//############################################################
-//#######################  12  ###############################
-//############################################################
+//12.帶出區位選擇結果
 function draw_region_select(polydiagram){
 	var json_obj = eval(polydiagram);
-//	var json_obj = eval("['台灣','台北','餐飲業',1,1,1,1,1,1,33.56,39.74,26.70, [{'City':'信義','Score':'32.337824991485334'},{'City':'北車','Score':'30.190953588085332'},{'City':'新板','Score':'25.863118622184004'},{'City':'公館商圈','Score':'20.441420379122665'}]]"); 
 	$.each(json_obj[12],function(i, item) {
-//		alert(item['City']+" "+item['Score']);
 		var BD_name=item['City'].replace("商圈","")+"商圈";
-    	if(item['City']=="新板"){BD_name="新板特區商圈";}
-		
-//		var BD_name = item['City']
-		$.ajax({
+    	if(item['City']=="新板"){BD_name="新板特區商圈";}		$.ajax({
     		type : "POST",
     		url : "realMap.do",
     		async : false,
@@ -1601,10 +1556,7 @@ function draw_region_select(polydiagram){
     			name : BD_name
     		},
     		success : function(result) {
-//    			alert(BD_name+" : "+result);
-//    			return;
     			var json_obj = $.parseJSON(result);
-//    			all_BDs[BD_name]=[];
     			var timer;
     			$.each(json_obj,function(j, item) {
     				var infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>區位選擇 - 第"+(i+1)+"名<br><a style='font-size:16px;'>"+BD_name+"</a></div>")});
@@ -1639,21 +1591,12 @@ function draw_region_select(polydiagram){
     			});
     		}
 		});
-		
-		
-		
 	});
 }
-
+//13.帶出環域分析結果
 function draw_env_analyse(points){
-	
-//	var json_obj = eval("[['名稱','經度','緯度','半徑','時速','時間'],['點1', '25.0709', '121.5115', '3333.4000m', '10km/hr', '20mins'],['點2', '25.0334', '121.4752', '3333.4000m', '10km/hr', '20mins'],['點3', '25.0209', '121.5493', '3333.4000m', '10km/hr', '20mins']]"); 
 	var json_obj = eval(points);
-//	var json_obj = $.parseJSON(points);
 	$.each(json_obj,function(i, item) {
-//		if(i!=0){
-//			alert(item[0]+" "+item[1]+" "+item[2]+" "+item[3]+" "+item[4]+" "+item[5])
-//		}
 		var order = item[0].replace("點","");
 		var google_latlng = new google.maps.LatLng( item[1], item[2]);
 		var infowindow ;
@@ -1694,22 +1637,4 @@ function draw_env_analyse(points){
 	    });
 	});
 	return ;
-	
-	//###########################################
-//	var order = "1";
-	//p_lat p_lng p_radius p_v p_h
-	
-	google.maps.event.addListener(marker, "click", function(event) { 
-    	infowindow.open(map, marker);
-//    	clearTimeout(timer);
-    }); 
-//	google.maps.event.addListener(marker, "mouseout", function(event) { 
-//    	timer = setTimeout(function () { infowindow.close(); }, 3000);
-//    });
-	google.maps.event.addListener(infowindow, "closeclick", function(event) { 
-		rs_marker.setMap(null);
-		rs_circle.setMap(null);
-		infowindow.setMap(null);
-    });
-//	var marker_obj = new item_marker( 10, 20, rs_marker, rs_circle);
 }

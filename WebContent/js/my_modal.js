@@ -117,7 +117,6 @@ function run_modal(element_name,message,click_to_over,pervent_trigger){
 	clone_element.click(function(){
 		$("#platform").remove();
 		setTimeout(function(){
-
 			if(cache_modal.length>0){
 				var eval_str = cache_modal.shift();
 				var delay_time=0;

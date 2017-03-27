@@ -113,7 +113,7 @@ public class RealMap extends HttpServlet {
 					poi_array[count].type=rs.getString("type");
 					poi_array[count].subtype=rs.getString("subtype");
 					poi_array[count].name=rs.getString("name");
-					poi_array[count].addr=rs.getString("address");//rs.getString("");
+					poi_array[count].addr=rs.getString("address");
 					poi_array[count].icon=rs.getString("icon");
 					poi_array[count].loca="";
 					poi_array[count].center= new Center();
@@ -295,14 +295,11 @@ public class RealMap extends HttpServlet {
 				}
 				Gson gson = new Gson();
 				String jsonStrList="";
-//				System.out.println(type+"  "+ menu_array[3].title+"  "+menu_array[3].key);
 				if("POI".equals(type)){
 					jsonStrList = gson.toJson(menu_array[3]);
-//					System.out.println(jsonStrList);
 				}else if("RealMap".equals(type)){
 					jsonStrList = gson.toJson(menu_array[0]);
 				}
-//				String jsonStrList = gson.toJson(menu_array[0]);
 				response.getWriter().write(jsonStrList);
 				return;
 			} catch (Exception e) {
@@ -313,8 +310,6 @@ public class RealMap extends HttpServlet {
 			response.getWriter().write("fail!!!!!");
 			return;
 		}
-		
-//		logger.debug("act:  "+action);
 		if("select_metro".equals(action)){
 			String station_name = null2Str(request.getParameter("station_name"));
 			String time = null2Str(request.getParameter("time"));

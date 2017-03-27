@@ -68,7 +68,6 @@ var item_marker = function (speed, time, marker, circle) {
 }
 
 	$(function(){
-// 		alert(new Date().getDay());
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
 		$.ajax({
 			type : "POST",

@@ -57,6 +57,7 @@
 .ui-dialog-content{
 	font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
 }
+
 </style>
 
 <script>
@@ -335,42 +336,6 @@ var page_comparison={
 			}]
 		});
 		$("#job_delete").show();
-		$("#job_delete_detail").dialog({
-			draggable : true, resizable : false, autoOpen : false,
-			height : "auto", width : "auto", modal : true,
-			show : {effect : "blind", duration : 300},
-			hide : {effect : "fade", duration : 300},
-			buttons : [{
-				text : "確定刪除",
-				click : function() {
-// 					draw_scenario({
-// 						action : "delete_job",
-// 						job_id : $("#job_delete").val()
-// 					});
-// 					$.ajax({
-// 						type : "POST",
-// 						url : "scenarioJob.do",
-// 						data : { 
-// 							action : "clear_session",
-// 						},success : function(result) {
-// 							if(result=="success"){
-// 								location.replace(location);	
-// 							}
-// 						}
-// 					});
-					$(this).dialog("close");
-				}
-			},{
-				text : "取消",
-				click : function() {
-					$(this).dialog("close");
-				}
-			}]
-		});
-		$("#job_delete_detail").show();
-		
-		
-		
 		
 		$("#logout").click(function(e) {
 			$.ajax({
@@ -398,7 +363,7 @@ var page_comparison={
 			        	var explane_txt = "<div style='text-align:center;font-size:30px;'>"+json_obj[i].scenario_name + "</div><div style='max-width:calc(50vw);margin:10px auto;padding:0px 40px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+json_obj[i].result+"</div><hr><div style='max-width:calc(70vw);'>";
 			        	$.each (json_obj[i].child, function (j) {
 			        		if(json_obj[i].child[j].flow_seq!=0){
-			        			explane_txt += "步驟 " +json_obj[i].child[j].flow_seq+": "+json_obj[i].child[j].next_flow_explanation + "<br>";
+			        			explane_txt += "步驟 " +json_obj[i].child[j].flow_seq+": ["+json_obj[i].child[j].flow_name+"] "+json_obj[i].child[j].next_flow_explanation + "<br>";
 			        		}
 			        	});
 			        	explane_txt += "</div>";
@@ -536,9 +501,6 @@ var page_comparison={
 			<div id='job_delete' title='是否確認刪除此工作'>
 				
 			</div>
-			<div id='job_delete_detail' title='是否刪除此工作紀錄'>
-				
-			</div>
 			<div id='explane' title='情境流程說明' style='display:none;'>
 				<select id='explane_select'>
 					<option value="0">餐飲設址</option>
@@ -547,7 +509,7 @@ var page_comparison={
 					<option value="3">長照海外布局</option>
 				</select>
 				<div id='explane_txt' style='line-height:26px;'>
-					餐飲設址7步驟【如下說明】<br>(1)檢視環境：確認是否有開店的商機【現況發展、未來潛力及競爭強度】<br>(2)選擇區位：人流決定餐廳成功【鎖定客流量最高，選擇商圈區位】<br>(3)人潮分布：辦公大樓、居民社區等機構分布狀況【人潮來源地】<br>(4)環域分析：在既有店面位址【步行5~15分鐘所涵蓋的辦公、社區與機構設施】<br>(5)停車設施：顧客開車來用餐，附近停車方便性【步行10分鐘內所涵蓋的停車場】<br>(6)競爭分布：商圈內餐飲業分佈狀況【投資競爭缺口】<br>(7)消費特性：了解當地消費者對於產品與服務需求缺口【以缺口當作商機】<br><br>
+					
 				</div>
 			</div>
 		</div>
