@@ -44,7 +44,7 @@
 			
 			<div id='f_name'></div><br>
 			<input type='button' id='download' class='btn btn-exec' onclick='' value='下載' style='margin-left:380px'>
-			&nbsp;&nbsp;<input type='button' id='return' class='btn btn-primary' onclick='window.location.href ="./news.jsp?tab=1"' value='返回'>
+			&nbsp;&nbsp;<input type='button' id='return' class='btn btn-primary' onclick='window.location.href ="./news.jsp#tabs-2"' value='返回'>
 		</div>
 	</div>
 </div>

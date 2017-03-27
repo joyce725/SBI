@@ -5,6 +5,10 @@ h3.ui-list-title {
 section {
 	margin-bottom: 20px;
 }
+.panel{
+    height: 500px;
+    overflow-y: auto;
+}
 /* #################### */
 /* #####•H§U¨O≠∂≈“CSS##### */
 /* #################### */
@@ -147,6 +151,7 @@ table.dataTable.no-footer.smoothbottom {
 	border:0px solid #000;
 	text-align: center;
 	margin-top:20px;
+	width: 600px;
 }
 table.result-table2 tbody tr {
 	border-bottom: 1px solid #f00;
