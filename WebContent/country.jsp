@@ -134,7 +134,7 @@ select{
 			},
 			success : function(result) {
 				var json_obj = $.parseJSON(result);
-				console.log(json_obj);
+				//console.log(json_obj);
 				$("#country").find('option').remove();
 				$("#country").append($('<option></option>').val('').html(defaultValue));
 				$.each(json_obj, function(i, item) {

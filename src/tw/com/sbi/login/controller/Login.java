@@ -86,6 +86,7 @@ public class Login extends HttpServlet {
 										
 					String menuListStr = loginService.getMenuListToString();
 					session.setAttribute("menu", menuListStr);
+					logger.debug("menu: "+menuListStr);
 					message = new LoginVO();
 					message.setMessage("success");
 				} else {
@@ -256,6 +257,8 @@ public class Login extends HttpServlet {
 			main = dao.getMainMenuDB();
 			logger.debug("getMainMenu end");
 			
+logger.debug("main"+new Gson().toJson(main));
+
 			for (int i = 0; i < main.size(); i++) {
 				List<MenuVO> subMenu = null;
 				
@@ -263,6 +266,8 @@ public class Login extends HttpServlet {
 				
 				subMenu = setSubMenu( main.get(i).getId() );
 				main.get(i).setSubMenu(subMenu);
+				
+logger.debug("sub"+new Gson().toJson(subMenu));
 				
 				logger.debug("get subMenu end");
 			};
@@ -422,7 +427,7 @@ public class Login extends HttpServlet {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
 				pstmt = con.prepareStatement(sp_get_main_menu);
-
+				//logger.debug("hello?"+"main");
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					menuVO = new MenuVO();
@@ -476,7 +481,7 @@ public class Login extends HttpServlet {
 			Connection con = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-
+//			logger.debug("hell?"+"sub "+parent_id);
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);

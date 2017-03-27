@@ -57,8 +57,23 @@
 .ui-dialog-content{
 	font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
 }
-
+div.txt-justify{
+	 padding:0 5px;
+	 text-align: justify;
+	　text-justify: inter-ideograph;
+	　-ms-text-justify: inter-ideograph; /*IE9*/
+	　-moz-text-align-last:justify; /*Firefox*/
+	　-webkit-text-align-last:justify; /*Chrome*/
+}
+div.txt-justify:after {
+　content: '';
+　display: inline-block;
+　width: 100%;
+}
 </style>
+
+
+
 
 <script>
 var explane_txt_arr={"0":"<div style='height:340px;width:calc(50vw);text-align:center;line-height:290px;font-size:40px;'>請選擇情境</div>"};
@@ -105,6 +120,8 @@ var page_comparison={
 	}
 	
 	function draw_scenario(parameter){
+		$(".result-table-wrap").hide();
+		$(".btn-row").hide();
 		$.ajax({
 			type : "POST",
 			url : "scenarioJob.do",
@@ -140,6 +157,9 @@ var page_comparison={
 						
 					$("#tbl_main tbody").html(result_table);
 				});
+				$(".result-table-wrap").fadeIn();
+				$(".btn-row").fadeIn();
+				
 			}
 		});				
 	}
@@ -360,13 +380,14 @@ var page_comparison={
 		        $.each (json_obj, function (i) {
 		        	if(json_obj[i].scenario_name.indexOf('教學')==-1){
 			        	option_str+="<option value='"+json_obj[i].scenario_id+"'>"+json_obj[i].scenario_name+"</option>";
-			        	var explane_txt = "<div style='text-align:center;font-size:30px;'>"+json_obj[i].scenario_name + "</div><div style='max-width:calc(50vw);margin:10px auto;padding:0px 40px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+json_obj[i].result+"</div><hr><div style='max-width:calc(70vw);'>";
+			        	var explane_txt = "<div style='text-align:center;font-size:30px;'>"+json_obj[i].scenario_name + "</div><div style='max-width:calc(50vw);margin:10px auto;padding:0px 40px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+json_obj[i].result+"</div><hr>"
+			        		+"<div style='max-width:calc(70vw);'><table>";
 			        	$.each (json_obj[i].child, function (j) {
 			        		if(json_obj[i].child[j].flow_seq!=0){
-			        			explane_txt += "步驟 " +json_obj[i].child[j].flow_seq+": ["+json_obj[i].child[j].flow_name+"] "+json_obj[i].child[j].next_flow_explanation + "<br>";
+			        			explane_txt += "<tr><td style='vertical-align: text-top;'>步驟 " +json_obj[i].child[j].flow_seq+": </td><td style='vertical-align: text-top;'><div class='txt-justify' style='text-align: justify;text-justify: inter-ideograph;-ms-text-justify: inter-ideograph;-moz-text-align-last:justify;-webkit-text-align-last:justify;word-break:break-all;'>[&nbsp;"+json_obj[i].child[j].flow_name+"&nbsp;] </div></td><td><div style='max-width: calc(30vw);'>"+json_obj[i].child[j].next_flow_explanation + "</div></td></tr>";
 			        		}
 			        	});
-			        	explane_txt += "</div>";
+			        	explane_txt += "</table></div>";
 		        	}
 		        	explane_txt_arr[json_obj[i].scenario_id] = explane_txt;
 		        });
@@ -388,6 +409,9 @@ var page_comparison={
 			width : "auto" ,height : "auto", modal : false,
 			show : { effect : "blind", duration : 300 },
 			hide : { effect : "fade", duration : 300 },
+			open : function(){
+				$("#explane").css("max-height", "calc(70vh)");
+			},
 			buttons : {
 				"確定" : function() {$(this).dialog("close");}
 			}

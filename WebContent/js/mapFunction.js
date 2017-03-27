@@ -135,6 +135,7 @@ function select_poi(poi_name,record){
 			zoom : map.getZoom()
 		},
 		success : function(result) {
+			var tmp_str="";
 			if(result=="fail!!!!!")return;
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
@@ -145,9 +146,9 @@ function select_poi(poi_name,record){
 				if(confirm("搜尋資料量達"+json_obj.length+"筆\n是否繼續查詢?","確認繼續","取消")){}else{
 					return;
 			}}
-			var tmp_time= new Date().getTime();
+//			var tmp_time= new Date().getTime();
 			$.each(json_obj,function(i, item) {
-				console.log(" time: "+(new Date().getTime()-tmp_time)+"名: "+json_obj[i].name);
+//				console.log(" time: "+(new Date().getTime()-tmp_time)+"名: "+json_obj[i].name);
 				var  icon = json_obj[i].icon.length>3?json_obj[i].icon:"./refer_data/poi_icon/Q2.png";
 				var marker = new google.maps.Marker({
 				    position: json_obj[i].center,
@@ -156,21 +157,8 @@ function select_poi(poi_name,record){
  				    icon : icon
 				});
 				var poi_flow_str=""
-				if(poi_name=="捷運"){
-					$.ajax({
-						type : "POST",
-						url : "realMap.do",
-						async : false,
-						data : {
-							action : "select_metro",
-							station_name : json_obj[i].name,
-							time : new Date().getHours(),
-							weekend : ((new Date().getDay()==0||new Date().getDay()==6)?"weekend":"")
-						},
-						success : function(result) {
-							if(result.length>0)poi_flow_str+='<tr><td>'+new Date().getHours()+'-'+(new Date().getHours()+1)+'時　<br>平均人流：</td><td>'+new Number(parseInt(result)).toFixed(0)+'人</td></tr>';
-						}
-					});
+				if(poi_name=="捷運" && json_obj[i].memo.length>0){
+					poi_flow_str+='<tr><td>平均人流：</td><td>'+json_obj[i].memo+'人</td></tr>';
 				}
 				var tmp_table='<table class="info_window">'+
 				'<tr><th colspan="2">'+json_obj[i].type+'　</th></tr>'+
@@ -201,7 +189,10 @@ function select_poi(poi_name,record){
 					all_markers[poi_name].push(marker);
 				}
 			});
-			 $(this_node.span.childNodes[1]).removeClass('loading');
+			if(record!="no_record"){
+				$(this_node.span.childNodes[1]).removeClass('loading');
+			}
+			console.log(tmp_str);
 		}
 	});
 }
@@ -288,7 +279,9 @@ function select_poi_2(poi_name,record){
 					all_markers[poi_name].push(marker);
 				}
 			});
-			$(this_node.span.childNodes[1]).removeClass('loading');
+			if(record!="no_record"){
+				$(this_node.span.childNodes[1]).removeClass('loading');
+			}
 		}
 	});
 }
@@ -989,7 +982,6 @@ function country_POLY_for_heatMap (type){
 			type : type
 		},
 		success : function(result) {
-			console.log(result);
 			var json_obj = $.parseJSON(result);
 			$.each(json_obj,function(i, item) {
 				var wkt = new Wkt.Wkt();

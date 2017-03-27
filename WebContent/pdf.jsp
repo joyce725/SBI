@@ -63,6 +63,7 @@ $(function(){
 					<td width="104px" id='wuhan' class="func2"><a target="_blank" href="./uploaddoc.do?action=download_ebook&ebook_name=武漢市" class="no_alert"><img src="./refer_data/e-book.png" style='height:80px;'><br>武漢市電子書</a></td>
 					<td width="100px" class="func2"><a target="_blank" href="./uploaddoc.do?action=download_ebook&ebook_name=成都市" class="no_alert"><img src="./refer_data/e-book.png" style='height:80px;'><br>成都市電子書</a></td>
 					<td width="100px" class="func2"><a target="_blank" href="./uploaddoc.do?action=download_ebook&ebook_name=天津市" class="no_alert"><img src="./refer_data/e-book.png" style='height:80px;'><br>天津市電子書</a></td>
+					<td width="100px" class="func2"><a target="_blank" href="./uploaddoc.do?action=download_ebook&ebook_name=新山商圈" class="no_alert"><img src="./refer_data/e-book.png" style='height:80px;'><br>新山電子書</a></td>
 				</tr>
 			</tbody>
 		</table>

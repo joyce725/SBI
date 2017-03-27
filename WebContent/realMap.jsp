@@ -310,7 +310,7 @@ var item_marker = function (speed, time, marker, circle) {
 		<div id='unpin' style='position:absolute;top:5px;right:20px;display:none;' class='on_it' 
 				onclick='$("#unpin").hide();$("#pin").show();$("#panel").attr("onmouseout",$("#panel").attr("tmp"));'><img src='./refer_data/unpin.png'></div>
 		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'>
-			<table><tr><td>&nbsp;透明度：</td><td><div id='opacity' style='width:110px;'></div></td></tr></table>
+			<table><tr><td>&nbsp;透明度：</td><td><div id='opacity' style='width:160px;'></div></td></tr></table>
 		</div>
 	</div>
 	

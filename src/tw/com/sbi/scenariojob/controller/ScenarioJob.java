@@ -238,9 +238,6 @@ public class ScenarioJob extends HttpServlet {
 				logger.debug("records_cenario_lat_lng_zoom");
 				caseService = new ScenarioService();
 				caseService.set_memo(scenario_job_id, "{\"scenario_lat\":\""+scenario_lat+"\",\"scenario_lng\":\""+scenario_lng+"\",\"scenario_zoom\":\""+scenario_zoom+"\"}");
-//				request.getSession().setAttribute("scenario_lat",scenario_lat);
-//				request.getSession().setAttribute("scenario_lng",scenario_lng);
-//				request.getSession().setAttribute("scenario_zoom",scenario_zoom);
 			}
 			caseService = new ScenarioService();
 			ScenarioJobVO current_job = null;

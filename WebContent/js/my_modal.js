@@ -370,7 +370,7 @@ function finish_step(){
 											+sib_node.title+"']");
 								}
 							}else if($(sib_node.span.childNodes[1]).hasClass('BD')){
-								alert("選了 "+sib_node.title);
+//								alert("選了 "+sib_node.title);
 								if(window.scenario_record){scenario_record("查詢商圈",sib_node.title);} 
 							}
 						});
@@ -501,6 +501,21 @@ $(function(){
 					});
 				}
 				});
+			}else{
+				setTimeout(function(){
+					$.ajax({
+						type : "POST",
+						url : "scenarioJob.do",
+						async : false,
+						data : { 
+							action : "get_current_job_info",
+							job_id : scenario_job_id,
+						},success : function(result) {
+							var json_obj = $.parseJSON(result);
+							eval(json_obj.next_flow_guide);
+						}
+					});
+				},500);
 			}
 		}
 });

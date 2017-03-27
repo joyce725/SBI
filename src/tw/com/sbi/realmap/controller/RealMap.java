@@ -119,6 +119,8 @@ public class RealMap extends HttpServlet {
 					poi_array[count].center= new Center();
 					poi_array[count].center.lat=rs.getFloat("lat");
 					poi_array[count].center.lng=rs.getFloat("lng");
+					poi_array[count].memo=rs.getString("memo");
+					
 					count++;
 				}
 				Gson gson = new Gson();
@@ -177,6 +179,7 @@ public class RealMap extends HttpServlet {
 					poi_array[count].center= new Center();
 					poi_array[count].center.lat=rs.getFloat("lat");
 					poi_array[count].center.lng=rs.getFloat("lng");
+					poi_array[count].memo=rs.getString("memo");
 					count++;
 				}
 				Gson gson = new Gson();
@@ -310,59 +313,6 @@ public class RealMap extends HttpServlet {
 			response.getWriter().write("fail!!!!!");
 			return;
 		}
-		if("select_metro".equals(action)){
-			String station_name = null2Str(request.getParameter("station_name"));
-			String time = null2Str(request.getParameter("time"));
-			String weekend = null2Str(request.getParameter("weekend"));
-			Connection con2 = null;
-			PreparedStatement pstmt2 = null;
-			ResultSet rs2 = null;
-			String query = "SELECT AVG(flow) flow_avg "
-					+" FROM tb_data_metro "
-					+(("weekend".equals(weekend))?" WHERE DAYOFWEEK( tb_data_metro.date ) IN('1','7') ":" WHERE DAYOFWEEK( tb_data_metro.date ) IN('2','3','4','5','6') ")
-					+" AND station_name = ? "
-					+" AND time = ? ";
-			try {
-				Class.forName("com.mysql.jdbc.Driver");
-				con2 = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt2 = con2.prepareStatement(query);
-				
-				pstmt2.setString(1, station_name);
-				pstmt2.setString(2, time);
-				rs2=pstmt2.executeQuery();
-				while (rs2.next()) {
-					response.getWriter().write(null2Str(rs2.getString("flow_avg")));
-				}
-			} catch (SQLException se) {
-				// Handle any driver errors
-				throw new RuntimeException("A database error occured. " + se.getMessage());
-			} catch (ClassNotFoundException cnfe) {
-				throw new RuntimeException("A database error occured. " + cnfe.getMessage());
-			} finally {
-				// Clean up JDBC resources
-				if (rs2 != null) {
-					try {
-						rs2.close();
-					} catch (SQLException se) {
-						se.printStackTrace(System.err);
-					}
-				}
-				if (pstmt2 != null) {
-					try {
-						pstmt2.close();
-					} catch (SQLException se) {
-						se.printStackTrace(System.err);
-					}
-				}
-				if (con2 != null) {
-					try {
-						con2.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}
-			}
-		}
 		return ;
 	}
 	
@@ -407,6 +357,7 @@ public class RealMap extends HttpServlet {
 		String addr;
 		String loca;
 		Center center;
+		String memo;
 	}
 	
 	class Menu{
