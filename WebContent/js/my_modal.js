@@ -223,6 +223,7 @@ function scenario_record(category,result){
 	$.ajax({
 		type : "POST",
 		url : "scenarioJob.do",
+		async : false,
 		data : { 
 			action : "set_scenario_result",
 			current_page : location.pathname.split("/").pop(),

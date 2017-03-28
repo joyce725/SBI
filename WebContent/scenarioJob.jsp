@@ -136,7 +136,7 @@ var page_comparison={
 					var job_content_title="";
 					$.each(result_obj, function(j, item) {
 						job_content_title="工作歷程:";
-						print_table+="<tr><td>"+result_obj[j].step+"</td><td><div style='max-width:200px'>"+result_obj[j].flow_name+"</div></td><td>"+result_obj[j].category+"</td><td><div style='max-width:400px'>"+result_obj[j].result+"</div></td></tr>";
+						print_table+="<tr><td>"+result_obj[j].step+"</td><td><div style='max-width:200px;width:80px;word-break:keep-all;'>"+result_obj[j].flow_name+"</div></td><td>"+result_obj[j].category+"</td><td><div style='max-width:400px'>"+result_obj[j].result+"</div></td></tr>";
 					});
 					result_table+= '<tr job_id="'+json_obj[i].job_id+'" job_name="'+json_obj[i].job_name+'" job_pro="'+json_obj[i].flow_seq+'/'+ json_obj[i].max_flow_seq+'">' 
 						+ '<td><b style="font-size:16px;">' +json_obj[i].job_name+ '</b></td>' 
@@ -276,12 +276,12 @@ var page_comparison={
 				text : "確定",
 				click : function() {
 					if($("#all_scenario_name").val()!=0 && $("#insert_job_name").val().length!=0){
+						$(this).dialog("close");
 						draw_scenario({
 							action : "insert_job",
 							scenario_id : $("#all_scenario_name").val(),
 							job_name : $("#insert_job_name").val()
 						});
-						$(this).dialog("close");
 					}else{
 						alert("請填寫完整");
 					}
@@ -296,12 +296,12 @@ var page_comparison={
 		$("#insert_job").show();
 		$("#job_update_button").click(function(){
 			if($("#job_name_update").val().length!=0){
+				$("#job_update").dialog("close");
 				draw_scenario({
 					action : "update_job",
 					job_id : $("#job_update").val(),
 					job_name : $("#job_name_update").val()
 				});
-				$("#job_update").dialog("close");
 			}else{
 				alert("請填寫完整");
 			}
@@ -331,6 +331,7 @@ var page_comparison={
 			buttons : [{
 				text : "確定刪除",
 				click : function() {
+					$(this).dialog("close");
 					draw_scenario({
 						action : "delete_job",
 						job_id : $("#job_delete").val()
@@ -346,7 +347,6 @@ var page_comparison={
 							}
 						}
 					});
-					$(this).dialog("close");
 				}
 			},{
 				text : "取消",

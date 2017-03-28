@@ -15,6 +15,7 @@
 .page-wrapper {
 /*     background: #194A6B; */
     background-color: #EEF3F9;
+    
 }
 .content-wrap{
 /* 	height: calc(100vh - 84px); */
@@ -24,15 +25,17 @@
     background: #fff;
     float: left;
     margin-left: 0px;
-    margin-top: 100px;
+    margin-top: 50px;
     padding-bottom: 50px;
     height: 100%;
     overflow-y: scroll;
+    overflow: hidden;
     width: 100%;
 	background-color: #EEF3F9;
 }
 .search-result-wrap{
-	padding: 20px;
+	padding: 0px;
+/* 	overflow-y: auto; */
 }
 input[type=checkbox] {
     position: static;

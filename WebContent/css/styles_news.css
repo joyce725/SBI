@@ -144,7 +144,7 @@ table.dataTable.no-footer.smoothbottom {
 }
 .result-table2{
 	margin: 0 auto;
-	
+	width: 100% !important;
 }
 .result-table2, .result-table2 th,.result-table2 td, table.result-table2 tbody tr {
 	background: none;

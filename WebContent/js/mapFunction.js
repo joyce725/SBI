@@ -411,11 +411,11 @@ function select_BD(BD_name,record){
 		        var update_timeout = null;
 				google.maps.event.addListener(bermudaTriangle, "click", function(event) { 
 					 update_timeout = setTimeout(function(){
-						if($("#region_select").length==0){
+						if($("#region_select").length==0 && $("#env_analyse").length==0){
 							infowindow.open(bermudaTriangle.get('map'), infoMarker);
 							return;
 						} 
-						if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+						if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#env_analyse").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
 							google.maps.event.trigger(map, 'click',event);
 						}else{
 							infowindow.open(bermudaTriangle.get('map'), infoMarker);
@@ -435,7 +435,9 @@ function select_BD(BD_name,record){
 					all_BDs[BD_name].push(bermudaTriangle);
 				}
 			});
-			$(this_node.span.childNodes[1]).removeClass('loading');
+			if(record!="no_record"){
+				$(this_node.span.childNodes[1]).removeClass('loading');
+			}
 		}
 	});
 }
@@ -1579,7 +1581,14 @@ function draw_region_select(polydiagram){
 						bermudaTriangle.setMap(null);
 						infowindow.setMap(null);
 				    });
-					
+					google.maps.event.addListener(bermudaTriangle, "click", function(event) { 
+						if($("#region_select").length==0 && $("#env_analyse").length==0){
+							return;
+						} 
+						if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#env_analyse").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
+							google.maps.event.trigger(map, 'click',event);
+						}
+					});
     			});
     		}
 		});
@@ -1627,6 +1636,14 @@ function draw_env_analyse(points){
 			rs_circle.setMap(null);
 			infowindow.setMap(null);
 	    });
+		google.maps.event.addListener(rs_circle, "click", function(event) { 
+			if($("#region_select").length==0 && $("#env_analyse").length==0){
+				return;
+			} 
+			if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#env_analyse").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
+				google.maps.event.trigger(map, 'click',event);
+			}
+		});
 	});
 	return ;
 }

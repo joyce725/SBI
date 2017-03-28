@@ -483,7 +483,7 @@ var item_marker = function (speed, time, marker, circle) {
 						  center: event.latLng,
 						  radius: 0 
 					});
-					var marker_obj = new item_marker( 10, 30, rs_marker, rs_circle);
+					var marker_obj = new item_marker( 4, 15, rs_marker, rs_circle);
 					
 					$("#rr_pt").html(order);
 					$("#rr_pt").val(marker_obj);
