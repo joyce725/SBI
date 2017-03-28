@@ -308,7 +308,7 @@
 		    });
 		});
 		
-		$("#confirmTest").click(function() {
+		$("#confirmTest").click(function(event) {
 			event.preventDefault();
 			if ( !$(".customDivTest").valid() ) {
 				return;
