@@ -424,7 +424,7 @@ public class ScenarioJob extends HttpServlet {
 					scenarioJob.setNext_flow_explanation(null2Str(rs.getString("next.explanation")));
 					scenarioJob.setNext_flow_guide(null2Str(rs.getString("next.guide")));
 					scenarioJob.setMax_flow_seq(
-							get_max_seq(scenarioJob.getScenario_id())
+						get_max_seq(scenarioJob.getScenario_id())
 					);
 					list.add(scenarioJob);
 				}

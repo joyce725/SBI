@@ -908,65 +908,6 @@ var all_markers={};
 				}
 			});
 			$("#regionselect").show();
-			$("#selectRegion").change(function(){
-				return;
-				var selecttable="商圈：<div style='max-width:400px;min-height:60px;float:right;'>";
-				for (var BD in businessdistrict) {
-					if($(this).val()=="Taipei"&& businessdistrict[BD].n<14){ 
-						if(businessdistrict[BD].n==1){
-							
-						}else{
-							selecttable+="、";
-						}
-						selecttable+= businessdistrict[BD].name;
-						map.panTo(new google.maps.LatLng(25.034,121.524));
-						map.setZoom(14);
-					}
-					if($(this).val()=="Taoyuan"&& businessdistrict[BD].n>13&& businessdistrict[BD].n<25){ 
-						if(businessdistrict[BD].n==14){
-							
-						}else{
-							selecttable+="、";
-						}
-						selecttable+= businessdistrict[BD].name;
-						map.panTo(new google.maps.LatLng(24.995, 121.298));
-						map.setZoom(12);
-					}
-					if($(this).val()=="Taichung"&& businessdistrict[BD].n>24&& businessdistrict[BD].n<32){ 
-						if(businessdistrict[BD].n==25){
-							
-						}else{
-							selecttable+="、";
-						}
-						selecttable+= businessdistrict[BD].name;
-						map.panTo(new google.maps.LatLng(24.148, 120.685));
-						map.setZoom(12);
-					}
-					if($(this).val()=="Tainan"&& businessdistrict[BD].n>31&& businessdistrict[BD].n<44){ 
-						if(businessdistrict[BD].n==32){
-							
-						}else{
-							selecttable+="、";
-						}
-						selecttable+=businessdistrict[BD].name;
-						map.panTo(new google.maps.LatLng(22.994, 120.218));
-						map.setZoom(12);
-					}
-					if($(this).val()=="Kaohsiung"&& businessdistrict[BD].n>43){ 
-						if(businessdistrict[BD].n==44){
-							
-						}else{
-							selecttable+="、";
-						}
-						selecttable+=businessdistrict[BD].name;
-						map.panTo(new google.maps.LatLng(22.624, 120.307));
-						map.setZoom(12);
-					}
-				}
-				
-				selecttable+="</div>";
-				$("#BD").html(selecttable);
-			});
 
 			//環域分析
 			$("#env_analyse").dialog({

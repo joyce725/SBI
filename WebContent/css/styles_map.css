@@ -117,11 +117,11 @@
 		background: url(../fancy-tree/skin-xp/bg.png) repeat;
 		transition: all .3s linear;
 		position:fixed;
-		left:0px;
+		left:150px;
 		top:96px; 
 		min-width:260px;
 		width:auto;
-		height: calc(100vh - 129px);
+		height: calc(100vh - 149px);
 		z-index:99;
 		overflow-y: auto;
 		overflow-x: auto;
@@ -131,7 +131,7 @@
 	}
 	
 	ul.fancytree-container {
-		max-height:calc(100vh - 174px);
+		max-height:calc(100vh - 190px);
 	}
 	#map{
 		height: 100%;

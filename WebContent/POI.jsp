@@ -289,10 +289,11 @@ var item_marker = function (speed, time, marker, circle) {
 	    $("#warning").show();
         $("#pdf_layer").menu();
 			$("#end").click(function(){
-				var result_str="[經度,緯度,半徑,時速,時間]=>";
+				var result_str="['名稱','經度','緯度','半徑','時速','時間']";
 				$.each(rs_markers, function(i, node){
-					result_str+="點"+(i+1);
-					result_str+="["+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
+// 					result_str+="點"+(i+1);
+					result_str+=",['點"+(i+1)+"', '"+new Number(node.marker.position.lat()).toFixed(4)+"', '"+new Number(node.marker.position.lng()).toFixed(4)+"', '"+new Number(node.circle.radius).toFixed(4)+"m', '"+node.speed+"km/hr', '"+node.time+"mins']";
+// 					result_str+="['點"+(i+1)+"', "+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
 				});
 				if(window.scenario_record){scenario_record("環域分析",result_str);}
 			});
@@ -304,7 +305,7 @@ var item_marker = function (speed, time, marker, circle) {
 <div class="content-wrap">
 	<div id='panel' style="display:none;"
 	onmouseover="$('#panel').css('left','150px');clearTimeout($('#panel').val());" 
-	onmouseout="$('#panel').val(setTimeout(function () { $('#panel').css('left','0px'); }, 800));">
+	tmp="$('#panel').val(setTimeout(function () { $('#panel').css('left','0px'); }, 800));" style="left:150px;">
 		<div id='tree' >
 		<script>var timer="";</script>
 		<ul id='pdf_layer' onmouseover='clearTimeout(timer);$("#pdf_layer").show();' 
@@ -313,9 +314,9 @@ var item_marker = function (speed, time, marker, circle) {
 			<li><div>Books</div></li>
 		</ul>
 		</div>
-		<div id='pin' style='position:absolute;top:5px;right:20px;' class='on_it' 
+		<div id='pin' style='position:absolute;top:5px;right:20px;display:none;'' class='on_it' 
 				onclick='$("#pin").hide();$("#unpin").show();$("#panel").attr("tmp",$("#panel").attr("onmouseout"));$("#panel").attr("onmouseout","");'><img src='./refer_data/pin.png'></div>
-		<div id='unpin' style='position:absolute;top:5px;right:20px;display:none;' class='on_it' 
+		<div id='unpin' style='position:absolute;top:5px;right:20px; class='on_it' 
 				onclick='$("#unpin").hide();$("#pin").show();$("#panel").attr("onmouseout",$("#panel").attr("tmp"));'><img src='./refer_data/unpin.png'></div>
 		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'><table><tr><td>&nbsp;&nbsp;透明度：</td><td><div id='opacity' style='width:160px;'></div></td></tr></table></div>
 	</div>

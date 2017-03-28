@@ -122,6 +122,11 @@ public class Login extends HttpServlet {
 			session.setAttribute("user_id", null);
 			session.setAttribute("group_id", null);
 			session.setAttribute("user_name", null);
+			session.setAttribute("role", null);
+			session.setAttribute("privilege", null);
+			session.setAttribute("menu", null);
+			session.setAttribute("scenario_job_id",null);
+			session.setAttribute("scenario_job_page",null);
 		}
 	}
 

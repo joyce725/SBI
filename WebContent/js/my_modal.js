@@ -437,7 +437,7 @@ $(function(){
 				
 				var json_obj = $.parseJSON(result);
 				
-				$("html").append("<div id='scenario_controller' class='scenario_controller' style=''>"
+				$("html").append("<div id='scenario_controller' class='scenario_controller' style='z-index:10000;'>"
 						+ "    <span id = 'job_title' class='focus'  onclick='job_explanation(\""+json_obj.job_id+"\")'>"+json_obj.job_name+" "+json_obj.flow_seq+'/'+ json_obj.max_flow_seq+"</span>"
 						+ "    <a id='next_step_btn' style='float:right;margin-left:10px;'href='./"+json_obj.next_flow_page+"'><img class='func' style='height:22px;' title='跳至將執行頁面' src='./refer_data/next_step.png'></a>"
 						+ "    <img id='check_btn' class='func' onclick='finish_step()' style='float:right;height:22px;margin-left:20px;' title='完成此步驟' src='./refer_data/check.png'>"
@@ -462,6 +462,7 @@ $(function(){
 							action : "get_current_job_info",
 							job_id : scenario_job_id,
 						},success : function(result) {
+//							alert("143"+result);
 							var json_obj = $.parseJSON(result);
 							eval(json_obj.next_flow_guide);
 							var result_obj = $.parseJSON(json_obj.result);
@@ -482,6 +483,7 @@ $(function(){
 									draw_env_analyse(result_obj[i].result);	
 								}
 							});
+//							alert("123");
 							setTimeout(function(){
 								$.ajax({
 									type : "POST",

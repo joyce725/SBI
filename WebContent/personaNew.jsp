@@ -44,7 +44,7 @@ input[type=radio] {
     position: static;
 }
 .bentable{
- 	margin-left:120px;
+ 	margin-left:30px;
 /* 	margin: 20px auto; */
 	font-size:16px;
 /* 	border:2px solid #555; */
@@ -310,9 +310,12 @@ function checkboxcheck(name){
 <div class="content-wrap">
 <h2 class="page-title">目標客群定位</h2>
 	<div class="search-result-wrap">
-		<h1 style='margin-bottom:8px;color:#f44' align='center'>客群.&nbsp;您了解多少?</h1>
-		<div style='font-size:18px;margin-bottom:20px;color:#888;' align='center'>--或許 我可以幫您清晰出客群的輪廓--</div>
-		<div id='view' style='background:#f8f8f8;padding:20px;border: 3px solid #666;margin:0 auto;width:60%;	border-radius: 8px;box-shadow: 10px 10px 5px #999;'>
+		<div style='width:790px;margin-left:140px;margin-bottom:8px;'>
+			<h1 style='color:#f44' align='center'>客群.&nbsp;您了解多少?</h1>
+			<div style='font-size:18px;margin-bottom:20px;color:#888;' align='center'>--或許 我可以幫您清晰出客群的輪廓--</div>
+		</div>
+		<div id='view' style='background:#f8f8f8;padding:20px;border: 3px solid #666;margin-left:140px;width:790px;	border-radius: 8px;box-shadow: 10px 10px 5px #999;'>
+			
 			<table class='bentable'>
 				<tr><th>一、品類：</th></tr>
 				<tr>

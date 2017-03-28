@@ -168,3 +168,10 @@ table.result-table2 tbody tr {
 	border:2px solid #888;
 	box-shadow: 0px 0px 0px #888;
 }
+
+.ui-widget-content a.btn.btn-darkblue.btn-wide{
+	color: #fff;
+}
+.ui-widget{
+	font-family: "·L³n¥¿¶ÂÅé", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4 !important;
+}

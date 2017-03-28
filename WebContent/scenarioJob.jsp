@@ -76,7 +76,7 @@ div.txt-justify:after {
 
 
 <script>
-var explane_txt_arr={"0":"<div style='height:340px;width:calc(50vw);text-align:center;line-height:290px;font-size:40px;'>請選擇情境</div>"};
+var explane_txt_arr={"0":"<div style='height:180px;width:calc(50vw);text-align:center;line-height:160px;font-size:40px;'>請選擇情境</div>"};
 var page_comparison={
 		"realMap.jsp": "商圈資訊",
 		"POI.jsp": "商圈POI",
@@ -136,7 +136,7 @@ var page_comparison={
 					var job_content_title="";
 					$.each(result_obj, function(j, item) {
 						job_content_title="工作歷程:";
-						print_table+="<tr><td>"+result_obj[j].step+"</td><td><div style='max-width:200px;width:80px;word-break:keep-all;'>"+result_obj[j].flow_name+"</div></td><td>"+result_obj[j].category+"</td><td><div style='max-width:400px'>"+result_obj[j].result+"</div></td></tr>";
+						print_table+="<tr><td>"+result_obj[j].step+"</td><td><div style='max-width:200px;word-break:keep-all;'>"+result_obj[j].flow_name+"</div></td><td>"+result_obj[j].category+"</td><td><div style='max-width:400px'>"+result_obj[j].result+"</div></td></tr>";
 					});
 					result_table+= '<tr job_id="'+json_obj[i].job_id+'" job_name="'+json_obj[i].job_name+'" job_pro="'+json_obj[i].flow_seq+'/'+ json_obj[i].max_flow_seq+'">' 
 						+ '<td><b style="font-size:16px;">' +json_obj[i].job_name+ '</b></td>' 
@@ -211,7 +211,7 @@ var page_comparison={
 			$("#job_next").attr("scenario_job_id",$(this).closest( "tr" ).attr("job_id"));
 			$("#job_next").attr("scenario_job_page",$(this).attr("value"));
 			var tmp = $(this).closest( "tr" ).attr("job_id");
-			$("html").append("<div id='scenario_controller' class='scenario_controller' style=''>"
+			$("html").append("<div id='scenario_controller' class='scenario_controller' style='z-index:10000'>"
 					+ "    <span id = 'job_title' class='focus' onclick='job_explanation(\""+tmp+"\")'>"+$(this).closest( "tr" ).attr("job_name")+" "+$(this).closest( "tr" ).attr("job_pro")+"</span>"
 					+ "    <a id='next_step_btn' style='float:right;margin-left:10px;' href='./"+$(this).attr("value")+"'><img class='func' style='height:22px;' title='跳至將執行頁面' src='./refer_data/next_step.png'></a>"
 					+ "    <img id='check_btn' onclick='finish_step()' class='func' style='float:right;height:22px;margin-left:20px;' title='完成此步驟' src='./refer_data/check.png'>"
@@ -393,7 +393,7 @@ var page_comparison={
 		        });
 		        $("#explane_select").html(option_str);
 		        $("#all_scenario_name").html(option_str);
-		        $("#explane_txt").html("<div style='height:340px;width:calc(50vw);text-align:center;line-height:290px;font-size:40px;'>請選擇情境</div>");
+		        $("#explane_txt").html(explane_txt_arr[0]);
 		    }
 		});
 		

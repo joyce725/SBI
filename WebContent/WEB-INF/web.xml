@@ -22,7 +22,7 @@
   <context-param>
     <param-name>dbURL</param-name>
 <!--     <param-value>jdbc:mysql://10.0.0.4/sbi</param-value> -->
-<!--     <param-value>jdbc:mysql://localhost:3306/sbi</param-value> -->
+<!--     <param-value>jdbc:mysql://abers1.eastasia.cloudapp.azure.com/sbi</param-value> -->
 <!--     <param-value>jdbc:mysql://localhost:3306/cdri</param-value> -->
     <param-value>jdbc:mysql://192.168.112.164:3306/cdri</param-value>
   </context-param>

@@ -168,7 +168,9 @@ function select_poi(poi_name,record){
 				poi_flow_str+
 				'</table>';
 				var infowindow = new google.maps.InfoWindow({content:tmp_table});
-				if(json_obj.length<30){
+				
+//				if(json_obj.length<30){
+				if(false){
 					google.maps.event.addListener(marker, "mouseover", function(event) { 
 			        	infowindow.open(marker.get('map'), marker);
 			        });
@@ -183,6 +185,9 @@ function select_poi(poi_name,record){
 					    }else{
 					    	infowindow.open(marker.get('map'), marker);
 					    }
+			        });
+					google.maps.event.addListener(marker, "mouseout", function(event) { 
+			        	setTimeout(function () { infowindow.close(); }, 2000);
 			        });
 				}
 				if(record!="no_record"){
@@ -258,7 +263,8 @@ function select_poi_2(poi_name,record){
 				((json_obj[i].subtype!=null&&json_obj[i].subtype!='NULL')?'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>':"")+
 				'</table>';
 				var infowindow = new google.maps.InfoWindow({content:tmp_table});
-				if(json_obj.length<30){
+//				if(json_obj.length<30){
+				if(false){
 					google.maps.event.addListener(marker, "mouseover", function(event) { 
 			        	infowindow.open(marker.get('map'), marker);
 			        });
@@ -415,7 +421,7 @@ function select_BD(BD_name,record){
 							infowindow.open(bermudaTriangle.get('map'), infoMarker);
 							return;
 						} 
-						if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#env_analyse").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
+						if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#region_select").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
 							google.maps.event.trigger(map, 'click',event);
 						}else{
 							infowindow.open(bermudaTriangle.get('map'), infoMarker);
@@ -1389,7 +1395,6 @@ function country_POLY_for_chinaProvincial(node){
 }
 //11大麥克 
 function bigmac(node){
-	
 	if(!node.isSelected()){
 	 	var polygen = country_polygen.pop();
 	 	while(polygen != null){
@@ -1585,7 +1590,7 @@ function draw_region_select(polydiagram){
 						if($("#region_select").length==0 && $("#env_analyse").length==0){
 							return;
 						} 
-						if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#env_analyse").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
+						if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#region_select").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
 							google.maps.event.trigger(map, 'click',event);
 						}
 					});
@@ -1636,11 +1641,11 @@ function draw_env_analyse(points){
 			rs_circle.setMap(null);
 			infowindow.setMap(null);
 	    });
-		google.maps.event.addListener(rs_circle, "click", function(event) { 
+		google.maps.event.addListener(rs_circle, "click", function(event) {
 			if($("#region_select").length==0 && $("#env_analyse").length==0){
 				return;
-			} 
-			if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#env_analyse").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
+			}
+			if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#region_select").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
 				google.maps.event.trigger(map, 'click',event);
 			}
 		});
