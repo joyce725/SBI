@@ -305,7 +305,7 @@ var item_marker = function (speed, time, marker, circle) {
 <div class="content-wrap">
 	<div id='panel' style="display:none;"
 	onmouseover="$('#panel').css('left','150px');clearTimeout($('#panel').val());" 
-	tmp="$('#panel').val(setTimeout(function () { $('#panel').css('left','0px'); }, 800));" style="left:150px;">
+	onmouseout="$('#panel').val(setTimeout(function () { $('#panel').css('left','0px'); }, 800));">
 		<div id='tree' >
 		<script>var timer="";</script>
 		<ul id='pdf_layer' onmouseover='clearTimeout(timer);$("#pdf_layer").show();' 
@@ -314,9 +314,9 @@ var item_marker = function (speed, time, marker, circle) {
 			<li><div>Books</div></li>
 		</ul>
 		</div>
-		<div id='pin' style='position:absolute;top:5px;right:20px;display:none;'' class='on_it' 
+		<div id='pin' style='position:absolute;top:5px;right:20px;'' class='on_it' 
 				onclick='$("#pin").hide();$("#unpin").show();$("#panel").attr("tmp",$("#panel").attr("onmouseout"));$("#panel").attr("onmouseout","");'><img src='./refer_data/pin.png'></div>
-		<div id='unpin' style='position:absolute;top:5px;right:20px; class='on_it' 
+		<div id='unpin' style='position:absolute;top:5px;right:20px;display:none;' class='on_it' 
 				onclick='$("#unpin").hide();$("#pin").show();$("#panel").attr("onmouseout",$("#panel").attr("tmp"));'><img src='./refer_data/unpin.png'></div>
 		<div style='position:absolute;width:100%;bottom:5px;border-top:2px solid #aaa;padding:10px 0px 5px 0px;'><table><tr><td>&nbsp;&nbsp;透明度：</td><td><div id='opacity' style='width:160px;'></div></td></tr></table></div>
 	</div>
@@ -376,8 +376,8 @@ var item_marker = function (speed, time, marker, circle) {
 						預設：
 					</td>
 					<td colspan='2'>
-						<a id="val_speed" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>時速10公里</a>&nbsp;
-						<a id="val_time" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>花費30分鐘</a>&nbsp;
+						<a id="val_speed" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>時速4公里</a>&nbsp;
+						<a id="val_time" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>花費15分鐘</a>&nbsp;
 						之可達範圍
 					</td>
 				</tr>

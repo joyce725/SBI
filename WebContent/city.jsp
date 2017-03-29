@@ -36,9 +36,6 @@ table.accessHide {
 	position: absolute;
 	left: -999999px;
 }
-select{
-	min-width:360px;
-}
 /*sample alternate styling for info block on Pie Chart */
 /* .visualize-pie .visualize-info { top: -150px; border: 0; right: auto; left: 10px; padding: 0; background: none; } */
 /* .visualize-pie ul.visualize-title { font-weight: bold; border: 0; } */

@@ -117,7 +117,7 @@
 		background: url(../fancy-tree/skin-xp/bg.png) repeat;
 		transition: all .3s linear;
 		position:fixed;
-		left:150px;
+		left:0px;
 		top:96px; 
 		min-width:260px;
 		width:auto;

@@ -309,8 +309,8 @@ var all_markers={};
 						預設：
 					</td>
 					<td colspan='2'>
-						<a id="val_speed" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>時速10公里</a>&nbsp;
-						<a id="val_time" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>花費30分鐘</a>&nbsp;
+						<a id="val_speed" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>時速4公里</a>&nbsp;
+						<a id="val_time" style='color: #c33;text-decoration:underline;font-size:18px;font-weight: bold;'>花費15分鐘</a>&nbsp;
 						之可達範圍
 					</td>
 				</tr>
@@ -1020,7 +1020,7 @@ var all_markers={};
     </script>
     
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap">
-	</script> 
+	</script>
 	<script src="js/mapFunction.js"></script>
 	</div>
 </div>

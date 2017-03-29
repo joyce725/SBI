@@ -167,7 +167,7 @@ function select_poi(poi_name,record){
 				((json_obj[i].subtype!=null&&json_obj[i].subtype!='NULL')?'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>':"")+
 				poi_flow_str+
 				'</table>';
-				var infowindow = new google.maps.InfoWindow({content:tmp_table});
+				var infowindow = new google.maps.InfoWindow({content:tmp_table,disableAutoPan: true});
 				
 //				if(json_obj.length<30){
 				if(false){
@@ -262,7 +262,7 @@ function select_poi_2(poi_name,record){
 				'<tr><td>地址：</td><td>'+json_obj[i].addr+'</td></tr>'+
 				((json_obj[i].subtype!=null&&json_obj[i].subtype!='NULL')?'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>':"")+
 				'</table>';
-				var infowindow = new google.maps.InfoWindow({content:tmp_table});
+				var infowindow = new google.maps.InfoWindow({content:tmp_table,disableAutoPan: true});
 //				if(json_obj.length<30){
 				if(false){
 					google.maps.event.addListener(marker, "mouseover", function(event) { 
@@ -404,7 +404,7 @@ function select_BD(BD_name,record){
 						(json_obj[i].business_cost.length<2?"":'<tr><td>經營成本：</td><td>'+json_obj[i].business_cost+'</td></tr>')+
 						'</table>';
 				}
-				var infowindow = new google.maps.InfoWindow({content:tmp_table});
+				var infowindow = new google.maps.InfoWindow({content:tmp_table,disableAutoPan: true});
 		        var infoMarker = new google.maps.Marker({
 		            position: new google.maps.LatLng(json_obj[i].lat,json_obj[i].lng),
 		            icon: {
@@ -450,8 +450,12 @@ function select_BD(BD_name,record){
 
 // 4.開放資源功能
 function country_POLY_for_country_economy (year,type){
-	panTo( 8.0, 112.0);
-	smoothZoom(map, 4, map.getZoom());
+	if(!realMapData_have_initial){
+		panTo( 8.0, 112.0);
+		smoothZoom(map, 4, map.getZoom());
+		realMapData_have_initial=1;
+	}
+	
 	var polygen = country_polygen.pop();
 	while(polygen != null){
 		if (Wkt.isArray(polygen)) {
@@ -630,9 +634,13 @@ function country_economy(node,type){
 }
 
 //5.國家功能
+var realMapData_have_initial=0;
 function country_POLY_for_countryData (year,type){
-	panTo( 28.0, 130.0);
-	smoothZoom(map, 2, map.getZoom());
+	if(!realMapData_have_initial){
+		panTo( 28.0, 130.0);
+		smoothZoom(map, 2, map.getZoom());
+		realMapData_have_initial=1;
+	}
 	var polygen = country_polygen.pop();
 	while(polygen != null){
 		if (Wkt.isArray(polygen)) {
@@ -809,8 +817,11 @@ function countryData(node,type){//country_data
 
 //6.城市功能 
 function country_POLY_for_chinaCity (type){//country_polygen
-	panTo( 35.0, 100.0);
-	smoothZoom(map, 4, map.getZoom());
+	if(!realMapData_have_initial){
+		panTo( 35.0, 100.0);
+		smoothZoom(map, 4, map.getZoom());
+		realMapData_have_initial=1;
+	}
 	var polygen = country_polygen.pop();
 	while(polygen != null){
 		if (Wkt.isArray(polygen)) {
@@ -1162,7 +1173,7 @@ function country_POLY_for_city (node,city_name){
 				(json_obj[i].female==null?"":'<tr><td>女性：</td><td>'+json_obj[i].female+'%</td></tr>')+
 				'</table>';
 				
-				var infowindow = new google.maps.InfoWindow({content:tmp_table});
+				var infowindow = new google.maps.InfoWindow({content:tmp_table,disableAutoPan: true});
 		        var infoMarker = new google.maps.Marker({
 		            position: new google.maps.LatLng(json_obj[i].cY,json_obj[i].cX),
 		            icon: {
@@ -1299,7 +1310,8 @@ function SetPieTwoMarker(country, lat, lng, data1, data2, data1_desc, data2_desc
 function SetMarkerAttribute(marker, city, LatLng, msg) {
     var infowindow = new google.maps.InfoWindow({
         content: '<div style="width: 320px; height: 230px;">' + city + "</br></br>" + msg + '</div>',
-        position: LatLng
+        position: LatLng,
+        disableAutoPan: true
     });
 
     google.maps.event.addListener(marker, 'mouseover', function () {
@@ -1412,9 +1424,12 @@ function bigmac(node){
 	 	$("#shpLegend").hide();
 	 	return;
 	}
+	if(!realMapData_have_initial){
+		panTo( 28.0, 130.0);
+		smoothZoom(map, 2, map.getZoom());
+		realMapData_have_initial=1;
+	}
 	
-	panTo( 28.0, 130.0);
-	smoothZoom(map, 2, map.getZoom());
  	var polygen = country_polygen.pop();
  	while(polygen != null){
  		if (Wkt.isArray(polygen)) {
@@ -1558,7 +1573,7 @@ function draw_region_select(polydiagram){
     			var json_obj = $.parseJSON(result);
     			var timer;
     			$.each(json_obj,function(j, item) {
-    				var infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>區位選擇 - 第"+(i+1)+"名<br><a style='font-size:16px;'>"+BD_name+"</a></div>")});
+    				var infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>區位選擇 - 第"+(i+1)+"名<br><a style='font-size:16px;'>"+BD_name+"</a></div>"),disableAutoPan: true});
 	    			var bermudaTriangle = new google.maps.Polygon({
 						paths: json_obj[j].center,
 						strokeColor: '#FF0000',
@@ -1610,7 +1625,7 @@ function draw_env_analyse(points){
 		var rs_circle ; 
 		var timer ;
 //		infowindow = new google.maps.InfoWindow({content: ("<div style='padding:10px;'><table><tr><td>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</td><td><img src='./refer_data/delete.png' class='func' style='height:22px;' onclick='rs_marker.setMap(null);rs_circle.setMap(null);infowindow.setMap(null);alert();'></td></tr></div>")});
-		infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</div>")});
+		infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</div>"),disableAutoPan: true});
 		rs_marker = new google.maps.Marker({
 		    position: google_latlng,
 		    animation: google.maps.Animation.DROP,

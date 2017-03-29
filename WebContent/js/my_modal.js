@@ -197,17 +197,7 @@ function job_explanation(job_id){
 					},{
 						text : "結束情境流程",
 						click : function() {
-							$.ajax({
-								type : "POST",
-								url : "scenarioJob.do",
-								data : { 
-									action : "over_scenario",
-								},success : function(result) {
-									if(result=="success"){
-										location.replace(location);	
-									}
-								}
-							});
+							over_step();
 							$(this).dialog("close");
 						}
 					}]
@@ -218,7 +208,38 @@ function job_explanation(job_id){
 		$("#current_job_detail").dialog("open");
 	}
 }
-
+function over_step(){
+	$.ajax({
+		type : "POST",
+		url : "scenarioJob.do",
+		data : { 
+			action : "over_scenario",
+		},success : function(result) {
+			alert(result);
+			if(result=="success"){
+				history.go(0);
+				location.replace(location);	
+			}
+		}
+	});
+}
+function jump_step(job_id,goto_seq){
+	$.ajax({
+		type : "POST",
+		url : "scenarioJob.do",
+		data : { 
+			action : "jump_step",
+			scenario_job_id : job_id,
+			goto_flow : goto_seq
+		},success : function(result) {
+			alert(result);
+			if(result=="success"){
+				history.go(0);
+				location.replace(location);	
+			}
+		}
+	});
+}
 function scenario_record(category,result){
 	$.ajax({
 		type : "POST",

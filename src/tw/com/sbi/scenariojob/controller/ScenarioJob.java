@@ -167,7 +167,10 @@ public class ScenarioJob extends HttpServlet {
 				}
 	        }
 			
-			caseService.over_step(scenario_job_id,current_job.getNext_flow_id(),current_job.getFlow_seq(),"1",new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(new Date()));
+			caseService.over_step(scenario_job_id,
+					current_job.getNext_flow_id(),
+					current_job.getFlow_seq(),
+					"1",new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(new Date()));
 			logger.debug("[Output]: over_it");
 			response.getWriter().write("success");
 			
@@ -294,6 +297,56 @@ public class ScenarioJob extends HttpServlet {
 			response.getWriter().write(reverse_page);
 			request.getSession().setAttribute("scenario_job_page",reverse_page);
 			return;
+		}else if("jump_step".equals(action)){
+			String scenario_job_id=null2Str(request.getParameter("scenario_job_id"));
+			String goto_flow=null2Str(request.getParameter("goto_flow"));
+			String group_id = request.getSession().getAttribute("group_id").toString();
+			logger.debug("scenario_job_id: " + scenario_job_id);
+			logger.debug("goto_flow: " + goto_flow);
+			
+			ScenarioJobVO current_job = null;
+			caseService = new ScenarioService();
+			
+//			caseService.dealing_job_reverse(scenario_job_id);
+			
+			List<ScenarioJobVO> list = caseService.get_all_job(group_id);
+			for(int i = 0;i < list.size(); i ++){
+				if(scenario_job_id.equals(list.get(i).getJob_id())){
+					current_job = list.get(i);
+				}
+	        }
+			String set_flow_id="";
+			List<ScenarioJobVO> flow_list = caseService.get_scenario_child(current_job.getScenario_id());
+			for(int i = 0;i < flow_list.size(); i ++){
+				if(goto_flow.equals(flow_list.get(i).getFlow_seq())){
+					set_flow_id=flow_list.get(i).getFlow_id();
+				}
+	        }
+			if(Integer.parseInt(goto_flow) ==Integer.parseInt(current_job.getMax_flow_seq())){
+				caseService.over_step(scenario_job_id, set_flow_id, goto_flow, "1", new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(new Date()));
+			}else{
+				caseService.over_step(scenario_job_id, set_flow_id, goto_flow, "0", null);
+			}
+			
+			List<ScenarioResultVO> old_json_result = new Gson().fromJson(current_job.getResult(), new TypeToken<List<ScenarioResultVO>>() {}.getType());
+			logger.debug("before: "+old_json_result.size());
+			for( java.util.Iterator<ScenarioResultVO> result_item = old_json_result.listIterator(); result_item.hasNext(); ){
+				ScenarioResultVO currentElement = result_item.next();
+				if(Integer.parseInt(goto_flow)+1==Integer.parseInt(currentElement.getStep())){
+					result_item.remove();
+				}
+			}
+//			this.over_step(job_id, last_flow_id, last_flow_seq, "0", null);
+			String jsonStrList = new Gson().toJson(old_json_result);
+			caseService.dealing_job_update_result(scenario_job_id,jsonStrList);
+			
+			logger.debug("after: "+old_json_result.size());
+			
+//			logger.debug("[Output]: "+reverse_page);
+//			logger.debug("Set session: scenario_job_page : "+reverse_page);
+			response.getWriter().write("success");
+//			request.getSession().setAttribute("scenario_job_page",reverse_page);
+			return;
 		}
 	
 	}
@@ -338,6 +391,9 @@ public class ScenarioJob extends HttpServlet {
 		public String get_memo(String job_id){
 			return dao.get_memo(job_id);
 		}
+		public void dealing_job_update_result(String job_id,String json_result){
+			dao.dealing_job_update_result( job_id, json_result);
+		}
 	}
 
 	/*************************** 制定規章方法 ****************************************/
@@ -353,6 +409,7 @@ public class ScenarioJob extends HttpServlet {
 		public void dealing_job_reverse(String job_id);
 		public void set_memo(String job_id,String memo);
 		public String get_memo(String job_id);
+		public void dealing_job_update_result(String job_id,String json_result);
 	}
 	
 	/*************************** 操作資料庫 ****************************************/
@@ -384,6 +441,7 @@ public class ScenarioJob extends HttpServlet {
 				+ " WHERE tb_scenario_job.job_id = ? ";
 		private static final String get_memo_q = "SELECT * FROM tb_scenario_job where job_id = ?";
 		private static final String set_memo_q = "UPDATE tb_scenario_job SET memo = ? where job_id = ?";
+		
 		@Override
 		public List<ScenarioJobVO> get_all_job(String group_id){
 			List<ScenarioJobVO> list = new ArrayList<ScenarioJobVO>();

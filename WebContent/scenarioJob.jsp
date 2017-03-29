@@ -70,10 +70,11 @@ div.txt-justify:after {
 　display: inline-block;
 　width: 100%;
 }
+.choosed{
+	border:1px solid #f00;
+	background-color:#ddd;
+}
 </style>
-
-
-
 
 <script>
 var explane_txt_arr={"0":"<div style='height:180px;width:calc(50vw);text-align:center;line-height:160px;font-size:40px;'>請選擇情境</div>"};
@@ -146,11 +147,11 @@ var page_comparison={
 						+ '<td><div style="max-width:200px">' +json_obj[i].next_flow_name + '</div></td>'
 						+((item.finished == "1")?
 							('<td colspan="3" style="font-size:18px;text-align:center;">已於 '+item.finish_time+(json_obj[i].flow_seq==json_obj[i].max_flow_seq?' 完成<br>':' 中止<br>')
-							+ '<a class="btn btn-darkblue btn-update" job_content_title="'+job_content_title+'" result=\"'+print_table+'\" scenario_name="'+json_obj[i].scenario_name+'">內容</a>&nbsp;&nbsp;&nbsp;&nbsp;'
+							+ '<a class="btn btn-darkblue btn-update" cur_flow="'+json_obj[i].flow_seq+'"max_flow="'+json_obj[i].max_flow_seq+'" job_content_title="'+job_content_title+'" result=\"'+print_table+'\" scenario_name="'+json_obj[i].scenario_name+'">內容</a>&nbsp;&nbsp;&nbsp;&nbsp;'
 							+"<a class='btn btn-exec btn-delete' style='margin-top:5px;' value='"+item.finish_time+"' job_name='"+item.job_name+"' scenario_name='"+item.scenario_name+"'>刪除</a>" + '</td>'+
 							'</tr>')
-									
-						:('<td style="text-align:center;">' + '<a class="btn btn-darkblue btn-update" job_content_title="'+job_content_title+'" result=\"'+print_table+'\" scenario_name="'+json_obj[i].scenario_name+'">內容</a>'+ '</td>'
+								
+						:('<td style="text-align:center;">' + '<a class="btn btn-darkblue btn-update" cur_flow="'+json_obj[i].flow_seq+'"max_flow="'+json_obj[i].max_flow_seq+'" job_content_title="'+job_content_title+'" result=\"'+print_table+'\" scenario_name="'+json_obj[i].scenario_name+'">內容</a>'+ '</td>'
 						+ '<td style="text-align:center;">' + '<a class="btn btn-exec btn-delete" scenario_name="'+json_obj[i].scenario_name+'">刪除</a>'+ '</td>'
 						+ '<td style="text-align:center;">' + '<a class="btn btn-darkblue btn-next" value="'+json_obj[i].next_flow_page+'" next_flow_name="'+json_obj[i].next_flow_name +'" next_flow_explanation="'+json_obj[i].next_flow_explanation+'">下一步</a>'+ '</td>'
 						+'</tr>'));
@@ -180,6 +181,19 @@ var page_comparison={
 			$("#job_content_update tbody").html($(this).attr("result"));
 			
 			
+			var jump_array=""
+			for(var i=0;i<=$(this).attr("max_flow");i++){
+				if(i==$(this).attr("cur_flow")){
+					jump_array+='<a class="choosed step_number" title="目前步驟">'+(i+1)+'</a>&nbsp;&nbsp;';
+				}else if(i==$(this).attr("max_flow")){
+					jump_array+='<a class="step_number"href="#" title="完成流程" onclick=\'jump_step(\"'+$(this).closest("tr").attr("job_id")+'\",\"'+i+'\")\'>完成流程</a>&nbsp;&nbsp;';
+				}else{
+					jump_array+='<a class="step_number"href="#" title="重作步驟'+(i+1)+'" onclick=\'jump_step(\"'+$(this).closest("tr").attr("job_id")+'\",\"'+i+'\")\'>'+(i+1)+'</a>&nbsp;&nbsp;';
+				}
+			}
+			
+			$("#job_content_step").html(jump_array);
+			tooltip("step_number");
 			if($(this).attr("result").length>2){
 				$("#job_content_update").show();
 			}else{
@@ -494,6 +508,9 @@ var page_comparison={
 						<td>工作名稱:</td>
 						<td><input type='text' id='job_name_update'></td>
 						<td><button id='job_update_button' class='btn btn-exec'>修改名稱</button></td>
+					</tr>
+					<tr>
+						<td>情境步驟:</td><td id='job_content_step'></td>
 					</tr>
 					<tr>
 						<td id='job_content_title'>工作歷程:</td><td></td>
