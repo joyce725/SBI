@@ -20,68 +20,6 @@ String privilege = (String) request.getSession().getAttribute("privilege");
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 </head>
 <body>
-<script>
-	$(function() {
-		$("#logout").click(function(e) {
-			$.ajax({
-				type : "POST",
-				url : "login.do",
-				data : {
-					action : "logout"
-				},
-				success : function(result) {
-					top.location.href = "login.jsp";
-				}
-			});
-		});
-		
-		$( document ).ready(function() {
-
-			$("#ifm1").load(function() {
-				$(this).height( $(this).contents().find("body").height() );
-				$(this).width( $(this).contents().find("body").width() );
-			}); 
-			
-			$.ajax({
-				type : "POST",
-				url : "\/persona\/AdminLoginCtrl",
-				data : {
-					Action : "Api_Login",
-					Key : "A7BBMK3",
-					
-<%-- 					UserId : "<%=user_name%>", --%>
-<%-- 					Password : "<%=pwd%>" --%>
-					
-					UserId : "admin1",
-					GroupId  : "group1",
-					Password : "caf1a3dfb505ffed0d024130f58c5cfa"
-				},
-				success : function(result) {
-// 					console.log("persona success");
-// 					console.log(result);
-					//document.getElementById("page1").setAttribute('data', "\/persona\/Persona_ProductAdminCtrl?Action=Page1BL");
-// 					document.getElementById("page1").setAttribute('data', "\/marketplace\/MarketPlaceX_MiscCtrl?Action=Home&F=1&PageType=1B");
-// 					var page1 = document.getElementById("page1");
-// 					page1.data = "\/marketplace\/MarketPlaceX_MiscCtrl?Action=Home&F=1&PageType=1B";
-
-					var $iframe = $('#ifm1');
-// 					console.log("$iframe.length:" + $iframe.length);
-				    if ( $iframe.length > 0 ) {
-				        $iframe.attr('src', "\/persona\/Persona_OpportunityUser1Ctrl?Action=Page1BF");   
-				    }
-				    
-// 					var page1 = document.querySelector("page1"); 
-// 					page1.setAttribute("data", "\/persona\/Persona_OpportunityUser1Ctrl?Action=Page1BF");
-				},
-				error : function(result) {
-// 					console.log('error');
-				}
-			});
-		});
-	});
-	
-	
-</script>
 <input type="hidden" id="glb_menu" value='<%= menu %>' />
 <input type="hidden" id="glb_privilege" value="<%= privilege %>" />
 
@@ -106,14 +44,57 @@ String privilege = (String) request.getSession().getAttribute("privilege");
 			財團法人商業發展研究院  <span>電話(02)7707-4800 | 傳真(02)7713-3366</span> 
 		</footer>
 	</div>
-
-
+	
 	<div class="content-wrap">
 		<div class="search-result-wrap" style="height:100%">
-			<iframe id="ifm1" width="100%" height="100%" src="\/persona\/Persona_ProductAdminCtrl"></iframe>
-<!-- 		<object type="text/html" width="100%" height="100%" id="page1" data="\/persona\/Persona_ProductAdminCtrl"></object> -->
+			<iframe id="ifm1" width="100%" height="100%" src="/persona/Persona_ProductAdminCtrl"></iframe>
 		</div>
 	</div>
+
+<script>
+	$(function() {
+		$("#logout").click(function(e) {
+			$.ajax({
+				type : "POST",
+				url : "login.do",
+				data : {
+					action : "logout"
+				},
+				success : function(result) {
+					top.location.href = "login.jsp";
+				}
+			});
+		});
+
+		$("#ifm1").load(function() {
+			$(this).height( $(this).contents().find("body").height() );
+			$(this).width( $(this).contents().find("body").width() );
+		}); 
+		
+		$.ajax({
+			type : "POST",
+			url : "/persona/AdminLoginCtrl",
+			data : {
+				Action : "Api_Login",
+				Key : "A7BBMK3",
+				UserId : "admin1",
+				GroupId  : "group1",
+				Password : "caf1a3dfb505ffed0d024130f58c5cfa"
+			},
+			success : function(result) {
+				var $iframe = $('#ifm1');
+			    if ( $iframe.length > 0 ) {
+			        $iframe.attr('src', "/persona/Persona_OpportunityUser1Ctrl?Action=Page1BF");   
+			    }
+			},
+			error : function(result) {
+
+			}
+		});
+	});
+	
+	
+</script>
 
 </body>
 </html>
