@@ -330,18 +330,11 @@ var all_markers={};
 	    var rs_markers=[];
 	    
 	    function initMap() {
-			// Create the map.
 			map = new google.maps.Map(document.getElementById('map'), {
 				zoom: 7,
 				center: {lat: 23.900, lng: 121.000},
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
-// 			google.maps.event.addListener(map, 'center_changed', function(event) {
-// 				console.log(map.getCenter());
-// 				console.log(map.getZoom());
-// 				//map.setCenter(XXX);
-// 				//map.setZoom(XXX);
-// 			});
 			google.maps.event.addListener(map, 'click', function(event) {
 				if($("#env_analyse").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
 					
@@ -1005,16 +998,6 @@ var all_markers={};
 			    	$("#rr_pt").val().time=$("#time").val();
 		        	$("#rr_pt").val().circle.setRadius($("#speed").val()*$("#time").val()*1000*0.016667);
 		        }
-			});
-
-			$("#end").click(function(){
-// 				var result_str="['名稱','經度','緯度','半徑','時速','時間']";
-// 				$.each(rs_markers, function(i, node){
-// // 					result_str+="點"+(i+1);
-// 					result_str+=",['點"+(i+1)+"', '"+new Number(node.marker.position.lat()).toFixed(4)+"', '"+new Number(node.marker.position.lng()).toFixed(4)+"', '"+new Number(node.circle.radius).toFixed(4)+"m', '"+node.speed+"km/hr', '"+node.time+"mins']";
-// // 					result_str+="['點"+(i+1)+"', "+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
-// 				});
-// 				if(window.scenario_record){scenario_record("環域分析",result_str);}
 			});
 		});
     </script>

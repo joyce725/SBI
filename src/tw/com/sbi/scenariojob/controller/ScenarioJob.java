@@ -367,53 +367,6 @@ public class ScenarioJob extends HttpServlet {
 			caseService.dealing_job_update_result(scenario_job_id,jsonStrList);
 			logger.debug("[Output]: clear_success");
 			response.getWriter().write("clear_success");
-			
-			//Integer.parseInt(current_job.getFlow_seq())+1;
-			
-//			String goto_flow=null2Str(request.getParameter("goto_flow"));
-//			String group_id = request.getSession().getAttribute("group_id").toString();
-//			logger.debug("scenario_job_id: " + scenario_job_id);
-//			logger.debug("goto_flow: " + goto_flow);
-//			
-//			ScenarioJobVO current_job = null;
-//			caseService = new ScenarioService();
-//			
-//			List<ScenarioJobVO> list = caseService.get_all_job(group_id);
-//			for(int i = 0;i < list.size(); i ++){
-//				if(scenario_job_id.equals(list.get(i).getJob_id())){
-//					current_job = list.get(i);
-//				}
-//	        }
-//			String set_flow_id="";
-//			String set_flow_page="";
-//			List<ScenarioJobVO> flow_list = caseService.get_scenario_child(current_job.getScenario_id());
-//			for(int i = 0;i < flow_list.size(); i ++){
-//				if(goto_flow.equals(flow_list.get(i).getFlow_seq())){
-//					set_flow_id=flow_list.get(i).getFlow_id();
-//				}
-//				if(goto_flow.equals((Integer.parseInt(flow_list.get(i).getFlow_seq())-1)+"")){
-//					set_flow_page=flow_list.get(i).getPage();
-//				}
-//	        }
-//			if(Integer.parseInt(goto_flow) ==Integer.parseInt(current_job.getMax_flow_seq())){
-//				caseService.over_step(scenario_job_id, set_flow_id, goto_flow, "1", new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(new Date()));
-//			}else{
-//				caseService.over_step(scenario_job_id, set_flow_id, goto_flow, "0", null);
-//			}
-//			
-//			List<ScenarioResultVO> old_json_result = new Gson().fromJson(current_job.getResult(), new TypeToken<List<ScenarioResultVO>>() {}.getType());
-//			for( java.util.Iterator<ScenarioResultVO> result_item = old_json_result.listIterator(); result_item.hasNext(); ){
-//				ScenarioResultVO currentElement = result_item.next();
-//				if(Integer.parseInt(goto_flow)+1==Integer.parseInt(currentElement.getStep())
-//						&&!"POI.jsp".equals(set_flow_page)){
-//					result_item.remove();
-//				}
-//			}
-//			String jsonStrList = new Gson().toJson(old_json_result);
-//			caseService.dealing_job_update_result(scenario_job_id,jsonStrList);
-//			logger.debug("[Output]: jump_to_success");
-//			response.getWriter().write("jump_to_success");
-//			return;
 		}
 	
 	}
