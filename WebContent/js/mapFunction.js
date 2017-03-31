@@ -106,14 +106,29 @@ function select_poi(poi_name,record){
 		all_markers[poi_name]=null;
 		return;
 	}
-	if(record!="no_record"){
-		var this_node;
-		var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
-		sibling_node.forEach(function(sib_node) {
-			if(sib_node.title==poi_name){
-				this_node=sib_node;
-			}
-		});
+	//$("#tree").fancytree("getTree").getNodeByKey(n);
+//	.setSelected(true);
+	
+	var this_node;
+	if($("#tree").length>0){
+		if(record!="no_record"){
+			var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+			sibling_node.forEach(function(sib_node) {
+				if(sib_node.title==poi_name){
+					this_node=sib_node;
+					
+				}
+			});
+		}else{
+			$("#tree").fancytree("getTree").visit(function(node){
+				if(node.title==poi_name){
+					this_node=node;
+					this_node.setActive();
+					this_node.setSelected(true);
+				}
+			});
+		}
+			
 		$(this_node.span.childNodes[1]).addClass('loading');
 		if(!$(this_node.span.childNodes[1]).hasClass('poi')){
 			$(this_node.span.childNodes[1]).addClass('poi');
@@ -121,8 +136,7 @@ function select_poi(poi_name,record){
 			$(this_node.span.childNodes[1]).attr('scenario_lng',new Number(map.getCenter().lng()).toFixed(4));
 			$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
 		}
-	} 
-	
+	}
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
@@ -139,7 +153,7 @@ function select_poi(poi_name,record){
 			if(result=="fail!!!!!")return;
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
-			if(record!="no_record"){
+			if($("#tree").length>0){
 				all_markers[poi_name]=[];
 			}
 			if(json_obj.length>1000){
@@ -190,11 +204,11 @@ function select_poi(poi_name,record){
 			        	setTimeout(function () { infowindow.close(); }, 2000);
 			        });
 				}
-				if(record!="no_record"){
+				if($("#tree").length>0){
 					all_markers[poi_name].push(marker);
 				}
 			});
-			if(record!="no_record"){
+			if($("#tree").length>0){
 				$(this_node.span.childNodes[1]).removeClass('loading');
 			}
 			console.log(tmp_str);
@@ -226,6 +240,37 @@ function select_poi_2(poi_name,record){
 			$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
 		}
 	} 
+	
+	var this_node;
+	if($("#tree").length>0){
+		if(record!="no_record"){
+			var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+			sibling_node.forEach(function(sib_node) {
+				if(sib_node.title=="所有"+poi_name){
+					this_node=sib_node;
+				}
+			});
+		}else{
+			$("#tree").fancytree("getTree").visit(function(node){
+				if(node.title=="所有"+poi_name){
+					this_node=node;
+					this_node.setActive();
+					this_node.setSelected(true);
+				}
+			});
+		}
+			
+		$(this_node.span.childNodes[1]).addClass('loading');
+		if(!$(this_node.span.childNodes[1]).hasClass('poi2')){
+			$(this_node.span.childNodes[1]).addClass('poi2');
+			$(this_node.span.childNodes[1]).attr('scenario_lat',new Number(map.getCenter().lat()).toFixed(4));
+			$(this_node.span.childNodes[1]).attr('scenario_lng',new Number(map.getCenter().lng()).toFixed(4));
+			$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
+		}
+	}
+	
+	
+	
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
@@ -241,7 +286,7 @@ function select_poi_2(poi_name,record){
 			if(result=="fail!!!!!")return;
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
-			if(record!="no_record"){
+			if($("#tree").length>0){
 				all_markers[poi_name]=[];
 			}
 			if(json_obj.length>1000){
@@ -281,11 +326,11 @@ function select_poi_2(poi_name,record){
 				google.maps.event.addListener(marker, "mouseout", function(event) { 
 		        	setTimeout(function () { infowindow.close(); }, 2000);
 		        });
-				if(record!="no_record"){
+				if($("#tree").length>0){
 					all_markers[poi_name].push(marker);
 				}
 			});
-			if(record!="no_record"){
+			if($("#tree").length>0){
 				$(this_node.span.childNodes[1]).removeClass('loading');
 			}
 		}
@@ -301,14 +346,28 @@ function select_BD(BD_name,record){
 		all_BDs[BD_name]=null;
 		return;
 	}
-	if(record!="no_record"){
+	if($("#tree").length>0){
 		var this_node;
-		var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
-		sibling_node.forEach(function(sib_node) {
-			if(sib_node.title==BD_name){
-				this_node=sib_node;
-			}
-		});
+		if(record!="no_record"){
+			var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+			sibling_node.forEach(function(sib_node) {
+				if(sib_node.title==BD_name){
+					this_node=sib_node;
+				}
+			});
+		}else{
+			$("#tree").fancytree("getTree").visit(function(node){
+				if(node.title==BD_name){
+					this_node=node;
+					this_node.setActive();
+					this_node.setSelected(true);
+				}
+			});
+		}
+		
+		
+		
+		
 		$(this_node.span.childNodes[1]).addClass('loading');
 		if(!$(this_node.span.childNodes[1]).hasClass('BD')){
 			$(this_node.span.childNodes[1]).addClass('BD');
@@ -324,7 +383,7 @@ function select_BD(BD_name,record){
 		success : function(result) {
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
-			if(record!="no_record"){
+			if($("#tree").length>0){
 				all_BDs[BD_name]=[];
 			}
 			$.each(json_obj,function(i, item) {
@@ -437,11 +496,11 @@ function select_BD(BD_name,record){
 				google.maps.event.addListener(infowindow, "closeclick", function () {
 		            infoMarker.setMap(null);
 		        });
-				if(record!="no_record"){
+				if($("#tree").length>0){
 					all_BDs[BD_name].push(bermudaTriangle);
 				}
 			});
-			if(record!="no_record"){
+			if($("#tree").length>0){
 				$(this_node.span.childNodes[1]).removeClass('loading');
 			}
 		}
@@ -1618,52 +1677,118 @@ function draw_region_select(polydiagram){
 function draw_env_analyse(points){
 	var json_obj = eval(points);
 	$.each(json_obj,function(i, item) {
-		var order = item[0].replace("點","");
-		var google_latlng = new google.maps.LatLng( item[1], item[2]);
-		var infowindow ;
-		var rs_marker ;
-		var rs_circle ; 
-		var timer ;
-//		infowindow = new google.maps.InfoWindow({content: ("<div style='padding:10px;'><table><tr><td>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</td><td><img src='./refer_data/delete.png' class='func' style='height:22px;' onclick='rs_marker.setMap(null);rs_circle.setMap(null);infowindow.setMap(null);alert();'></td></tr></div>")});
-		infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</div>"),disableAutoPan: true});
-		rs_marker = new google.maps.Marker({
-		    position: google_latlng,
-		    animation: google.maps.Animation.DROP,
-		    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
-		    map: map,
-		    draggable:true,
-		    title: ("--分析點"+order+"--")
-		});
-		rs_circle = new google.maps.Circle({
-			  strokeColor: '#FF0000',
-			  strokeOpacity: 0.5,
-			  strokeWeight: 2,
-			  fillColor: '#FF8700',
-			  fillOpacity: 0.2,
-			  map: map,
-			  center: google_latlng,
-			  radius: parseInt(item[3].replace("m",""),10)
-		});
-		google.maps.event.addListener(rs_marker, "mouseover", function(event) { 
-	    	infowindow.open(map, rs_marker);
-	    	clearTimeout(timer);
-	    });
-		google.maps.event.addListener(rs_marker, "mouseout", function(event) { 
-	    	timer = setTimeout(function () { infowindow.close(); }, 1500);
-	    });
-		google.maps.event.addListener(infowindow, "closeclick", function(event) { 
-			rs_marker.setMap(null);
-			rs_circle.setMap(null);
-			infowindow.setMap(null);
-	    });
-		google.maps.event.addListener(rs_circle, "click", function(event) {
-			if($("#region_select").length==0 && $("#env_analyse").length==0){
-				return;
+		if(i!=0){
+			var order = item[0].replace("點","");
+			var google_latlng = new google.maps.LatLng( item[1], item[2]);
+			var infowindow,rs_marker,rs_circle,timer;
+	//		infowindow = new google.maps.InfoWindow({content: ("<div style='padding:10px;'><table><tr><td>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</td><td><img src='./refer_data/delete.png' class='func' style='height:22px;' onclick='rs_marker.setMap(null);rs_circle.setMap(null);infowindow.setMap(null);alert();'></td></tr></div>")});
+			infowindow = new google.maps.InfoWindow({content: ("<div style='padding:6px;'>環域分析 - 點"+order+"<br>時速："+item[4]+"<br>時間："+item[5]+"</div>"),disableAutoPan: true});
+			rs_marker = new google.maps.Marker({
+			    position: google_latlng,
+			    animation: google.maps.Animation.DROP,
+			    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
+			    map: map,
+			    draggable:true,
+			    title: ("--分析點"+order+"--")
+			});
+			rs_circle = new google.maps.Circle({
+				  strokeColor: '#FF0000',
+				  strokeOpacity: 0.5,
+				  strokeWeight: 2,
+				  fillColor: '#FF8700',
+				  fillOpacity: 0.2,
+				  map: map,
+				  center: google_latlng,
+				  radius: parseInt(item[3].replace("m",""),10)
+			});
+			if(window.rs_markers){
+				var marker_obj = new item_marker( parseInt(item[4].replace("km/hr","")), parseInt(item[5].replace("mins","")), rs_marker, rs_circle);
+		        rs_markers.push(marker_obj);
+			
+			
+			
+				google.maps.event.addListener(rs_marker, "click", function(event) { 
+					$.each(rs_markers, function(i, node){
+						rs_markers[i].marker.setAnimation(null);
+					});
+					$("#rr_pt").css("font-size","38px");
+					setTimeout(function(){$("#rr_pt").css("font-size","16px");},1000);
+					$("#rr_pt").css("color","red");
+					setTimeout(function(){$("#rr_pt").css("color","black");},1000);
+					$("#rr_pt").html(order);
+					$("#rr_pt").val(marker_obj);
+					$("#speed").val(marker_obj.speed);
+					$("#time").val(marker_obj.time);
+					$('#val_time').html("花費"+marker_obj.time+"分鐘");
+					$('#val_speed').html("時速"+marker_obj.speed+"公里");
+					$('#slider').slider('option', 'value', marker_obj.time);
+		        }); 
+		        
+			    google.maps.event.addListener(rs_marker, 'drag', function(marker){
+			    	rs_circle.setCenter(marker.latLng);
+			    });
+			    
+			    google.maps.event.addListener(rs_marker, 'dragstart', function(marker){
+			    	rs_marker.setAnimation(null);
+			    	$.each(rs_markers, function(i, node){
+						rs_markers[i].marker.setAnimation(null);
+					});
+					$("#rr_pt").css("font-size","38px");
+					setTimeout(function(){$("#rr_pt").css("font-size","16px");},1000);
+					$("#rr_pt").css("color","red");
+					setTimeout(function(){$("#rr_pt").css("color","black");},1000);
+					$("#rr_pt").html(order);
+					$("#rr_pt").val(marker_obj);
+					$("#speed").val(marker_obj.speed);
+					$("#time").val(marker_obj.time);
+					$('#slider').slider('option', 'value', marker_obj.time);
+			    });
 			}
-			if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#region_select").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
-				google.maps.event.trigger(map, 'click',event);
-			}
-		});
+			
+			google.maps.event.addListener(rs_marker, "mouseover", function(event) { 
+		    	infowindow.open(map, rs_marker);
+		    	clearTimeout(timer);
+		    });
+			google.maps.event.addListener(rs_marker, "mouseout", function(event) { 
+		    	timer = setTimeout(function () { infowindow.close(); }, 1500);
+		    });
+			google.maps.event.addListener(infowindow, "closeclick", function(event) { 
+				rs_marker.setMap(null);
+				rs_circle.setMap(null);
+				infowindow.setMap(null);
+		    });
+			google.maps.event.addListener(rs_circle, "click", function(event) {
+				if($("#region_select").length==0 && $("#env_analyse").length==0){
+					return;
+				}
+				if(( ($("#env_analyse").length!=0&&$("#env_analyse").dialog("isOpen")) ||($("#region_select").length!=0&&$("#region_select").dialog("isOpen")) )&& $("#draw_circle").css("display")=="none"){
+					google.maps.event.trigger(map, 'click',event);
+				}
+			});
+		}
 	});
 	return ;
+}
+//這個function還沒用到 有空再改寫
+function a_new_env_marker(env_lat,env_lng,order,info_msg,env_v,env_t){
+	
+	var google_latlng = new google.maps.LatLng( env_lat, env_lng);
+	var rs_marker = new google.maps.Marker({
+	    position: google_latlng,
+	    animation: google.maps.Animation.DROP,
+	    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
+	    map: map,
+	    draggable:true,
+	    title: ("--分析點"+order+"--")
+	});
+	var rs_circle = new google.maps.Circle({
+		  strokeColor: '#FF0000',
+		  strokeOpacity: 0.5,
+		  strokeWeight: 2,
+		  fillColor: '#FF8700',
+		  fillOpacity: 0.2,
+		  map: map,
+		  center: google_latlng,
+		  radius: parseInt(item[3].replace("m",""),10)
+	});
 }

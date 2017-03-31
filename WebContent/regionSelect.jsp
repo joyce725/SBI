@@ -1008,13 +1008,13 @@ var all_markers={};
 			});
 
 			$("#end").click(function(){
-				var result_str="['名稱','經度','緯度','半徑','時速','時間']";
-				$.each(rs_markers, function(i, node){
-// 					result_str+="點"+(i+1);
-					result_str+=",['點"+(i+1)+"', '"+new Number(node.marker.position.lat()).toFixed(4)+"', '"+new Number(node.marker.position.lng()).toFixed(4)+"', '"+new Number(node.circle.radius).toFixed(4)+"m', '"+node.speed+"km/hr', '"+node.time+"mins']";
-// 					result_str+="['點"+(i+1)+"', "+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
-				});
-				if(window.scenario_record){scenario_record("環域分析",result_str);}
+// 				var result_str="['名稱','經度','緯度','半徑','時速','時間']";
+// 				$.each(rs_markers, function(i, node){
+// // 					result_str+="點"+(i+1);
+// 					result_str+=",['點"+(i+1)+"', '"+new Number(node.marker.position.lat()).toFixed(4)+"', '"+new Number(node.marker.position.lng()).toFixed(4)+"', '"+new Number(node.circle.radius).toFixed(4)+"m', '"+node.speed+"km/hr', '"+node.time+"mins']";
+// // 					result_str+="['點"+(i+1)+"', "+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
+// 				});
+// 				if(window.scenario_record){scenario_record("環域分析",result_str);}
 			});
 		});
     </script>

@@ -18,11 +18,32 @@
 <script src="refer_data/js/wicket-gmap3.js"></script>
 <script src="js/mapFunction.js"></script>
 
-	<style>
-		#region_select,#warning{
-			font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
-		}
-	</style>
+<style>
+	#region_select,#warning{
+		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
+	}
+	#search-box-input{
+		position: fixed;
+		left: 140px;
+		top: 62px;
+		width: 300px;
+		box-shadow:  0 2px 6px rgba(0, 0, 0, 0.3);
+	}
+	#search-box-input-view{
+		position: fixed;
+		left: 140px;
+		top: 62px;
+		width: 300px;
+		box-shadow:  0 2px 6px rgba(0, 0, 0, 0.3);
+		z-index:2;
+	}
+	#search-box-enter{
+		position: fixed;
+		left: 450px;
+		top: 66px;
+		box-shadow:  0 2px 6px rgba(0, 0, 0, 0.3);
+	}
+</style>
 <script>
 var result="";
 var map;
@@ -68,6 +89,7 @@ var item_marker = function (speed, time, marker, circle) {
 }
 
 	$(function(){
+		$("body").append("<div id='msgAlert'></div>")
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
 		$.ajax({
 			type : "POST",
@@ -288,21 +310,16 @@ var item_marker = function (speed, time, marker, circle) {
 		});
 	    $("#warning").show();
         $("#pdf_layer").menu();
-			$("#end").click(function(){
-				var result_str="['名稱','經度','緯度','半徑','時速','時間']";
-				$.each(rs_markers, function(i, node){
-// 					result_str+="點"+(i+1);
-					result_str+=",['點"+(i+1)+"', '"+new Number(node.marker.position.lat()).toFixed(4)+"', '"+new Number(node.marker.position.lng()).toFixed(4)+"', '"+new Number(node.circle.radius).toFixed(4)+"m', '"+node.speed+"km/hr', '"+node.time+"mins']";
-// 					result_str+="['點"+(i+1)+"', "+node.marker.position.lat()+", "+node.marker.position.lng()+", "+node.circle.radius+"m, "+node.speed+"km/hr, "+node.time+"mins]";
-				});
-				if(window.scenario_record){scenario_record("環域分析",result_str);}
-			});
 	});
 	
 </script>
 
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
+	<input type='text' id='search-box-input' placeholder="欲查詢地址">
+	<input type='text' id='search-box-input-view' placeholder="輸入欲查詢地址">
+	
+	<a class='btn btn-primary' id='search-box-enter'>查詢</a>
 	<div id='panel' style="display:none;"
 	onmouseover="$('#panel').css('left','150px');clearTimeout($('#panel').val());" 
 	onmouseout="$('#panel').val(setTimeout(function () { $('#panel').css('left','0px'); }, 800));">
@@ -464,7 +481,8 @@ var item_marker = function (speed, time, marker, circle) {
 			});
 			google.maps.event.addListener(map, 'click', function(event) {
 				if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
-					if(rs_markers.length>=5){alert("最多五個點");return;}
+					
+					if(rs_markers.length>=5){warningMsg('警告', "最多五個點");return;}
 					var order=(rs_markers.length+1)+"";
 					var rs_marker = new google.maps.Marker({
 					    position: event.latLng,
@@ -507,7 +525,6 @@ var item_marker = function (speed, time, marker, circle) {
 						$('#val_time').html("花費"+marker_obj.time+"分鐘");
 						$('#val_speed').html("時速"+marker_obj.speed+"公里");
 						$('#slider').slider('option', 'value', marker_obj.time);
-// 						rs_marker.setAnimation(google.maps.Animation.BOUNCE);
 			        }); 
 			        
 				    google.maps.event.addListener(rs_marker, 'drag', function(marker){
@@ -528,16 +545,294 @@ var item_marker = function (speed, time, marker, circle) {
 						$("#time").val(marker_obj.time);
 						$('#slider').slider('option', 'value', marker_obj.time);
 				    });
-				    google.maps.event.addListener(rs_marker, 'dragend', function(marker){
-// 				    	rs_marker.setAnimation(google.maps.Animation.BOUNCE);
-				    });
 				}
 			});
 			trafficLayer = new google.maps.TrafficLayer();
 			transitLayer = new google.maps.TransitLayer();
+			
+			
+			var input = document.getElementById('search-box-input');
+			var autocomplete = new google.maps.places.Autocomplete(input);
+			autocomplete.bindTo('bounds', map);
+			
+			$("#search-box-input-view").change(function(e) {
+				$("#search-box-input").val($("#search-box-input-view").val());
+			});
+			$("#search-box-input-view").keypress(function(e) {
+				if(e.which == 13) {
+			    	e.preventDefault();
+			    	$("#search-box-enter").trigger("click");
+			    }else{
+			    	$("#search-box-input").val($("#search-box-input-view").val());
+			    }
+			});
+			
+			$("#search-box-enter").click(function(e){
+				e.preventDefault();
+				var search_str = $("#search-box-input-view").val();//"";
+				var str_to_place_service = new google.maps.places.AutocompleteService();
+				str_to_place_service.getPlacePredictions({
+					    input: search_str,
+					    offset: search_str.length
+					}, function listentoresult(list, status) {
+						if (status != google.maps.places.PlacesServiceStatus.OK || list==null ) {
+							warningMsg('警告', "查無結果請輸入更詳細關鍵字");
+				            return;
+				    	}
+						if(list[0].description.length-search_str.length>4){
+							warningMsg('警告', ("您搜尋的地點或許是: "+list[0].description));
+							$("#search-box-input").val(list[0].description);
+							$("#search-box-input-view").val(list[0].description);
+						}
+						var place_to_latlng_service = new google.maps.places.PlacesService(map);
+						place_to_latlng_service.getDetails({ 
+								placeId: list[0].place_id
+							}, function(place, status) {
+								if (status == google.maps.places.PlacesServiceStatus.OK) {
+									address = [
+				 					    (place.address_components[0] && place.address_components[0].short_name || ''),
+				 					    (place.address_components[1] && place.address_components[1].short_name || ''),
+				 					    (place.address_components[2] && place.address_components[2].short_name || '')
+				 					  ].join(' ');
+									if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+										if(rs_markers.length>=5){
+											warningMsg('警告', "最多五個點");
+											return;
+										}
+										var order=(rs_markers.length+1)+"";
+										var rs_marker = new google.maps.Marker({
+										    position: place.geometry.location,
+										    animation: google.maps.Animation.DROP,
+										    icon: 'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
+										    map: map,
+										    draggable:true,
+										    title: ("--分析點"+order+"--")
+										});
+										var rs_circle = new google.maps.Circle({
+											  strokeColor: '#FF0000',
+											  strokeOpacity: 0.5,
+											  strokeWeight: 2,
+											  fillColor: '#FF8700',
+											  fillOpacity: 0.2,
+											  map: map,
+											  center: place.geometry.location,
+											  radius: 0 
+										});
+										var marker_obj = new item_marker( 4, 15, rs_marker, rs_circle);
+										
+										$("#rr_pt").html(order);
+										$("#rr_pt").val(marker_obj);
+										$("#speed").val(marker_obj.speed);
+										$("#time").val(marker_obj.time);
+										$('#env_slider').slider('option', 'value', marker_obj.time);
+								        rs_markers.push(marker_obj);
+
+										google.maps.event.addListener(rs_marker, "click", function(event) { 
+											$.each(rs_markers, function(i, node){
+												rs_markers[i].marker.setAnimation(null);
+											});
+											$("#rr_pt").css("font-size","38px");
+											setTimeout(function(){$("#rr_pt").css("font-size","16px");},1000);
+											$("#rr_pt").css("color","red");
+											setTimeout(function(){$("#rr_pt").css("color","black");},1000);
+											$("#rr_pt").html(order);
+											$("#rr_pt").val(marker_obj);
+											$("#speed").val(marker_obj.speed);
+											$("#time").val(marker_obj.time);
+											$('#val_time').html("花費"+marker_obj.time+"分鐘");
+											$('#val_speed').html("時速"+marker_obj.speed+"公里");
+											$('#env_slider').slider('option', 'value', marker_obj.time);
+								        }); 
+								        
+									    google.maps.event.addListener(rs_marker, 'drag', function(marker){
+									    	rs_circle.setCenter(marker.latLng);
+									    });
+
+									    google.maps.event.addListener(rs_marker, 'dragstart', function(marker){
+									    	rs_marker.setAnimation(null);
+									    	$.each(rs_markers, function(i, node){
+												rs_markers[i].marker.setAnimation(null);
+											});
+											$("#rr_pt").css("font-size","38px");
+											setTimeout(function(){$("#rr_pt").css("font-size","16px");},1000);
+											$("#rr_pt").css("color","red");
+											setTimeout(function(){$("#rr_pt").css("color","black");},1000);
+											$("#rr_pt").html(order);
+											$("#rr_pt").val(marker_obj);
+											$("#speed").val(marker_obj.speed);
+											$("#time").val(marker_obj.time);
+											$('#env_slider').slider('option', 'value', marker_obj.time);
+									    });
+										
+									}else{
+										//只放info
+										var infowindow = new google.maps.InfoWindow({
+											content: ("<div style='padding:6px;'><strong>" + place.name + "</strong><br>" + address+"</div>"),
+											disableAutoPan: true
+										});
+										var marker = new google.maps.Marker({
+										    position: place.geometry.location,
+										    animation: google.maps.Animation.DROP,
+										    icon: null,//'http://maps.google.com/mapfiles/kml/paddle/' + order + '.png',
+										    map: map,
+										    draggable:true,
+// 										    title: ("--分析點"+order+"--")
+										});
+										map.setCenter(place.geometry.location);
+				 					    map.setZoom(13);
+										marker.setVisible(false);
+										infowindow.open(map, marker);
+										
+									}
+								}
+						});
+				});
+				return ;
+			});
+// 				if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+// 					alert('123');
+// 				}else{
+// 					alert('456');
+// 					var infowindow = new google.maps.InfoWindow();
+// 					var marker = new google.maps.Marker({
+// 	 				    map: map,
+// 	 				    anchorPoint: new google.maps.Point(0, -29)
+// 	 				});
+// 					infowindow.close();
+// 					marker.setVisible(false);
+// 					var place = autocomplete.getPlace();
+// 					console.log(place);
+// 					if(place==null){
+// 						alert("請選擇列表中任一地點");
+// 					}
+// 					if (!place.geometry) {
+// 					  window.alert("Autocomplete's returned place contains no geometry");
+// 					  return;
+// 					}
+// 					if (place.geometry.viewport) {
+// 					  map.fitBounds(place.geometry.viewport);
+// 					} else {
+// 					  map.setCenter(place.geometry.location);
+// 					  map.setZoom(15); 
+// 					}
+// 					marker.setIcon(null);
+// 					marker.setPosition(place.geometry.location);
+// 					marker.setVisible(true);
+
+// 					var address = '';
+// 					if (place.address_components) {
+// 					  address = [
+// 					    (place.address_components[0] && place.address_components[0].short_name || ''),
+// 					    (place.address_components[1] && place.address_components[1].short_name || ''),
+// 					    (place.address_components[2] && place.address_components[2].short_name || '')
+// 					  ].join(' ');
+// 					}
+					
+// 					infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+// 					infowindow.open(map, marker);
+// 				}
+			
+// 			if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+				
+// 			}else{
+// 				var infowindow = new google.maps.InfoWindow();
+// 				var marker = new google.maps.Marker({
+// 				    map: map,
+// 				    anchorPoint: new google.maps.Point(0, -29)
+// 				});
+// 				autocomplete.setTypes(['address']);
+// 					autocomplete.addListener('place_changed', function() {
+// 					  infowindow.close();
+// 					  marker.setVisible(false);
+// 					  var place = autocomplete.getPlace();
+// 					  if (!place.geometry) {
+// 					    window.alert("Autocomplete's returned place contains no geometry");
+// 					    return;
+// 					  }
+// 					  // If the place has a geometry, then present it on a map.
+// 					  if (place.geometry.viewport) {
+// 					    map.fitBounds(place.geometry.viewport);
+// 					  } else {
+// 					    map.setCenter(place.geometry.location);
+// 					    map.setZoom(15); 
+// 					  }
+// 					  marker.setIcon(null);
+// 	// 				  marker.setIcon(/** @type {google.maps.Icon} */({
+// 	// 				    url: place.icon,
+// 	// 				    size: new google.maps.Size(71, 71),
+// 	// 				    origin: new google.maps.Point(0, 0),
+// 	// 				    anchor: new google.maps.Point(17, 34),
+// 	// 				    scaledSize: new google.maps.Size(35, 35)
+// 	// 				  }));
+// 					  marker.setPosition(place.geometry.location);
+// 					  marker.setVisible(true);
+					
+// 					  var address = '';
+// 					  if (place.address_components) {
+// 					    address = [
+// 					      (place.address_components[0] && place.address_components[0].short_name || ''),
+// 					      (place.address_components[1] && place.address_components[1].short_name || ''),
+// 					      (place.address_components[2] && place.address_components[2].short_name || '')
+// 					    ].join(' ');
+// 					  }
+					
+// 					  infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+// 					  infowindow.open(map, marker);
+// 					});
+// 				}
+
+// 			var input = document.getElementById('search-box-input');
+// 	    	var searchBox = new google.maps.places.SearchBox(input);
+// 	    	map.addListener('bounds_changed', function() {
+// 			    searchBox.setBounds(map.getBounds());
+// 			});
+// 			searchBox.addListener('places_changed', function() {
+// 			    var places = searchBox.getPlaces();
+// 			    console.log("789");
+// 			    if (places.length == 0) {
+// 			      return;
+// 			    }
+
+// 			    // Clear out the old markers.
+// 			    markers.forEach(function(marker) {
+// 			      marker.setMap(null);
+// 			    });
+// 			    markers = [];
+
+// 			    // For each place, get the icon, name and location.
+// 			    var bounds = new google.maps.LatLngBounds();
+// 			    places.forEach(function(place) {
+// 			      var icon = {
+// 			        url: place.icon,
+// 			        size: new google.maps.Size(71, 71),
+// 			        origin: new google.maps.Point(0, 0),
+// 			        anchor: new google.maps.Point(17, 34),
+// 			        scaledSize: new google.maps.Size(25, 25)
+// 			      };
+
+// 			      // Create a marker for each place.
+// 			      markers.push(new google.maps.Marker({
+// 			        map: map,
+// 			        icon: icon,
+// 			        title: place.name,
+// 			        position: place.geometry.location
+// 			      }));
+
+// 			      if (place.geometry.viewport) {
+// 			        // Only geocodes have viewport.
+// 			        bounds.union(place.geometry.viewport);
+// 			      } else {
+// 			        bounds.extend(place.geometry.location);
+// 			      }
+// 			    });
+// 			    map.fitBounds(bounds);
+// 			  });
+			
+			
    		}
+    
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8QEQE4TX2i6gpGIrGbTsrGrRPF23xvX4&signed_in=true&libraries=places&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap"></script>
 	<div id='picture' style='position:fixed;left:10%;top:20%;z-index:-1;'ondblclick='$("#picture").css("z-index","-1");'></div>
 	</div>
 </div>

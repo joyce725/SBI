@@ -181,14 +181,16 @@ var page_comparison={
 			$("#job_content_update tbody").html($(this).attr("result"));
 			
 			
-			var jump_array=""
+			var jump_array="";
 			for(var i=0;i<=$(this).attr("max_flow");i++){
-				if(i==$(this).attr("cur_flow")){
-					jump_array+='<a class="choosed step_number" title="目前步驟">'+(i+1)+'</a>&nbsp;&nbsp;';
+				if(i==$(this).attr("cur_flow")&&i==$(this).attr("max_flow")){
+					jump_array+='<a class="choosed" title="已完成">完成流程</a>&nbsp;&nbsp;';
 				}else if(i==$(this).attr("max_flow")){
-					jump_array+='<a class="step_number"href="#" title="完成流程" onclick=\'jump_step(\"'+$(this).closest("tr").attr("job_id")+'\",\"'+i+'\")\'>完成流程</a>&nbsp;&nbsp;';
+					jump_array+='<a class="step_number" href="#" title="完成流程" onclick=\'jump_step(\"'+$(this).closest("tr").attr("job_id")+'\",\"'+i+'\",\"完成流程\")\'>完成流程</a>&nbsp;&nbsp;';
+				}else if(i==$(this).attr("cur_flow")){
+					jump_array+='<a class="choosed step_number" title="目前步驟">'+(i+1)+'</a>&nbsp;&nbsp;';
 				}else{
-					jump_array+='<a class="step_number"href="#" title="重作步驟'+(i+1)+'" onclick=\'jump_step(\"'+$(this).closest("tr").attr("job_id")+'\",\"'+i+'\")\'>'+(i+1)+'</a>&nbsp;&nbsp;';
+					jump_array+='<a class="step_number"href="#" title="重作步驟'+(i+1)+'" onclick=\'jump_step(\"'+$(this).closest("tr").attr("job_id")+'\",\"'+i+'\",\"重作步驟'+(i+1)+'\")\'>'+(i+1)+'</a>&nbsp;&nbsp;';
 				}
 			}
 			

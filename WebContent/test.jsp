@@ -51,7 +51,7 @@
 				</table>
 				<div style="padding:50px;">
 					<input id='addr' type='text' value='台北市內湖區文湖街18號' style='width:400px;'>
-					<a id='go_eat' class='btn btn-darkblue'>哈哈哈 吃便便啦</a>
+					<a id='go_eat' class='btn btn-darkblue'>哈哈哈啦</a>
 				</div>
 			</div>
 		</div>
