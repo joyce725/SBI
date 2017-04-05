@@ -360,7 +360,9 @@ public class ScenarioJob extends HttpServlet {
 			for( java.util.Iterator<ScenarioResultVO> result_item = old_json_result.listIterator(); result_item.hasNext(); ){
 				ScenarioResultVO currentElement = result_item.next();
 				if(Integer.parseInt(current_job.getFlow_seq())+1==Integer.parseInt(currentElement.getStep())){
-					result_item.remove();
+					if("查詢商圈".equals(currentElement.getCategory())||"查詢POI".equals(currentElement.getCategory())||"環域分析".equals(currentElement.getCategory())){
+						result_item.remove();
+					}
 				}
 			}
 			String jsonStrList = new Gson().toJson(old_json_result);

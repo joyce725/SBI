@@ -104,6 +104,14 @@ function select_poi(poi_name,record){
 			all_markers[poi_name][i].setMap(null);   
         }   
 		all_markers[poi_name]=null;
+		
+		if($("#tree").length>0){
+			$("#tree").fancytree("getTree").visit(function(node){
+				if(node.title==poi_name){
+					node.setSelected(false);;
+				}
+			});
+		}
 		return;
 	}
 	//$("#tree").fancytree("getTree").getNodeByKey(n);
@@ -128,13 +136,15 @@ function select_poi(poi_name,record){
 				}
 			});
 		}
-			
-		$(this_node.span.childNodes[1]).addClass('loading');
-		if(!$(this_node.span.childNodes[1]).hasClass('poi')){
-			$(this_node.span.childNodes[1]).addClass('poi');
-			$(this_node.span.childNodes[1]).attr('scenario_lat',new Number(map.getCenter().lat()).toFixed(4));
-			$(this_node.span.childNodes[1]).attr('scenario_lng',new Number(map.getCenter().lng()).toFixed(4));
-			$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
+		
+		if(this_node!=null){
+			$(this_node.span.childNodes[1]).addClass('loading');
+			if(!$(this_node.span.childNodes[1]).hasClass('poi')){
+				$(this_node.span.childNodes[1]).addClass('poi');
+				$(this_node.span.childNodes[1]).attr('scenario_lat',new Number(map.getCenter().lat()).toFixed(4));
+				$(this_node.span.childNodes[1]).attr('scenario_lng',new Number(map.getCenter().lng()).toFixed(4));
+				$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
+			}
 		}
 	}
 	$.ajax({
@@ -149,7 +159,6 @@ function select_poi(poi_name,record){
 			zoom : map.getZoom()
 		},
 		success : function(result) {
-			var tmp_str="";
 			if(result=="fail!!!!!")return;
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
@@ -204,14 +213,17 @@ function select_poi(poi_name,record){
 			        	setTimeout(function () { infowindow.close(); }, 2000);
 			        });
 				}
-				if($("#tree").length>0){
-					all_markers[poi_name].push(marker);
+				if(this_node!=null){
+					if($("#tree").length>0){
+						all_markers[poi_name].push(marker);
+					}
 				}
 			});
-			if($("#tree").length>0){
-				$(this_node.span.childNodes[1]).removeClass('loading');
+			if(this_node!=null){
+				if($("#tree").length>0){
+					$(this_node.span.childNodes[1]).removeClass('loading');
+				}
 			}
-			console.log(tmp_str);
 		}
 	});
 }

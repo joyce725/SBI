@@ -228,8 +228,7 @@ function jump_step(job_id,goto_seq,title){
 	$("html").append("<div id='jump_confirm' title='情境流程變更' style='margin:10px 20px;'>"
 			+"<table class='bentable-style1'>"
 			+"<tr><td colspan='2'>確定要 "+title+"?</td></tr>"
-			+(title=="完成流程"?"":"<tr><td>注1:</td><td>將刪除之前使用本系統時於該步驟所產生的結果。</td></tr>")
-			+(title=="完成流程"?"":"<tr><td>注2:</td><td>若欲修改[區位選擇、POI、環域分析]將一併刪除其餘兩項目所產生之結果。</td></tr>")
+//			+(title=="完成流程"?"":"<tr><td>注1:</td><td>重做完成儲存新的結果後，舊結果將被刪除。</td></tr>")
 			+"</table>"
 			+"</div>");				
 	
@@ -398,7 +397,6 @@ function finish_step(){
 				text : "確定完成",
 				click : function() {
 					var this_node;
-					//刪這階段原本的結果
 					$.ajax({
 						type : "POST",
 						async : false,
@@ -442,15 +440,16 @@ function finish_step(){
 							}
 						});
 					}
-					
-					if(window.rs_markers.length>0){
-					var result_str="[";
-					result_str+="['名稱','經度','緯度','半徑','時速','時間']";
-						$.each(rs_markers, function(i, node){
-							result_str+=",['點"+(i+1)+"', '"+new Number(node.marker.position.lat()).toFixed(4)+"', '"+new Number(node.marker.position.lng()).toFixed(4)+"', '"+new Number(node.circle.radius).toFixed(4)+"m', '"+node.speed+"km/hr', '"+node.time+"mins']";
-						});
-						result_str+="]";
-						if(window.scenario_record){scenario_record("環域分析",result_str);}
+					if(window.rs_markers){
+						if(window.rs_markers.length>0){
+							var result_str="[";
+							result_str+="['名稱','經度','緯度','半徑','時速','時間']";
+							$.each(rs_markers, function(i, node){
+								result_str+=",['點"+(i+1)+"', '"+new Number(node.marker.position.lat()).toFixed(4)+"', '"+new Number(node.marker.position.lng()).toFixed(4)+"', '"+new Number(node.circle.radius).toFixed(4)+"m', '"+node.speed+"km/hr', '"+node.time+"mins']";
+							});
+							result_str+="]";
+							if(window.scenario_record){scenario_record("環域分析",result_str);}
+						}
 					}
 					
 					$.ajax({

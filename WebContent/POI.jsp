@@ -22,13 +22,6 @@
 	#region_select,#warning{
 		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
 	}
-	#search-box-input{
-		position: fixed;
-		left: 140px;
-		top: 62px;
-		width: 300px;
-		box-shadow:  0 2px 6px rgba(0, 0, 0, 0.3);
-	}
 	#search-box-input-view{
 		position: fixed;
 		left: 140px;
@@ -88,7 +81,48 @@ var item_marker = function (speed, time, marker, circle) {
 	this.circle = circle;
 }
 
+function heatmap_poi(poi_name,record) {
+	$.ajax({
+		type : "POST",
+		url : "realMap.do",
+//		async : false,
+		data : {
+			action : "select_poi",
+			name : poi_name,
+			lat : map.getCenter().lat,
+			lng : map.getCenter().lng,
+			zoom : map.getZoom()
+		},
+		success : function(result) {
+// 			alert(result);
+// 			return;
+			var json_obj = $.parseJSON(result);
+			
+// 			alert(json_obj.length);
+			var point_array=[];
+			$.each(json_obj,function(i, item) {
+				point_array.push(new google.maps.LatLng(item.center.lat, item.center.lng));
+			});
+			
+			
+			var heatmap = new google.maps.visualization.HeatmapLayer({
+			    data: point_array,
+			    map: map
+			});
+			heatmap.set('radius', 20);
+			
+		}
+	});
+}
+
+
+
 	$(function(){
+		
+		setTimeout(function(){
+			heatmap_poi("捷運");
+		},3000);
+		
 		$("body").append("<div id='msgAlert'></div>")
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
 		$.ajax({
@@ -316,7 +350,7 @@ var item_marker = function (speed, time, marker, circle) {
 
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
-	<input type='text' id='search-box-input' placeholder="欲查詢地址">
+<!-- 	<input type='text' id='search-box-input' placeholder="欲查詢地址"> -->
 	<input type='text' id='search-box-input-view' placeholder="輸入欲查詢地址">
 	
 	<a class='btn btn-primary' id='search-box-enter'>查詢</a>
@@ -550,25 +584,55 @@ var item_marker = function (speed, time, marker, circle) {
 			trafficLayer = new google.maps.TrafficLayer();
 			transitLayer = new google.maps.TransitLayer();
 			
-			var input = document.getElementById('search-box-input');
-			var autocomplete = new google.maps.places.Autocomplete(input);
-			autocomplete.bindTo('bounds', map);
+// 			var input = document.getElementById('search-box-input');
+// 			var autocomplete = new google.maps.places.Autocomplete(input);
+// 			autocomplete.bindTo('bounds', map);
 			
-			$("#search-box-input-view").change(function(e) {
-				$("#search-box-input").val($("#search-box-input-view").val());
-			});
+// 			$("#search-box-input-view").change(function(e) {
+// 				$("#search-box-input").val($("#search-box-input-view").val());
+// 			});
 			$("#search-box-input-view").keypress(function(e) {
 				if(e.which == 13) {
 			    	e.preventDefault();
 			    	$("#search-box-enter").trigger("click");
 			    }else{
-			    	$("#search-box-input").val($("#search-box-input-view").val());
+// 			    	$("#search-box-input").val($("#search-box-input-view").val());
 			    }
 			});
 			
 			$("#search-box-enter").click(function(e){
 				e.preventDefault();
 				var search_str = $("#search-box-input-view").val();//"";
+				if($("#search-box-input-view").val().length==0){
+					warningMsg('警告', "請輸入關鍵字以供查詢");
+		            return;
+				}
+				//先查POI
+				var poi_amount=0;
+				$.ajax({
+					type : "POST",
+					url : "realMap.do",
+					async : false,
+					data : {
+						action : "select_poi",
+						name : search_str,
+						lat : map.getCenter().lat,
+						lng : map.getCenter().lng,
+						zoom : map.getZoom()
+					},success : function(result) {
+						var json_obj = $.parseJSON(result);
+						if(json_obj.length>0){
+							poi_amount=json_obj.length;
+							select_poi(search_str,"no_record");
+						}
+					}
+				});
+				
+				if(poi_amount!=0){
+					return;
+				}
+						
+				//沒有POI接著查地址
 				var str_to_place_service = new google.maps.places.AutocompleteService();
 				str_to_place_service.getPlacePredictions({
 					    input: search_str,
@@ -576,11 +640,17 @@ var item_marker = function (speed, time, marker, circle) {
 					}, function listentoresult(list, status) {
 						if (status != google.maps.places.PlacesServiceStatus.OK || list==null ) {
 							warningMsg('警告', "查無結果請輸入更詳細關鍵字");
-				            return;
+							return;
 				    	}
+						if (list[0].description!=search_str){
+							console.log("您搜尋的地點或許是:"+list[0].description);
+							warningMsg('警告', "查無結果請輸入更詳細關鍵字");
+				            return;
+						}
+								
 						if(list[0].description.length-search_str.length>4){
 							warningMsg('警告', ("您搜尋的地點或許是: "+list[0].description));
-							$("#search-box-input").val(list[0].description);
+// 							$("#search-box-input").val(list[0].description);
 							$("#search-box-input-view").val(list[0].description);
 						}
 						var place_to_latlng_service = new google.maps.places.PlacesService(map);
@@ -593,7 +663,7 @@ var item_marker = function (speed, time, marker, circle) {
 				 					    (place.address_components[1] && place.address_components[1].short_name || ''),
 				 					    (place.address_components[2] && place.address_components[2].short_name || '')
 				 					  ].join(' ');
-									if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+									if(false){//$("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
 										if(rs_markers.length>=5){
 											warningMsg('警告', "最多五個點");
 											return;
@@ -677,9 +747,16 @@ var item_marker = function (speed, time, marker, circle) {
 										    draggable:true,
 										});
 										map.setCenter(place.geometry.location);
-				 					    map.setZoom(13);
+										if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
+										}else{
+											map.fitBounds(place.geometry.viewport);
+										}
 										marker.setVisible(false);
 										infowindow.open(map, marker);
+										google.maps.event.addListener(infowindow, "closeclick", function () {
+											marker.setMap(null);
+											infowindow.setMap(null);
+								        });
 									}
 								}
 						});
@@ -688,7 +765,10 @@ var item_marker = function (speed, time, marker, circle) {
 			});
    		}
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places,visualization&callback=initMap"></script>
+<!--     <script async defer -->
+<!--         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=visualization&callback=initMap"> -->
+<!--     </script> -->
 	<div id='picture' style='position:fixed;left:10%;top:20%;z-index:-1;'ondblclick='$("#picture").css("z-index","-1");'></div>
 	</div>
 </div>

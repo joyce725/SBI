@@ -86,6 +86,7 @@ var businessdistrict;
 var map;
 var all_BDs={};
 // var all_BDs_region_select={}
+var all_BDs_region_select=[];
 var all_markers={};
 	function checkboxstr(selector) {
 		var str = '';
@@ -424,15 +425,17 @@ var all_markers={};
 // 	    		all_BDs_region_select[BD_name]=null;
 // 	    		return;
 // 	    	}
-			
+// 			alert(all_BDs_region_select.length);
 	    	$.ajax({
 	    		type : "POST",
 	    		url : "realMap.do",
+	    		async: false,
 	    		data : {
 	    			action : "select_BD",
 	    			name : BD_name
 	    		},
 	    		success : function(result) {
+	    			
 	    			var json_obj = $.parseJSON(result);
 // 	    			all_BDs_region_select[BD_name]=[];
 	    			$.each(json_obj,function(i, item) {
@@ -465,7 +468,10 @@ var all_markers={};
 				            infowindow.setMap(null);
 				            marker.setMap(null);
 				        });
-// 						all_BDs_region_select[BD_name].push(bermudaTriangle);
+// 						alert(all_BDs_region_select.length);
+						all_BDs_region_select.push(bermudaTriangle);
+						all_BDs_region_select.push(infowindow);
+						all_BDs_region_select.push(marker);
 						google.maps.event.addListener(bermudaTriangle, "click", function(event) { 
 							if($("#region_select").dialog("isOpen")&& $("#draw_circle").css("display")=="none"){
 								google.maps.event.trigger(map, 'click',event);
@@ -708,6 +714,15 @@ var all_markers={};
 									score : ""
 								},
 								success : function(result) {
+									
+// 									if(all_BDs_region_select!=null){
+						 	    		for (var i = 0; i < all_BDs_region_select.length; i++) {   
+						 	    			all_BDs_region_select[i].setMap(null);
+						 	    			
+						 	            }   
+						 	    		all_BDs_region_select.length=0;
+// 						 	    	}
+// 						 	    		alert(all_BDs_region_select.length);
 									var json_obj = $.parseJSON(result);
 									var result_table = "";
 									if(window.scenario_record){scenario_record("區位選擇","['"+$("#selectcountry").val()+"','"+$("#selectRegion").val()+"','"+$('#choose input[name="hee"]:checked').val()+"',"+$('#choose input[name="check1"]:checked').length+","+$('#choose input[name="check2"]:checked').length+","+$('#choose input[name="check3"]:checked').length+","+$('#choose input[name="check4"]:checked').length+","+$('#choose input[name="check5"]:checked').length+","+$('#choose input[name="check6"]:checked').length+","+$('#rs1').val()+","+$('#rs2').val()+","+$('#rs3').val()+", "+result.replace(/"([^"]*)"/g, "'$1'")+"]");}
