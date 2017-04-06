@@ -9,6 +9,28 @@
 //　皆為畫googlemap相關功能
 
 //googlemap panto zoom
+if(!window.country_polygen){
+	var country_polygen=[];
+}
+if(!window.chinaProvincial){
+	var chinaProvincial=[];
+}
+if(!window.chinaCities){
+	var chinaCities={};
+}
+if(!window.all_markers){
+	var all_markers={};
+}
+if(!window.all_BDs){
+	var all_BDs={};
+}
+if(!window.population_Markers){
+	var population_Markers=[];
+}
+if(!window.heatmap_layer){
+	var heatmap_layer={};
+}
+
 var in_smoothZoom=0;
 var in_panTo=0;
 function smoothZoom (map, max, cnt) {

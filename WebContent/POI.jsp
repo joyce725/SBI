@@ -50,6 +50,7 @@ var all_BDs={};
 var action={};
 var have_visited={};
 var population_Markers=[];
+var heatmap_layer={};
 
 function hidecheckbox(json){
 	var i=0;
@@ -82,12 +83,37 @@ var item_marker = function (speed, time, marker, circle) {
 }
 
 function heatmap_poi(poi_name,record) {
+	if(heatmap_layer[poi_name]!=null){
+		heatmap_layer[poi_name].setMap(heatmap_layer[poi_name].getMap() ? null : map);
+		return;
+	}
+	var this_node;
+	if($("#tree").length>0){
+		if(record!="no_record"){
+			var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
+			sibling_node.forEach(function(sib_node) {
+				if(sib_node.title==poi_name){
+					this_node=sib_node;
+					
+				}
+			});
+		}else{
+			$("#tree").fancytree("getTree").visit(function(node){
+				if(node.title==poi_name){
+					this_node=node;
+					this_node.setActive();
+					this_node.setSelected(true);
+				}
+			});
+		}
+		$(this_node.span.childNodes[1]).addClass('loading');
+	}
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
 //		async : false,
 		data : {
-			action : "select_poi",
+			action : "select_poi_2",
 			name : poi_name,
 			lat : map.getCenter().lat,
 			lng : map.getCenter().lng,
@@ -98,29 +124,33 @@ function heatmap_poi(poi_name,record) {
 // 			return;
 			var json_obj = $.parseJSON(result);
 			
-// 			alert(json_obj.length);
+			console.log(poi_name+" : "+json_obj.length);
 			var point_array=[];
 			$.each(json_obj,function(i, item) {
 				point_array.push(new google.maps.LatLng(item.center.lat, item.center.lng));
+				
 			});
-			
+			console.log(poi_name+" # "+point_array.length);
 			
 			var heatmap = new google.maps.visualization.HeatmapLayer({
 			    data: point_array,
 			    map: map
 			});
-			heatmap.set('radius', 20);
-			
+			heatmap.set('radius', 30);
+			heatmap_layer[poi_name]=heatmap;
+			if(this_node!=null){
+				if($("#tree").length>0){
+					$(this_node.span.childNodes[1]).removeClass('loading');
+				}
+			}
 		}
 	});
 }
 
-
-
 	$(function(){
-		
 		setTimeout(function(){
-			heatmap_poi("捷運");
+// 			heatmap_poi("提款機");
+// 			alert(window.heatmap_layer);
 		},3000);
 		
 		$("body").append("<div id='msgAlert'></div>")
