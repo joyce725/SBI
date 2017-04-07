@@ -194,6 +194,10 @@ $(function(){
 		},
 		width : 'auto',
 		modal : true,
+		closeOnEscape: false,
+	    open: function(event, ui) {
+	        $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+	    },
 		buttons : [{
 			id : "insert",
 			text : "新增",
