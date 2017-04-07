@@ -130,7 +130,13 @@ public class HeatMap extends HttpServlet {
 	        Collections.sort(list,
 	        new Comparator<String>() {
 	            public int compare(String o1, String o2) {
-	            	return (Float.parseFloat(o1) - Float.parseFloat(o2)>0?1:-1);
+	            	float o1_f =Float.parseFloat(o1);
+	            	float o2_f =Float.parseFloat(o2);
+	            	if (o1_f < o2_f) return -1;
+	                if (o1_f == o2_f) return 0; // Fails on NaN however, not sure what you want
+	                if (o1_f > o2_f) return 1;
+	            	return 1;
+//	            	return ( - Float.parseFloat(o2)>0?1:-1);
 	            }
 	        });
 	        if(count==0 || list.size() == 0)return null;

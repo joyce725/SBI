@@ -46,6 +46,7 @@ var country_polygen=[];
 var chinaProvincial=[];
 var chinaCities={};
 var all_markers={};
+var all_markerCluster={};
 var all_BDs={};
 var action={};
 var have_visited={};
@@ -85,6 +86,7 @@ var item_marker = function (speed, time, marker, circle) {
 function heatmap_poi(poi_name,record) {
 	if(heatmap_layer[poi_name]!=null){
 		heatmap_layer[poi_name].setMap(heatmap_layer[poi_name].getMap() ? null : map);
+		heatmap_layer[poi_name]=null;
 		return;
 	}
 	var this_node;
@@ -120,23 +122,19 @@ function heatmap_poi(poi_name,record) {
 			zoom : map.getZoom()
 		},
 		success : function(result) {
-// 			alert(result);
-// 			return;
 			var json_obj = $.parseJSON(result);
-			
-			console.log(poi_name+" : "+json_obj.length);
 			var point_array=[];
 			$.each(json_obj,function(i, item) {
 				point_array.push(new google.maps.LatLng(item.center.lat, item.center.lng));
 				
 			});
-			console.log(poi_name+" # "+point_array.length);
-			
+// 			console.log(poi_name+" # "+point_array.length);
+
 			var heatmap = new google.maps.visualization.HeatmapLayer({
 			    data: point_array,
 			    map: map
 			});
-			heatmap.set('radius', 30);
+			heatmap.set('radius', 20);
 			heatmap_layer[poi_name]=heatmap;
 			if(this_node!=null){
 				if($("#tree").length>0){
@@ -795,6 +793,10 @@ function heatmap_poi(poi_name,record) {
 			});
    		}
     </script>
+    
+<!--     	給markercluster用的 -->
+    <script src="js/markerclusterer.js"></script>
+<!--     libraries=visualization 是給熱力圖用的 -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places,visualization&callback=initMap"></script>
 <!--     <script async defer -->
 <!--         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=visualization&callback=initMap"> -->

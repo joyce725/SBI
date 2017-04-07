@@ -34,8 +34,9 @@ public class CountryData extends HttpServlet {
 		String action = request.getParameter("action");
 		if("draw_shpLegend".equals(action)){
 			String type=request.getParameter("type");//"GDP";
+			String year=request.getParameter("year");
 			GetData getData= new GetData();
-			String tmp = getData.buildup1(type)+"|"+getData.buildup2(type)+"|"+getData.buildup3(type);
+			String tmp = getData.buildup1(type,year)+"|"+getData.buildup2(type)+"|"+getData.buildup3(type);
 			response.getWriter().write(tmp);
 		}
 		if("change_select".equals(action)){
@@ -58,13 +59,14 @@ public class CountryData extends HttpServlet {
 				+ "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
-		String buildquery1 = "SELECT data FROM tb_STAT_Trget_Country WHERE Second_Trget= ? AND Type=( SELECT  Type FROM tb_STAT_Trget_Country WHERE Second_Trget = ? ORDER BY Type DESC LIMIT 1)";
+		String buildquery1_1 = "SELECT data FROM tb_STAT_Trget_Country WHERE Second_Trget= ? AND Type=( SELECT  Type FROM tb_STAT_Trget_Country WHERE Second_Trget = ? ORDER BY Type DESC LIMIT 1)";
+		String buildquery1_2 = "SELECT data FROM tb_STAT_Trget_Country WHERE Second_Trget= ? AND Type= ? ";
 		String buildquery2 = "SELECT DISTINCT unit FROM tb_STAT_Country WHERE Second_Trget = ? ";
 		String buildquery3 = "SELECT DISTINCT Type year FROM tb_STAT_Trget_Country WHERE Second_Trget= ? ORDER BY TYPE DESC";
 		String changequery = "SELECT * FROM tb_STAT_Trget_Country CE, tb_SHP_Country WHERE CE.Country = tb_SHP_Country.CNTRY_NAME AND CE.Type = ? AND CE.Second_Trget = ? ";
 		String bigmacquery = "SELECT * FROM tb_Statistics_BigMac INNER JOIN tb_SHP_Country ON tb_Statistics_BigMac.Country = tb_SHP_Country.CNTRY_NAME ";
 		
-		public String buildup1(String type) {//分割的四個數字和 min max
+		public String buildup1(String type, String year) {//分割的四個數字和 min max
 			List<String> strlist= new ArrayList<String>();
 			Connection con = null;
 			PreparedStatement pstmt = null;
@@ -72,9 +74,16 @@ public class CountryData extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(buildquery1);
-				pstmt.setString(1, type);
-				pstmt.setString(2, type);
+				if(year==null){
+					pstmt = con.prepareStatement(buildquery1_1);
+					pstmt.setString(1, type);
+					pstmt.setString(2, type);
+				}else{
+					pstmt = con.prepareStatement(buildquery1_2);
+					pstmt.setString(1, type);
+					pstmt.setString(2, year);
+				}
+				
 				rs = pstmt.executeQuery();
 				int min=1000000000,max=-1000000000;
 				while (rs.next()) {
@@ -204,7 +213,12 @@ public class CountryData extends HttpServlet {
 	        Collections.sort(list,
 	        new Comparator<String>() {
 	            public int compare(String o1, String o2) {
-	            	return  (Float.parseFloat(o1) - Float.parseFloat(o2)>0?1:-1);
+	            	float o1_f =Float.parseFloat(o1);
+	            	float o2_f =Float.parseFloat(o2);
+	            	if (o1_f < o2_f) return -1;
+	                if (o1_f == o2_f) return 0; // Fails on NaN however, not sure what you want
+	                if (o1_f > o2_f) return 1;
+	            	return 1;
 	            }
 	        });
 	        if(count==0 || list.size() == 0)return null;

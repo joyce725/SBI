@@ -120,20 +120,35 @@ function doPan() {
   }
 }
 //POI[type]
+var count_poi=0;
 function select_poi(poi_name,record){
+	count_poi++;
+	console.log("coming: "+poi_name+count_poi);
 	if(all_markers[poi_name]!=null){
-		for (var i = 0; i < all_markers[poi_name].length; i++) {   
-			all_markers[poi_name][i].setMap(null);   
-        }   
-		all_markers[poi_name]=null;
-		
+		console.log("delete start: "+poi_name+count_poi);
+		var this_node;
 		if($("#tree").length>0){
 			$("#tree").fancytree("getTree").visit(function(node){
 				if(node.title==poi_name){
-					node.setSelected(false);;
+					node.setSelected(false);
+					this_node=node;
+					$(this_node.span.childNodes[1]).addClass('loading');
 				}
 			});
 		}
+		all_markerCluster[poi_name].clearMarkers();
+		all_markerCluster[poi_name]=null;
+		
+		setTimeout(function () {
+			console.log("delete N: "+all_markers[poi_name].length);
+			for (var i = 0; i < all_markers[poi_name].length; i++) {   
+				all_markers[poi_name][i].setMap(null);   
+	        }
+			
+			all_markers[poi_name]=null;
+			$(this_node.span.childNodes[1]).removeClass('loading');
+			console.log("delete over: "+poi_name);
+		},100);
 		return;
 	}
 	//$("#tree").fancytree("getTree").getNodeByKey(n);
@@ -181,17 +196,21 @@ function select_poi(poi_name,record){
 			zoom : map.getZoom()
 		},
 		success : function(result) {
+			console.log("create start: "+poi_name+count_poi);
 			if(result=="fail!!!!!")return;
 			var json_obj = $.parseJSON(result);
 			var result_table = "";
 			if($("#tree").length>0){
 				all_markers[poi_name]=[];
+				
 			}
 			if(json_obj.length>1000){
 				if(confirm("搜尋資料量達"+json_obj.length+"筆\n是否繼續查詢?","確認繼續","取消")){}else{
 					return;
 			}}
+			var markers=[];
 //			var tmp_time= new Date().getTime();
+			console.log("create N: "+json_obj.length);
 			$.each(json_obj,function(i, item) {
 //				console.log(" time: "+(new Date().getTime()-tmp_time)+"名: "+json_obj[i].name);
 				var  icon = json_obj[i].icon.length>3?json_obj[i].icon:"./refer_data/poi_icon/Q2.png";
@@ -206,7 +225,7 @@ function select_poi(poi_name,record){
 					poi_flow_str+='<tr><td>平均人流：</td><td>'+json_obj[i].memo+'人</td></tr>';
 				}
 				var tmp_table='<table class="info_window">'+
-				'<tr><th colspan="2">'+json_obj[i].type+'　</th></tr>'+
+				'<tr><th colspan="2">'+json_obj[i].type+count_poi+'　</th></tr>'+
 				'<tr><td>名稱：</td><td>'+json_obj[i].name+'</td></tr>'+
 				((json_obj[i].addr!=null)?'<tr><td>地址：</td><td>'+json_obj[i].addr+'</td></tr>':"")+
 				((json_obj[i].subtype!=null&&json_obj[i].subtype!='NULL')?'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>':"")+
@@ -238,14 +257,57 @@ function select_poi(poi_name,record){
 				if(this_node!=null){
 					if($("#tree").length>0){
 						all_markers[poi_name].push(marker);
+						markers.push(marker);
 					}
 				}
 			});
+			
+			var markerCluster = new MarkerClusterer(map, markers,{
+//				imagePath: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m',
+//				imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+				maxZoom: null,
+		        gridSize: 80,
+		        minimumClusterSize : 4,
+		        styles: [{
+		            url: './refer_data/info_cluster_1.png',
+		            height: 40,
+		            width: 90,
+		            anchor: [5, 18],
+		            textColor: '#fff',
+		            textSize: 14
+		          }, {
+		            url: './refer_data/info_cluster_2.png',
+		            height: 43,
+		            width: 80,
+		            anchor: [7, 12],
+		            textColor: '#fff',
+		            textSize: 14
+		          }, {
+		            url: './refer_data/info_cluster_3.png',
+		            height: 38,
+		            width: 78,
+		            anchor: [5,8],
+		            textColor: '#fff',
+		            textSize: 13
+		          }],
+//		        imagePath: '../images/m'
+			});
+		            
+			if(all_markerCluster[poi_name]==null){
+				all_markerCluster[poi_name]=markerCluster;
+				
+			}
+//			setTimeout(function () {
+//				markerCluster.setMaxZoom(1);
+//				markerCluster.repaint();
+//			}, 2000);
+            
 			if(this_node!=null){
 				if($("#tree").length>0){
 					$(this_node.span.childNodes[1]).removeClass('loading');
 				}
 			}
+			console.log("create over: "+poi_name+count_poi);
 		}
 	});
 }
@@ -562,7 +624,23 @@ function country_POLY_for_country_economy (year,type){
 		}
 		polygen = country_polygen.pop();
 	}
-	
+	$.ajax({
+		type : "POST",
+		url : "countryEconomy.do",
+		data : {
+			action : "draw_shpLegend",
+			type : type,
+			year : year
+		},success : function(msg) {
+			var arrMsg = msg.split('|');
+            TILE = arrMsg[0].split(',');
+			$('#span_level1').text(' ~ ' + TILE[0]);
+            for (var i = 0; i < 4; i++) {
+                $('#span_level' + (i + 2)).text(TILE[i] + ' ~ ' + TILE[i + 1]);
+            }
+            $('#span_level5').text(TILE[3] + ' ~ ');
+		}
+	});
 	
 	$.ajax({
 		type : "POST",
@@ -747,7 +825,26 @@ function country_POLY_for_countryData (year,type){
 		}
 		polygen = country_polygen.pop();
 	}
+	//
+	$.ajax({
+		type : "POST",
+		url : "countryData.do",
+		data : {
+			action : "draw_shpLegend",
+			type : type,
+			year : year
+		},success : function(msg) {
+			var arrMsg = msg.split('|');
+            TILE = arrMsg[0].split(',');
+			$('#span_level1').text(' ~ ' + TILE[0]);
+            for (var i = 0; i < 4; i++) {
+                $('#span_level' + (i + 2)).text(TILE[i] + ' ~ ' + TILE[i + 1]);
+            }
+            $('#span_level5').text(TILE[3] + ' ~ ');
+		}
+	});
 	
+	//
 	$.ajax({
 		type : "POST",
 		url : "countryData.do",
@@ -878,6 +975,7 @@ function countryData(node,type){//country_data
 			type : type
 		},
 		success : function(msg) {
+//			alert(type+" @@ "+msg);
 			if (msg !== undefined) {
                 var arrMsg = msg.split('|');
                 TILE = arrMsg[0].split(',');

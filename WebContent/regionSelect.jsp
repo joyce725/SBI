@@ -1019,6 +1019,7 @@ var all_markers={};
     
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSQDx-_LzT3hRhcQcQY3hHgX2eQzF9weQ&signed_in=true&libraries=places&callback=initMap">
 	</script>
+	<script src="js/markerclusterer.js"></script>
 	<script src="js/mapFunction.js"></script>
 	</div>
 </div>

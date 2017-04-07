@@ -533,6 +533,7 @@ var item_marker = function (speed, time, marker, circle) {
 			transitLayer = new google.maps.TransitLayer();
    		}
     </script>
+    <script src="js/markerclusterer.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8QEQE4TX2i6gpGIrGbTsrGrRPF23xvX4&signed_in=true&libraries=places&callback=initMap"></script> 
 	<div id='picture' style='position:fixed;left:10%;top:20%;z-index:-1;'ondblclick='$("#picture").css("z-index","-1");'></div>
 	</div>
