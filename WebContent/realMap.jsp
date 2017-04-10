@@ -11,51 +11,18 @@
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <script src="./js/jquery-ui.custom.js"></script>
+<!-- 以下js為 import 畫POIMenu和畫WKT的js  -->
 <script src="./fancy-tree/jquery.fancytree.js"></script>
 <script src="refer_data/js/wicket.js"></script>
 <script src="refer_data/js/wicket-gmap3.js"></script>
+<!-- 以下為自寫的map相關和POIMenu function -->
 <script src="js/mapFunction.js"></script>
+<script src="js/menu_of_POI.js"></script>
 
 <script>
 var result="";
 var map;
-var transitLayer;
-var trafficLayer;
-var country_polygen=[];
-var chinaProvincial=[];
-var chinaCities={};
-var all_markers={};
-var all_BDs={};
-var action={};
-var have_visited={};
-var population_Markers=[];
-function hidecheckbox(json){
-	var i=0;
-	i=0;
-	for(item in json){
-		i++;
-	}
-	if(i==0){
-		return;
-	}
-	for (key in json){
-		if(key=="folder" && json[key]=="true"){
-			json["hideCheckbox"]=true;
-		}
-		if(key=="action"){
-			action[json["key"]]=json[key];
-		}
-		
-		i=0;
-		
-		for(item in json[key]){
-			i++;
-		}
-		if(i>0 && (typeof json[key]!="string")){
-			hidecheckbox(json[key]);
-		}
-	}
-}
+
 var item_marker = function (speed, time, marker, circle) {
 	this.speed = speed;
 	this.time = time;
@@ -65,81 +32,13 @@ var item_marker = function (speed, time, marker, circle) {
 
 	$(function(){
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
-		$.ajax({
-			type : "POST",
-			url : "realMap.do",
-			async : false,
-			data : {
-				action : "select_menu", type : "RealMap"
-			},
-			success : function(result) {
-				json_obj = $.parseJSON(result);
-				hidecheckbox(json_obj);
-				$("#tree").fancytree({
-					aria: true,
-					checkbox: true,
-					selectMode: 2,
-					quicksearch: true,
-					focusOnSelect: true,
-					source : json_obj,
-					
-					click: function (event, data) {
-						var node = data.node;
-						if($(node.span.childNodes[1]).hasClass('loading')) { 
-							return false; 
-						}
-						
-					    if(!data.node.isFolder()){
-					    	event.preventDefault();
-					    	node.setSelected( !node.isSelected() );
-					    	
-				    		if(action[data.node.key].length==0){
-				    			$("#warning").dialog("open");
-				    			node.setSelected(false);
-				    		}
-				    		eval(action[data.node.key]);
-					    }else{
-					    	if(have_visited[node.key]==null){
-					    		have_visited[node.key]=true;
-					    		eval(action[node.key]);
-					    	}
-					    }
-					},
-					activate: function (event, data) {
-					    var node = data.node;
-					    if($(node.span.childNodes[1]).hasClass('loading')) { 
-					    	return false; 
-					    }
-					    node.setSelected( !node.isSelected() );
-					    
-					    if(data.node.isFolder()&&have_visited[node.key]!=null){
-					    	eval(action[data.node.key]);
-					    }
-					},
-					
-					select: function(event, data) {
-						var node = data.node;
-						if($(node.span.childNodes[1]).hasClass('loading')) { 
-							return false; 
-						}
-					}
-				}).on("mouseover", ".fancytree-title", function(event){
-				    var pdf_layer=["19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","35","42","44","46","48"];
-				    var node = $.ui.fancytree.getNode(event);
-				    if(pdf_layer.indexOf(node.key)!=-1){
-				    	$('#pdf_layer').children().html('<div onclick=\'window.open(\"http://61.218.8.51/SBI/pdf/'
-				    			+$("#ftal_"+node.key).text().replace('商圈','')+'.pdf\", \"_blank\");\'> '
-				    			+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
-				    	$('#pdf_layer').css({
-				    		"display": "inline",
-				    		"top":($("#ftal_"+node.key).offset().top-120),
-				    		"left":($("#ftal_"+node.key).offset().left-160+($("#ftal_"+node.key).text().length*12))
-				    	});
-				    }
-				    node.info(event.type);
-				});
-			}
+		
+		
+		draw_menu_of_poi({
+			action : "select_menu", 
+			type : "RealMap"
 		});
+		
 		$( "#opacity" ).slider({
 	      range: "min",
 	      value: 100,
@@ -294,7 +193,7 @@ var item_marker = function (speed, time, marker, circle) {
 
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
-	<div id='panel' 
+	<div id='panel' style="display:none;" 
 	onmouseover="$('#panel').css('left','150px');clearTimeout($('#panel').val());" 
 	onmouseout="$('#panel').val(setTimeout(function () { $('#panel').css('left','0px'); }, 800));">
 		<div id='tree' >
@@ -529,8 +428,6 @@ var item_marker = function (speed, time, marker, circle) {
 				    });
 				}
 			});
-			trafficLayer = new google.maps.TrafficLayer();
-			transitLayer = new google.maps.TransitLayer();
    		}
     </script>
     <script src="js/markerclusterer.js"></script>

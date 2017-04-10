@@ -21,6 +21,10 @@ if(!window.chinaCities){
 if(!window.all_markers){
 	var all_markers={};
 }
+if(!window.all_markerCluster){
+	var all_markerCluster={};
+}
+
 if(!window.all_BDs){
 	var all_BDs={};
 }
@@ -151,8 +155,6 @@ function select_poi(poi_name,record){
 		},100);
 		return;
 	}
-	//$("#tree").fancytree("getTree").getNodeByKey(n);
-//	.setSelected(true);
 	
 	var this_node;
 	if($("#tree").length>0){
@@ -202,17 +204,14 @@ function select_poi(poi_name,record){
 			var result_table = "";
 			if($("#tree").length>0){
 				all_markers[poi_name]=[];
-				
 			}
 			if(json_obj.length>1000){
 				if(confirm("搜尋資料量達"+json_obj.length+"筆\n是否繼續查詢?","確認繼續","取消")){}else{
 					return;
 			}}
 			var markers=[];
-//			var tmp_time= new Date().getTime();
 			console.log("create N: "+json_obj.length);
 			$.each(json_obj,function(i, item) {
-//				console.log(" time: "+(new Date().getTime()-tmp_time)+"名: "+json_obj[i].name);
 				var  icon = json_obj[i].icon.length>3?json_obj[i].icon:"./refer_data/poi_icon/Q2.png";
 				var marker = new google.maps.Marker({
 				    position: json_obj[i].center,
@@ -263,8 +262,6 @@ function select_poi(poi_name,record){
 			});
 			
 			var markerCluster = new MarkerClusterer(map, markers,{
-//				imagePath: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m',
-//				imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
 				maxZoom: null,
 		        gridSize: 80,
 		        minimumClusterSize : 4,
@@ -290,18 +287,12 @@ function select_poi(poi_name,record){
 		            textColor: '#fff',
 		            textSize: 13
 		          }],
-//		        imagePath: '../images/m'
 			});
 		            
 			if(all_markerCluster[poi_name]==null){
 				all_markerCluster[poi_name]=markerCluster;
 				
 			}
-//			setTimeout(function () {
-//				markerCluster.setMaxZoom(1);
-//				markerCluster.repaint();
-//			}, 2000);
-            
 			if(this_node!=null){
 				if($("#tree").length>0){
 					$(this_node.span.childNodes[1]).removeClass('loading');
@@ -311,66 +302,38 @@ function select_poi(poi_name,record){
 		}
 	});
 }
-//POI 所有 [停車場,ATM,圖書館,日式豬排] 這四個使用而已
-function select_poi_2(poi_name,record){
-	if(all_markers[poi_name]!=null){
-		for (var i = 0; i < all_markers[poi_name].length; i++) {   
-			all_markers[poi_name][i].setMap(null);   
-        }   
-		all_markers[poi_name]=null;
+//給熱力圖使用 查subtype的東西
+function heatmap_poi(poi_name,record) {
+	if(heatmap_layer[poi_name]!=null){
+		heatmap_layer[poi_name].setMap(heatmap_layer[poi_name].getMap() ? null : map);
+		heatmap_layer[poi_name]=null;
 		return;
 	}
-	if(record!="no_record"){
-		var this_node;
-		var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
-		sibling_node.forEach(function(sib_node) {
-			if(sib_node.title=="所有"+poi_name){
-				this_node=sib_node;
-			}
-		});
-		$(this_node.span.childNodes[1]).addClass('loading');
-		if(!$(this_node.span.childNodes[1]).hasClass('poi2')){
-			$(this_node.span.childNodes[1]).addClass('poi2');
-			$(this_node.span.childNodes[1]).attr('scenario_lat',new Number(map.getCenter().lat()).toFixed(4));
-			$(this_node.span.childNodes[1]).attr('scenario_lng',new Number(map.getCenter().lng()).toFixed(4));
-			$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
-		}
-	} 
-	
 	var this_node;
 	if($("#tree").length>0){
 		if(record!="no_record"){
 			var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
 			sibling_node.forEach(function(sib_node) {
-				if(sib_node.title=="所有"+poi_name){
+				if(sib_node.title==poi_name){
 					this_node=sib_node;
+					
 				}
 			});
 		}else{
 			$("#tree").fancytree("getTree").visit(function(node){
-				if(node.title=="所有"+poi_name){
+				if(node.title==poi_name){
 					this_node=node;
 					this_node.setActive();
 					this_node.setSelected(true);
 				}
 			});
 		}
-			
 		$(this_node.span.childNodes[1]).addClass('loading');
-		if(!$(this_node.span.childNodes[1]).hasClass('poi2')){
-			$(this_node.span.childNodes[1]).addClass('poi2');
-			$(this_node.span.childNodes[1]).attr('scenario_lat',new Number(map.getCenter().lat()).toFixed(4));
-			$(this_node.span.childNodes[1]).attr('scenario_lng',new Number(map.getCenter().lng()).toFixed(4));
-			$(this_node.span.childNodes[1]).attr('scenario_zoom',map.getZoom());
-		}
 	}
-	
-	
-	
 	$.ajax({
 		type : "POST",
 		url : "realMap.do",
-		async : false,
+//		async : false,
 		data : {
 			action : "select_poi_2",
 			name : poi_name,
@@ -379,55 +342,23 @@ function select_poi_2(poi_name,record){
 			zoom : map.getZoom()
 		},
 		success : function(result) {
-			if(result=="fail!!!!!")return;
 			var json_obj = $.parseJSON(result);
-			var result_table = "";
-			if($("#tree").length>0){
-				all_markers[poi_name]=[];
-			}
-			if(json_obj.length>1000){
-				if(confirm("搜尋資料量達"+json_obj.length+"筆\n是否繼續查詢?","確認繼續","取消")){}else{
-					return;
-			}}
+			var point_array=[];
 			$.each(json_obj,function(i, item) {
-				var  icon = json_obj[i].icon.length>3?json_obj[i].icon:false
-				var marker = new google.maps.Marker({
-				    position: json_obj[i].center,
-				    title: json_obj[i].name,
-				    map: map,
-				    icon : icon
-				});
-				var tmp_table='<table class="info_window">'+
-				'<tr><th colspan="2"># '+json_obj[i].type+'　#</th></tr>'+
-				'<tr><td>名稱：</td><td>'+json_obj[i].name+'</td></tr>'+
-				'<tr><td>地址：</td><td>'+json_obj[i].addr+'</td></tr>'+
-				((json_obj[i].subtype!=null&&json_obj[i].subtype!='NULL')?'<tr><td>類型：</td><td>'+json_obj[i].subtype+'</td></tr>':"")+
-				'</table>';
-				var infowindow = new google.maps.InfoWindow({content:tmp_table,disableAutoPan: true});
-//				if(json_obj.length<30){
-				if(false){
-					google.maps.event.addListener(marker, "mouseover", function(event) { 
-			        	infowindow.open(marker.get('map'), marker);
-			        });
-				}else{
-					google.maps.event.addListener(marker, "click", function(event) { 
-					    var infowindow_open = infowindow.getMap();
-					    if(infowindow_open !== null && typeof infowindow_open !== "undefined"){
-					    	infowindow.close();					    	
-					    }else{
-					    	infowindow.open(marker.get('map'), marker);
-					    }
-			        });
-				}
-				google.maps.event.addListener(marker, "mouseout", function(event) { 
-		        	setTimeout(function () { infowindow.close(); }, 2000);
-		        });
-				if($("#tree").length>0){
-					all_markers[poi_name].push(marker);
-				}
+				point_array.push(new google.maps.LatLng(item.center.lat, item.center.lng));
+				
 			});
-			if($("#tree").length>0){
-				$(this_node.span.childNodes[1]).removeClass('loading');
+
+			var heatmap = new google.maps.visualization.HeatmapLayer({
+			    data: point_array,
+			    map: map
+			});
+			heatmap.set('radius', 20);
+			heatmap_layer[poi_name]=heatmap;
+			if(this_node!=null){
+				if($("#tree").length>0){
+					$(this_node.span.childNodes[1]).removeClass('loading');
+				}
 			}
 		}
 	});
@@ -975,7 +906,6 @@ function countryData(node,type){//country_data
 			type : type
 		},
 		success : function(msg) {
-//			alert(type+" @@ "+msg);
 			if (msg !== undefined) {
                 var arrMsg = msg.split('|');
                 TILE = arrMsg[0].split(',');
@@ -1707,7 +1637,6 @@ function bigmac(node){
 	                    break;
 	            }
 	            
-	            
 	            var msg = "<table><caption>大麥克指數 (" + json_obj[i].country_name + ")</caption>"
 	            + "<tr><td align='center'>大麥克售價：</td><td align='center'>" + json_obj[i].price + "</td></tr>"
 	            + "<tr><td align='center'>高/低估比率：</td><td align='center'>" + json_obj[i].rawIndex + "</td></tr>"
@@ -1775,7 +1704,7 @@ function draw_region_select(polydiagram){
 					});
 					bermudaTriangle.setMap(map);
 					var marker = new google.maps.Marker({
-					    position: new google.maps.LatLng( json_obj[j].lat, json_obj[j].lng),//; .lat,
+					    position: new google.maps.LatLng( json_obj[j].lat, json_obj[j].lng),
 						label : (i+1+""),
 					    title: json_obj[j].BD_name,
 					    map: map
@@ -1901,7 +1830,7 @@ function draw_env_analyse(points){
 	});
 	return ;
 }
-//這個function還沒用到 有空再改寫
+//這個function還沒用到 可以用到的地方是 realmap.jsp POI.jsp scenario_draw_env
 function a_new_env_marker(env_lat,env_lng,order,info_msg,env_v,env_t){
 	
 	var google_latlng = new google.maps.LatLng( env_lat, env_lng);

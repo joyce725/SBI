@@ -12,12 +12,13 @@
 <script type="text/javascript" src="js/additional-methods.min.js"></script>
 <script type="text/javascript" src="js/messages_zh_TW.min.js"></script>
 <script src="./js/jquery-ui.custom.js"></script>
-
+<!-- 以下js為 import 畫POImenu和畫WKT的js  -->
 <script src="./fancy-tree/jquery.fancytree.js"></script>
 <script src="refer_data/js/wicket.js"></script>
 <script src="refer_data/js/wicket-gmap3.js"></script>
+<!-- 以下為自寫的map相關和POIMenu function -->
 <script src="js/mapFunction.js"></script>
-
+<script src="js/menu_of_POI.js"></script>
 <style>
 	#region_select,#warning{
 		font-family: "微軟正黑體", "Microsoft JhengHei", 'LiHei Pro', Arial, Helvetica, sans-serif, \5FAE\8EDF\6B63\9ED1\9AD4,\65B0\7D30\660E\9AD4;
@@ -40,41 +41,6 @@
 <script>
 var result="";
 var map;
-var transitLayer;
-var trafficLayer;
-var country_polygen=[];
-var chinaProvincial=[];
-var chinaCities={};
-var all_markers={};
-var all_markerCluster={};
-var all_BDs={};
-var action={};
-var have_visited={};
-var population_Markers=[];
-var heatmap_layer={};
-
-function hidecheckbox(json){
-	var i=0;
-	for(item in json){
-		i++;
-	}
-	if(i==0){
-		return;
-	}
-	for (key in json){
-		if(key=="folder" && json[key]=="true"){
-			json["hideCheckbox"]=true;
-		}
-		if(key=="action"){
-			action[json["key"]]=json[key];
-		}
-		
-		i=0;for(item in json[key]){i++;}
-		if(i>0 && (typeof json[key]!="string")){
-			hidecheckbox(json[key]);
-		}
-	}
-}
 
 var item_marker = function (speed, time, marker, circle) {
 	this.speed = speed;
@@ -83,153 +49,15 @@ var item_marker = function (speed, time, marker, circle) {
 	this.circle = circle;
 }
 
-function heatmap_poi(poi_name,record) {
-	if(heatmap_layer[poi_name]!=null){
-		heatmap_layer[poi_name].setMap(heatmap_layer[poi_name].getMap() ? null : map);
-		heatmap_layer[poi_name]=null;
-		return;
-	}
-	var this_node;
-	if($("#tree").length>0){
-		if(record!="no_record"){
-			var sibling_node = $('#tree').fancytree('getTree').getSelectedNodes();
-			sibling_node.forEach(function(sib_node) {
-				if(sib_node.title==poi_name){
-					this_node=sib_node;
-					
-				}
-			});
-		}else{
-			$("#tree").fancytree("getTree").visit(function(node){
-				if(node.title==poi_name){
-					this_node=node;
-					this_node.setActive();
-					this_node.setSelected(true);
-				}
-			});
-		}
-		$(this_node.span.childNodes[1]).addClass('loading');
-	}
-	$.ajax({
-		type : "POST",
-		url : "realMap.do",
-//		async : false,
-		data : {
-			action : "select_poi_2",
-			name : poi_name,
-			lat : map.getCenter().lat,
-			lng : map.getCenter().lng,
-			zoom : map.getZoom()
-		},
-		success : function(result) {
-			var json_obj = $.parseJSON(result);
-			var point_array=[];
-			$.each(json_obj,function(i, item) {
-				point_array.push(new google.maps.LatLng(item.center.lat, item.center.lng));
-				
-			});
-// 			console.log(poi_name+" # "+point_array.length);
-
-			var heatmap = new google.maps.visualization.HeatmapLayer({
-			    data: point_array,
-			    map: map
-			});
-			heatmap.set('radius', 20);
-			heatmap_layer[poi_name]=heatmap;
-			if(this_node!=null){
-				if($("#tree").length>0){
-					$(this_node.span.childNodes[1]).removeClass('loading');
-				}
-			}
-		}
-	});
-}
-
 	$(function(){
-		setTimeout(function(){
-// 			heatmap_poi("提款機");
-// 			alert(window.heatmap_layer);
-		},3000);
 		
 		$("body").append("<div id='msgAlert'></div>")
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
-		$.ajax({
-			type : "POST",
-			url : "realMap.do",
-			//async : false,
-			data : {
-				action : "select_menu", type : "POI"
-			},
-			success : function(result) {
-				
-				json_obj = $.parseJSON(result);
-				hidecheckbox(json_obj);
-				$("#tree").fancytree({
-					aria: true,
-					checkbox: true,
-					selectMode: 2,
-					quicksearch: true,
-					focusOnSelect: true,
-					source : json_obj,
-					click: function (event, data) {
-						var node = data.node;
-						if($(node.span.childNodes[1]).hasClass('loading')) { return false; }
-					    if(!data.node.isFolder()){
-					    	event.preventDefault();
-					    	node.setSelected( !node.isSelected() );
-					    	
-				    		if(action[data.node.key].length==0){
-				    			$("#warning").html("為了提供您更好的使用品質，該功能維護中。");
-				    			$("#warning").dialog("open");
-				    			node.setSelected(false);
-				    		}
-				    		eval(action[data.node.key]);
-					    	
-					    }else{
-					    	if(have_visited[node.key]==null && $("#scenario_controller").length==0){
-					    		have_visited[node.key]=true;
-					    		eval(action[node.key]);
-					    	}
-					    }
-					},
-					activate: function (event, data) {
-					    var node = data.node;
-					    if($(node.span.childNodes[1]).hasClass('loading')) {
-					    	return false; 
-					    }
-					    node.setSelected( !node.isSelected() );
-					    
-					    if(data.node.isFolder()&&have_visited[node.key]!=null){
-					    	eval(action[data.node.key]);
-					    }
-					},
-					
-					select: function(event, data) {
-						var node = data.node;
-						if($(node.span.childNodes[1]).hasClass('loading')) {
-							return false; 
-						}
-					},init: function(event, data, flag) {
-						$("#panel").show();
-				    }
-
-				}).on("mouseover", ".fancytree-title", function(event){
-				    var pdf_layer=["19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","35","42","44","46","48"];
-				    var node = $.ui.fancytree.getNode(event);
-				    if(pdf_layer.indexOf(node.key)!=-1){
-				    	//$('#pdf_layer').children().html('<div onclick=\'window.open(\"http://61.218.8.51/SBI/pdf/'+$("#ftal_"+node.key).text().replace('商圈','')+'.pdf\", \"_blank\");\'> '+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
-				    	
-				    	$('#pdf_layer').children().html('<div onclick=\'window.open(\"./uploaddoc.do?action=download_ebook&ebook_name='+$("#ftal_"+node.key).text().replace('商圈','')+'\", \"_blank\");\'> '+$("#ftal_"+node.key).text().replace('商圈','')+"電子書"+'</div>');
-				    	$('#pdf_layer').css({
-				    		"display": "inline",
-				    		"top":($("#ftal_"+node.key).offset().top-120),
-				    		"left":($("#ftal_"+node.key).offset().left-160+($("#ftal_"+node.key).text().length*12))
-				    	});
-				    }
-				    node.info(event.type);
-				});
-			}
+		draw_menu_of_poi({
+			action : "select_menu", 
+			type : "POI"
 		});
+		
 		$( "#opacity" ).slider({
 	      range: "min",
 	      value: 100,
@@ -378,7 +206,6 @@ function heatmap_poi(poi_name,record) {
 
 <jsp:include page="header.jsp" flush="true"/>
 <div class="content-wrap">
-<!-- 	<input type='text' id='search-box-input' placeholder="欲查詢地址"> -->
 	<input type='text' id='search-box-input-view' placeholder="輸入欲查詢地址">
 	
 	<a class='btn btn-primary' id='search-box-enter'>查詢</a>
@@ -609,28 +436,17 @@ function heatmap_poi(poi_name,record) {
 				    });
 				}
 			});
-			trafficLayer = new google.maps.TrafficLayer();
-			transitLayer = new google.maps.TransitLayer();
 			
-// 			var input = document.getElementById('search-box-input');
-// 			var autocomplete = new google.maps.places.Autocomplete(input);
-// 			autocomplete.bindTo('bounds', map);
-			
-// 			$("#search-box-input-view").change(function(e) {
-// 				$("#search-box-input").val($("#search-box-input-view").val());
-// 			});
 			$("#search-box-input-view").keypress(function(e) {
 				if(e.which == 13) {
 			    	e.preventDefault();
 			    	$("#search-box-enter").trigger("click");
-			    }else{
-// 			    	$("#search-box-input").val($("#search-box-input-view").val());
 			    }
 			});
 			
 			$("#search-box-enter").click(function(e){
 				e.preventDefault();
-				var search_str = $("#search-box-input-view").val();//"";
+				var search_str = $("#search-box-input-view").val();
 				if($("#search-box-input-view").val().length==0){
 					warningMsg('警告', "請輸入關鍵字以供查詢");
 		            return;
@@ -678,7 +494,6 @@ function heatmap_poi(poi_name,record) {
 								
 						if(list[0].description.length-search_str.length>4){
 							warningMsg('警告', ("您搜尋的地點或許是: "+list[0].description));
-// 							$("#search-box-input").val(list[0].description);
 							$("#search-box-input-view").val(list[0].description);
 						}
 						var place_to_latlng_service = new google.maps.places.PlacesService(map);
