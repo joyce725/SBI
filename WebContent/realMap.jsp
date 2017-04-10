@@ -33,7 +33,6 @@ var item_marker = function (speed, time, marker, circle) {
 	$(function(){
 		$("#shpLegend").draggable({ containment: ".page-wrapper" });
 		
-		
 		draw_menu_of_poi({
 			action : "select_menu", 
 			type : "RealMap"

@@ -264,7 +264,7 @@ function select_poi(poi_name,record){
 			var markerCluster = new MarkerClusterer(map, markers,{
 				maxZoom: null,
 		        gridSize: 80,
-		        minimumClusterSize : 4,
+		        minimumClusterSize : 12,
 		        styles: [{
 		            url: './refer_data/info_cluster_1.png',
 		            height: 40,

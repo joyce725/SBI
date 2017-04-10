@@ -68,6 +68,7 @@ var item_marker = function (speed, time, marker, circle) {
 	      }
 	    });
 		
+		
 		$("#region_select").dialog({
 			draggable : true,
 			resizable : false,

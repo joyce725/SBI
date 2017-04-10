@@ -441,29 +441,18 @@ public class ScenarioJob extends HttpServlet {
 		private final String dbUserName = getServletConfig().getServletContext().getInitParameter("dbUserName");
 		private final String dbPassword = getServletConfig().getServletContext().getInitParameter("dbPassword");
 		
-		private static final String select_job_info = "SELECT * FROM tb_scenario_job "
-				+ " LEFT JOIN tb_scenario_flow this ON tb_scenario_job.flow_id = this.flow_id "
-				+ " LEFT JOIN tb_scenario ON this.scenario_id = tb_scenario.scenario_id "
-				+ " LEFT JOIN tb_scenario_flow next ON next.scenario_id = this.scenario_id AND next.flow_seq = this.flow_seq +1 "
-				+ " WHERE tb_scenario_job.group_id = ? ORDER BY job_time ASC";
-		private static final String max_seq = "SELECT MAX( flow_seq ) max_seq FROM tb_scenario_flow WHERE scenario_id = ? " ;
-		private static final String scenario_job_insert = "call sp_insert_scenario_job (?,?,?)";
-		private static final String scenario_job_update = "UPDATE tb_scenario_job SET job_name = ? where job_id = ? ";
-		private static final String scenario_job_delete = "DELETE FROM tb_scenario_job WHERE job_id = ?";
-		
-		private static final String update_result ="update tb_scenario_job set result = ? where job_id = ?";
-		private static final String select_all_scenario = "select * from tb_scenario";
-		private static final String next_step_update = "update tb_scenario_job set flow_id = ? , flow_seq = ? , finished = ? , finish_time = ? where job_id = ?";
-		
-		private static final String get_scenario_child_q = "select * from tb_scenario_flow where scenario_id = ? ORDER BY flow_seq";
-		private static final String get_last_step = "SELECT * FROM tb_scenario_job "
-				+ " LEFT JOIN tb_scenario_flow this ON tb_scenario_job.flow_id = this.flow_id "
-				+ " LEFT JOIN tb_scenario_flow next ON this.scenario_id = next.scenario_id AND next.flow_seq = this.flow_seq +1 "
-				+ " LEFT JOIN tb_scenario_flow last ON this.scenario_id = last.scenario_id AND last.flow_seq +1 = this.flow_seq  "
-				+ " WHERE tb_scenario_job.job_id = ? ";
-		private static final String get_memo_q = "SELECT * FROM tb_scenario_job where job_id = ?";
-		private static final String set_memo_q = "UPDATE tb_scenario_job SET memo = ? where job_id = ?";
-		
+		private static final String sp_select_scenario_job_info = "call sp_select_scenario_job_info(?)";
+		private static final String sp_get_scenario_flow_max_seq = "call sp_get_scenario_flow_max_seq(?)" ;
+		private static final String sp_insert_scenario_job = "call sp_insert_scenario_job (?,?,?)";
+		private static final String sp_update_scenario_job = "call sp_update_scenario_job (?,?)";
+		private static final String sp_delete_scenario_job = "call sp_delete_scenario_job (?)";
+		private static final String sp_update_scenario_job_result = "call sp_update_scenario_job_result (?,?)";
+		private static final String sp_select_scenario = "call sp_select_scenario()";
+		private static final String sp_update_scenario_job_next_step = "call sp_update_scenario_job_next_step (?,?,?,?,?)";
+		private static final String sp_get_scenario_child = "call sp_get_scenario_child (?)";
+		private static final String sp_select_scenario_job_last_step = "call sp_select_scenario_job_last_step (?)";
+		private static final String sp_select_scenario_job_memo = "call sp_select_scenario_job_memo (?)";
+		private static final String sp_update_scenario_job_memo = "call sp_update_scenario_job_memo (?,?)";
 		@Override
 		public List<ScenarioJobVO> get_all_job(String group_id){
 			List<ScenarioJobVO> list = new ArrayList<ScenarioJobVO>();
@@ -476,7 +465,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(select_job_info);
+				pstmt = con.prepareStatement(sp_select_scenario_job_info);
 				pstmt.setString(1, group_id);
 				rs = pstmt.executeQuery();
 				
@@ -549,7 +538,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(scenario_job_insert);
+				pstmt = con.prepareStatement(sp_insert_scenario_job);
 				pstmt.setString(1, group_id);
 				pstmt.setString(2, scenario_id);
 				pstmt.setString(3, job_name);
@@ -593,9 +582,9 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(scenario_job_update);
-				pstmt.setString(1, job_name);
-				pstmt.setString(2, job_id);
+				pstmt = con.prepareStatement(sp_update_scenario_job);
+				pstmt.setString(1, job_id);
+				pstmt.setString(2, job_name);
 				
 				pstmt.executeUpdate();
 			} catch (SQLException se) {
@@ -637,7 +626,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(scenario_job_delete);
+				pstmt = con.prepareStatement(sp_delete_scenario_job);
 				pstmt.setString(1, job_id);
 				pstmt.executeUpdate();
 			} catch (SQLException se) {
@@ -678,7 +667,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(max_seq);
+				pstmt = con.prepareStatement(sp_get_scenario_flow_max_seq);
 				pstmt.setString(1, scenario_id);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {	
@@ -724,7 +713,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(select_all_scenario);
+				pstmt = con.prepareStatement(sp_select_scenario);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					scenarioJobVO = new ScenarioJobVO();
@@ -775,7 +764,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(get_last_step);
+				pstmt = con.prepareStatement(sp_select_scenario_job_last_step);
 				
 				pstmt.setString(1, job_id);
 				rs = pstmt.executeQuery();
@@ -837,7 +826,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(select_job_info);
+				pstmt = con.prepareStatement(sp_select_scenario_job_info);
 				
 				pstmt.setString(1, group_id);
 				rs = pstmt.executeQuery();
@@ -894,10 +883,10 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(update_result);
+				pstmt = con.prepareStatement(sp_update_scenario_job_result);
+				pstmt.setString(1, job_id);
+				pstmt.setString(2, json_result);
 				
-				pstmt.setString(1, json_result);
-				pstmt.setString(2, job_id);
 				pstmt.executeUpdate();
 			} catch (SQLException se) {
 				// Handle any driver errors
@@ -937,13 +926,13 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(next_step_update);
+				pstmt = con.prepareStatement(sp_update_scenario_job_next_step);
+				pstmt.setString(1, job_id);
+				pstmt.setString(2, flow_id);
+				pstmt.setString(3, flow_seq);
+				pstmt.setString(4, finished);
+				pstmt.setString(5, finish_time);
 				
-				pstmt.setString(1, flow_id);
-				pstmt.setString(2, flow_seq);
-				pstmt.setString(3, finished);
-				pstmt.setString(4, finish_time);
-				pstmt.setString(5, job_id);
 				pstmt.executeUpdate();
 			} catch (SQLException se) {
 				// Handle any driver errors
@@ -986,7 +975,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(get_scenario_child_q);
+				pstmt = con.prepareStatement(sp_get_scenario_child);
 				pstmt.setString(1, scenario_id);
 				rs = pstmt.executeQuery();
 				
@@ -1042,7 +1031,7 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(get_memo_q);
+				pstmt = con.prepareStatement(sp_select_scenario_job_memo);
 				pstmt.setString(1, job_id);
 				rs = pstmt.executeQuery();
 				
@@ -1088,9 +1077,10 @@ public class ScenarioJob extends HttpServlet {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
-				pstmt = con.prepareStatement(set_memo_q);
-				pstmt.setString(1, memo);
-				pstmt.setString(2, job_id);
+				pstmt = con.prepareStatement(sp_update_scenario_job_memo);
+				pstmt.setString(1, job_id);
+				pstmt.setString(2, memo);
+				
 				pstmt.executeUpdate();
 			} catch (SQLException se) {
 				// Handle any driver errors
