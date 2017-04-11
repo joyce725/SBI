@@ -104,11 +104,12 @@ section {
 #news-area #news-table td {
 	padding:0px 20px;
     line-height:30px;
+    font-size: 22px;
+    font-weight: 200;
 }
 
 #news-area #news-table td a, ul li a:active {
     padding:5px;
-    color:#888;
     text-decoration:none;
     display:block;
 }
